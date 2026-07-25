@@ -244,6 +244,9 @@ FD = descriptor_pb2.FieldDescriptorProto
 
 _pool: descriptor_pool.DescriptorPool | None = None
 _getcls = None
+_no_options = (
+    False  # merged_flat drops option usage, matching the reference merged view
+)
 
 
 def _build_pool(descriptors: dict[str, tuple]) -> None:
@@ -305,7 +308,7 @@ def _opt_expand(prefix: str, msg, out: list[str]) -> None:
 
 def _option_entries(opts, opts_fullname: str) -> list[str]:
     """aggregate scalar-leaf entries for one options message, standard fields then extensions"""
-    if _pool is None:
+    if _pool is None or _no_options:
         return []
     try:
         desc = _pool.FindMessageTypeByName(opts_fullname)
@@ -657,8 +660,11 @@ def render_merged_flat(descriptors: dict[str, tuple]) -> str:
     google/protobuf well-known types imported rather than nested"""
     from collections import defaultdict
 
+    global _no_options
     imported = sorted(n for n in descriptors if n.startswith("google/protobuf/"))
-    skip = set(imported)
+    skip = {
+        n for n in descriptors if n.startswith("google/")
+    }  # google.* imported/referenced, never nested
     msgs: dict[str, list] = defaultdict(list)
     enums: dict[str, list] = defaultdict(list)
     exts: dict[str, list] = defaultdict(list)
@@ -709,15 +715,19 @@ def render_merged_flat(descriptors: dict[str, tuple]) -> str:
             )
         return _join_blocks(blocks)
 
-    top: list[list[str]] = [['syntax = "proto2";']]
-    if imported:
-        top.append([f'import "{n}";' for n in imported])
-    body = render(tree, "")
-    if body:
-        top.append(body)
-    for flat, svc in sorted(services, key=lambda t: t[0]):
-        top.append(_render_service(svc, name=flat))
-    return "\n".join(_join_blocks(top)) + "\n"
+    _no_options = True  # the merged view is a structure map, option usage is dropped
+    try:
+        top: list[list[str]] = [['syntax = "proto2";']]
+        if imported:
+            top.append([f'import "{n}";' for n in imported])
+        body = render(tree, "")
+        if body:
+            top.append(body)
+        for flat, svc in sorted(services, key=lambda t: t[0]):
+            top.append(_render_service(svc, name=flat))
+        return "\n".join(_join_blocks(top)) + "\n"
+    finally:
+        _no_options = False
 
 
 # driver
