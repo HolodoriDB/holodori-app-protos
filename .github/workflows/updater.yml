@@ -28,6 +28,8 @@ jobs:
           justapk==0.1.1 requests capstone==5.0.7 pyelftools==0.31 protobuf==3.20.3
 
       - name: run updater
+        env:
+          QOOAPP_TOKEN: ${{ secrets.QOOAPP_TOKEN }}
         run: python updater.py
 
       - name: commit changes
