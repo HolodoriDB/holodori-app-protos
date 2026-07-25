@@ -440,7 +440,9 @@ def _join_blocks(blocks: list[list[str]]) -> list[str]:
     return out
 
 
-def _extend_blocks(package: str, exts, proto2: bool, indent: str) -> list[list[str]]:
+def _extend_blocks(
+    package: str, exts, proto2: bool, indent: str, full_qualify: bool = False
+) -> list[list[str]]:
     groups: dict[str, list] = {}
     order: list[str] = []
     for ext in exts:
@@ -452,7 +454,7 @@ def _extend_blocks(package: str, exts, proto2: bool, indent: str) -> list[list[s
     for extendee in order:
         b = [f"{indent}extend {extendee.lstrip('.')} {{"]
         b += [
-            f"{indent}\t{_field_line(e, package, {}, proto2, False)}"
+            f"{indent}\t{_field_line(e, package, {}, proto2, False, full_qualify)}"
             for e in groups[extendee]
         ]
         b.append(f"{indent}}}")
@@ -507,7 +509,7 @@ def _render_message(
     for en in msg.enum_type:
         blocks.append(_render_enum(en, inner, f"{en.name}_" if prefix_enums else ""))
     if msg.extension:
-        blocks += _extend_blocks(package, msg.extension, proto2, inner)
+        blocks += _extend_blocks(package, msg.extension, proto2, inner, full_qualify)
 
     oneof_fields: dict[int, list] = {}
     plain = []
@@ -534,16 +536,24 @@ def _render_message(
         b.append(f"{inner}}}")
         blocks.append(b)
 
-    reserved = []
-    for rng in msg.reserved_range:
-        hi = rng.end - 1
-        reserved.append(
-            f"{inner}reserved {rng.start}{'' if rng.start == hi else f' to {hi}'};"
-        )
-    for nm in msg.reserved_name:
-        reserved.append(f'{inner}reserved "{nm}";')
-    if reserved:
-        blocks.append(reserved)
+    extranges = []
+    for rng in msg.extension_range:
+        end = "max" if rng.end > 536870911 else str(rng.end - 1)
+        extranges.append(f"{inner}extensions {rng.start} to {end};")
+    if extranges:
+        blocks.append(extranges)
+
+    if not _no_options:  # the merged view drops reserved statements too
+        reserved = []
+        for rng in msg.reserved_range:
+            hi = rng.end - 1
+            reserved.append(
+                f"{inner}reserved {rng.start}{'' if rng.start == hi else f' to {hi}'};"
+            )
+        for nm in msg.reserved_name:
+            reserved.append(f'{inner}reserved "{nm}";')
+        if reserved:
+            blocks.append(reserved)
 
     return [f"{indent}message {msg.name} {{", *_join_blocks(blocks), f"{indent}}}"]
 
@@ -661,10 +671,21 @@ def render_merged_flat(descriptors: dict[str, tuple]) -> str:
     from collections import defaultdict
 
     global _no_options
-    imported = sorted(n for n in descriptors if n.startswith("google/protobuf/"))
+    gp = {n for n in descriptors if n.startswith("google/protobuf/")}
     skip = {
         n for n in descriptors if n.startswith("google/")
-    }  # google.* imported/referenced, never nested
+    }  # google.* is imported or referenced, never nested
+    # import only the google/protobuf files the nested descriptors transitively depend on, so the
+    # imports stay within protobuf's well-known set instead of pulling in unreferenced extras
+    imports: set[str] = set()
+    stack = [d for n in descriptors for d in descriptors[n][0].dependency if d in gp]
+    while stack:
+        d = stack.pop()
+        if d in imports:
+            continue
+        imports.add(d)
+        stack += [x for x in descriptors[d][0].dependency if x in gp]
+    imported = sorted(imports)
     msgs: dict[str, list] = defaultdict(list)
     enums: dict[str, list] = defaultdict(list)
     exts: dict[str, list] = defaultdict(list)
@@ -690,7 +711,7 @@ def render_merged_flat(descriptors: dict[str, tuple]) -> str:
 
     def defs(p: str, indent: str) -> list[list[str]]:
         blocks: list[list[str]] = []
-        blocks += _extend_blocks(p, exts[p], True, indent)
+        blocks += _extend_blocks(p, exts[p], True, indent, full_qualify=True)
         for en in enums[p]:
             blocks.append(_render_enum(en, indent, f"{en.name}_"))
         for msg in msgs[p]:
