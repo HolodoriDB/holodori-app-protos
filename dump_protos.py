@@ -257,9 +257,9 @@ _SCALAR = {
 
 
 def _strip(name: str, package: str) -> str:
-    name = name[1:] if name.startswith(".") else name
-    if package and name.startswith(package + "."):
-        return name[len(package) + 1 :]
+    # strip only the current package prefix, keep the leading dot on cross-package refs
+    if package and name.startswith("." + package + "."):
+        return name[len(package) + 2 :]
     return name
 
 
