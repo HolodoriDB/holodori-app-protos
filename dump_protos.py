@@ -31,7 +31,7 @@ from pathlib import Path
 from capstone import CS_ARCH_ARM64, CS_MODE_ARM, Cs
 from capstone.arm64 import ARM64_OP_MEM, ARM64_OP_REG
 from elftools.elf.elffile import ELFFile
-from google.protobuf import descriptor_pb2
+from google.protobuf import descriptor_pb2, descriptor_pool, message_factory
 
 
 class Binary:
@@ -233,9 +233,116 @@ def extract_descriptor(bin_: Binary, va: int, end: int):
     return None
 
 
-# FileDescriptorProto to .proto text
+# option resolution
+#
+# custom options are extensions stored as unknown fields on the options message. a DescriptorPool
+# built from every descriptor (force-built so extensions register) resolves them by number, and
+# each is expanded to the aggregate scalar-leaf form, e.g.
+#   (buf.validate.field).enum.defined_only = true
 
 FD = descriptor_pb2.FieldDescriptorProto
+
+_pool: descriptor_pool.DescriptorPool | None = None
+_getcls = None
+
+
+def _build_pool(descriptors: dict[str, tuple]) -> None:
+    global _pool, _getcls
+    pool = descriptor_pool.DescriptorPool()
+    added: set[str] = set()
+
+    def add(name: str) -> None:
+        if name in added or name not in descriptors:
+            return
+        added.add(name)
+        for dep in descriptors[name][0].dependency:
+            add(dep)
+        try:
+            pool.Add(descriptors[name][0])
+        except Exception:
+            pass
+
+    for name in descriptors:
+        add(name)
+    for name in descriptors:
+        try:
+            pool.FindFileByName(name)  # force build so extensions register by number
+        except Exception:
+            pass
+
+    try:
+        getcls = message_factory.GetMessageClass
+    except AttributeError:
+        mf = message_factory.MessageFactory(pool)
+        getcls = mf.GetPrototype
+    _pool, _getcls = pool, getcls
+
+
+def _opt_scalar(fd, v) -> str:
+    if fd.type == fd.TYPE_ENUM:
+        ev = fd.enum_type.values_by_number.get(v)
+        return ev.name if ev else str(v)
+    if fd.type == fd.TYPE_BOOL:
+        return "true" if v else "false"
+    if fd.type == fd.TYPE_STRING:
+        v = v.decode("utf-8") if isinstance(v, (bytes, bytearray)) else v
+        return '"%s"' % v
+    if fd.type == fd.TYPE_BYTES:
+        v = v if isinstance(v, (bytes, bytearray)) else bytes(v)
+        return '"%s"' % v.decode("latin1")
+    return str(v)
+
+
+def _opt_expand(prefix: str, msg, out: list[str]) -> None:
+    for fd, val in msg.ListFields():
+        nm = f"{prefix}.{fd.name}"
+        for v in val if fd.label == fd.LABEL_REPEATED else [val]:
+            if fd.type == fd.TYPE_MESSAGE:
+                _opt_expand(nm, v, out)
+            else:
+                out.append(f"{nm} = {_opt_scalar(fd, v)}")
+
+
+def _option_entries(opts, opts_fullname: str) -> list[str]:
+    """aggregate scalar-leaf entries for one options message, standard fields then extensions"""
+    if _pool is None:
+        return []
+    try:
+        desc = _pool.FindMessageTypeByName(opts_fullname)
+    except KeyError:
+        return []
+    out: list[str] = []
+    for fd, val in opts.ListFields():
+        for v in val if fd.label == fd.LABEL_REPEATED else [val]:
+            if fd.type == fd.TYPE_MESSAGE:
+                _opt_expand(fd.name, v, out)
+            else:
+                out.append(f"{fd.name} = {_opt_scalar(fd, v)}")
+    # custom options (extensions) are sorted by name, standard options above come first
+    exts = []
+    for u in opts.UnknownFields():
+        try:
+            exts.append((_pool.FindExtensionByNumber(desc, u.field_number), u))
+        except KeyError:
+            continue
+    for ext, u in sorted(exts, key=lambda e: e[0].full_name):
+        base = f"({ext.full_name})"
+        if ext.type == ext.TYPE_MESSAGE:
+            sub = _getcls(ext.message_type)()
+            sub.ParseFromString(bytes(u.data))
+            _opt_expand(base, sub, out)
+        else:
+            data = u.data
+            if ext.type == ext.TYPE_STRING:
+                data = bytes(data).decode("utf-8")
+            elif ext.type == ext.TYPE_BYTES:
+                data = bytes(data)
+            out.append(f"{base} = {_opt_scalar(ext, data)}")
+    return out
+
+
+# FileDescriptorProto to .proto text
+
 _SCALAR = {
     FD.TYPE_DOUBLE: "double",
     FD.TYPE_FLOAT: "float",
@@ -257,7 +364,7 @@ _SCALAR = {
 
 
 def _strip(name: str, package: str) -> str:
-    # strip only the current package prefix, keep the leading dot on cross-package refs
+    # strip only the current-or-descendant package prefix, keep the leading dot on unrelated refs
     if package and name.startswith("." + package + "."):
         return name[len(package) + 2 :]
     return name
@@ -276,22 +383,32 @@ def _map_entries(msg) -> dict[str, tuple]:
 
 
 def _field_line(
-    fd, package: str, maps: dict[str, tuple], proto2: bool, in_oneof: bool
+    fd,
+    package: str,
+    maps: dict[str, tuple],
+    proto2: bool,
+    in_oneof: bool,
+    full_qualify: bool = False,
 ) -> str:
+    def ref(tn: str) -> str:
+        return tn if full_qualify else _strip(tn, package)
+
     if fd.type == FD.TYPE_MESSAGE and fd.label == FD.LABEL_REPEATED:
         short = _strip(fd.type_name, package).rsplit(".", 1)[-1]
         if short in maps:
             key, val = maps[short]
             kt = _SCALAR.get(key.type, "int32")
             vt = (
-                _strip(val.type_name, package)
+                ref(val.type_name)
                 if val.type in (FD.TYPE_MESSAGE, FD.TYPE_ENUM)
                 else _SCALAR.get(val.type, "int32")
             )
-            return f"map<{kt}, {vt}> {fd.name} = {fd.number};"
+            decl = f"map<{kt}, {vt}> {fd.name} = {fd.number}"
+            opts = _option_entries(fd.options, "google.protobuf.FieldOptions")
+            return decl + (f" [{', '.join(opts)}]" if opts else "") + ";"
 
     if fd.type in (FD.TYPE_MESSAGE, FD.TYPE_ENUM):
-        typ = _strip(fd.type_name, package)
+        typ = ref(fd.type_name)
     else:
         typ = _SCALAR.get(fd.type, "unknown")
 
@@ -305,39 +422,90 @@ def _field_line(
         elif fd.proto3_optional or (proto2 and fd.label == FD.LABEL_OPTIONAL):
             label = "optional "
 
-    opts = []
-    if fd.options.deprecated:
-        opts.append("deprecated = true")
-    if fd.options.packed:
-        opts.append("packed = true")
-    opt = f" [{', '.join(opts)}]" if opts else ""
-    return f"{label}{typ} {fd.name} = {fd.number}{opt};"
+    opts = _option_entries(fd.options, "google.protobuf.FieldOptions")
+    tail = f" [{', '.join(opts)}]" if opts else ""
+    return f"{label}{typ} {fd.name} = {fd.number}{tail};"
 
 
-def _print_enum(enum, name: str, indent: str, lines: list[str]) -> None:
-    lines.append(f"{indent}enum {name} {{")
-    if enum.options.allow_alias:
-        lines.append(f"{indent}  option allow_alias = true;")
+def _join_blocks(blocks: list[list[str]]) -> list[str]:
+    """flatten non-empty blocks, one blank line between each"""
+    out: list[str] = []
+    for b in (b for b in blocks if b):
+        if out:
+            out.append("")
+        out.extend(b)
+    return out
+
+
+def _extend_blocks(package: str, exts, proto2: bool, indent: str) -> list[list[str]]:
+    groups: dict[str, list] = {}
+    order: list[str] = []
+    for ext in exts:
+        if ext.extendee not in groups:
+            groups[ext.extendee] = []
+            order.append(ext.extendee)
+        groups[ext.extendee].append(ext)
+    blocks = []
+    for extendee in order:
+        b = [f"{indent}extend {extendee.lstrip('.')} {{"]
+        b += [
+            f"{indent}\t{_field_line(e, package, {}, proto2, False)}"
+            for e in groups[extendee]
+        ]
+        b.append(f"{indent}}}")
+        blocks.append(b)
+    return blocks
+
+
+def _render_enum(enum, indent: str, prefix: str = "") -> list[str]:
+    inner = indent + "\t"
+    blocks: list[list[str]] = []
+    opts = [
+        f"{inner}option {e};"
+        for e in _option_entries(enum.options, "google.protobuf.EnumOptions")
+    ]
+    if opts:
+        blocks.append(opts)
+    values = []
     for v in enum.value:
-        lines.append(f"{indent}  {v.name} = {v.number};")
-    lines.append(f"{indent}}}")
+        vo = _option_entries(v.options, "google.protobuf.EnumValueOptions")
+        tail = f" [{', '.join(vo)}]" if vo else ""
+        values.append(f"{inner}{prefix}{v.name} = {v.number}{tail};")
+    if values:
+        blocks.append(values)
+    return [f"{indent}enum {enum.name} {{", *_join_blocks(blocks), f"{indent}}}"]
 
 
-def _print_message(
-    msg, package: str, proto2: bool, indent: str, lines: list[str]
-) -> None:
-    lines.append(f"{indent}message {msg.name} {{")
-    inner = indent + "  "
+def _render_message(
+    msg,
+    package: str,
+    proto2: bool,
+    indent: str,
+    full_qualify: bool = False,
+    prefix_enums: bool = False,
+) -> list[str]:
+    inner = indent + "\t"
     maps = _map_entries(msg)
+    blocks: list[list[str]] = []
 
-    for en in msg.enum_type:
-        _print_enum(en, en.name, inner, lines)
+    opts = [
+        f"{inner}option {e};"
+        for e in _option_entries(msg.options, "google.protobuf.MessageOptions")
+    ]
+    if opts:
+        blocks.append(opts)
+
+    # nested types precede fields
     for nt in msg.nested_type:
-        if nt.options.map_entry:
-            continue
-        _print_message(nt, package, proto2, inner, lines)
+        if not nt.options.map_entry:
+            blocks.append(
+                _render_message(nt, package, proto2, inner, full_qualify, prefix_enums)
+            )
+    for en in msg.enum_type:
+        blocks.append(_render_enum(en, inner, f"{en.name}_" if prefix_enums else ""))
+    if msg.extension:
+        blocks += _extend_blocks(package, msg.extension, proto2, inner)
 
-    # group fields by oneof, skipping synthetic proto3-optional oneofs
     oneof_fields: dict[int, list] = {}
     plain = []
     for fd in msg.field:
@@ -345,270 +513,211 @@ def _print_message(
             oneof_fields.setdefault(fd.oneof_index, []).append(fd)
         else:
             plain.append(fd)
-
-    for fd in plain:
-        lines.append(f"{inner}{_field_line(fd, package, maps, proto2, False)}")
-
+    if plain:
+        blocks.append(
+            [
+                f"{inner}{_field_line(fd, package, maps, proto2, False, full_qualify)}"
+                for fd in plain
+            ]
+        )
     for idx, decl in enumerate(msg.oneof_decl):
         if idx not in oneof_fields:
             continue
-        lines.append(f"{inner}oneof {decl.name} {{")
-        for fd in oneof_fields[idx]:
-            lines.append(f"{inner}  {_field_line(fd, package, maps, proto2, True)}")
-        lines.append(f"{inner}}}")
+        b = [f"{inner}oneof {decl.name} {{"]
+        b += [
+            f"{inner}\t{_field_line(fd, package, maps, proto2, True, full_qualify)}"
+            for fd in oneof_fields[idx]
+        ]
+        b.append(f"{inner}}}")
+        blocks.append(b)
 
+    reserved = []
     for rng in msg.reserved_range:
         hi = rng.end - 1
-        lines.append(
+        reserved.append(
             f"{inner}reserved {rng.start}{'' if rng.start == hi else f' to {hi}'};"
         )
     for nm in msg.reserved_name:
-        lines.append(f'{inner}reserved "{nm}";')
+        reserved.append(f'{inner}reserved "{nm}";')
+    if reserved:
+        blocks.append(reserved)
 
-    lines.append(f"{indent}}}")
-
-
-_FILE_OPTS = [
-    "java_package",
-    "java_outer_classname",
-    "go_package",
-    "csharp_namespace",
-    "objc_class_prefix",
-]
+    return [f"{indent}message {msg.name} {{", *_join_blocks(blocks), f"{indent}}}"]
 
 
-def _render_defs(fdp) -> list[str]:
-    """enum/message/service definitions only, no syntax/package/import/option preamble"""
-    pkg = fdp.package
-    proto2 = (fdp.syntax or "proto2") != "proto3"
-    lines: list[str] = []
-
-    for en in fdp.enum_type:
-        _print_enum(en, en.name, "", lines)
-        lines.append("")
-    for msg in fdp.message_type:
-        _print_message(msg, pkg, proto2, "", lines)
-        lines.append("")
-
-    for svc in fdp.service:
-        lines.append(f"service {svc.name} {{")
-        for m in svc.method:
-            cs = "stream " if m.client_streaming else ""
-            ss = "stream " if m.server_streaming else ""
-            lines.append(
-                f"  rpc {m.name} ({cs}{_strip(m.input_type, pkg)}) returns ({ss}{_strip(m.output_type, pkg)});"
+def _render_service(svc, name: str | None = None, indent: str = "") -> list[str]:
+    inner = indent + "\t"
+    blocks: list[list[str]] = []
+    sopts = [
+        f"{inner}option {e};"
+        for e in _option_entries(svc.options, "google.protobuf.ServiceOptions")
+    ]
+    if sopts:
+        blocks.append(sopts)
+    # a method with an option body is its own block, runs of simple methods group together
+    simple: list[str] = []
+    for m in svc.method:
+        cs = "stream " if m.client_streaming else ""
+        ss = "stream " if m.server_streaming else ""
+        head = f"{inner}rpc {m.name} ({cs}{m.input_type}) returns ({ss}{m.output_type})"
+        mopts = _option_entries(m.options, "google.protobuf.MethodOptions")
+        if mopts:
+            if simple:
+                blocks.append(simple)
+                simple = []
+            blocks.append(
+                [head + " {", *[f"{inner}\toption {e};" for e in mopts], f"{inner}}}"]
             )
-        lines.append("}")
-        lines.append("")
-
-    while lines and lines[-1] == "":
-        lines.pop()
-    return lines
+        else:
+            simple.append(head + ";")
+    if simple:
+        blocks.append(simple)
+    return [
+        f"{indent}service {name or svc.name} {{",
+        *_join_blocks(blocks),
+        f"{indent}}}",
+    ]
 
 
 def render_proto(fdp) -> str:
     pkg = fdp.package
-    lines = [f'syntax = "{fdp.syntax or "proto2"}";', ""]
-    if pkg:
-        lines += [f"package {pkg};", ""]
-
-    for dep in fdp.dependency:
-        kw = (
-            "import public"
-            if fdp.dependency.index(dep) in fdp.public_dependency
-            else "import"
-        )
-        lines.append(f'{kw} "{dep}";')
+    proto2 = (fdp.syntax or "proto2") != "proto3"
+    blocks: list[list[str]] = []
+    if not proto2:  # proto2 is the default and its syntax line is omitted
+        blocks.append(['syntax = "proto3";'])
     if fdp.dependency:
-        lines.append("")
+        public = set(fdp.public_dependency)
+        blocks.append(
+            [
+                f'import {"public " if isp else ""}"{dep}";'
+                for dep, isp in sorted(
+                    (d, i in public) for i, d in enumerate(fdp.dependency)
+                )
+            ]
+        )
+    if pkg:
+        blocks.append([f"package {pkg};"])
+    fopts = [
+        f"option {e};"
+        for e in _option_entries(fdp.options, "google.protobuf.FileOptions")
+    ]
+    if fopts:
+        blocks.append(fopts)
+    if fdp.extension:
+        blocks += _extend_blocks(pkg, fdp.extension, proto2, "")
+    for en in fdp.enum_type:
+        blocks.append(_render_enum(en, ""))
+    for msg in fdp.message_type:
+        blocks.append(_render_message(msg, pkg, proto2, ""))
+    for svc in fdp.service:
+        blocks.append(_render_service(svc))
 
-    opt = fdp.options
-    printed_opt = False
-    for name in _FILE_OPTS:
-        if opt.HasField(name):
-            lines.append(f'option {name} = "{getattr(opt, name)}";')
-            printed_opt = True
-    if printed_opt:
-        lines.append("")
-
-    lines += _render_defs(fdp)
-
-    while lines and lines[-1] == "":
-        lines.pop()
-    return "\n".join(lines) + "\n"
-
-
-# merged.proto tree assembly
-#
-# merged.proto nests every descriptor under synthetic `message` blocks named after its
-# directory path, e.g. "buf/validate/validate.proto" ends up under
-#   message buf { message validate { ... } }
-# so descriptors sharing a directory land inside the same nested block. files with no
-# directory component (a bare "foo.proto") are emitted at the top level, unwrapped
-
-
-def _build_merged_tree(descriptors: dict[str, tuple]) -> dict:
-    root: dict = {}
-    for name in descriptors:
-        parts = name.split("/")
-        node = root
-        for d in parts[:-1]:
-            node = node.setdefault(d, {})
-        node.setdefault("__files__", []).append(name)
-    return root
+    return "\n".join(_join_blocks(blocks)) + "\n"
 
 
-def _render_merged_tree(
-    node: dict, indent: str, descriptors: dict[str, tuple], lines: list[str]
-) -> None:
-    for key in sorted(k for k in node if k != "__files__"):
-        lines.append(f"{indent}message {key} {{")
-        _render_merged_tree(node[key], indent + "  ", descriptors, lines)
-        lines.append(f"{indent}}}")
-        lines.append("")
-
-    for name in sorted(node.get("__files__", [])):
-        fdp, raw = descriptors[name]
-        for line in _render_defs(fdp):
-            lines.append(f"{indent}{line}" if line else "")
-        lines.append("")
+# merged views
 
 
 def render_merged(descriptors: dict[str, tuple]) -> str:
-    tree = _build_merged_tree(descriptors)
-    lines: list[str] = []
-    _render_merged_tree(tree, "", descriptors, lines)
-    while lines and lines[-1] == "":
-        lines.pop()
-    return "\n".join(lines) + "\n"
+    """every descriptor's defs nested under synthetic message blocks named after its directory path"""
+    tree: dict = {}
+    for name in descriptors:
+        node = tree
+        for seg in name.split("/")[:-1]:
+            node = node.setdefault(seg, {})
+        node.setdefault("__files__", []).append(name)
 
-
-# merged_flat.proto
-#
-# every type hoisted to the top level with the package folded into an underscore name
-# (rpc.api.MasterGetResponse becomes rpc_api_MasterGetResponse) and all references rewritten
-# to match, so there is no nesting and no packages
-
-
-def _flat_ref(type_name: str) -> str:
-    return type_name.lstrip(".").replace(".", "_")
-
-
-def _flat_field_line(fd, maps: dict[str, tuple], proto2: bool, in_oneof: bool) -> str:
-    if fd.type == FD.TYPE_MESSAGE and fd.label == FD.LABEL_REPEATED:
-        short = fd.type_name.rsplit(".", 1)[-1]
-        if short in maps:
-            key, val = maps[short]
-            kt = _SCALAR.get(key.type, "int32")
-            vt = (
-                _flat_ref(val.type_name)
-                if val.type in (FD.TYPE_MESSAGE, FD.TYPE_ENUM)
-                else _SCALAR.get(val.type, "int32")
+    def render(node: dict, indent: str) -> list[str]:
+        blocks: list[list[str]] = []
+        for seg in sorted(k for k in node if k != "__files__"):
+            blocks.append(
+                [
+                    f"{indent}message {seg} {{",
+                    *render(node[seg], indent + "\t"),
+                    f"{indent}}}",
+                ]
             )
-            return f"map<{kt}, {vt}> {fd.name} = {fd.number};"
+        for name in sorted(node.get("__files__", [])):
+            fdp = descriptors[name][0]
+            proto2 = (fdp.syntax or "proto2") != "proto3"
+            for en in fdp.enum_type:
+                blocks.append(_render_enum(en, indent))
+            for msg in fdp.message_type:
+                blocks.append(_render_message(msg, fdp.package, proto2, indent))
+            for svc in fdp.service:
+                blocks.append(_render_service(svc, indent=indent))
+        return _join_blocks(blocks)
 
-    if fd.type in (FD.TYPE_MESSAGE, FD.TYPE_ENUM):
-        typ = _flat_ref(fd.type_name)
-    else:
-        typ = _SCALAR.get(fd.type, "unknown")
-
-    label = ""
-    if not in_oneof:
-        if fd.label == FD.LABEL_REPEATED:
-            label = "repeated "
-        elif fd.label == FD.LABEL_REQUIRED:
-            label = "required "
-        elif fd.proto3_optional or (proto2 and fd.label == FD.LABEL_OPTIONAL):
-            label = "optional "
-
-    opts = []
-    if fd.options.deprecated:
-        opts.append("deprecated = true")
-    if fd.options.packed:
-        opts.append("packed = true")
-    opt = f" [{', '.join(opts)}]" if opts else ""
-    return f"{label}{typ} {fd.name} = {fd.number}{opt};"
-
-
-def _flat_message(flat: str, msg, proto2: bool, lines: list[str]) -> None:
-    maps = _map_entries(msg)
-    lines.append(f"message {flat} {{")
-
-    oneof_fields: dict[int, list] = {}
-    plain = []
-    for fd in msg.field:
-        if fd.HasField("oneof_index") and not fd.proto3_optional:
-            oneof_fields.setdefault(fd.oneof_index, []).append(fd)
-        else:
-            plain.append(fd)
-
-    for fd in plain:
-        lines.append(f"  {_flat_field_line(fd, maps, proto2, False)}")
-
-    for idx, decl in enumerate(msg.oneof_decl):
-        if idx not in oneof_fields:
-            continue
-        lines.append(f"  oneof {decl.name} {{")
-        for fd in oneof_fields[idx]:
-            lines.append(f"    {_flat_field_line(fd, maps, proto2, True)}")
-        lines.append("  }")
-
-    for rng in msg.reserved_range:
-        hi = rng.end - 1
-        lines.append(f"  reserved {rng.start}{'' if rng.start == hi else f' to {hi}'};")
-    for nm in msg.reserved_name:
-        lines.append(f'  reserved "{nm}";')
-
-    lines.append("}")
-
-
-def _collect_flat(msg, prefix: str, proto2: bool, messages: list, enums: list) -> None:
-    flat = prefix + msg.name
-    messages.append((flat, msg, proto2))
-    for en in msg.enum_type:
-        enums.append((flat + "_" + en.name, en))
-    for nt in msg.nested_type:
-        if not nt.options.map_entry:
-            _collect_flat(nt, flat + "_", proto2, messages, enums)
+    return "\n".join(render(tree, "")) + "\n"
 
 
 def render_merged_flat(descriptors: dict[str, tuple]) -> str:
-    enums: list[tuple] = []
-    messages: list[tuple] = []
-    services: list[tuple] = []
+    """one proto2 file: packages nested as message blocks (recreating fully-qualified names),
+    services hoisted to the top level with flat names, enum values prefixed to avoid collisions,
+    google/protobuf well-known types imported rather than nested"""
+    from collections import defaultdict
 
+    imported = sorted(n for n in descriptors if n.startswith("google/protobuf/"))
+    skip = set(imported)
+    msgs: dict[str, list] = defaultdict(list)
+    enums: dict[str, list] = defaultdict(list)
+    exts: dict[str, list] = defaultdict(list)
+    services: list[tuple[str, object]] = []
     for name in sorted(descriptors):
-        fdp, _ = descriptors[name]
-        proto2 = (fdp.syntax or "proto2") != "proto3"
-        prefix = (fdp.package.replace(".", "_") + "_") if fdp.package else ""
-        for en in fdp.enum_type:
-            enums.append((prefix + en.name, en))
-        for msg in fdp.message_type:
-            _collect_flat(msg, prefix, proto2, messages, enums)
+        if name in skip:
+            continue
+        fdp = descriptors[name][0]
+        p = fdp.package
+        msgs[p] += list(fdp.message_type)
+        enums[p] += list(fdp.enum_type)
+        exts[p] += list(fdp.extension)
+        prefix = (p.replace(".", "_") + "_") if p else ""
         for svc in fdp.service:
             services.append((prefix + svc.name, svc))
 
-    lines: list[str] = []
-    for flat, en in sorted(enums, key=lambda t: t[0]):
-        _print_enum(en, flat, "", lines)
-        lines.append("")
-    for flat, msg, proto2 in sorted(messages, key=lambda t: t[0]):
-        _flat_message(flat, msg, proto2, lines)
-        lines.append("")
-    for flat, svc in sorted(services, key=lambda t: t[0]):
-        lines.append(f"service {flat} {{")
-        for m in svc.method:
-            cs = "stream " if m.client_streaming else ""
-            ss = "stream " if m.server_streaming else ""
-            lines.append(
-                f"  rpc {m.name} ({cs}{_flat_ref(m.input_type)}) returns ({ss}{_flat_ref(m.output_type)});"
-            )
-        lines.append("}")
-        lines.append("")
+    tree: dict = {}
+    for p in set(msgs) | set(enums) | set(exts):
+        node = tree
+        for seg in (p.split(".") if p else []):
+            node = node.setdefault(seg, {})
+        node["__pkg__"] = p
 
-    while lines and lines[-1] == "":
-        lines.pop()
-    return "\n".join(lines) + "\n"
+    def defs(p: str, indent: str) -> list[list[str]]:
+        blocks: list[list[str]] = []
+        blocks += _extend_blocks(p, exts[p], True, indent)
+        for en in enums[p]:
+            blocks.append(_render_enum(en, indent, f"{en.name}_"))
+        for msg in msgs[p]:
+            blocks.append(
+                _render_message(
+                    msg, p, True, indent, full_qualify=True, prefix_enums=True
+                )
+            )
+        return blocks
+
+    def render(node: dict, indent: str) -> list[str]:
+        blocks: list[list[str]] = []
+        if "__pkg__" in node:
+            blocks += defs(node["__pkg__"], indent)
+        for seg in sorted(k for k in node if k != "__pkg__"):
+            blocks.append(
+                [
+                    f"{indent}message {seg} {{",
+                    *render(node[seg], indent + "\t"),
+                    f"{indent}}}",
+                ]
+            )
+        return _join_blocks(blocks)
+
+    top: list[list[str]] = [['syntax = "proto2";']]
+    if imported:
+        top.append([f'import "{n}";' for n in imported])
+    body = render(tree, "")
+    if body:
+        top.append(body)
+    for flat, svc in sorted(services, key=lambda t: t[0]):
+        top.append(_render_service(svc, name=flat))
+    return "\n".join(_join_blocks(top)) + "\n"
 
 
 # driver
@@ -635,6 +744,8 @@ def dump(so: Path, dump_cs: Path, stringliterals: Path, out: Path) -> int:
             "no FileDescriptorProto extracted, extraction logic may be stale"
         )
 
+    _build_pool(descriptors)
+
     out.mkdir(parents=True, exist_ok=True)
     for old in out.rglob("*.proto"):
         old.unlink()
@@ -644,15 +755,17 @@ def dump(so: Path, dump_cs: Path, stringliterals: Path, out: Path) -> int:
         fdp, raw = descriptors[name]
         dest = out / name
         dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(render_proto(fdp), encoding="utf-8")
+        dest.write_text(render_proto(fdp), encoding="utf-8", newline="\n")
         base64_lines.append(f"{name}\t{base64.b64encode(raw).decode()}")
 
     (out / "all_base64.txt").write_text(
-        "\n".join(base64_lines) + "\n", encoding="utf-8"
+        "\n".join(base64_lines) + "\n", encoding="utf-8", newline="\n"
     )
-    (out / "merged.proto").write_text(render_merged(descriptors), encoding="utf-8")
+    (out / "merged.proto").write_text(
+        render_merged(descriptors), encoding="utf-8", newline="\n"
+    )
     (out / "merged_flat.proto").write_text(
-        render_merged_flat(descriptors), encoding="utf-8"
+        render_merged_flat(descriptors), encoding="utf-8", newline="\n"
     )
     return len(descriptors)
 
