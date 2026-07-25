@@ -84,6 +84,8 @@ message ExtensionRangeOptions {
 	repeated ExtensionRangeOptions.Declaration declaration = 2;
 	optional FeatureSet features = 50;
 	optional ExtensionRangeOptions.VerificationState verification = 3;
+
+	extensions 1000 to max;
 }
 
 message FieldDescriptorProto {
@@ -196,6 +198,8 @@ message FileOptions {
 	optional FeatureSet features = 50;
 	repeated UninterpretedOption uninterpreted_option = 999;
 
+	extensions 1000 to max;
+
 	reserved 38;
 }
 
@@ -207,6 +211,8 @@ message MessageOptions {
 	optional bool deprecated_legacy_json_field_conflicts = 11 [deprecated = true];
 	optional FeatureSet features = 12;
 	repeated UninterpretedOption uninterpreted_option = 999;
+
+	extensions 1000 to max;
 
 	reserved 4;
 	reserved 5;
@@ -266,6 +272,8 @@ message FieldOptions {
 	optional FeatureSet features = 21;
 	repeated UninterpretedOption uninterpreted_option = 999;
 
+	extensions 1000 to max;
+
 	reserved 4;
 	reserved 18;
 }
@@ -273,6 +281,8 @@ message FieldOptions {
 message OneofOptions {
 	optional FeatureSet features = 1;
 	repeated UninterpretedOption uninterpreted_option = 999;
+
+	extensions 1000 to max;
 }
 
 message EnumOptions {
@@ -282,6 +292,8 @@ message EnumOptions {
 	optional FeatureSet features = 7;
 	repeated UninterpretedOption uninterpreted_option = 999;
 
+	extensions 1000 to max;
+
 	reserved 5;
 }
 
@@ -290,12 +302,16 @@ message EnumValueOptions {
 	optional FeatureSet features = 2;
 	optional bool debug_redact = 3;
 	repeated UninterpretedOption uninterpreted_option = 999;
+
+	extensions 1000 to max;
 }
 
 message ServiceOptions {
 	optional FeatureSet features = 34;
 	optional bool deprecated = 33;
 	repeated UninterpretedOption uninterpreted_option = 999;
+
+	extensions 1000 to max;
 }
 
 message MethodOptions {
@@ -309,6 +325,8 @@ message MethodOptions {
 	optional MethodOptions.IdempotencyLevel idempotency_level = 34;
 	optional FeatureSet features = 35;
 	repeated UninterpretedOption uninterpreted_option = 999;
+
+	extensions 1000 to max;
 }
 
 message UninterpretedOption {
@@ -370,6 +388,10 @@ message FeatureSet {
 	optional FeatureSet.Utf8Validation utf8_validation = 4;
 	optional FeatureSet.MessageEncoding message_encoding = 5;
 	optional FeatureSet.JsonFormat json_format = 6;
+
+	extensions 1000 to 1000;
+	extensions 1001 to 1001;
+	extensions 9995 to 9999;
 
 	reserved 999;
 }

@@ -1,31 +1,26 @@
 syntax = "proto2";
 
 import "google/protobuf/any.proto";
-import "google/protobuf/api.proto";
-import "google/protobuf/compiler/plugin.proto";
 import "google/protobuf/descriptor.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
-import "google/protobuf/field_mask.proto";
 import "google/protobuf/source_context.proto";
-import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/type.proto";
-import "google/protobuf/wrappers.proto";
 
 message buf {
 	message validate {
 		extend google.protobuf.MessageOptions {
-			optional MessageRules message = 1159;
+			optional .buf.validate.MessageRules message = 1159;
 		}
 
 		extend google.protobuf.OneofOptions {
-			optional OneofRules oneof = 1159;
+			optional .buf.validate.OneofRules oneof = 1159;
 		}
 
 		extend google.protobuf.FieldOptions {
-			optional FieldRules field = 1159;
-			optional PredefinedRules predefined = 1160;
+			optional .buf.validate.FieldRules field = 1159;
+			optional .buf.validate.PredefinedRules predefined = 1160;
 		}
 
 		enum Ignore {
@@ -84,19 +79,10 @@ message buf {
 				.buf.validate.DurationRules duration = 21;
 				.buf.validate.TimestampRules timestamp = 22;
 			}
-
-			reserved 24;
-			reserved 26;
-			reserved "skipped";
-			reserved "ignore_empty";
 		}
 
 		message PredefinedRules {
 			repeated .buf.validate.Rule cel = 1;
-
-			reserved 24;
-			reserved 26;
-			reserved "skippedignore_empty";
 		}
 
 		message FloatRules {
@@ -115,6 +101,8 @@ message buf {
 				float gt = 4;
 				float gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message DoubleRules {
@@ -133,6 +121,8 @@ message buf {
 				double gt = 4;
 				double gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message Int32Rules {
@@ -150,6 +140,8 @@ message buf {
 				int32 gt = 4;
 				int32 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message Int64Rules {
@@ -167,6 +159,8 @@ message buf {
 				int64 gt = 4;
 				int64 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message UInt32Rules {
@@ -184,6 +178,8 @@ message buf {
 				uint32 gt = 4;
 				uint32 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message UInt64Rules {
@@ -201,6 +197,8 @@ message buf {
 				uint64 gt = 4;
 				uint64 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message SInt32Rules {
@@ -218,6 +216,8 @@ message buf {
 				sint32 gt = 4;
 				sint32 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message SInt64Rules {
@@ -235,6 +235,8 @@ message buf {
 				sint64 gt = 4;
 				sint64 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message Fixed32Rules {
@@ -252,6 +254,8 @@ message buf {
 				fixed32 gt = 4;
 				fixed32 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message Fixed64Rules {
@@ -269,6 +273,8 @@ message buf {
 				fixed64 gt = 4;
 				fixed64 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message SFixed32Rules {
@@ -286,6 +292,8 @@ message buf {
 				sfixed32 gt = 4;
 				sfixed32 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message SFixed64Rules {
@@ -303,11 +311,15 @@ message buf {
 				sfixed64 gt = 4;
 				sfixed64 gte = 5;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message BoolRules {
 			optional bool const = 1;
 			repeated bool example = 2;
+
+			extensions 1000 to max;
 		}
 
 		message StringRules {
@@ -348,6 +360,8 @@ message buf {
 				bool host_and_port = 32;
 				.buf.validate.KnownRegex well_known_regex = 24;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message BytesRules {
@@ -368,6 +382,8 @@ message buf {
 				bool ipv4 = 11;
 				bool ipv6 = 12;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message EnumRules {
@@ -376,6 +392,8 @@ message buf {
 			repeated int32 in = 3;
 			repeated int32 not_in = 4;
 			repeated int32 example = 5;
+
+			extensions 1000 to max;
 		}
 
 		message RepeatedRules {
@@ -383,6 +401,8 @@ message buf {
 			optional uint64 max_items = 2;
 			optional bool unique = 3;
 			optional .buf.validate.FieldRules items = 4;
+
+			extensions 1000 to max;
 		}
 
 		message MapRules {
@@ -390,6 +410,8 @@ message buf {
 			optional uint64 max_pairs = 2;
 			optional .buf.validate.FieldRules keys = 4;
 			optional .buf.validate.FieldRules values = 5;
+
+			extensions 1000 to max;
 		}
 
 		message AnyRules {
@@ -412,6 +434,8 @@ message buf {
 				.google.protobuf.Duration gt = 5;
 				.google.protobuf.Duration gte = 6;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message TimestampRules {
@@ -430,6 +454,8 @@ message buf {
 				.google.protobuf.Timestamp gte = 6;
 				bool gt_now = 8;
 			}
+
+			extensions 1000 to max;
 		}
 
 		message Violations {
@@ -442,9 +468,6 @@ message buf {
 			optional string rule_id = 2;
 			optional string message = 3;
 			optional bool for_key = 4;
-
-			reserved 1;
-			reserved "field_path";
 		}
 
 		message FieldPath {
@@ -6144,8 +6167,8 @@ message enums {
 message options {
 	message check_option {
 		extend google.protobuf.MethodOptions {
-			optional CheckOption check = 51000;
-			optional ErrorOption error = 51001;
+			optional .options.check_option.CheckOption check = 51000;
+			optional .options.check_option.ErrorOption error = 51001;
 		}
 
 		message CheckOption {
@@ -6174,7 +6197,7 @@ message options {
 
 	message multi_game_result {
 		extend google.protobuf.MessageOptions {
-			optional MessageOption message = 50500;
+			optional .options.multi_game_result.MessageOption message = 50500;
 		}
 
 		message MessageOption {
