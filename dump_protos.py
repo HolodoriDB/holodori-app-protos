@@ -136,6 +136,28 @@ def parse_dump_cs(path: Path) -> tuple[list[int], dict[int, str]]:
     return all_vas, cctors
 
 
+_OCTO_API_KEY = re.compile(r'ReleaseApiKey\s*=\s*"([^"]*)"')
+_OCTO_CLIENT_KEY = re.compile(r'ReleaseClientKey\s*=\s*"([^"]*)"')
+_OCTO_DB_KEY = re.compile(r'ReleaseDbKey\s*=\s*"([^"]*)"')
+
+
+def extract_octo_keys(dump_cs: Path) -> tuple[str, str, str]:
+    """(octo_key, app_octo_key, db_key) hardcoded in VisionOctoConst
+
+    ReleaseApiKey and ReleaseClientKey are the X-OCTO-KEY and X-APP-OCTO-KEY header values for
+    the octo asset api, ReleaseDbKey decrypts the returned asset-list database
+    """
+    text = dump_cs.read_text(encoding="utf-8", errors="replace")
+    api = _OCTO_API_KEY.search(text)
+    client = _OCTO_CLIENT_KEY.search(text)
+    db = _OCTO_DB_KEY.search(text)
+    if not api or not client or not db:
+        raise RuntimeError(
+            "VisionOctoConst Release{Api,Client,Db}Key not found in dump.cs"
+        )
+    return api.group(1), client.group(1), db.group(1)
+
+
 # cctor disassembly to descriptor bytes
 
 _MD = Cs(CS_ARCH_ARM64, CS_MODE_ARM)
