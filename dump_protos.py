@@ -314,8 +314,8 @@ def _field_line(
     return f"{label}{typ} {fd.name} = {fd.number}{opt};"
 
 
-def _print_enum(enum, indent: str, lines: list[str]) -> None:
-    lines.append(f"{indent}enum {enum.name} {{")
+def _print_enum(enum, name: str, indent: str, lines: list[str]) -> None:
+    lines.append(f"{indent}enum {name} {{")
     if enum.options.allow_alias:
         lines.append(f"{indent}  option allow_alias = true;")
     for v in enum.value:
@@ -331,7 +331,7 @@ def _print_message(
     maps = _map_entries(msg)
 
     for en in msg.enum_type:
-        _print_enum(en, inner, lines)
+        _print_enum(en, en.name, inner, lines)
     for nt in msg.nested_type:
         if nt.options.map_entry:
             continue
@@ -377,9 +377,37 @@ _FILE_OPTS = [
 ]
 
 
-def render_proto(fdp) -> str:
+def _render_defs(fdp) -> list[str]:
+    """enum/message/service definitions only, no syntax/package/import/option preamble"""
     pkg = fdp.package
     proto2 = (fdp.syntax or "proto2") != "proto3"
+    lines: list[str] = []
+
+    for en in fdp.enum_type:
+        _print_enum(en, en.name, "", lines)
+        lines.append("")
+    for msg in fdp.message_type:
+        _print_message(msg, pkg, proto2, "", lines)
+        lines.append("")
+
+    for svc in fdp.service:
+        lines.append(f"service {svc.name} {{")
+        for m in svc.method:
+            cs = "stream " if m.client_streaming else ""
+            ss = "stream " if m.server_streaming else ""
+            lines.append(
+                f"  rpc {m.name} ({cs}{_strip(m.input_type, pkg)}) returns ({ss}{_strip(m.output_type, pkg)});"
+            )
+        lines.append("}")
+        lines.append("")
+
+    while lines and lines[-1] == "":
+        lines.pop()
+    return lines
+
+
+def render_proto(fdp) -> str:
+    pkg = fdp.package
     lines = [f'syntax = "{fdp.syntax or "proto2"}";', ""]
     if pkg:
         lines += [f"package {pkg};", ""]
@@ -403,20 +431,177 @@ def render_proto(fdp) -> str:
     if printed_opt:
         lines.append("")
 
-    for en in fdp.enum_type:
-        _print_enum(en, "", lines)
-        lines.append("")
-    for msg in fdp.message_type:
-        _print_message(msg, pkg, proto2, "", lines)
+    lines += _render_defs(fdp)
+
+    while lines and lines[-1] == "":
+        lines.pop()
+    return "\n".join(lines) + "\n"
+
+
+# merged.proto tree assembly
+#
+# merged.proto nests every descriptor under synthetic `message` blocks named after its
+# directory path, e.g. "buf/validate/validate.proto" ends up under
+#   message buf { message validate { ... } }
+# so descriptors sharing a directory land inside the same nested block. files with no
+# directory component (a bare "foo.proto") are emitted at the top level, unwrapped
+
+
+def _build_merged_tree(descriptors: dict[str, tuple]) -> dict:
+    root: dict = {}
+    for name in descriptors:
+        parts = name.split("/")
+        node = root
+        for d in parts[:-1]:
+            node = node.setdefault(d, {})
+        node.setdefault("__files__", []).append(name)
+    return root
+
+
+def _render_merged_tree(
+    node: dict, indent: str, descriptors: dict[str, tuple], lines: list[str]
+) -> None:
+    for key in sorted(k for k in node if k != "__files__"):
+        lines.append(f"{indent}message {key} {{")
+        _render_merged_tree(node[key], indent + "  ", descriptors, lines)
+        lines.append(f"{indent}}}")
         lines.append("")
 
-    for svc in fdp.service:
-        lines.append(f"service {svc.name} {{")
+    for name in sorted(node.get("__files__", [])):
+        fdp, raw = descriptors[name]
+        for line in _render_defs(fdp):
+            lines.append(f"{indent}{line}" if line else "")
+        lines.append("")
+
+
+def render_merged(descriptors: dict[str, tuple]) -> str:
+    tree = _build_merged_tree(descriptors)
+    lines: list[str] = []
+    _render_merged_tree(tree, "", descriptors, lines)
+    while lines and lines[-1] == "":
+        lines.pop()
+    return "\n".join(lines) + "\n"
+
+
+# merged_flat.proto
+#
+# every type hoisted to the top level with the package folded into an underscore name
+# (rpc.api.MasterGetResponse becomes rpc_api_MasterGetResponse) and all references rewritten
+# to match, so there is no nesting and no packages
+
+
+def _flat_ref(type_name: str) -> str:
+    return type_name.lstrip(".").replace(".", "_")
+
+
+def _flat_field_line(fd, maps: dict[str, tuple], proto2: bool, in_oneof: bool) -> str:
+    if fd.type == FD.TYPE_MESSAGE and fd.label == FD.LABEL_REPEATED:
+        short = fd.type_name.rsplit(".", 1)[-1]
+        if short in maps:
+            key, val = maps[short]
+            kt = _SCALAR.get(key.type, "int32")
+            vt = (
+                _flat_ref(val.type_name)
+                if val.type in (FD.TYPE_MESSAGE, FD.TYPE_ENUM)
+                else _SCALAR.get(val.type, "int32")
+            )
+            return f"map<{kt}, {vt}> {fd.name} = {fd.number};"
+
+    if fd.type in (FD.TYPE_MESSAGE, FD.TYPE_ENUM):
+        typ = _flat_ref(fd.type_name)
+    else:
+        typ = _SCALAR.get(fd.type, "unknown")
+
+    label = ""
+    if not in_oneof:
+        if fd.label == FD.LABEL_REPEATED:
+            label = "repeated "
+        elif fd.label == FD.LABEL_REQUIRED:
+            label = "required "
+        elif fd.proto3_optional or (proto2 and fd.label == FD.LABEL_OPTIONAL):
+            label = "optional "
+
+    opts = []
+    if fd.options.deprecated:
+        opts.append("deprecated = true")
+    if fd.options.packed:
+        opts.append("packed = true")
+    opt = f" [{', '.join(opts)}]" if opts else ""
+    return f"{label}{typ} {fd.name} = {fd.number}{opt};"
+
+
+def _flat_message(flat: str, msg, proto2: bool, lines: list[str]) -> None:
+    maps = _map_entries(msg)
+    lines.append(f"message {flat} {{")
+
+    oneof_fields: dict[int, list] = {}
+    plain = []
+    for fd in msg.field:
+        if fd.HasField("oneof_index") and not fd.proto3_optional:
+            oneof_fields.setdefault(fd.oneof_index, []).append(fd)
+        else:
+            plain.append(fd)
+
+    for fd in plain:
+        lines.append(f"  {_flat_field_line(fd, maps, proto2, False)}")
+
+    for idx, decl in enumerate(msg.oneof_decl):
+        if idx not in oneof_fields:
+            continue
+        lines.append(f"  oneof {decl.name} {{")
+        for fd in oneof_fields[idx]:
+            lines.append(f"    {_flat_field_line(fd, maps, proto2, True)}")
+        lines.append("  }")
+
+    for rng in msg.reserved_range:
+        hi = rng.end - 1
+        lines.append(f"  reserved {rng.start}{'' if rng.start == hi else f' to {hi}'};")
+    for nm in msg.reserved_name:
+        lines.append(f'  reserved "{nm}";')
+
+    lines.append("}")
+
+
+def _collect_flat(msg, prefix: str, proto2: bool, messages: list, enums: list) -> None:
+    flat = prefix + msg.name
+    messages.append((flat, msg, proto2))
+    for en in msg.enum_type:
+        enums.append((flat + "_" + en.name, en))
+    for nt in msg.nested_type:
+        if not nt.options.map_entry:
+            _collect_flat(nt, flat + "_", proto2, messages, enums)
+
+
+def render_merged_flat(descriptors: dict[str, tuple]) -> str:
+    enums: list[tuple] = []
+    messages: list[tuple] = []
+    services: list[tuple] = []
+
+    for name in sorted(descriptors):
+        fdp, _ = descriptors[name]
+        proto2 = (fdp.syntax or "proto2") != "proto3"
+        prefix = (fdp.package.replace(".", "_") + "_") if fdp.package else ""
+        for en in fdp.enum_type:
+            enums.append((prefix + en.name, en))
+        for msg in fdp.message_type:
+            _collect_flat(msg, prefix, proto2, messages, enums)
+        for svc in fdp.service:
+            services.append((prefix + svc.name, svc))
+
+    lines: list[str] = []
+    for flat, en in sorted(enums, key=lambda t: t[0]):
+        _print_enum(en, flat, "", lines)
+        lines.append("")
+    for flat, msg, proto2 in sorted(messages, key=lambda t: t[0]):
+        _flat_message(flat, msg, proto2, lines)
+        lines.append("")
+    for flat, svc in sorted(services, key=lambda t: t[0]):
+        lines.append(f"service {flat} {{")
         for m in svc.method:
             cs = "stream " if m.client_streaming else ""
             ss = "stream " if m.server_streaming else ""
             lines.append(
-                f"  rpc {m.name} ({cs}{_strip(m.input_type, pkg)}) returns ({ss}{_strip(m.output_type, pkg)});"
+                f"  rpc {m.name} ({cs}{_flat_ref(m.input_type)}) returns ({ss}{_flat_ref(m.output_type)});"
             )
         lines.append("}")
         lines.append("")
@@ -455,20 +640,20 @@ def dump(so: Path, dump_cs: Path, stringliterals: Path, out: Path) -> int:
         old.unlink()
 
     base64_lines = []
-    merged = []
     for name in sorted(descriptors):
         fdp, raw = descriptors[name]
-        text = render_proto(fdp)
         dest = out / name
         dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(text, encoding="utf-8")
+        dest.write_text(render_proto(fdp), encoding="utf-8")
         base64_lines.append(f"{name}\t{base64.b64encode(raw).decode()}")
-        merged.append(f"// {name}\n{text}")
 
     (out / "all_base64.txt").write_text(
         "\n".join(base64_lines) + "\n", encoding="utf-8"
     )
-    (out / "merged.proto").write_text("\n".join(merged), encoding="utf-8")
+    (out / "merged.proto").write_text(render_merged(descriptors), encoding="utf-8")
+    (out / "merged_flat.proto").write_text(
+        render_merged_flat(descriptors), encoding="utf-8"
+    )
     return len(descriptors)
 
 
