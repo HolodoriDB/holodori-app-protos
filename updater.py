@@ -1,9 +1,10 @@
 """track hololive dreams app versions per region and dump every protobuf on change
 
 per region
-- qooapp store api gives the latest version
+- justapk info is probed across every source for the highest advertised version
 - if it differs from <region>/appver.json or <region>/protobufs is missing
-  - justapk downloads the exact version (xapk, not merged) into <region>/.temp
+  - every justapk source is downloaded into <region>/.temp and the archive with the
+    highest versionCode wins, since the mirrors disagree and lag by different amounts
   - extract libil2cpp.so (arm64-v8a split) and global-metadata.dat (base) from the xapk
   - decrypt the metadata (xor key embedded in the .so)
   - il2cppdumper produces dump.cs and stringliteral.json
@@ -11,21 +12,22 @@ per region
   - write <region>/appver.json
 
 fail-hard, any failure raises so the workflow aborts before committing. downloads and dumper
-output live under <region>/.temp (gitignored). runs on windows, needs QOOAPP_TOKEN in the env
+output live under <region>/.temp (gitignored). runs on windows, no credentials needed
 """
 
 from __future__ import annotations
 
 import io
 import json
-import os
 import shutil
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
 
-import requests
+from justapk.downloader import APKDownloader
+from justapk.sources import SOURCE_PRIORITY
+from pyaxmlparser import APK
 
 import dump_protos
 import metadata_decrypt
@@ -33,77 +35,127 @@ import metadata_decrypt
 ROOT = Path(__file__).resolve().parent
 DUMPER_ZIP = ROOT / "ill2cppdumper.zip"
 
-REGIONS = {  # region folder to (google play package, qooapp app id)
-    "jp": ("game.qualiarts.hololive.dreams.jp", 153237),
-    "global": ("game.qualiarts.hololive.dreams.com", 156946),
+REGIONS = {  # region folder to google play package
+    "jp": "game.qualiarts.hololive.dreams.jp",
+    "global": "game.qualiarts.hololive.dreams.com",
 }
 
-QOOAPP_API = "https://api.qqaoop.com/store/v11/apps/{app_id}"
-QOOAPP_HEADERS = {
-    "X-Version-Code": "80608",
-    "X-Device-ABIs": "arm64-v8a,armeabi-v7a,x86,x86_64",
-}
+# latest version probe
 
 
-# latest version lookup
+def _probe(package: str) -> tuple[str | None, int]:
+    """ask every source what it currently advertises, cheap, no download
 
+    returns the highest version seen as (version_name, version_code). sources that
+    report no version code give 0, so the name comparison is what catches those
+    """
+    dl = APKDownloader()
+    best_name, best_code = None, 0
+    seen: list[str] = []
 
-def _qooapp_details(app_id: int, package: str) -> dict:
-    """fetch the qooapp store entry for app_id and return its apk block"""
-    token = os.environ.get("QOOAPP_TOKEN")
-    if not token:
-        raise RuntimeError("environment variable QOOAPP_TOKEN not set")
+    for source in SOURCE_PRIORITY:
+        try:
+            info = dl.info(package, source=source)
+        except Exception:
+            continue
+        if not info or not info.version:
+            continue
+        code = int(info.version_code or 0)
+        seen.append(f"{source} {info.version} ({code or '?'})")
+        if best_name is None or code > best_code:
+            best_name, best_code = info.version.lstrip("v"), code
 
-    resp = requests.get(
-        QOOAPP_API.format(app_id=app_id),
-        headers={**QOOAPP_HEADERS, "X-User-Token": token},
-        timeout=60,
-    )
-    resp.raise_for_status()
-    body = resp.json()
-    if body.get("code") != 200:
-        raise RuntimeError(f"qooapp app {app_id} returned {body.get('code')}: {body}")
-
-    data = body["data"]
-    if data.get("packageId") != package:  # guard against a wrong app id
-        raise RuntimeError(
-            f"qooapp app {app_id} is {data.get('packageId')}, expected {package}"
-        )
-    return data["apk"]
+    print(f"  probe: {', '.join(seen) if seen else 'no source answered'}")
+    return best_name, best_code
 
 
 # download and unpack
 
 
-def _download(package: str, version: str, out_dir: Path) -> Path:
-    """download the exact version via justapk (source fallback) and return the archive path"""
+def _apk_version(archive: Path, tmp: Path) -> tuple[str, int]:
+    """read versionName and versionCode out of an apk or xapk
+
+    prefers the xapk manifest.json (cheap), falls back to parsing the binary
+    AndroidManifest.xml of the base split
+    """
+    with zipfile.ZipFile(archive) as z:
+        names = z.namelist()
+
+        if "manifest.json" in names:
+            man = json.loads(z.read("manifest.json"))
+            if man.get("version_code"):
+                return str(man.get("version_name", "")), int(man["version_code"])
+
+        inner = [n for n in names if n.endswith(".apk")]
+        if inner:  # xapk, parse the biggest split (the base)
+            base = max(inner, key=lambda n: z.getinfo(n).file_size)
+            scratch = tmp / "_base.apk"
+            scratch.write_bytes(z.read(base))
+            target = scratch
+        else:
+            target = archive
+
+    apk = APK(str(target))
+    code = apk.version_code
+    if code is None:
+        raise RuntimeError(f"no versionCode in {archive.name}")
+    return apk.version_name, int(code)
+
+
+def _archives_in(d: Path) -> list[Path]:
+    return [
+        p
+        for ext in ("*.xapk", "*.apks", "*.apkm", "*.apk")
+        for p in d.glob(ext)
+        if p.stat().st_size > 1_000_000
+    ]
+
+
+def _download(package: str, out_dir: Path) -> tuple[Path, str, int]:
+    """try every justapk source, return the archive with the highest versionCode
+
+    the sources disagree and lag by different amounts, and justapk on its own returns
+    whichever one answers first, so ask all of them and compare what actually arrived
+    """
     if out_dir.exists():
         shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True)
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "justapk",
-            "download",
-            package,
-            "-v",
-            version,
-            "--no-convert",
-            "-o",
-            str(out_dir),
-        ],
-        check=True,
-    )
-    archives = [
-        p
-        for ext in ("*.xapk", "*.apks", "*.apkm", "*.apk")
-        for p in out_dir.glob(ext)
-        if p.stat().st_size > 1_000_000
-    ]
-    if not archives:
-        raise RuntimeError(f"justapk produced no archive for {package} {version}")
-    return max(archives, key=lambda p: p.stat().st_size)
+
+    dl = APKDownloader(auto_convert_xapk=False)
+    best: tuple[Path, str, int] | None = None
+    failures: list[str] = []
+
+    for source in SOURCE_PRIORITY:
+        dest = out_dir / source
+        dest.mkdir(parents=True, exist_ok=True)
+        try:
+            dl.download(package=package, output_dir=dest, source=source, version=None)
+        except Exception as e:  # a dead source must not sink the run
+            failures.append(f"{source}: {type(e).__name__} {e}")
+            continue
+
+        archives = _archives_in(dest)
+        if not archives:
+            failures.append(f"{source}: no archive produced")
+            continue
+        archive = max(archives, key=lambda p: p.stat().st_size)
+
+        try:
+            name, code = _apk_version(archive, out_dir)
+        except Exception as e:
+            failures.append(f"{source}: unreadable manifest, {e}")
+            continue
+
+        print(f"  {source}: {name} ({code})")
+        if best is None or code > best[2]:
+            best = (archive, name, code)
+
+    if best is None:
+        raise RuntimeError(
+            f"no source yielded a usable archive for {package}\n  "
+            + "\n  ".join(failures)
+        )
+    return best
 
 
 def _scan_apk(z: zipfile.ZipFile) -> tuple[bytes | None, bytes | None]:
@@ -186,23 +238,37 @@ def _stored_version(region_dir: Path) -> str | None:
         return None
 
 
-def process(region: str, package: str, app_id: int, work: Path) -> bool:
+def _stored_code(region_dir: Path) -> int:
+    try:
+        return int(
+            json.loads((region_dir / "appver.json").read_text(encoding="utf-8")).get(
+                "version_code", 0
+            )
+        )
+    except (OSError, json.JSONDecodeError, TypeError, ValueError):
+        return 0
+
+
+def process(region: str, package: str, work: Path) -> bool:
     region_dir = ROOT / region
     protobufs = region_dir / "protobufs"
 
-    apk = _qooapp_details(app_id, package)
-    version = apk.get("versionName")
-    version_code = apk.get("versionCode")
-    if not version:
-        raise RuntimeError(f"{region}: qooapp returned no version for {package}")
-
-    if _stored_version(region_dir) == version and protobufs.is_dir():
-        print(f"{region}: up to date ({version})")
+    print(f"{region}: probing sources")
+    probe_name, probe_code = _probe(package)
+    stored_code = _stored_code(region_dir)
+    fresh = probe_name is not None and (
+        probe_name == _stored_version(region_dir) and probe_code <= stored_code
+    )
+    if fresh and protobufs.is_dir():
+        print(f"{region}: up to date ({probe_name})")
         return False
 
-    print(f"{region}: updating to {version} (vc {version_code})")
+    print(f"{region}: downloading, best advertised is {probe_name}")
     tmp = region_dir / ".temp"
-    archive = _download(package, version, tmp / "download")
+    archive, apk_version, apk_version_code = _download(package, tmp / "download")
+    if apk_version_code <= stored_code and protobufs.is_dir():
+        print(f"{region}: best source has {apk_version} ({apk_version_code}), not newer")
+        return False
     so_bytes, meta_bytes = _extract_so_metadata(archive)
 
     so_path = tmp / "libil2cpp.so"
@@ -222,23 +288,24 @@ def process(region: str, package: str, app_id: int, work: Path) -> bool:
         json.dumps(
             {
                 "package": package,
-                "version_name": version,
-                "version_code": version_code,
+                "version_name": apk_version,
+                "version_code": apk_version_code,
+                "source": archive.parent.name,
             },
             indent=2,
         )
         + "\n",
         encoding="utf-8",
     )
-    print(f"{region}: {version} -> {count} protobufs")
+    print(f"{region}: {apk_version} ({apk_version_code}) -> {count} protobufs")
     return True
 
 
 def main() -> None:
     work = ROOT / ".temp"
     work.mkdir(exist_ok=True)
-    for region, (package, app_id) in REGIONS.items():
-        process(region, package, app_id, work)
+    for region, package in REGIONS.items():
+        process(region, package, work)
 
 
 if __name__ == "__main__":
