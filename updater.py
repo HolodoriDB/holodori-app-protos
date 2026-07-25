@@ -1,7 +1,7 @@
 """track hololive dreams app versions per region and dump every protobuf on change
 
 per region
-- google play (gplaydl, anonymous) gives the latest version
+- qooapp store api gives the latest version
 - if it differs from <region>/appver.json or <region>/protobufs is missing
   - justapk downloads the exact version (xapk, not merged) into <region>/.temp
   - extract libil2cpp.so (arm64-v8a split) and global-metadata.dat (base) from the xapk
@@ -11,21 +11,21 @@ per region
   - write <region>/appver.json
 
 fail-hard, any failure raises so the workflow aborts before committing. downloads and dumper
-output live under <region>/.temp (gitignored). runs on windows, no google account needed
+output live under <region>/.temp (gitignored). runs on windows, needs QOOAPP_TOKEN in the env
 """
 
 from __future__ import annotations
 
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
 
-from gplaydl.api import get_details
-from gplaydl.auth import ensure_auth
+import requests
 
 import dump_protos
 import metadata_decrypt
@@ -33,10 +33,43 @@ import metadata_decrypt
 ROOT = Path(__file__).resolve().parent
 DUMPER_ZIP = ROOT / "ill2cppdumper.zip"
 
-REGIONS = {  # region folder to google play package
-    "jp": "game.qualiarts.hololive.dreams.jp",
-    "global": "game.qualiarts.hololive.dreams.com",
+REGIONS = {  # region folder to (google play package, qooapp app id)
+    "jp": ("game.qualiarts.hololive.dreams.jp", 153237),
+    "global": ("game.qualiarts.hololive.dreams.com", 156946),
 }
+
+QOOAPP_API = "https://api.qqaoop.com/store/v11/apps/{app_id}"
+QOOAPP_HEADERS = {
+    "X-Version-Code": "80608",
+    "X-Device-ABIs": "arm64-v8a,armeabi-v7a,x86,x86_64",
+}
+
+
+# latest version lookup
+
+
+def _qooapp_details(app_id: int, package: str) -> dict:
+    """fetch the qooapp store entry for app_id and return its apk block"""
+    token = os.environ.get("QOOAPP_TOKEN")
+    if not token:
+        raise RuntimeError("environment variable QOOAPP_TOKEN not set")
+
+    resp = requests.get(
+        QOOAPP_API.format(app_id=app_id),
+        headers={**QOOAPP_HEADERS, "X-User-Token": token},
+        timeout=60,
+    )
+    resp.raise_for_status()
+    body = resp.json()
+    if body.get("code") != 200:
+        raise RuntimeError(f"qooapp app {app_id} returned {body.get('code')}: {body}")
+
+    data = body["data"]
+    if data.get("packageId") != package:  # guard against a wrong app id
+        raise RuntimeError(
+            f"qooapp app {app_id} is {data.get('packageId')}, expected {package}"
+        )
+    return data["apk"]
 
 
 # download and unpack
@@ -153,20 +186,21 @@ def _stored_version(region_dir: Path) -> str | None:
         return None
 
 
-def process(region: str, package: str, auth: dict, work: Path) -> bool:
+def process(region: str, package: str, app_id: int, work: Path) -> bool:
     region_dir = ROOT / region
     protobufs = region_dir / "protobufs"
 
-    details = get_details(package, auth)
-    version = details.version_string
+    apk = _qooapp_details(app_id, package)
+    version = apk.get("versionName")
+    version_code = apk.get("versionCode")
     if not version:
-        raise RuntimeError(f"{region}: google play returned no version for {package}")
+        raise RuntimeError(f"{region}: qooapp returned no version for {package}")
 
     if _stored_version(region_dir) == version and protobufs.is_dir():
         print(f"{region}: up to date ({version})")
         return False
 
-    print(f"{region}: updating to {version} (vc {details.version_code})")
+    print(f"{region}: updating to {version} (vc {version_code})")
     tmp = region_dir / ".temp"
     archive = _download(package, version, tmp / "download")
     so_bytes, meta_bytes = _extract_so_metadata(archive)
@@ -189,7 +223,7 @@ def process(region: str, package: str, auth: dict, work: Path) -> bool:
             {
                 "package": package,
                 "version_name": version,
-                "version_code": details.version_code,
+                "version_code": version_code,
             },
             indent=2,
         )
@@ -201,13 +235,10 @@ def process(region: str, package: str, auth: dict, work: Path) -> bool:
 
 
 def main() -> None:
-    auth = ensure_auth(force_refresh=True)
-    if not auth:
-        raise RuntimeError("google play anonymous authentication failed")
     work = ROOT / ".temp"
     work.mkdir(exist_ok=True)
-    for region, package in REGIONS.items():
-        process(region, package, auth, work)
+    for region, (package, app_id) in REGIONS.items():
+        process(region, package, app_id, work)
 
 
 if __name__ == "__main__":
