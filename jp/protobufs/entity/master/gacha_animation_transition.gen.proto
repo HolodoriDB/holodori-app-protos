@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/gacha_animation_rarity_type.gen.proto";
+import "enums/gacha_animation_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message GachaAnimationTransition {
+  string gacha_animation_grouping_id = 1;
+  enums.GachaAnimationRarityType animation_rarity = 2;
+  enums.GachaAnimationType animation_type_from = 3;
+  int32 animation_number_from = 4;
+  enums.GachaAnimationType animation_type_to = 5;
+  int32 animation_number_to = 6;
+  int32 ratio = 7;
+}

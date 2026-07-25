@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package dto.multi_game_result;
+
+import "buf/validate/validate.proto";
+import "dto/multi_game_result/common.gen.proto";
+import "enums/cheat_severity_type.gen.proto";
+import "enums/circuit_area_type.gen.proto";
+import "options/multi_game_result.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/dto/multi_game_result";
+option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
+
+message MiniGameCircuitResult {
+  message RankResult {
+    int32 rank = 1;
+    int64 clear_time_milliseconds = 2;
+    repeated MiniGameCircuitResult.AreaInfo area_infos = 3;
+    repeated int64 area_pass_milliseconds = 50;
+    repeated int32 dash_counts = 51;
+    enums.CheatSeverityType cheat_severity_type = 52;
+    MultiGameCommonUserResult common_user_result = 100;
+  }
+  message AreaInfo {
+    enums.CircuitAreaType area_type = 1;
+    int32 fall_count = 2;
+    int32 crash_count = 3;
+    int32 damage_count = 4;
+  }
+  repeated MiniGameCircuitResult.RankResult rank_results = 1;
+}

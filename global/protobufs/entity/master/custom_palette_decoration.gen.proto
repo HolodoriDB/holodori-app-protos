@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/custom_palette_decoration_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message CustomPaletteDecoration {
+  string id = 1;
+  enums.CustomPaletteDecorationType custom_palette_decoration_type = 2;
+  string name_lang_id = 3;
+  string asset_id = 4;
+  bool is_preset = 5;
+  int32 order = 999;
+}

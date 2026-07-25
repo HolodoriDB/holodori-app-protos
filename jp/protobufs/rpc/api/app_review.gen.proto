@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message AppReviewSetDisplayedResponse {
+  common.Response common_response = 9999;
+}
+
+service AppReview {
+  rpc SetDisplayed (google.protobuf.Empty) returns (AppReviewSetDisplayedResponse);
+}

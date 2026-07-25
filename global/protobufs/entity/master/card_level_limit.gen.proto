@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "common/consumption.gen.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message CardLevelLimit {
+  string group_id = 1;
+  int32 limit_break_count = 2;
+  int32 level_limit = 3;
+  repeated common.Consumption consumptions = 7;
+}

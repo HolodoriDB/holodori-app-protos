@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserPark {
+  int32 time_point = 2;
+  string current_area_id = 3;
+  repeated string picked_character_quest_start_park_permanence_ids = 4;
+  repeated string force_activated_character_quest_start_park_permanence_ids = 5;
+  string initial_park_character_id = 6;
+  int64 character_quest_last_picked_time = 7;
+  string picked_daily_park_quest_id = 8;
+  int64 daily_quest_last_picked_time = 9;
+  repeated int32 received_player_level_reward_levels = 10;
+  repeated string present_received_park_permanence_ids = 11;
+  string last_cleared_main_park_quest_id = 100;
+  int64 last_cleared_main_park_quest_step_group_number = 101;
+  int64 last_cleared_main_park_quest_step = 102;
+}

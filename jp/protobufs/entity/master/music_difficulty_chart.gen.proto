@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/music_difficulty_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MusicDifficultyChart {
+  string music_id = 1;
+  enums.MusicDifficultyType difficulty_type = 2;
+  int32 full_combo_note_count = 3;
+  int32 max_combo_count_reward_threshold = 4;
+  string chart_hash = 5;
+  int32 normal_note_count = 6;
+}

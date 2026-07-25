@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MarathonRankingGrade {
+  string id = 1;
+  string name_lang_id = 2;
+  string color1 = 3;
+  string color2 = 4;
+}

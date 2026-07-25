@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package rpc.multi_game_server_manager;
+
+import "enums/circuit_area_type.gen.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/multi_game_server_manager";
+option csharp_namespace = "Vision.Common.Proto.MultiGameServerManager";
+
+message MultiGameCircuitPickAreaResponse {
+  message PickedArea {
+    enums.CircuitAreaType type = 1;
+    int32 variation_number = 2;
+  }
+  MultiGameCircuitPickAreaResponse.PickedArea area1 = 1;
+  MultiGameCircuitPickAreaResponse.PickedArea area2 = 2;
+  MultiGameCircuitPickAreaResponse.PickedArea area3 = 3;
+}
+
+service MultiGameCircuit {
+  rpc PickArea (google.protobuf.Empty) returns (MultiGameCircuitPickAreaResponse);
+}

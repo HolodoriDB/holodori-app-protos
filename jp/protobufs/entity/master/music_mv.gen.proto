@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MusicMv {
+  string music_id = 1;
+  int32 number = 2;
+  string music_mv_category_id = 3;
+  string mv_asset_id = 4;
+  string slide_mv_asset_id = 5;
+  int32 slide_mv_asset_count = 6;
+  int32 mv_start_millisecond = 7;
+  string name_lang_id = 8;
+  string thumbnail_asset_id = 9;
+  string condition_group_id = 10;
+  string description_lang_id = 11;
+  int32 order = 999;
+}

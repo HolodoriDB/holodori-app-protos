@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package enums;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
+option csharp_namespace = "Vision.Common.Proto.Enums";
+
+enum ComplainCategoryType {
+  COMPLAIN_CATEGORY_TYPE_UNKNOWN = 0;
+  COMPLAIN_CATEGORY_TYPE_CHEATING = 1;
+  COMPLAIN_CATEGORY_TYPE_INAPPROPRIATE = 2;
+  COMPLAIN_CATEGORY_TYPE_HARASSMENT = 3;
+}

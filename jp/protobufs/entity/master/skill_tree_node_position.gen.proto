@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message SkillTreeNodePosition {
+  string group_id = 1;
+  string skill_tree_node_group_id = 2;
+  int32 position_x = 3;
+  int32 position_y = 4;
+}

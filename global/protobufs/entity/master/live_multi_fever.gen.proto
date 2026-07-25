@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveMultiFever {
+  int32 perfect_fever_point_sum_from = 1;
+  int32 required_fever_point_ratio_permil = 2;
+}

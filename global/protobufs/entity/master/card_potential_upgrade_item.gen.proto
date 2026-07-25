@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/card_rarity.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message CardPotentialUpgradeItem {
+  enums.CardRarity rarity = 1;
+  string item_id = 2;
+}

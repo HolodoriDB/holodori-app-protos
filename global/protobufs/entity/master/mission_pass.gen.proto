@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MissionPass {
+  string id = 1;
+  string view_condition_group_id = 2;
+  string unlock_condition_group_id = 3;
+  int64 progress_start_time = 4;
+  int64 start_time = 5;
+  int64 end_time = 6;
+  string mission_pass_level_group_id = 7;
+  string mission_pass_point_id = 8;
+  int32 level_up_required_point_quantity = 9;
+  string season_mission_group_id = 10;
+  string daily_mission_group_id = 11;
+  string weekly_mission_group_id = 12;
+  int32 daily_mission_pass_point_receive_limit_quantity = 13;
+  int32 weekly_mission_pass_point_receive_limit_quantity = 14;
+  repeated string premium_promotion_sd_costume_hair_accessory_ids = 15;
+  repeated string premium_promotion_sd_costume_ids = 16;
+  repeated string premium_promotion_motion_asset_ids = 17;
+}

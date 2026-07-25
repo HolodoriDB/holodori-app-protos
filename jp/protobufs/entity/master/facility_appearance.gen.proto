@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message FacilityAppearance {
+  string facility_id = 1;
+  int32 priority = 2;
+  string name_lang_id = 3;
+  string asset_id = 4;
+  repeated string icon_asset_ids = 5;
+  string map_image_asset_id = 6;
+  string mini_icon_asset_id = 7;
+  string view_condition_group_id = 8;
+  string unlock_condition_group_id = 9;
+  string park_talk_group_id = 10;
+  bool is_warp_available = 11;
+  string label_lang_id = 12;
+  bool is_show_in_map = 13;
+  string map_prefab_asset_id = 14;
+}

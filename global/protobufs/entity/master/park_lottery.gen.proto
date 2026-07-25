@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "common/consumption.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/park_lottery_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkLottery {
+  string id = 1;
+  enums.ParkLotteryType type = 2;
+  int32 daily_limit_count = 3;
+  string limit_reached_park_talk_group_id = 4;
+  string condition_group_id = 8;
+  common.Consumption consumption = 1000;
+}

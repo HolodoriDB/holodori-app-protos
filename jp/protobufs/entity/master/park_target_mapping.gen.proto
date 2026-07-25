@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/park_target_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkTargetMapping {
+  string id = 1;
+  string name_lang_id = 2;
+  enums.ParkTargetType target_type = 3;
+  string park_npc_group_id = 4;
+  string park_npc_id = 5;
+  string facility_id = 6;
+  string park_talk_group_id = 7;
+  string park_position_id = 8;
+  string park_position_grouping_group_id = 9;
+}

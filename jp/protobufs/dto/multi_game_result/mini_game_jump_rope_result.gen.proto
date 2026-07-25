@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dto.multi_game_result;
+
+import "buf/validate/validate.proto";
+import "dto/multi_game_result/common.gen.proto";
+import "options/multi_game_result.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/dto/multi_game_result";
+option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
+
+message MiniGameJumpRopeResult {
+  message UserResult {
+    int32 continuous_jump_count = 1;
+    int32 success_jump_count = 2;
+    int32 failure_jump_count = 3;
+    int64 gimmick_random_seed = 50;
+    MultiGameCommonUserResult common_user_result = 100;
+  }
+  int32 total_jump_count = 1;
+  repeated MiniGameJumpRopeResult.UserResult user_results = 2;
+}

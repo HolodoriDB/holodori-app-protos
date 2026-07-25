@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+import "entity/transaction/options/transaction.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserExchangeBooth {
+  string exchange_booth_id = 2;
+  repeated string exchange_booth_fixed_item_ids = 3;
+  repeated int32 purchased_fixed_quantities = 4;
+  repeated int64 fixed_item_release_times = 5;
+  repeated int64 lottery_item_release_times = 8;
+  int64 last_reset_time = 9;
+  int64 read_time = 10;
+}

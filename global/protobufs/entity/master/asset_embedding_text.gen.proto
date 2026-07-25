@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message AssetEmbeddingText {
+  string id = 1;
+  string lang_id = 2;
+}

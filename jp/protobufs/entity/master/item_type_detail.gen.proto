@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/item_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ItemTypeDetail {
+  enums.ItemType type = 1;
+  string color = 2;
+  string name_lang_id = 3;
+  string icon_asset_id = 4;
+}

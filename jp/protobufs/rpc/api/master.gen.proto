@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "common/master_tag_pack.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MasterGetResponse {
+  string version = 1;
+  repeated common.MasterTagPack master_tag_packs = 2;
+}
+
+service Master {
+  rpc Get (google.protobuf.Empty) returns (MasterGetResponse);
+}

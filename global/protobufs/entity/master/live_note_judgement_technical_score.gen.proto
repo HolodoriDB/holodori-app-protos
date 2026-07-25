@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/live_note_judgement_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveNoteJudgementTechnicalScore {
+  enums.LiveNoteJudgementType live_note_judgement_type = 1;
+  int64 score = 2;
+}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/achievement_category_type.gen.proto";
+import "enums/mini_game_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message AchievementGroup {
+  string id = 1;
+  enums.AchievementCategoryType achievement_category_type = 2;
+  string name_lang_id = 3;
+  string view_condition_group_id = 4;
+  string asset_id = 5;
+  enums.MiniGameType mini_game_type = 6;
+  int32 order = 999;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package common;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
+option csharp_namespace = "Vision.Common.Proto.Common";
+
+message EmblemPosition {
+  int32 position = 1;
+  string emblem_id = 2;
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/card_attribute_type.gen.proto";
+import "enums/live_note_judgement_type.gen.proto";
+import "enums/live_skill_trigger_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveSkillTrigger {
+  string group_id = 1;
+  int32 number = 2;
+  enums.LiveSkillTriggerType type = 3;
+  int64 threshold = 4;
+  repeated string character_ids = 5;
+  string character_grouping_id = 6;
+  string music_id = 7;
+  enums.CardAttributeType card_attribute_type = 8;
+  enums.LiveNoteJudgementType live_note_judgement_type = 9;
+  string description_lang_id = 1000;
+}

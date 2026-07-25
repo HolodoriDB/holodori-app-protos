@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkTalkFreeGrouping {
+  string group_id = 1;
+  string area_id = 2;
+  int32 ratio = 3;
+  bool is_force_pick = 4;
+  string condition_group_id = 5;
+}

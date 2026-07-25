@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
+option csharp_namespace = "Vision.Common.Proto.Common";
+
+message MasterTagPack {
+  string type = 1;
+  string file_name = 2;
+  int32 file_size = 3;
+  string crypto_key = 4;
+  string download_url = 5;
+}

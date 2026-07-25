@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package rpc.api.common;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message StorageUrlInfo {
+  string url = 1;
+  string content_type = 2;
+  string method = 3;
+  repeated string headers = 4;
+}

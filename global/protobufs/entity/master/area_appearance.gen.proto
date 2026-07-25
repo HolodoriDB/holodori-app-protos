@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message AreaAppearance {
+  string area_id = 1;
+  int32 priority = 2;
+  string asset_id = 3;
+  string bgm_asset_id = 4;
+  string condition_group_id = 7;
+}

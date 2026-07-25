@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/tutorial_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message FeatureLock {
+  enums.TutorialType tutorial_type = 1;
+  string title_lang_id = 2;
+  string description_lang_id = 3;
+  string view_condition_group_id = 4;
+  string unlock_condition_group_id = 5;
+  bool is_force_transition = 6;
+}

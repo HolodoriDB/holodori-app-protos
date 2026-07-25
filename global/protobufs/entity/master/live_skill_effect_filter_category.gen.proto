@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/live_active_skill_effect_type.gen.proto";
+import "enums/live_passive_skill_effect_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveSkillEffectFilterCategory {
+  string id = 1;
+  string name_lang_id = 2;
+  repeated enums.LiveActiveSkillEffectType live_active_skill_effect_types = 3;
+  repeated enums.LivePassiveSkillEffectType live_passive_skill_effect_types = 4;
+  repeated enums.LiveActiveSkillEffectType live_special_skill_effect_types = 5;
+  int32 order = 999;
+}

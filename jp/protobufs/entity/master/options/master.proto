@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package options.master;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master/options";
+option csharp_namespace = "Vision.Common.Proto.Master.Options";

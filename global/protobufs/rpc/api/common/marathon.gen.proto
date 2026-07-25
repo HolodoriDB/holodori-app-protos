@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "entity/master/options/master.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message MarathonMiniGameResult {
+  int64 reward_marathon_score = 1;
+  int64 total_marathon_score = 2;
+  int64 reward_badge_quantity = 3;
+  int32 bonus_permil_up = 4;
+  repeated string bonus_card_ids = 5;
+  int64 next_story_required_marathon_score = 6;
+  repeated RewardResult marathon_score_reward_results = 7;
+  bool is_event_story_exists = 8;
+  repeated int32 unlocked_event_story_numbers = 9;
+}
+
+message MarathonLiveResult {
+  int64 reward_marathon_score = 1;
+  int64 total_marathon_score = 2;
+  int64 reward_badge_quantity = 3;
+  int32 marathon_score_bonus_permil_up = 4;
+  int32 live_score_bonus_permil_up = 5;
+  int64 next_story_required_marathon_score = 6;
+  repeated RewardResult marathon_score_reward_results = 7;
+  bool is_event_story_exists = 8;
+  repeated int32 unlocked_event_story_numbers = 9;
+  int64 event_self_live_score = 10;
+  int64 event_multi_live_score = 11;
+  int64 event_self_live_highest_score = 12;
+}

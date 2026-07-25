@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MusicMvCategory {
+  string id = 1;
+  string label_name_lang_id = 2;
+  bool is_default_for_compatible_device = 3;
+  bool is_default_for_incompatible_device = 4;
+  bool is_display_filter = 5;
+  string filter_name_lang_id = 6;
+  int32 order = 999;
+}

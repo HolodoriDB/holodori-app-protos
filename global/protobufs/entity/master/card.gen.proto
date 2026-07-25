@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/card_asset_type.gen.proto";
+import "enums/card_attribute_type.gen.proto";
+import "enums/card_horizontal_anchor_type.gen.proto";
+import "enums/card_rarity.gen.proto";
+import "enums/card_vertical_anchor_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Card {
+  string id = 1;
+  string character_id = 2;
+  string name_lang_id = 3;
+  enums.CardRarity rarity = 4;
+  enums.CardAttributeType attribute_type = 5;
+  string card_level_group_id = 6;
+  int32 performance_permil_multiply = 7;
+  int32 technique_permil_multiply = 8;
+  int32 sense_permil_multiply = 9;
+  string card_level_limit_group_id = 10;
+  string live_passive_skill_id = 11;
+  string live_active_skill_id = 12;
+  string live_special_skill_id = 13;
+  string card_potential_group_id = 14;
+  string asset_id = 18;
+  string background_asset_id = 19;
+  string live_skill_character_voice_id = 21;
+  string skill_tree_connect_effect_id = 22;
+  string reward_costume_id = 23;
+  string reward_sd_costume_id = 24;
+  enums.CardAssetType asset_type = 25;
+  enums.CardVerticalAnchorType vertical_anchor_type = 26;
+  enums.CardHorizontalAnchorType horizontal_anchor_type = 27;
+  string gacha_animation_character_voice_id = 28;
+  string card_detail_character_voice_id = 29;
+  bool is_no_signed_card_message = 33;
+  string potential_upgrade1_character_voice_id = 34;
+  string potential_upgrade2_character_voice_id = 35;
+  string potential_upgrade3_character_voice_id = 36;
+  string potential_upgrade4_character_voice_id = 37;
+  string potential_upgrade5_character_voice_id = 38;
+  int32 order = 999;
+  common.Reward potential_alternative_reward = 1000;
+  common.Reward acquire_reward = 1001;
+}

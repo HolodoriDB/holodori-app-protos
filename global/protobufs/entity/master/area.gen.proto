@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Area {
+  string id = 1;
+  string area_selector_id = 2;
+  int32 priority = 3;
+  string name_lang_id = 4;
+  string description_lang_id = 5;
+  string view_condition_group_id = 6;
+  string unlock_condition_group_id = 7;
+  int32 order = 999;
+}

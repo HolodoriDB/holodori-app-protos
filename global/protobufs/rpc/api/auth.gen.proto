@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message AuthCreateResponse {
+  string credential = 1;
+}
+
+message AuthLoginRequest {
+  string credential = 1;
+}
+
+message AuthLoginResponse {
+  string game_auth_token = 1;
+  bool is_play_integrity_check_required = 2;
+  string play_integrity_nonce = 3;
+}
+
+service Auth {
+  rpc Create (google.protobuf.Empty) returns (AuthCreateResponse);
+  rpc Login (AuthLoginRequest) returns (AuthLoginResponse);
+}

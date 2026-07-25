@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message AreaStoryChapter {
+  string id = 1;
+  string area_grouping_id = 2;
+  string title_lang_id = 3;
+  string unlock_condition_group_id = 4;
+  string asset_id = 5;
+  int32 order = 999;
+}

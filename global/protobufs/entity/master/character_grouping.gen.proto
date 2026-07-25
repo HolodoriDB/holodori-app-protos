@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message CharacterGrouping {
+  string id = 1;
+  string name_lang_id = 2;
+  string description_lang_id = 3;
+  bool is_regular = 4;
+  repeated string character_ids = 5;
+  string asset_id = 6;
+  string color1 = 100;
+  string color2 = 101;
+  int32 order = 999;
+}

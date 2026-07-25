@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/story_asset_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message SpecialStory {
+  string id = 1;
+  string title_lang_id = 2;
+  string story_id = 3;
+  string archive_view_condition_group_id = 4;
+  string unlock_condition_group_id = 5;
+  string asset_id = 6;
+  enums.StoryAssetType asset_type = 7;
+  int32 order = 999;
+}

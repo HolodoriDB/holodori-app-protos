@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+import "entity/transaction/options/transaction.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserWorkSlot {
+  int32 work_slot_number = 2;
+  int64 last_updated_time = 3;
+  string work_id = 4;
+  int64 end_time = 5;
+  repeated string card_ids = 6;
+}

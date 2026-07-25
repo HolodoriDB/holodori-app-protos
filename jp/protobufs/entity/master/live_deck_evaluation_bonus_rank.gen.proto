@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/live_deck_rank_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveDeckEvaluationBonusRank {
+  enums.LiveDeckRankType type = 1;
+  int32 plus = 2;
+  int32 threshold_permil_up = 3;
+}

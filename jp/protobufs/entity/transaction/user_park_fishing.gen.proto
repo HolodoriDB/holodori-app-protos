@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserParkFishing {
+  int32 current_park_fishing_rod_level = 2;
+  int32 received_total_caught_reward_max_fish_unique_count = 3;
+}

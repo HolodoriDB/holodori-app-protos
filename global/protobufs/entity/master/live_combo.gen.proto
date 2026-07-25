@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveCombo {
+  string group_id = 1;
+  int32 combo_count_from = 2;
+  int32 score_up_permil = 3;
+}

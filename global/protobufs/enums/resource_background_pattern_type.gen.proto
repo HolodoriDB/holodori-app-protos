@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package enums;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
+option csharp_namespace = "Vision.Common.Proto.Enums";
+
+enum ResourceBackgroundPatternType {
+  RESOURCE_BACKGROUND_PATTERN_TYPE_UNKNOWN = 0;
+  RESOURCE_BACKGROUND_PATTERN_TYPE_PATTERN1 = 1;
+  RESOURCE_BACKGROUND_PATTERN_TYPE_PATTERN2 = 2;
+  RESOURCE_BACKGROUND_PATTERN_TYPE_PATTERN3 = 3;
+}

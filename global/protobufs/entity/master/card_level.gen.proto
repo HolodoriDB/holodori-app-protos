@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message CardLevel {
+  string group_id = 1;
+  int32 level = 2;
+  int64 parameter_base_value = 3;
+  int64 exp = 4;
+  int64 live_deck_power_permyriad_up = 5;
+}

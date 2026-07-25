@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MiniGameNpc {
+  string id = 1;
+  string character_id = 2;
+  string sd_costume_id = 3;
+  string sd_costume_hair_accessory_id = 4;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveRewardUpStaminaEffect {
+  int32 quantity = 1;
+  int32 reward_provide_count = 2;
+  int32 music_length_bonus_permil_up = 3;
+}

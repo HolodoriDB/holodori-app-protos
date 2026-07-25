@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message SkillTreeReleaseNodeRequest {
+  string character_id = 1;
+  repeated string node_group_ids = 2;
+}
+
+message SkillTreeConnectNodeRequest {
+  string character_id = 1;
+  string node_group_id = 2;
+  string card_id = 3;
+}
+
+message SkillTreeResetNodeRequest {
+  string character_id = 1;
+  repeated string node_group_ids = 2;
+}
+
+message SkillTreeResetNodeResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message SkillTreeReleaseNodeResponse {
+  common.Response common_response = 9999;
+}
+
+message SkillTreeConnectNodeResponse {
+  common.Response common_response = 9999;
+}
+
+service SkillTree {
+  rpc ReleaseNode (SkillTreeReleaseNodeRequest) returns (SkillTreeReleaseNodeResponse);
+  rpc ConnectNode (SkillTreeConnectNodeRequest) returns (SkillTreeConnectNodeResponse);
+  rpc ResetNode (SkillTreeResetNodeRequest) returns (SkillTreeResetNodeResponse);
+}

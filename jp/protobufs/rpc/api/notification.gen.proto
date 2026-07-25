@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "enums/notification_read_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message NotificationReadRequest {
+  enums.NotificationReadType type = 1;
+}
+
+message NotificationListResponse {
+  message ParkNotificationInfo {
+    message ExchangeBoothGroup {
+      string group_id = 1;
+      string name = 2;
+    }
+    repeated NotificationListResponse.ParkNotificationInfo.ExchangeBoothGroup updated_exchange_booth_groups = 1;
+  }
+  bool is_gacha_unread = 1;
+  bool is_notice_unread = 2;
+  bool is_friend_offer_received = 3;
+  bool is_friend_exists = 4;
+  bool is_membership_unread = 5;
+  bool is_shop_item_unread = 6;
+  NotificationListResponse.ParkNotificationInfo park_notification_info = 100;
+  common.Response common_response = 9999;
+}
+
+message NotificationReadResponse {
+  common.Response common_response = 9999;
+}
+
+service Notification {
+  rpc Read (NotificationReadRequest) returns (NotificationReadResponse);
+  rpc List (google.protobuf.Empty) returns (NotificationListResponse);
+}

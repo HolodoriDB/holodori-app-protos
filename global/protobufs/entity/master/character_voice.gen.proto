@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message CharacterVoice {
+  string id = 1;
+  string character_id = 2;
+  string character_voice_category_id = 3;
+  string name_lang_id = 4;
+  string text_lang_id = 5;
+  string view_condition_group_id = 6;
+  string unlock_condition_group_id = 7;
+  string voice_asset_id = 8;
+  string motion_asset_id = 9;
+  string expression_asset_id = 10;
+  bool is_lip_sync = 11;
+  bool is_disable_lip_sync_u = 12;
+  int32 order = 999;
+}

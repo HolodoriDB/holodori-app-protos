@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkRandomSymbol {
+  string area_id = 1;
+  string park_target_mapping_id = 2;
+  string condition_group_id = 3;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+import "entity/transaction/options/transaction.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserMissionPass {
+  string mission_pass_id = 2;
+  int64 premium_pass_released_time = 3;
+  repeated int32 normal_reward_received_levels = 4;
+  repeated int32 premium_reward_received_levels = 5;
+  int64 finished_time = 6;
+  int64 received_daily_mission_pass_point_quantity = 7;
+  int64 received_weekly_mission_pass_point_quantity = 9;
+}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkCharacterShop {
+  string id = 1;
+  string asset_id = 3;
+  string logo_color = 4;
+  string background_color = 5;
+  string prop_motion_asset_id = 6;
+}

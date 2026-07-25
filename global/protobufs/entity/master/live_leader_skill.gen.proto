@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveLeaderSkill {
+  string id = 1;
+  string live_skill_trigger_group_id = 2;
+  string live_passive_skill_effect_group_id = 3;
+  string additional_live_skill_trigger_group_id = 4;
+  string additional_live_passive_skill_effect_group_id = 5;
+  string description_lang_id = 1000;
+}

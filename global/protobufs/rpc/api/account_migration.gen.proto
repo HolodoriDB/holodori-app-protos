@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "enums/provider_type.gen.proto";
+import "enums/region.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message AccountMigrationListResponse {
+  message ProviderLinkInfo {
+    enums.ProviderType provider_type = 1;
+    bool is_linked = 2;
+  }
+  repeated AccountMigrationListResponse.ProviderLinkInfo provider_link_infos = 1;
+  string account_migration_id = 2;
+  common.Response common_response = 9999;
+}
+
+message AccountMigrationPrepareMigrationProviderWithoutAuthRequest {
+  string id_token = 1;
+  enums.ProviderType provider_type = 2;
+}
+
+message AccountMigrationPrepareMigrationProviderWithoutAuthResponse {
+  AccountMigrationLinkResult link_result = 1;
+  common.Response common_response = 9999;
+}
+
+message AccountMigrationMigrateRequest {
+  string previous_public_user_id = 1;
+  string target_public_user_id = 2;
+  string one_time_token = 3;
+  enums.Region region = 4;
+}
+
+message AccountMigrationMigrateResponse {
+  string credential = 1;
+  string account_migration_id = 2;
+}
+
+message AccountMigrationSetPasswordRequest {
+  string password = 1;
+}
+
+message AccountMigrationSetPasswordResponse {
+  string account_migration_id = 1;
+  common.Response common_response = 9999;
+}
+
+message AccountMigrationPrepareMigrationPasswordRequest {
+  string account_migration_id = 1;
+  string password = 2;
+}
+
+message AccountMigrationPrepareMigrationPasswordResponse {
+  AccountMigrationLinkResult link_result = 1;
+}
+
+message AccountMigrationLinkAppleRequest {
+  string id_token = 1;
+}
+
+message AccountMigrationLinkAppleResponse {
+  AccountMigrationLinkResult link_result = 1;
+  common.Response common_response = 9999;
+}
+
+message AccountMigrationLinkGoogleRequest {
+  string id_token = 1;
+}
+
+message AccountMigrationLinkGoogleResponse {
+  AccountMigrationLinkResult link_result = 1;
+  common.Response common_response = 9999;
+}
+
+message AccountMigrationLinkResult {
+  message LinkedUserInfo {
+    string public_user_id = 1;
+    string user_name = 2;
+    int32 player_level = 3;
+    string one_time_token = 4;
+    enums.Region region = 5;
+  }
+  bool is_already_linked = 1;
+  AccountMigrationLinkResult.LinkedUserInfo linked_user_info = 2;
+}
+
+message AccountMigrationUnlinkRequest {
+  enums.ProviderType provider_type = 1;
+}
+
+message AccountMigrationUnlinkResponse {
+  common.Response common_response = 9999;
+}
+
+service AccountMigration {
+  rpc List (google.protobuf.Empty) returns (AccountMigrationListResponse);
+  rpc SetPassword (AccountMigrationSetPasswordRequest) returns (AccountMigrationSetPasswordResponse);
+  rpc PrepareMigrationPassword (AccountMigrationPrepareMigrationPasswordRequest) returns (AccountMigrationPrepareMigrationPasswordResponse);
+  rpc LinkApple (AccountMigrationLinkAppleRequest) returns (AccountMigrationLinkAppleResponse);
+  rpc LinkGoogle (AccountMigrationLinkGoogleRequest) returns (AccountMigrationLinkGoogleResponse);
+  rpc PrepareMigrationProviderWithoutAuth (AccountMigrationPrepareMigrationProviderWithoutAuthRequest) returns (AccountMigrationPrepareMigrationProviderWithoutAuthResponse);
+  rpc Migrate (AccountMigrationMigrateRequest) returns (AccountMigrationMigrateResponse);
+  rpc Unlink (AccountMigrationUnlinkRequest) returns (AccountMigrationUnlinkResponse);
+}

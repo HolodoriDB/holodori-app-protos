@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/park_time_period_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkTimePeriod {
+  string id = 1;
+  int32 time_point_from = 2;
+  int32 time_point_to = 3;
+  enums.ParkTimePeriodType type = 4;
+}

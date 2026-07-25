@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message BenefitLicense {
+  string shop_charge_item_subscription_shop_charge_item_id = 1;
+  int32 live_reward_quantity_up_permil_up = 5;
+  int32 mini_game_reward_quantity_up_permil_up = 6;
+  int32 live_reward_up_stamina_max_quantity_up = 7;
+  int32 mini_game_reward_up_stamina_max_quantity_up = 8;
+  repeated common.Reward rewards = 1001;
+}

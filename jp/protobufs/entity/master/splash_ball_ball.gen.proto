@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/splash_ball_ball_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message SplashBallBall {
+  string group_id = 1;
+  int32 number = 2;
+  enums.SplashBallBallType ball_type = 3;
+  float size = 4;
+  float mass = 5;
+  int32 bounce_coefficient_permil_multiply = 6;
+  int64 score = 7;
+  int32 appearance_probability_ratio = 8;
+}

@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "enums/payment_method.gen.proto";
+import "enums/shop_charge_item_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/shop.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message PaymentCheckPurchaseRequest {
+  string product_id = 1;
+  enums.PaymentMethod payment_method = 2;
+}
+
+message PaymentCheckPurchaseResponse {
+  bool is_underage = 1;
+  bool is_exceed_alert_monthly_paid_quantity = 2;
+  common.Response common_response = 9999;
+}
+
+message PaymentCreateOrderRequest {
+  string product_id = 1;
+  enums.PaymentMethod payment_method = 2;
+}
+
+message PaymentCancelOrderRequest {
+  string product_id = 1;
+  enums.PaymentMethod payment_method = 2;
+}
+
+message PaymentRegisterDeferredPurchaseRequest {
+  string product_id = 1;
+  enums.PaymentMethod payment_method = 2;
+  string payment_transaction_id = 3;
+}
+
+message PaymentFulfillOrderRequest {
+  message ProductDefinition {
+    string id = 1;
+    enums.ShopChargeItemType type = 2;
+  }
+  message PurchaseReceipt {
+    message Payload {
+      message AppleIap {
+        string jws_representation = 1;
+      }
+      message GoogleIap {
+        string json_receipt = 1;
+        string base64_encoded_signature = 2;
+      }
+      message SteamMtx {
+        uint32 app_id = 1;
+        uint64 order_id = 2;
+        uint32 authorized = 3;
+      }
+      PaymentFulfillOrderRequest.PurchaseReceipt.Payload.AppleIap apple_iap = 1;
+      PaymentFulfillOrderRequest.PurchaseReceipt.Payload.GoogleIap google_iap = 2;
+      PaymentFulfillOrderRequest.PurchaseReceipt.Payload.SteamMtx steam_mtx = 3;
+    }
+    string store_name = 1;
+    enums.PaymentMethod payment_method = 2;
+    string payment_transaction_id = 3;
+    PaymentFulfillOrderRequest.PurchaseReceipt.Payload payload = 4;
+  }
+  message ProductMetadata {
+    string iso_currency_code = 1;
+    string localized_description = 2;
+    int64 localized_price_permyriad = 3;
+    string localized_price = 4;
+    string localized_title = 5;
+  }
+  PaymentFulfillOrderRequest.ProductDefinition product_definition = 1;
+  PaymentFulfillOrderRequest.PurchaseReceipt purchase_receipt = 2;
+  PaymentFulfillOrderRequest.ProductMetadata product_metadata = 3;
+}
+
+message PaymentFulfillOrderResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Shop shop = 2;
+  bool is_used_receipt = 100;
+  common.Response common_response = 9999;
+}
+
+message PaymentCreateOrderResponse {
+  common.Response common_response = 9999;
+}
+
+message PaymentCancelOrderResponse {
+  common.Response common_response = 9999;
+}
+
+message PaymentRegisterDeferredPurchaseResponse {
+  common.Response common_response = 9999;
+}
+
+service Payment {
+  rpc CheckPurchase (PaymentCheckPurchaseRequest) returns (PaymentCheckPurchaseResponse);
+  rpc CreateOrder (PaymentCreateOrderRequest) returns (PaymentCreateOrderResponse);
+  rpc CancelOrder (PaymentCancelOrderRequest) returns (PaymentCancelOrderResponse);
+  rpc RegisterDeferredPurchase (PaymentRegisterDeferredPurchaseRequest) returns (PaymentRegisterDeferredPurchaseResponse);
+  rpc FulfillOrder (PaymentFulfillOrderRequest) returns (PaymentFulfillOrderResponse);
+}

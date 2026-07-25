@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message FanMark {
+  string id = 1;
+  string name_lang_id = 2;
+  string asset_id = 3;
+  bool is_official = 4;
+  int32 order = 999;
+}

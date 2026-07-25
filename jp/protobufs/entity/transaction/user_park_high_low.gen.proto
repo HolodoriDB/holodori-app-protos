@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserParkHighLow {
+  int64 daily_reward_quantity = 3;
+}

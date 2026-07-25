@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message CookingPuzzleStagePattern {
+  string group_id = 1;
+  int32 number = 2;
+  string cooking_puzzle_recipe_id = 3;
+  repeated string dummy_cooking_puzzle_foodstuff_ids = 4;
+  repeated int32 dummy_cooking_puzzle_foodstuff_quantities = 5;
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "common/emblem_position.gen.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserProfile {
+  string name = 2;
+  string message = 3;
+  string park_character_id = 4;
+  string fan_mark_id = 5;
+  bool is_public_user_id_publish = 6;
+  bool is_basic_info_publish = 7;
+  bool is_character_rank_publish = 8;
+  bool is_live_result_publish = 9;
+  bool is_mini_game_result_publish = 10;
+  bool is_user_info_publish_in_multi_game = 11;
+  int32 custom_palette_number = 13;
+  int64 exp = 14;
+  int64 highest_live_deck_evaluation_value = 15;
+  string highest_live_deck_evaluation_character_id = 16;
+  string highest_live_deck_evaluation_costume_id = 17;
+  repeated string highest_live_deck_evaluation_card_ids = 18;
+  repeated int32 highest_live_deck_evaluation_deck_card_levels = 19;
+  repeated int32 highest_live_deck_evaluation_deck_card_potential_upgrade_counts = 20;
+  int64 name_last_updated_time = 21;
+  bool is_official = 22;
+  int64 login_status_last_updated_time = 23;
+  string multi_game_unpublished_user_name = 24;
+  int64 message_last_updated_time = 25;
+  repeated common.EmblemPosition emblem_positions = 1001;
+}

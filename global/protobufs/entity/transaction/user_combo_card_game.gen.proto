@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserComboCardGame {
+  int64 chip_diff_total_quantity = 2;
+  int64 chip_diff_total_quantity_last_updated_time = 3;
+  int64 play_count = 4;
+  int64 highest_score = 5;
+  int64 before_chip_diff_total_quantity = 7;
+  int64 highest_score_last_updated_time = 8;
+  int64 top_rank_count = 101;
+  int64 second_rank_count = 102;
+  int64 third_rank_count = 103;
+  int64 fourth_rank_count = 104;
+}

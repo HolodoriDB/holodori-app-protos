@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/live_passive_skill_effect_type.gen.proto";
+import "enums/resource_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LivePassiveSkillEffect {
+  string group_id = 1;
+  int32 number = 2;
+  enums.LivePassiveSkillEffectType type = 3;
+  int64 value = 4;
+  string live_skill_effect_target_id = 5;
+  enums.ResourceType resource_type = 6;
+  repeated string resource_ids = 7;
+  string description_lang_id = 1000;
+}

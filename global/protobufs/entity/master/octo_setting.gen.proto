@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message OctoSetting {
+  string id = 1;
+  string octo_distribution_host_name = 10;
+  string octo_api_host_name = 11;
+  int32 octo_asset_env_id = 12;
+  int32 octo_distribution_version = 13;
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+import "entity/transaction/options/transaction.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserParkQuestStepAction {
+  string park_quest_id = 2;
+  int32 step_group_number = 3;
+  int32 step = 4;
+  string park_target_mapping_id = 5;
+  int64 clear_time = 6;
+}

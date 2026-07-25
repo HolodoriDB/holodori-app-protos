@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "rpc/api/common/mission.gen.proto";
+import "rpc/api/common/user_data.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message Response {
+  UserData updated_data = 1;
+  UserData deleted_data = 2;
+  repeated UpdatedMission updated_missions = 3;
+}

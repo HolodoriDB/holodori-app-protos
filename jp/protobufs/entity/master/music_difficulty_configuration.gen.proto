@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/music_difficulty_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MusicDifficultyConfiguration {
+  enums.MusicDifficultyType type = 1;
+  int32 animation_combo_interval = 2;
+}

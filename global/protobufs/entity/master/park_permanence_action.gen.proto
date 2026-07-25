@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/park_action_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkPermanenceAction {
+  string park_permanence_id = 1;
+  int32 action_number = 2;
+  string description_lang_id = 3;
+  enums.ParkActionType type = 4;
+  string condition_group_id = 5;
+  string before_park_talk_group_id = 6;
+  string after_park_talk_group_id = 7;
+  string facility_id = 8;
+  int32 facility_level = 9;
+  string present_reward_group_id = 10;
+  string park_character_shop_id = 11;
+  string park_lottery_id = 12;
+  string character_park_quest_id = 13;
+  string park_high_low_id = 14;
+  string exchange_booth_group_id = 15;
+  string mini_game_reward_up_stamina_conversion_id = 16;
+  string park_fishing_spot_group_id = 30;
+}

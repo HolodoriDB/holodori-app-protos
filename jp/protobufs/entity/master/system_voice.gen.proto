@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/game_screen_type.gen.proto";
+import "enums/system_voice_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message SystemVoice {
+  enums.GameScreenType game_screen_type = 1;
+  enums.SystemVoiceType type = 2;
+  string character_voice_id = 3;
+  string condition_group_id = 4;
+  int32 ratio = 5;
+}

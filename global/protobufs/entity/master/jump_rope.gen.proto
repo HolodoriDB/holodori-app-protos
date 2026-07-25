@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/jump_rope_play_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message JumpRope {
+  string id = 1;
+  enums.JumpRopePlayType play_type = 2;
+  string view_condition_group_id = 3;
+  string unlock_condition_group_id = 4;
+  string jump_rope_phase_gimmick_group_id = 5;
+  string jump_rope_jump_count_reward_group_id = 7;
+  int32 npc_count = 9;
+  string game_start_display_clear_condition_lang_id = 11;
+  string game_playing_display_clear_condition_lang_id = 12;
+  string mode_select_display_clear_condition_lang_id = 13;
+  int32 order = 999;
+  repeated common.SimplifiedReward play_rewards = 1000;
+  repeated common.SimplifiedReward multi_mvp_rewards = 1001;
+}

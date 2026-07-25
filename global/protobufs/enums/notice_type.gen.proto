@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package enums;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
+option csharp_namespace = "Vision.Common.Proto.Enums";
+
+enum NoticeType {
+  NOTICE_TYPE_UNKNOWN = 0;
+  NOTICE_TYPE_GACHA = 1;
+  NOTICE_TYPE_EVENT = 2;
+  NOTICE_TYPE_UPDATE = 3;
+  NOTICE_TYPE_INFORMATION = 4;
+  NOTICE_TYPE_MUSIC_UPDATE = 5;
+  NOTICE_TYPE_CAMPAIGN = 6;
+  NOTICE_TYPE_BUG = 100;
+}

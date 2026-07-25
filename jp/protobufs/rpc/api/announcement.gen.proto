@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/reward.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message AnnouncementListRequest {
+  int32 offset = 1;
+}
+
+message AnnouncementListResponse {
+  message Announcement {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    string sender = 4;
+    int64 posted_time = 5;
+    bool is_read = 6;
+    repeated common.Reward rewards = 7;
+  }
+  repeated AnnouncementListResponse.Announcement announcements = 1;
+  int32 unread_count = 2;
+  bool is_next = 3;
+  common.Response common_response = 9999;
+}
+
+message AnnouncementReadRequest {
+  string announcement_id = 1;
+}
+
+message AnnouncementReadResponse {
+  bool is_discarded_reward = 1;
+  repeated common.RewardResult results = 2;
+  common.Response common_response = 9999;
+}
+
+service Announcement {
+  rpc List (AnnouncementListRequest) returns (AnnouncementListResponse);
+  rpc Read (AnnouncementReadRequest) returns (AnnouncementReadResponse);
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message AreaMap {
+  string area_appearance_area_id = 1;
+  int32 area_appearance_priority = 2;
+  int32 priority = 3;
+  string map_asset_id = 4;
+  string mini_map_asset_id = 5;
+  string condition_group_id = 6;
+}

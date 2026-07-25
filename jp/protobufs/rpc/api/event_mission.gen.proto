@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/mission.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message EventMissionReadEventMissionRequest {
+  string event_mission_id = 1;
+}
+
+message EventMissionReceiveMissionRewardRequest {
+  string event_mission_id = 1;
+  string marathon_chapter_id = 2;
+  string marathon_id = 3;
+  repeated common.Mission missions = 4;
+}
+
+message EventMissionReceiveMissionRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message EventMissionReadEventMissionResponse {
+  common.Response common_response = 9999;
+}
+
+service EventMission {
+  rpc ReadEventMission (EventMissionReadEventMissionRequest) returns (EventMissionReadEventMissionResponse);
+  rpc ReceiveMissionReward (EventMissionReceiveMissionRewardRequest) returns (EventMissionReceiveMissionRewardResponse);
+}

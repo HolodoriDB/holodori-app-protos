@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/mission_category_type.gen.proto";
+import "enums/mission_type.gen.proto";
+import "enums/transition_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Mission {
+  string id = 1;
+  string mission_group_id = 2;
+  string achievement_group_id = 3;
+  string name_lang_id = 4;
+  string unprogressed_name_lang_id = 5;
+  string description_lang_id = 6;
+  string progress_condition_group_id = 7;
+  string view_condition_group_id = 8;
+  enums.MissionCategoryType category_type = 9;
+  enums.MissionType type = 10;
+  string character_id = 11;
+  repeated string target_ids1 = 12;
+  repeated string target_ids2 = 13;
+  repeated string target_ids3 = 14;
+  enums.TransitionType navigation_transition_type = 15;
+  string navigation_transition_id = 17;
+  int32 order = 999;
+}

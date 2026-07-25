@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package options.multi_game_result;
+
+import "enums/multi_game_type.gen.proto";
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/options/multi_game_result";
+
+message MessageOption {
+  enums.MultiGameType multi_game_type = 1;
+}

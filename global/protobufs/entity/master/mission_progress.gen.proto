@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MissionProgress {
+  string mission_id = 1;
+  int64 threshold = 2;
+  int64 reward_mission_pass_point_quantity = 4;
+  int64 reward_character_exp_quantity = 5;
+  repeated common.Reward rewards = 1000;
+}

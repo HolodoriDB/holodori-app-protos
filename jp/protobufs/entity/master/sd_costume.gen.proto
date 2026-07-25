@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message SdCostume {
+  string id = 1;
+  string character_id = 2;
+  string name_lang_id = 3;
+  string hair_asset_id = 4;
+  string accessory_hair_asset_id = 5;
+  string body_asset_id = 6;
+  string base_thumbnail_asset_id = 7;
+  string base_thumbnail_color = 8;
+  int32 order = 999;
+}

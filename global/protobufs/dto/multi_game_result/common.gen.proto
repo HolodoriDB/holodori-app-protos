@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dto.multi_game_result;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/dto/multi_game_result";
+option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
+
+message MultiGameCommonUserResult {
+  message NpcInfo {
+    string mini_game_npc_id = 1;
+    string name_suffix = 2;
+  }
+  string public_user_id = 1;
+  MultiGameCommonUserResult.NpcInfo npc_info = 2;
+  string character_id = 3;
+  string sd_costume_id = 4;
+  string sd_costume_hair_accessory_id = 5;
+  bool is_disconnected = 6;
+}

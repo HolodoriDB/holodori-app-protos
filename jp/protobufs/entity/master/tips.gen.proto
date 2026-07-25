@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/game_screen_type.gen.proto";
+import "enums/tips_hint_type.gen.proto";
+import "enums/tips_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Tips {
+  string id = 1;
+  enums.TipsType type = 2;
+  string title_lang_id = 3;
+  enums.GameScreenType game_screen_type = 4;
+  enums.TipsHintType hint_type = 5;
+  int32 order = 999;
+}

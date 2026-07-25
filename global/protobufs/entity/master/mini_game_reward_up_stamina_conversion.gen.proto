@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MiniGameRewardUpStaminaConversion {
+  string id = 1;
+  int32 consumption_quantity = 2;
+  common.Reward reward = 1000;
+}

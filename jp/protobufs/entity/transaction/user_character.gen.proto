@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+import "entity/transaction/options/transaction.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserCharacter {
+  string character_id = 2;
+  string costume_id = 3;
+  string sd_costume_id = 4;
+  string sd_costume_hair_accessory_id = 5;
+  int64 exp = 6;
+  int64 highest_live_deck_evaluation_value = 7;
+  int64 acquired_time = 8;
+  int32 last_reward_received_level = 11;
+  int64 read_time = 12;
+  int64 park_read_time = 13;
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveSkinGroup {
+  string id = 1;
+  string name_lang_id = 3;
+  string thumbnail_asset_id = 4;
+  bool is_visible = 5;
+  string note_live_skin_id = 100;
+  string lane_live_skin_id = 101;
+  string judgement_text_live_skin_id = 102;
+  string combo_text_live_skin_id = 103;
+  string tap_effect_live_skin_id = 104;
+  string background_live_skin_id = 105;
+  string header_live_skin_id = 106;
+  string character_effect_live_skin_id = 107;
+  int32 order = 999;
+}

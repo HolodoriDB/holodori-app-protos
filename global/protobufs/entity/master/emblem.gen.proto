@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/emblem_size.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Emblem {
+  string id = 1;
+  string name_lang_id = 2;
+  string asset_id = 3;
+  enums.EmblemSize size = 4;
+  bool is_preset = 5;
+  int32 order = 999;
+}

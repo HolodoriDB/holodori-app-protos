@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package enums;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
+option csharp_namespace = "Vision.Common.Proto.Enums";
+
+enum JumpRopePhaseType {
+  JUMP_ROPE_PHASE_TYPE_UNKNOWN = 0;
+  JUMP_ROPE_PHASE_TYPE_PHASE1 = 1;
+  JUMP_ROPE_PHASE_TYPE_PHASE2 = 2;
+  JUMP_ROPE_PHASE_TYPE_PHASE3 = 3;
+  JUMP_ROPE_PHASE_TYPE_PHASE4 = 4;
+  JUMP_ROPE_PHASE_TYPE_PHASE5 = 5;
+  JUMP_ROPE_PHASE_TYPE_PHASE6 = 6;
+}

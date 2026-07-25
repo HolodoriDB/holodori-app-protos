@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/tutorial_navigation_type.gen.proto";
+import "enums/tutorial_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Tutorial {
+  enums.TutorialType type = 1;
+  int32 step = 2;
+  string unlock_condition_group_id = 4;
+  enums.TutorialNavigationType navigation_type = 5;
+  repeated string description_lang_ids = 6;
+  string tips_id = 7;
+  string adv_asset_id = 8;
+}

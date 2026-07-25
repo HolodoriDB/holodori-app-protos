@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "entity/master/options/master.proto";
+import "enums/device_workaround_type.gen.proto";
+import "enums/graphics_quality_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message SystemGetSystemInfoRequest {
+  string credential = 1;
+}
+
+message SystemGetSystemInfoResponse {
+  message ReviewInfo {
+    bool is_in_review = 1;
+    string api_host_in_review = 2;
+    string octo_distribution_host_name = 3;
+    string octo_api_host_name = 4;
+    int32 octo_asset_env_id = 5;
+    int32 octo_distribution_version = 6;
+  }
+  message MaintenanceInfo {
+    bool is_in_maintenance = 1;
+    bool is_prerelease = 2;
+    int64 start_time = 3;
+    int64 end_time = 4;
+    string description = 5;
+    string character_asset_id = 6;
+    string character_color = 7;
+    bool is_skip_maintenance = 100;
+  }
+  message GachaAssetInfo {
+    string icon_asset_id = 1;
+    string promotion_movie_asset_id = 2;
+    string promotion_image_asset_id = 3;
+    string bgm_asset_id = 4;
+    string gacha_animation_asset_id = 5;
+    string gacha_point_icon_asset_id = 6;
+    repeated string promotion_pickup_card_ids = 7;
+  }
+  string octo_distribution_host_name = 1;
+  string octo_api_host_name = 2;
+  int32 octo_asset_env_id = 3;
+  int32 octo_distribution_version = 4;
+  string inquiry_api_url = 5;
+  SystemGetSystemInfoResponse.ReviewInfo review_info = 8;
+  SystemGetSystemInfoResponse.MaintenanceInfo maintenance_info = 9;
+  repeated SystemGetSystemInfoResponse.GachaAssetInfo title_download_gacha_asset_infos = 10;
+  enums.GraphicsQualityType recommend_graphics_quality_type = 11;
+  repeated enums.DeviceWorkaroundType device_workaround_types = 12;
+}
+
+service System {
+  rpc GetSystemInfo (SystemGetSystemInfoRequest) returns (SystemGetSystemInfoResponse);
+}

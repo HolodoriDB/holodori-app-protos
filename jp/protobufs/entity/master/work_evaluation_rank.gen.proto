@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/work_evaluation_rank_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message WorkEvaluationRank {
+  string group_id = 1;
+  enums.WorkEvaluationRankType type = 2;
+  int64 threshold = 3;
+}

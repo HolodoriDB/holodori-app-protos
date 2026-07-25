@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message ParkQuestCommonRequestParam {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkPermanenceCommonRequestParam {
+  string park_permanence_id = 1;
+  int32 action_number = 2;
+}

@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/character_hand_type.gen.proto";
+import "enums/character_personality_type.gen.proto";
+import "enums/character_sd_personality_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Character {
+  string id = 1;
+  string name_lang_id = 2;
+  string short_name_lang_id = 3;
+  string name_eng = 4;
+  string short_name_eng = 5;
+  string character_production_id = 6;
+  string default_costume_id = 7;
+  string default_sd_costume_id = 8;
+  int32 birth_month = 9;
+  int32 birth_day = 10;
+  int32 debut_year = 11;
+  int32 debut_month = 12;
+  int32 debut_day = 13;
+  string fan_name_lang_id = 14;
+  string description_lang_id = 15;
+  string comment_lang_id = 16;
+  string youtube_url = 17;
+  string x_url = 18;
+  enums.CharacterPersonalityType personality_type = 19;
+  enums.CharacterSdPersonalityType sd_personality_type = 20;
+  bool is_playable = 21;
+  string asset_id = 22;
+  string character_level_group_id = 23;
+  string skill_tree_node_position_group_id = 24;
+  bool is_tutorial = 25;
+  enums.CharacterHandType dominant_hand_type = 26;
+  string skill_tree_point_id = 27;
+  string bgm_asset_id = 28;
+  string regular_character_grouping_name_lang_id = 29;
+  string regular_character_grouping_name_eng = 30;
+  repeated string search_keyword_lang_ids = 31;
+  string color1 = 100;
+  string color2 = 101;
+  string color3 = 102;
+  string color4 = 103;
+  int32 order = 999;
+  repeated string regular_character_grouping_ids = 1000;
+}

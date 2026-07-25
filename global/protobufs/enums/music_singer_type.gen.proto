@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package enums;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
+option csharp_namespace = "Vision.Common.Proto.Enums";
+
+enum MusicSingerType {
+  MUSIC_SINGER_TYPE_UNKNOWN = 0;
+  MUSIC_SINGER_TYPE_SOLO = 1;
+  MUSIC_SINGER_TYPE_GROUP = 2;
+  MUSIC_SINGER_TYPE_ALL = 3;
+}

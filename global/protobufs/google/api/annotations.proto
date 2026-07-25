@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package google.api;
+
+import "google/api/http.proto";
+import "google/protobuf/descriptor.proto";
+
+option java_package = "com.google.api";
+option java_outer_classname = "AnnotationsProto";
+option go_package = "google.golang.org/genproto/googleapis/api/annotations;annotations";
+option objc_class_prefix = "GAPI";

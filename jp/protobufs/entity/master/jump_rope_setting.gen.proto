@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message JumpRopeSetting {
+  string id = 1;
+  int32 max_user_count = 10;
+  string mini_game_reward_up_stamina_effect_group_id = 11;
+  float respawn_recovery_coefficient = 12;
+  int32 reward_up_stamina_consumption_unit = 13;
+  int32 random_match_min_user_count = 14;
+  int32 private_room_min_user_count = 15;
+  int32 random_match_start_time_limit_seconds = 16;
+  int32 multi_game_setup_time_limit_seconds = 17;
+  int32 multi_game_npc_min_continuous_jump_count = 18;
+  int32 multi_game_npc_max_continuous_jump_count = 19;
+  int32 play_log_upload_score = 20;
+  int32 max_jump_count = 21;
+}

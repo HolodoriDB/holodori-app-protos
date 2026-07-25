@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserCircuit {
+  int64 best_clear_time_milliseconds = 2;
+  int64 best_clear_time_last_updated_time = 3;
+  int64 play_count = 4;
+  int64 top_rank_count = 5;
+}

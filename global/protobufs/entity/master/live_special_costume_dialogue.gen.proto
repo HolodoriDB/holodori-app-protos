@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveSpecialCostumeDialogue {
+  string costume_id = 1;
+  string card_character_id = 2;
+  string live_dialogue_voice_id = 3;
+}

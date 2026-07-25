@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package enums;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
+option csharp_namespace = "Vision.Common.Proto.Enums";
+
+enum WorkCharacterIconPositionType {
+  WORK_CHARACTER_ICON_POSITION_TYPE_UNKNOWN = 0;
+  WORK_CHARACTER_ICON_POSITION_TYPE_TOP = 1;
+  WORK_CHARACTER_ICON_POSITION_TYPE_CENTER = 2;
+  WORK_CHARACTER_ICON_POSITION_TYPE_LEFT = 3;
+  WORK_CHARACTER_ICON_POSITION_TYPE_RIGHT = 4;
+}

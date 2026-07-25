@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/condition_min_max_type.gen.proto";
+import "enums/condition_operator_type.gen.proto";
+import "enums/condition_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Condition {
+  string group_id = 1;
+  int32 number = 2;
+  enums.ConditionOperatorType operator_type = 3;
+  enums.ConditionType type = 4;
+  string resource_id1 = 5;
+  string resource_id2 = 6;
+  enums.ConditionMinMaxType min_max_type = 7;
+  int64 min = 8;
+  int64 max = 9;
+  int64 start_time = 10;
+  int64 end_time = 11;
+  string description_lang_id = 12;
+  string detail_description_lang_id = 13;
+}

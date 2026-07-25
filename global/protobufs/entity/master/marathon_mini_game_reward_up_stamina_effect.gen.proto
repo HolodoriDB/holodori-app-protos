@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+import "enums/mini_game_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MarathonMiniGameRewardUpStaminaEffect {
+  enums.MiniGameType mini_game_type = 1;
+  int32 consumption_rate = 2;
+  int32 marathon_score_provide_count = 3;
+}

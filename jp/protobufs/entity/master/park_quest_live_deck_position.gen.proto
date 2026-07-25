@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity.master;
+
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkQuestLiveDeckPosition {
+  string park_quest_live_id = 1;
+  int32 position = 2;
+  string card_id = 3;
+  int32 level = 4;
+  int32 upgrade_count = 5;
+}

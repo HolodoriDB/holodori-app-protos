@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+import "entity/transaction/options/transaction.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserJumpRope {
+  string jump_rope_id = 2;
+  int64 best_jump_count = 3;
+  bool is_cleared = 4;
+  int64 play_count = 5;
+  int64 notification_read_time = 7;
+  repeated int32 npc_exit_jump_counts = 100;
+}
