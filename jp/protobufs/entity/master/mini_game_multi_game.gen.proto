@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/mini_game_type.gen.proto";
 import "enums/multi_game_match_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MiniGameMultiGame {
-  .enums.MiniGameType mini_game_type = 1;
-  .enums.MultiGameMatchType multi_game_match_type = 2;
-  string list_asset_id = 3;
-  string view_condition_group_id = 4;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	.enums.MiniGameType mini_game_type = 1 [(options.master.pk) = true];
+	.enums.MultiGameMatchType multi_game_match_type = 2 [(options.master.pk) = true];
+	string list_asset_id = 3;
+	string view_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 order = 999;
 }

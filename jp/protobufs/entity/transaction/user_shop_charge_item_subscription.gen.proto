@@ -1,19 +1,19 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
 import "enums/payment_subscription_status.gen.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserShopChargeItemSubscription {
-  string shop_charge_item_subscription_shop_charge_item_id = 2;
-  .enums.PaymentSubscriptionStatus status = 3;
-  int64 purchased_time = 4;
-  int64 expired_time = 5;
-  bool is_auto_renew = 6;
-  int32 total_join_month_count = 7;
+	string shop_charge_item_subscription_shop_charge_item_id = 2 [(options.master.fk) = "ShopChargeItemSubscription:shopChargeItemId", (options.transaction.pk) = true];
+	.enums.PaymentSubscriptionStatus status = 3;
+	int64 purchased_time = 4;
+	int64 expired_time = 5;
+	bool is_auto_renew = 6;
+	int32 total_join_month_count = 7;
 }

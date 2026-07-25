@@ -1,21 +1,21 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "rpc/api/common/profile.gen.proto";
+
+package rpc.api.common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message ComboCardGameResultInfo {
-  repeated ComboCardGameRankResult rank_results = 1;
-  int64 self_end_chip_quantity = 2;
+	repeated ComboCardGameRankResult rank_results = 1;
+	int64 self_end_chip_quantity = 2;
 }
 
 message ComboCardGameRankResult {
-  int32 rank = 1;
-  int64 end_chip_quantity = 2;
-  BasicUserInfo user_info = 3;
-  bool is_npc = 4;
-  bool is_disconnected = 5;
+	int32 rank = 1;
+	int64 end_chip_quantity = 2;
+	BasicUserInfo user_info = 3;
+	bool is_npc = 4;
+	bool is_disconnected = 5;
 }

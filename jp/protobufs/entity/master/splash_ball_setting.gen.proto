@@ -1,40 +1,42 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SplashBallSetting {
-  string id = 1;
-  int32 max_user_count = 10;
-  int32 random_match_min_user_count = 11;
-  int32 private_room_min_user_count = 12;
-  int32 random_match_start_time_limit_seconds = 13;
-  int32 multi_game_setup_time_limit_seconds = 14;
-  string mini_game_reward_up_stamina_effect_group_id = 100;
-  int32 mini_game_reward_up_stamina_consumption_unit = 101;
-  int32 limit_time_seconds = 102;
-  int32 game_force_end_score = 103;
-  int32 ball_initial_count = 104;
-  int32 npc_ball_hit_success_probability_permil = 105;
-  int64 initial_team_score = 106;
-  float boat_max_speed = 200;
-  int32 boat_max_speed_time_milliseconds = 201;
-  float boat_jump_height = 202;
-  int32 boat_air_control_coefficient_vertical_permil_multiply = 203;
-  int32 boat_air_control_coefficient_horizontal_permil_multiply = 204;
-  float boat_curve_ease_stop = 205;
-  float boat_curve_ease_max_speed = 206;
-  float dash_additional_speed = 300;
-  int32 dash_continuous_time_milliseconds = 301;
-  int32 dash_cool_time_milliseconds = 302;
-  int32 critical_hit_range_threshold_permil = 400;
-  float critical_hit_force = 401;
-  int32 critical_hit_speed_threshold_permil_multiply = 402;
-  int32 fever_time_probability_permil = 500;
-  int32 fever_time_ball_increment_count = 501;
-  int32 fever_time_draw_interval_time_milliseconds = 502;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	int32 max_user_count = 10;
+	int32 random_match_min_user_count = 11;
+	int32 private_room_min_user_count = 12;
+	int32 random_match_start_time_limit_seconds = 13;
+	int32 multi_game_setup_time_limit_seconds = 14;
+	string mini_game_reward_up_stamina_effect_group_id = 100 [(options.master.fk) = "MiniGameRewardUpStaminaEffect:group_id"];
+	int32 mini_game_reward_up_stamina_consumption_unit = 101;
+	int32 limit_time_seconds = 102;
+	int32 game_force_end_score = 103;
+	int32 ball_initial_count = 104;
+	int32 npc_ball_hit_success_probability_permil = 105;
+	int64 initial_team_score = 106;
+	float boat_max_speed = 200;
+	int32 boat_max_speed_time_milliseconds = 201;
+	float boat_jump_height = 202;
+	int32 boat_air_control_coefficient_vertical_permil_multiply = 203;
+	int32 boat_air_control_coefficient_horizontal_permil_multiply = 204;
+	float boat_curve_ease_stop = 205;
+	float boat_curve_ease_max_speed = 206;
+	float dash_additional_speed = 300;
+	int32 dash_continuous_time_milliseconds = 301;
+	int32 dash_cool_time_milliseconds = 302;
+	int32 critical_hit_range_threshold_permil = 400;
+	float critical_hit_force = 401;
+	int32 critical_hit_speed_threshold_permil_multiply = 402;
+	int32 fever_time_probability_permil = 500;
+	int32 fever_time_ball_increment_count = 501;
+	int32 fever_time_draw_interval_time_milliseconds = 502;
 }

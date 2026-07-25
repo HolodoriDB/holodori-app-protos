@@ -1,30 +1,32 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/mini_game_character_display_type.gen.proto";
 import "enums/mini_game_consumption_type.gen.proto";
 import "enums/mini_game_type.gen.proto";
 import "enums/park_action_type.gen.proto";
 
+package entity.master;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MiniGame {
-  .enums.MiniGameType type = 1;
-  string name_lang_id = 2;
-  string description_lang_id = 3;
-  string title_asset_id = 4;
-  string list_asset_id = 5;
-  .enums.ParkActionType park_action_type = 6;
-  .enums.MiniGameConsumptionType consumption_type = 7;
-  string mini_game_reward_up_stamina_conversion_id = 8;
-  .enums.MiniGameCharacterDisplayType character_display_type = 9;
-  bool is_multi_game = 10;
-  string ranking_view_description_lang_id = 11;
-  string ranking_score_type_lang_id = 12;
-  string mini_game_top_tips_id = 13;
-  string multi_game_top_tips_id = 14;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	.enums.MiniGameType type = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangMiniGame:id"];
+	string description_lang_id = 3 [(options.master.fk) = "LangMiniGame:id"];
+	string title_asset_id = 4;
+	string list_asset_id = 5;
+	.enums.ParkActionType park_action_type = 6;
+	.enums.MiniGameConsumptionType consumption_type = 7;
+	string mini_game_reward_up_stamina_conversion_id = 8 [(options.master.fk) = "MiniGameRewardUpStaminaConversion:id", (options.master.optional) = true];
+	.enums.MiniGameCharacterDisplayType character_display_type = 9;
+	bool is_multi_game = 10 [(options.master.optional) = true];
+	string ranking_view_description_lang_id = 11 [(options.master.fk) = "LangMiniGame:id"];
+	string ranking_score_type_lang_id = 12 [(options.master.fk) = "LangMiniGame:id"];
+	string mini_game_top_tips_id = 13 [(options.master.fk) = "Tips:id"];
+	string multi_game_top_tips_id = 14 [(options.master.fk) = "Tips:id"];
+	int32 order = 999;
 }

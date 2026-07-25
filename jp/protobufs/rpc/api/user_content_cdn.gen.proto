@@ -1,20 +1,24 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "options/zap.proto";
 import "rpc/api/common/user_content_cdn.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message UserContentCdnGetSignedCookieResponse {
-  common.UserContentCdnSignedCookie signed_cookie = 1;
+	common.UserContentCdnSignedCookie signed_cookie = 1 [(options.zap.hidden) = true];
 }
 
 service UserContentCdn {
-  rpc GetSignedCookie (.google.protobuf.Empty) returns (UserContentCdnGetSignedCookieResponse);
+	rpc GetSignedCookie (.google.protobuf.Empty) returns (.rpc.api.UserContentCdnGetSignedCookieResponse) {
+		option (google.api.http).post = "/UserContentCdn/GetSignedCookie";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+	}
 }

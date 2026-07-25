@@ -6,8 +6,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum ConditionMinMaxType {
-  CONDITION_MIN_MAX_TYPE_UNKNOWN = 0;
-  CONDITION_MIN_MAX_TYPE_MIN_MAX = 1;
-  CONDITION_MIN_MAX_TYPE_MIN = 2;
-  CONDITION_MIN_MAX_TYPE_MAX = 3;
+	CONDITION_MIN_MAX_TYPE_UNKNOWN = 0;
+	CONDITION_MIN_MAX_TYPE_MIN_MAX = 1;
+	CONDITION_MIN_MAX_TYPE_MIN = 2;
+	CONDITION_MIN_MAX_TYPE_MAX = 3;
 }

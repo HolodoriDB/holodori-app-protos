@@ -1,25 +1,27 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message FacilityAppearance {
-  string facility_id = 1;
-  int32 priority = 2;
-  string name_lang_id = 3;
-  string asset_id = 4;
-  repeated string icon_asset_ids = 5;
-  string map_image_asset_id = 6;
-  string mini_icon_asset_id = 7;
-  string view_condition_group_id = 8;
-  string unlock_condition_group_id = 9;
-  string park_talk_group_id = 10;
-  bool is_warp_available = 11;
-  string label_lang_id = 12;
-  bool is_show_in_map = 13;
-  string map_prefab_asset_id = 14;
+	option (options.master.table) = true;
+
+	string facility_id = 1 [(options.master.fk) = "Facility:id", (options.master.pk) = true];
+	int32 priority = 2 [(options.master.pk) = true];
+	string name_lang_id = 3 [(options.master.fk) = "LangFacilityAppearance:id", (options.master.optional) = true];
+	string asset_id = 4 [(options.master.optional) = true];
+	repeated string icon_asset_ids = 5 [(options.master.optional) = true];
+	string map_image_asset_id = 6 [(options.master.optional) = true];
+	string mini_icon_asset_id = 7 [(options.master.optional) = true];
+	string view_condition_group_id = 8 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 9 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string park_talk_group_id = 10 [(options.master.fk) = "ParkTalk:group_id", (options.master.optional) = true];
+	bool is_warp_available = 11 [(options.master.optional) = true];
+	string label_lang_id = 12 [(options.master.fk) = "LangFacilityAppearance:id", (options.master.optional) = true];
+	bool is_show_in_map = 13 [(options.master.optional) = true];
+	string map_prefab_asset_id = 14 [(options.master.optional) = true];
 }

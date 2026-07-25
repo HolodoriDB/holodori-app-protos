@@ -1,23 +1,25 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_quest_live_deck_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkQuestLive {
-  string id = 1;
-  string music_id = 2;
-  .enums.ParkQuestLiveDeckType deck_type = 3;
-  string fixed_character_id = 4;
-  string fixed_costume_id = 5;
-  int64 clear_score = 6;
-  bool is_auto_play_allowed = 8;
-  string live_skin_group_id = 9;
-  int64 live_deck_evaluation_value_benchmark_threshold_s = 1000;
-  int64 live_deck_evaluation_value_benchmark_threshold_a = 1001;
-  int64 live_deck_evaluation_value_benchmark_threshold_b = 1002;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string music_id = 2 [(options.master.fk) = "Music:id"];
+	.enums.ParkQuestLiveDeckType deck_type = 3;
+	string fixed_character_id = 4 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	string fixed_costume_id = 5 [(options.master.fk) = "Costume:id", (options.master.optional) = true];
+	int64 clear_score = 6 [(options.master.optional) = true];
+	bool is_auto_play_allowed = 8 [(options.master.optional) = true];
+	string live_skin_group_id = 9 [(options.master.fk) = "LiveSkinGroup:id", (options.master.optional) = true];
+	int64 live_deck_evaluation_value_benchmark_threshold_s = 1000 [(options.master.optional) = true];
+	int64 live_deck_evaluation_value_benchmark_threshold_a = 1001 [(options.master.optional) = true];
+	int64 live_deck_evaluation_value_benchmark_threshold_b = 1002 [(options.master.optional) = true];
 }

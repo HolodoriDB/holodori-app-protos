@@ -1,60 +1,72 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "options/zap.proto";
 import "rpc/api/common/response.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message AssetListExpiredAssetIdResponse {
-  message HomeBanner {
-    repeated string asset_ids = 1;
-  }
-  message ParkBanner {
-    repeated string asset_ids = 1;
-  }
-  message Event {
-    repeated string logo_asset_ids = 1;
-    repeated string background_asset_ids = 2;
-  }
-  message Marathon {
-    repeated string logo_asset_ids = 1;
-    repeated string background_asset_ids = 2;
-  }
-  message LoginBonus {
-    repeated string logo_asset_ids = 1;
-    repeated string background_asset_ids = 2;
-    repeated string thumbnail_asset_ids = 3;
-  }
-  message Shop {
-    repeated string thumbnail_asset_ids = 1;
-  }
-  message StartupNotification {
-    repeated string asset_ids = 1;
-  }
-  message Gacha {
-    repeated string icon_asset_ids = 1;
-    repeated string promotion_image_asset_ids = 2;
-    repeated string promotion_movie_asset_ids = 3;
-    repeated string bgm_asset_ids = 4;
-    repeated string gacha_animation_asset_ids = 5;
-  }
-  AssetListExpiredAssetIdResponse.HomeBanner home_banner = 1;
-  AssetListExpiredAssetIdResponse.ParkBanner park_banner = 2;
-  AssetListExpiredAssetIdResponse.Event event = 3;
-  AssetListExpiredAssetIdResponse.Marathon marathon = 4;
-  AssetListExpiredAssetIdResponse.LoginBonus login_bonus = 5;
-  AssetListExpiredAssetIdResponse.Shop shop = 6;
-  AssetListExpiredAssetIdResponse.StartupNotification startup_notification = 7;
-  AssetListExpiredAssetIdResponse.Gacha gacha = 8;
-  common.Response common_response = 9999;
+	message HomeBanner {
+		repeated string asset_ids = 1;
+	}
+
+	message ParkBanner {
+		repeated string asset_ids = 1;
+	}
+
+	message Event {
+		repeated string logo_asset_ids = 1;
+		repeated string background_asset_ids = 2;
+	}
+
+	message Marathon {
+		repeated string logo_asset_ids = 1;
+		repeated string background_asset_ids = 2;
+	}
+
+	message LoginBonus {
+		repeated string logo_asset_ids = 1;
+		repeated string background_asset_ids = 2;
+		repeated string thumbnail_asset_ids = 3;
+	}
+
+	message Shop {
+		repeated string thumbnail_asset_ids = 1;
+	}
+
+	message StartupNotification {
+		repeated string asset_ids = 1;
+	}
+
+	message Gacha {
+		repeated string icon_asset_ids = 1;
+		repeated string promotion_image_asset_ids = 2;
+		repeated string promotion_movie_asset_ids = 3;
+		repeated string bgm_asset_ids = 4;
+		repeated string gacha_animation_asset_ids = 5;
+	}
+
+	AssetListExpiredAssetIdResponse.HomeBanner home_banner = 1 [(options.zap.hidden) = true];
+	AssetListExpiredAssetIdResponse.ParkBanner park_banner = 2 [(options.zap.hidden) = true];
+	AssetListExpiredAssetIdResponse.Event event = 3 [(options.zap.hidden) = true];
+	AssetListExpiredAssetIdResponse.Marathon marathon = 4 [(options.zap.hidden) = true];
+	AssetListExpiredAssetIdResponse.LoginBonus login_bonus = 5 [(options.zap.hidden) = true];
+	AssetListExpiredAssetIdResponse.Shop shop = 6 [(options.zap.hidden) = true];
+	AssetListExpiredAssetIdResponse.StartupNotification startup_notification = 7 [(options.zap.hidden) = true];
+	AssetListExpiredAssetIdResponse.Gacha gacha = 8 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 service Asset {
-  rpc ListExpiredAssetId (.google.protobuf.Empty) returns (AssetListExpiredAssetIdResponse);
+	rpc ListExpiredAssetId (.google.protobuf.Empty) returns (.rpc.api.AssetListExpiredAssetIdResponse) {
+		option (google.api.http).post = "/Asset/ListExpiredAssetId";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

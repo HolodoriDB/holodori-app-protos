@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "common/live.gen.proto";
 import "enums/live_result_type.gen.proto";
@@ -24,336 +22,519 @@ import "rpc/api/common/ranking.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/storage_url.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message MusicCreativeChartGetUploadUrlForCreateRequest {
-  string music_id = 1;
+	string music_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message MusicCreativeChartGetUploadUrlForCreateResponse {
-  string upload_token = 1;
-  common.StorageUrlInfo chart_upload_storage_url_info = 2;
-  common.Response common_response = 9999;
+	string upload_token = 1 [(options.zap.hidden) = true];
+	common.StorageUrlInfo chart_upload_storage_url_info = 2 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartGetUploadUrlForUpdateRequest {
-  string music_creative_chart_id = 1;
-  .enums.MusicCreativeChartFileType file_type = 2;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	.enums.MusicCreativeChartFileType file_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 }
 
 message MusicCreativeChartGetUploadUrlForUpdateResponse {
-  string upload_token = 1;
-  common.StorageUrlInfo upload_storage_url_info = 2;
-  common.Response common_response = 9999;
+	string upload_token = 1 [(options.zap.hidden) = true];
+	common.StorageUrlInfo upload_storage_url_info = 2 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartUpdateFileUploadTimeRequest {
-  string music_creative_chart_id = 1;
-  string upload_token = 2;
-  .enums.MusicCreativeChartFileType file_type = 3;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string upload_token = 2 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
+	.enums.MusicCreativeChartFileType file_type = 3 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 }
 
 message MusicCreativeChartGetQuoteTargetChartRequest {
-  string music_creative_chart_id = 1;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message MusicCreativeChartGetQuoteTargetChartResponse {
-  string chart_file_url = 1;
-  common.Response common_response = 9999;
+	string chart_file_url = 1;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartCreateRequest {
-  string upload_token = 1;
-  string title = 2;
-  string music_id = 3;
-  .enums.MusicCreativeChartQuoteType quote_type = 4;
-  .enums.MusicDifficultyType quote_music_difficulty_type = 5;
-  string quote_music_creative_chart_id = 6;
+	string upload_token = 1 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
+	string title = 2 [(buf.validate.field).string.min_bytes = 1];
+	string music_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	.enums.MusicCreativeChartQuoteType quote_type = 4 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	.enums.MusicDifficultyType quote_music_difficulty_type = 5;
+	string quote_music_creative_chart_id = 6;
 }
 
 message MusicCreativeChartCreateResponse {
-  string music_creative_chart_id = 1;
-  common.Response common_response = 9999;
+	string music_creative_chart_id = 1;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartUpdateRequest {
-  string music_creative_chart_id = 1;
-  string title = 2;
-  int32 difficulty_value = 3;
-  repeated .enums.MusicCreativeChartType chart_types = 4;
-  repeated string music_creative_chart_tag_ids = 5;
-  .enums.MusicCreativeChartPublishType publish_type = 6;
-  .enums.MusicCreativeChartQuoteAllowType quote_allow_type = 7;
-  bool is_publish = 100;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string title = 2 [(buf.validate.field).string.min_bytes = 1];
+	int32 difficulty_value = 3 [(buf.validate.field).int32.gt = 0];
+	repeated .enums.MusicCreativeChartType chart_types = 4 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.enum.defined_only = true, (buf.validate.field).repeated.items.enum.not_in = 0];
+	repeated string music_creative_chart_tag_ids = 5 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
+	.enums.MusicCreativeChartPublishType publish_type = 6 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	.enums.MusicCreativeChartQuoteAllowType quote_allow_type = 7 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	bool is_publish = 100;
 }
 
 message MusicCreativeChartEditSettingRequest {
-  string music_creative_chart_id = 1;
-  .enums.MusicCreativeChartPublishType publish_type = 2;
-  .enums.MusicCreativeChartQuoteAllowType quote_allow_type = 3;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	.enums.MusicCreativeChartPublishType publish_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	.enums.MusicCreativeChartQuoteAllowType quote_allow_type = 3 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 }
 
 message MusicCreativeChartDeleteRequest {
-  string music_creative_chart_id = 1;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message MusicCreativeChartLikeRequest {
-  string music_creative_chart_id = 1;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message MusicCreativeChartSwitchFavoriteRequest {
-  string music_creative_chart_id = 1;
-  bool is_favorite = 2;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	bool is_favorite = 2;
 }
 
 message MusicCreativeChartComplainRequest {
-  string music_creative_chart_id = 1;
-  repeated .enums.MusicCreativeChartComplainCategoryType category_types = 2;
-  string message = 3;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated .enums.MusicCreativeChartComplainCategoryType category_types = 2 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.enum.defined_only = true, (buf.validate.field).repeated.items.enum.not_in = 0];
+	string message = 3 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message MusicCreativeChartListOwnResponse {
-  message OwnChartInfo {
-    common.MusicCreativeChartInfo chart_info = 1;
-    string chart_file_url = 2;
-    bool is_thumbnail_image_enabled = 3;
-    .enums.MusicCreativeChartQuoteAllowType quote_allow_type = 4;
-    .enums.MusicCreativeChartQuoteType quote_type = 5;
-    string quoted_chart_file_url = 6;
-  }
-  repeated MusicCreativeChartListOwnResponse.OwnChartInfo creating_chart_infos = 1;
-  repeated MusicCreativeChartListOwnResponse.OwnChartInfo published_chart_infos = 2;
-  common.Response common_response = 9999;
+	message OwnChartInfo {
+		common.MusicCreativeChartInfo chart_info = 1;
+		string chart_file_url = 2;
+		bool is_thumbnail_image_enabled = 3;
+		.enums.MusicCreativeChartQuoteAllowType quote_allow_type = 4;
+		.enums.MusicCreativeChartQuoteType quote_type = 5;
+		string quoted_chart_file_url = 6;
+	}
+
+	repeated MusicCreativeChartListOwnResponse.OwnChartInfo creating_chart_infos = 1 [(options.zap.hidden) = true];
+	repeated MusicCreativeChartListOwnResponse.OwnChartInfo published_chart_infos = 2 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListNewerRequest {
-  common.MusicCreativeChartSearchParameter search_parameter = 1;
+	common.MusicCreativeChartSearchParameter search_parameter = 1;
 }
 
 message MusicCreativeChartListNewerResponse {
-  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListFavoriteRequest {
-  common.MusicCreativeChartSearchParameter search_parameter = 1;
+	common.MusicCreativeChartSearchParameter search_parameter = 1;
 }
 
 message MusicCreativeChartListFavoriteResponse {
-  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListPlayHistoryRequest {
-  common.MusicCreativeChartSearchParameter search_parameter = 1;
+	common.MusicCreativeChartSearchParameter search_parameter = 1;
 }
 
 message MusicCreativeChartListPlayHistoryResponse {
-  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListByCreatorRequest {
-  string public_user_id = 1;
-  common.MusicCreativeChartSearchParameter search_parameter = 2;
+	string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	common.MusicCreativeChartSearchParameter search_parameter = 2;
 }
 
 message MusicCreativeChartListByFriendRequest {
-  common.MusicCreativeChartSearchParameter search_parameter = 1;
+	common.MusicCreativeChartSearchParameter search_parameter = 1;
 }
 
 message MusicCreativeChartListByFriendResponse {
-  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListByCreatorResponse {
-  repeated common.MusicCreativeChartInfo chart_infos = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartInfo chart_infos = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartGetByMusicCreativeChartIdRequest {
-  string music_creative_chart_id = 1;
-  bool is_quote_allowed_only = 2;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	bool is_quote_allowed_only = 2;
 }
 
 message MusicCreativeChartGetByMusicCreativeChartIdResponse {
-  common.MusicCreativeChartInfo chart_info = 1;
-  common.Response common_response = 9999;
+	common.MusicCreativeChartInfo chart_info = 1;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListPopularRequest {
-  common.MusicCreativeChartSearchParameter search_parameter = 1;
+	common.MusicCreativeChartSearchParameter search_parameter = 1;
 }
 
 message MusicCreativeChartListPopularResponse {
-  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListPopularCreatorRequest {
-  .enums.ResetIntervalType reset_interval_type = 1;
+	.enums.ResetIntervalType reset_interval_type = 1 [(buf.validate.field).enum.defined_only = true];
 }
 
 message MusicCreativeChartListPopularCreatorResponse {
-  repeated common.MusicCreativeChartCreatorInfo creator_infos = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartCreatorInfo creator_infos = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartListFriendCreatorResponse {
-  repeated common.MusicCreativeChartCreatorInfo creator_infos = 1;
-  common.Response common_response = 9999;
+	repeated common.MusicCreativeChartCreatorInfo creator_infos = 1 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdRequest {
-  string music_creative_chart_id = 1;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdResponse {
-  common.BasicUserInfo creator_user_info = 1;
-  repeated string related_creator_public_user_ids = 2;
-  repeated common.BasicUserInfo related_creator_user_infos = 3;
-  common.Response common_response = 9999;
+	common.BasicUserInfo creator_user_info = 1;
+	repeated string related_creator_public_user_ids = 2;
+	repeated common.BasicUserInfo related_creator_user_infos = 3 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartGetUserStatusResponse {
-  bool is_chart_creation_banned = 1;
-  common.Response common_response = 9999;
+	bool is_chart_creation_banned = 1;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartStartLiveSingleRequest {
-  string music_creative_chart_id = 1;
-  string character_id = 2;
-  int32 deck_number = 3;
-  common.LiveSkinInfo skin_info = 4;
-  string music_mv_category_id = 5;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string character_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	int32 deck_number = 3 [(buf.validate.field).int32.gte = 1];
+	common.LiveSkinInfo skin_info = 4;
+	string music_mv_category_id = 5;
 }
 
 message MusicCreativeChartStartLiveSingleResponse {
-  string chart_file_url = 1;
-  int32 seed = 2;
-  common.Response common_response = 9999;
+	string chart_file_url = 1;
+	int32 seed = 2;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartFinishLiveSingleRequest {
-  .common.LiveBaseResult result = 1;
+	.common.LiveBaseResult result = 1;
 }
 
 message MusicCreativeChartRetryLiveSingleRequest {
-  .common.LiveBaseResult result = 1;
-  int64 progress_millisecond = 2;
+	.common.LiveBaseResult result = 1;
+	int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
 }
 
 message MusicCreativeChartRetryLiveSingleResponse {
-  int32 seed = 1;
-  common.Response common_response = 9999;
+	int32 seed = 1;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartRetireLiveSingleRequest {
-  .common.LiveBaseResult result = 1;
-  int64 progress_millisecond = 2;
+	.common.LiveBaseResult result = 1;
+	int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
 }
 
 message MusicCreativeChartStartPreviewRequest {
-  string music_id = 1;
+	string music_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message MusicCreativeChartFinishLiveSingleResponse {
-  .enums.LiveResultType result_type = 1;
-  bool is_liked = 2;
-  bool is_favorite = 3;
-  int64 technical_score = 4;
-  common.Response common_response = 9999;
+	.enums.LiveResultType result_type = 1;
+	bool is_liked = 2;
+	bool is_favorite = 3;
+	int64 technical_score = 4;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartGetEarlyClearRankingInfoRequest {
-  string music_creative_chart_id = 1;
-  .enums.LiveResultType live_result_type = 2;
+	string music_creative_chart_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	.enums.LiveResultType live_result_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 }
 
 message MusicCreativeChartGetEarlyClearRankingInfoResponse {
-  repeated common.BasicRankingRankInfo rank_infos = 1;
-  int32 self_ranking_rank = 2;
-  common.Response common_response = 9999;
+	repeated common.BasicRankingRankInfo rank_infos = 1 [(options.zap.hidden) = true];
+	int32 self_ranking_rank = 2;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartGetEarlyClearLiveDeckRequest {
-  string public_user_id = 1;
-  string music_creative_chart_id = 2;
-  .enums.LiveResultType live_result_type = 3;
+	string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string music_creative_chart_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	.enums.LiveResultType live_result_type = 3 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 }
 
 message MusicCreativeChartGetEarlyClearLiveDeckResponse {
-  common.RankingLiveDeckInfo ranking_live_deck_info = 1;
-  common.Response common_response = 9999;
+	common.RankingLiveDeckInfo ranking_live_deck_info = 1;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartUpdateFileUploadTimeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartUpdateResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartEditSettingResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartDeleteResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartLikeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartSwitchFavoriteResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartComplainResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartRetireLiveSingleResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message MusicCreativeChartStartPreviewResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service MusicCreativeChart {
-  rpc GetUploadUrlForCreate (MusicCreativeChartGetUploadUrlForCreateRequest) returns (MusicCreativeChartGetUploadUrlForCreateResponse);
-  rpc GetUploadUrlForUpdate (MusicCreativeChartGetUploadUrlForUpdateRequest) returns (MusicCreativeChartGetUploadUrlForUpdateResponse);
-  rpc UpdateFileUploadTime (MusicCreativeChartUpdateFileUploadTimeRequest) returns (MusicCreativeChartUpdateFileUploadTimeResponse);
-  rpc GetQuoteTargetChart (MusicCreativeChartGetQuoteTargetChartRequest) returns (MusicCreativeChartGetQuoteTargetChartResponse);
-  rpc Create (MusicCreativeChartCreateRequest) returns (MusicCreativeChartCreateResponse);
-  rpc Update (MusicCreativeChartUpdateRequest) returns (MusicCreativeChartUpdateResponse);
-  rpc EditSetting (MusicCreativeChartEditSettingRequest) returns (MusicCreativeChartEditSettingResponse);
-  rpc Delete (MusicCreativeChartDeleteRequest) returns (MusicCreativeChartDeleteResponse);
-  rpc Like (MusicCreativeChartLikeRequest) returns (MusicCreativeChartLikeResponse);
-  rpc SwitchFavorite (MusicCreativeChartSwitchFavoriteRequest) returns (MusicCreativeChartSwitchFavoriteResponse);
-  rpc Complain (MusicCreativeChartComplainRequest) returns (MusicCreativeChartComplainResponse);
-  rpc ListOwn (.google.protobuf.Empty) returns (MusicCreativeChartListOwnResponse);
-  rpc ListNewer (MusicCreativeChartListNewerRequest) returns (MusicCreativeChartListNewerResponse);
-  rpc ListFavorite (MusicCreativeChartListFavoriteRequest) returns (MusicCreativeChartListFavoriteResponse);
-  rpc ListPlayHistory (MusicCreativeChartListPlayHistoryRequest) returns (MusicCreativeChartListPlayHistoryResponse);
-  rpc ListByCreator (MusicCreativeChartListByCreatorRequest) returns (MusicCreativeChartListByCreatorResponse);
-  rpc ListByFriend (MusicCreativeChartListByFriendRequest) returns (MusicCreativeChartListByFriendResponse);
-  rpc GetByMusicCreativeChartId (MusicCreativeChartGetByMusicCreativeChartIdRequest) returns (MusicCreativeChartGetByMusicCreativeChartIdResponse);
-  rpc ListPopular (MusicCreativeChartListPopularRequest) returns (MusicCreativeChartListPopularResponse);
-  rpc ListPopularCreator (MusicCreativeChartListPopularCreatorRequest) returns (MusicCreativeChartListPopularCreatorResponse);
-  rpc ListFriendCreator (.google.protobuf.Empty) returns (MusicCreativeChartListFriendCreatorResponse);
-  rpc GetCreatorInfoByMusicCreativeChartId (MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdRequest) returns (MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdResponse);
-  rpc GetUserStatus (.google.protobuf.Empty) returns (MusicCreativeChartGetUserStatusResponse);
-  rpc StartLiveSingle (MusicCreativeChartStartLiveSingleRequest) returns (MusicCreativeChartStartLiveSingleResponse);
-  rpc FinishLiveSingle (MusicCreativeChartFinishLiveSingleRequest) returns (MusicCreativeChartFinishLiveSingleResponse);
-  rpc RetryLiveSingle (MusicCreativeChartRetryLiveSingleRequest) returns (MusicCreativeChartRetryLiveSingleResponse);
-  rpc RetireLiveSingle (MusicCreativeChartRetireLiveSingleRequest) returns (MusicCreativeChartRetireLiveSingleResponse);
-  rpc StartPreview (MusicCreativeChartStartPreviewRequest) returns (MusicCreativeChartStartPreviewResponse);
-  rpc GetEarlyClearRankingInfo (MusicCreativeChartGetEarlyClearRankingInfoRequest) returns (MusicCreativeChartGetEarlyClearRankingInfoResponse);
-  rpc GetEarlyClearLiveDeck (MusicCreativeChartGetEarlyClearLiveDeckRequest) returns (MusicCreativeChartGetEarlyClearLiveDeckResponse);
+	rpc GetUploadUrlForCreate (.rpc.api.MusicCreativeChartGetUploadUrlForCreateRequest) returns (.rpc.api.MusicCreativeChartGetUploadUrlForCreateResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetUploadUrlForCreate";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_CREATION_BAN;
+	}
+
+	rpc GetUploadUrlForUpdate (.rpc.api.MusicCreativeChartGetUploadUrlForUpdateRequest) returns (.rpc.api.MusicCreativeChartGetUploadUrlForUpdateResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetUploadUrlForUpdate";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_CREATION_BAN;
+	}
+
+	rpc UpdateFileUploadTime (.rpc.api.MusicCreativeChartUpdateFileUploadTimeRequest) returns (.rpc.api.MusicCreativeChartUpdateFileUploadTimeResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/UpdateFileUploadTime";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetQuoteTargetChart (.rpc.api.MusicCreativeChartGetQuoteTargetChartRequest) returns (.rpc.api.MusicCreativeChartGetQuoteTargetChartResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetQuoteTargetChart";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_NOT_FOUND;
+	}
+
+	rpc Create (.rpc.api.MusicCreativeChartCreateRequest) returns (.rpc.api.MusicCreativeChartCreateResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/Create";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+	}
+
+	rpc Update (.rpc.api.MusicCreativeChartUpdateRequest) returns (.rpc.api.MusicCreativeChartUpdateResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/Update";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_MAX_PUBLISH_COUNT_EXCEEDED;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_CREATION_BAN;
+	}
+
+	rpc EditSetting (.rpc.api.MusicCreativeChartEditSettingRequest) returns (.rpc.api.MusicCreativeChartEditSettingResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/EditSetting";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Delete (.rpc.api.MusicCreativeChartDeleteRequest) returns (.rpc.api.MusicCreativeChartDeleteResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/Delete";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Like (.rpc.api.MusicCreativeChartLikeRequest) returns (.rpc.api.MusicCreativeChartLikeResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/Like";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_ALREADY_LIKED;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_RECEIVE_LIKE_COUNT_RATE_LIMIT_EXCEEDED;
+	}
+
+	rpc SwitchFavorite (.rpc.api.MusicCreativeChartSwitchFavoriteRequest) returns (.rpc.api.MusicCreativeChartSwitchFavoriteResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/SwitchFavorite";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_NOT_FOUND;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_REACH_FAVORITE_LIMIT;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_ALREADY_DELETED;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_SWITCH_FAVORITE_COUNT_RATE_LIMIT_EXCEEDED;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_RECEIVE_SWITCH_FAVORITE_COUNT_RATE_LIMIT_EXCEEDED;
+	}
+
+	rpc Complain (.rpc.api.MusicCreativeChartComplainRequest) returns (.rpc.api.MusicCreativeChartComplainResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/Complain";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_COMPLAIN_COUNT_RATE_LIMIT_EXCEEDED;
+	}
+
+	rpc ListOwn (.google.protobuf.Empty) returns (.rpc.api.MusicCreativeChartListOwnResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListOwn";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListNewer (.rpc.api.MusicCreativeChartListNewerRequest) returns (.rpc.api.MusicCreativeChartListNewerResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListNewer";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListFavorite (.rpc.api.MusicCreativeChartListFavoriteRequest) returns (.rpc.api.MusicCreativeChartListFavoriteResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListFavorite";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListPlayHistory (.rpc.api.MusicCreativeChartListPlayHistoryRequest) returns (.rpc.api.MusicCreativeChartListPlayHistoryResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListPlayHistory";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListByCreator (.rpc.api.MusicCreativeChartListByCreatorRequest) returns (.rpc.api.MusicCreativeChartListByCreatorResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListByCreator";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListByFriend (.rpc.api.MusicCreativeChartListByFriendRequest) returns (.rpc.api.MusicCreativeChartListByFriendResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListByFriend";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetByMusicCreativeChartId (.rpc.api.MusicCreativeChartGetByMusicCreativeChartIdRequest) returns (.rpc.api.MusicCreativeChartGetByMusicCreativeChartIdResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetByMusicCreativeChartId";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_NOT_FOUND;
+	}
+
+	rpc ListPopular (.rpc.api.MusicCreativeChartListPopularRequest) returns (.rpc.api.MusicCreativeChartListPopularResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListPopular";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListPopularCreator (.rpc.api.MusicCreativeChartListPopularCreatorRequest) returns (.rpc.api.MusicCreativeChartListPopularCreatorResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListPopularCreator";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListFriendCreator (.google.protobuf.Empty) returns (.rpc.api.MusicCreativeChartListFriendCreatorResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/ListFriendCreator";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetCreatorInfoByMusicCreativeChartId (.rpc.api.MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdRequest) returns (.rpc.api.MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetCreatorInfoByMusicCreativeChartId";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetUserStatus (.google.protobuf.Empty) returns (.rpc.api.MusicCreativeChartGetUserStatusResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetUserStatus";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartLiveSingle (.rpc.api.MusicCreativeChartStartLiveSingleRequest) returns (.rpc.api.MusicCreativeChartStartLiveSingleResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/StartLiveSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_NOT_FOUND;
+	}
+
+	rpc FinishLiveSingle (.rpc.api.MusicCreativeChartFinishLiveSingleRequest) returns (.rpc.api.MusicCreativeChartFinishLiveSingleResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/FinishLiveSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc RetryLiveSingle (.rpc.api.MusicCreativeChartRetryLiveSingleRequest) returns (.rpc.api.MusicCreativeChartRetryLiveSingleResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/RetryLiveSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MUSIC_CREATIVE_CHART_NOT_FOUND;
+	}
+
+	rpc RetireLiveSingle (.rpc.api.MusicCreativeChartRetireLiveSingleRequest) returns (.rpc.api.MusicCreativeChartRetireLiveSingleResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/RetireLiveSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc StartPreview (.rpc.api.MusicCreativeChartStartPreviewRequest) returns (.rpc.api.MusicCreativeChartStartPreviewResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/StartPreview";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetEarlyClearRankingInfo (.rpc.api.MusicCreativeChartGetEarlyClearRankingInfoRequest) returns (.rpc.api.MusicCreativeChartGetEarlyClearRankingInfoResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetEarlyClearRankingInfo";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetEarlyClearLiveDeck (.rpc.api.MusicCreativeChartGetEarlyClearLiveDeckRequest) returns (.rpc.api.MusicCreativeChartGetEarlyClearLiveDeckResponse) {
+		option (google.api.http).post = "/MusicCreativeChart/GetEarlyClearLiveDeck";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

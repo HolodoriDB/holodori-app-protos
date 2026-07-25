@@ -1,26 +1,28 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/cooking_puzzle_play_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CookingPuzzle {
-  string id = 1;
-  .enums.CookingPuzzlePlayType play_type = 2;
-  string view_condition_group_id = 3;
-  string unlock_condition_group_id = 4;
-  int32 limit_time_seconds = 5;
-  int64 shuffle_cool_time_milliseconds = 6;
-  string cooking_puzzle_combo_group_id = 7;
-  int32 loop_start_stage_number = 8;
-  string cooking_puzzle_completion_count_reward_group_id = 10;
-  string game_start_display_clear_condition_lang_id = 11;
-  string mode_select_display_clear_condition_lang_id = 12;
-  int32 order = 999;
-  repeated .common.SimplifiedReward play_rewards = 1000;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.CookingPuzzlePlayType play_type = 2;
+	string view_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 limit_time_seconds = 5;
+	int64 shuffle_cool_time_milliseconds = 6 [(options.master.optional) = true];
+	string cooking_puzzle_combo_group_id = 7 [(options.master.fk) = "CookingPuzzleCombo:group_id"];
+	int32 loop_start_stage_number = 8 [(options.master.optional) = true];
+	string cooking_puzzle_completion_count_reward_group_id = 10 [(options.master.fk) = "CookingPuzzleCompletionCountReward:group_id", (options.master.optional) = true];
+	string game_start_display_clear_condition_lang_id = 11 [(options.master.fk) = "LangCookingPuzzle:id"];
+	string mode_select_display_clear_condition_lang_id = 12 [(options.master.fk) = "LangCookingPuzzle:id", (options.master.optional) = true];
+	int32 order = 999;
+	repeated .common.SimplifiedReward play_rewards = 1000 [(options.master.optional) = true];
 }

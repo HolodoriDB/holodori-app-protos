@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package dto.multi_game_result;
-
 import "buf/validate/validate.proto";
 import "common/live.gen.proto";
 import "dto/multi_game_result/common.gen.proto";
@@ -9,20 +7,25 @@ import "entity/master/options/master.proto";
 import "enums/music_difficulty_type.gen.proto";
 import "options/multi_game_result.proto";
 
+package dto.multi_game_result;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/dto/multi_game_result";
 option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
 
 message LiveCooperationResult {
-  message UserResult {
-    .enums.MusicDifficultyType music_difficulty_type = 1;
-    .common.LiveBaseResult result = 2;
-    int64 bonus_score = 3;
-    int32 fever_point = 4;
-    bool is_fever_succeeded = 5;
-    MultiGameCommonUserResult common_user_result = 100;
-  }
-  string music_id = 1;
-  repeated LiveCooperationResult.UserResult user_results = 2;
-  bool is_fever_succeeded = 3;
-  bool is_auto_play_allowed = 4;
+	option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_LIVE_COOPERATION;
+
+	message UserResult {
+		.enums.MusicDifficultyType music_difficulty_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+		.common.LiveBaseResult result = 2;
+		int64 bonus_score = 3 [(buf.validate.field).int64.gte = 0];
+		int32 fever_point = 4 [(buf.validate.field).int32.gte = 0];
+		bool is_fever_succeeded = 5;
+		MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+	}
+
+	string music_id = 1 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "Music:id"];
+	repeated LiveCooperationResult.UserResult user_results = 2 [(buf.validate.field).repeated.min_items = 1];
+	bool is_fever_succeeded = 3;
+	bool is_auto_play_allowed = 4;
 }

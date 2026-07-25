@@ -1,14 +1,16 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkQuestStepGroup {
-  string park_quest_id = 1;
-  int32 step_group_number = 2;
-  string description_lang_id = 3;
+	option (options.master.table) = true;
+
+	string park_quest_id = 1 [(options.master.fk) = "ParkQuest:id", (options.master.pk) = true];
+	int32 step_group_number = 2 [(options.master.pk) = true];
+	string description_lang_id = 3 [(options.master.fk) = "LangParkQuestStepGroup:id"];
 }

@@ -1,62 +1,86 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message CostumeSetCostumeRequest {
-  string character_id = 1;
-  string costume_id = 2;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string costume_id = 2 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CostumeSetSdCostumeRequest {
-  string character_id = 1;
-  string sd_costume_id = 2;
-  string sd_costume_hair_accessory_id = 3;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string sd_costume_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	string sd_costume_hair_accessory_id = 3;
 }
 
 message CostumeReadCostumeRequest {
-  string character_id = 1;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CostumeReadSdCostumeRequest {
-  string character_id = 1;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CostumeReadSdCostumeHairAccessoryRequest {
-  string character_id = 1;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CostumeSetCostumeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CostumeSetSdCostumeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CostumeReadCostumeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CostumeReadSdCostumeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CostumeReadSdCostumeHairAccessoryResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Costume {
-  rpc SetCostume (CostumeSetCostumeRequest) returns (CostumeSetCostumeResponse);
-  rpc SetSdCostume (CostumeSetSdCostumeRequest) returns (CostumeSetSdCostumeResponse);
-  rpc ReadCostume (CostumeReadCostumeRequest) returns (CostumeReadCostumeResponse);
-  rpc ReadSdCostume (CostumeReadSdCostumeRequest) returns (CostumeReadSdCostumeResponse);
-  rpc ReadSdCostumeHairAccessory (CostumeReadSdCostumeHairAccessoryRequest) returns (CostumeReadSdCostumeHairAccessoryResponse);
+	rpc SetCostume (.rpc.api.CostumeSetCostumeRequest) returns (.rpc.api.CostumeSetCostumeResponse) {
+		option (google.api.http).post = "/Costume/SetCostume";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SetSdCostume (.rpc.api.CostumeSetSdCostumeRequest) returns (.rpc.api.CostumeSetSdCostumeResponse) {
+		option (google.api.http).post = "/Costume/SetSdCostume";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadCostume (.rpc.api.CostumeReadCostumeRequest) returns (.rpc.api.CostumeReadCostumeResponse) {
+		option (google.api.http).post = "/Costume/ReadCostume";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadSdCostume (.rpc.api.CostumeReadSdCostumeRequest) returns (.rpc.api.CostumeReadSdCostumeResponse) {
+		option (google.api.http).post = "/Costume/ReadSdCostume";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadSdCostumeHairAccessory (.rpc.api.CostumeReadSdCostumeHairAccessoryRequest) returns (.rpc.api.CostumeReadSdCostumeHairAccessoryResponse) {
+		option (google.api.http).post = "/Costume/ReadSdCostumeHairAccessory";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserJumpRopeSummary {
-  int64 best_jump_count = 2;
-  int64 play_count = 3;
-  int64 ranking_best_jump_count = 4;
+	int64 best_jump_count = 2;
+	int64 play_count = 3;
+	int64 ranking_best_jump_count = 4;
 }

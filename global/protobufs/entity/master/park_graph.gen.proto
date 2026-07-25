@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_script_parameter_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkGraph {
-  string id = 1;
-  string graph_id = 2;
-  repeated string parameter_values = 3;
-  repeated .enums.ParkScriptParameterType parameter_types = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string graph_id = 2;
+	repeated string parameter_values = 3 [(options.master.optional) = true];
+	repeated .enums.ParkScriptParameterType parameter_types = 4 [(options.master.optional) = true];
 }

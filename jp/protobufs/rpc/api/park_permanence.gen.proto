@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "common/consumption.gen.proto";
 import "common/reward.gen.proto";
@@ -18,180 +16,264 @@ import "rpc/api/common/park.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message ParkPermanenceSetPosterBoothRequest {
-  message PosterBoothResource {
-    .enums.PosterBoothResourceType resource_type = 1;
-    string resource_id = 2;
-  }
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-  repeated ParkPermanenceSetPosterBoothRequest.PosterBoothResource resources = 2;
+	message PosterBoothResource {
+		.enums.PosterBoothResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true];
+		string resource_id = 2;
+	}
+
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	repeated ParkPermanenceSetPosterBoothRequest.PosterBoothResource resources = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 4];
 }
 
 message ParkPermanenceLevelUpFacilityRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
 }
 
 message ParkPermanenceReceivePresentRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-  string character_id = 2;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	string character_id = 2 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkPermanenceReceivePresentResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceCharacterShopItem {
-  string park_character_shop_item_id = 1;
-  repeated .common.Reward rewards = 2;
-  string sd_costume_id = 3;
-  string asset_id = 4;
+	string park_character_shop_item_id = 1 [(options.master.fk) = "ParkCharacterShopItem:id"];
+	repeated .common.Reward rewards = 2;
+	string sd_costume_id = 3 [(options.master.fk) = "SdCostume:id"];
+	string asset_id = 4;
 }
 
 message ParkPermanenceCharacterShopItemWithCollectedInfo {
-  ParkPermanenceCharacterShopItem item = 1;
-  bool is_collected = 2;
+	ParkPermanenceCharacterShopItem item = 1;
+	bool is_collected = 2;
 }
 
 message ParkPermanenceListCharacterShopItemRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
 }
 
 message ParkPermanenceListCharacterShopItemResponse {
-  string shop_name = 1;
-  .common.Consumption consumption = 2;
-  repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 3;
-  repeated ParkPermanenceCharacterShopItem picked_items = 4;
-  common.Response common_response = 9999;
+	string shop_name = 1;
+	.common.Consumption consumption = 2;
+	repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 3;
+	repeated ParkPermanenceCharacterShopItem picked_items = 4;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanencePurchaseCharacterShopItemRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
 }
 
 message ParkPermanencePurchaseCharacterShopItemResponse {
-  repeated ParkPermanenceCharacterShopItem picked_items = 1;
-  common.Response common_response = 9999;
+	repeated ParkPermanenceCharacterShopItem picked_items = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceSelectCharacterShopItemRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-  string park_character_shop_item_id = 2;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	string park_character_shop_item_id = 2 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkPermanenceSelectCharacterShopItemResponse {
-  repeated common.RewardResult reward_results = 1;
-  repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 2;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 2;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceDrawLotteryRequest {
-  string park_lottery_id = 1;
+	string park_lottery_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkPermanenceDrawLotteryResponse {
-  repeated common.RewardResult reward_results = 1;
-  .enums.ParkLotteryRewardRarityType reward_rarity_type = 2;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	.enums.ParkLotteryRewardRarityType reward_rarity_type = 2;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceStartHighLowRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
 }
 
 message ParkPermanenceFinishHighLowRequest {
-  .enums.ParkHighLowHandType hand_type = 1;
-  bool is_reward_get = 2;
-  int32 double_up_success_count = 3;
+	.enums.ParkHighLowHandType hand_type = 1 [(buf.validate.field).enum.defined_only = true];
+	bool is_reward_get = 2;
+	int32 double_up_success_count = 3 [(buf.validate.field).int32.lte = 100, (buf.validate.field).int32.gte = 0];
 }
 
 message ParkPermanenceFinishHighLowResponse {
-  repeated common.RewardResult reward_results = 1;
-  bool is_first_achieved_hand_type = 2;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	bool is_first_achieved_hand_type = 2;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanencePrepareFishingRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-  .enums.ParkTimePeriodType park_time_period_type = 2;
-  string park_fishing_bait_id = 3;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	.enums.ParkTimePeriodType park_time_period_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string park_fishing_bait_id = 3 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkPermanencePrepareFishingResponse {
-  string park_fishing_fish_id = 1;
-  common.Response common_response = 9999;
+	string park_fishing_fish_id = 1 [(options.master.fk) = "ParkFishingFish:id"];
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceStartFishingRequest {
-  string park_fishing_fish_id = 1;
+	string park_fishing_fish_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkPermanenceMissFishingRequest {
-  string park_fishing_fish_id = 1;
+	string park_fishing_fish_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkPermanenceFinishFishingRequest {
-  string park_fishing_fish_id = 1;
-  bool is_success = 2;
+	string park_fishing_fish_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	bool is_success = 2;
 }
 
 message ParkPermanenceFinishFishingResponse {
-  int32 fish_weight = 1;
-  .enums.ParkFishingFishWeightType fish_weight_type = 2;
-  repeated common.RewardResult reward_results = 3;
-  common.Response common_response = 9999;
+	int32 fish_weight = 1;
+	.enums.ParkFishingFishWeightType fish_weight_type = 2;
+	repeated common.RewardResult reward_results = 3;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceReceiveFishingTotalCaughtRewardResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceLevelUpFishingRodRequest {
-  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
 }
 
 message ParkPermanenceSetPosterBoothResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceLevelUpFacilityResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceStartHighLowResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceStartFishingResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceMissFishingResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkPermanenceLevelUpFishingRodResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service ParkPermanence {
-  rpc SetPosterBooth (ParkPermanenceSetPosterBoothRequest) returns (ParkPermanenceSetPosterBoothResponse);
-  rpc LevelUpFacility (ParkPermanenceLevelUpFacilityRequest) returns (ParkPermanenceLevelUpFacilityResponse);
-  rpc ReceivePresent (ParkPermanenceReceivePresentRequest) returns (ParkPermanenceReceivePresentResponse);
-  rpc ListCharacterShopItem (ParkPermanenceListCharacterShopItemRequest) returns (ParkPermanenceListCharacterShopItemResponse);
-  rpc PurchaseCharacterShopItem (ParkPermanencePurchaseCharacterShopItemRequest) returns (ParkPermanencePurchaseCharacterShopItemResponse);
-  rpc SelectCharacterShopItem (ParkPermanenceSelectCharacterShopItemRequest) returns (ParkPermanenceSelectCharacterShopItemResponse);
-  rpc DrawLottery (ParkPermanenceDrawLotteryRequest) returns (ParkPermanenceDrawLotteryResponse);
-  rpc StartHighLow (ParkPermanenceStartHighLowRequest) returns (ParkPermanenceStartHighLowResponse);
-  rpc FinishHighLow (ParkPermanenceFinishHighLowRequest) returns (ParkPermanenceFinishHighLowResponse);
-  rpc PrepareFishing (ParkPermanencePrepareFishingRequest) returns (ParkPermanencePrepareFishingResponse);
-  rpc StartFishing (ParkPermanenceStartFishingRequest) returns (ParkPermanenceStartFishingResponse);
-  rpc MissFishing (ParkPermanenceMissFishingRequest) returns (ParkPermanenceMissFishingResponse);
-  rpc FinishFishing (ParkPermanenceFinishFishingRequest) returns (ParkPermanenceFinishFishingResponse);
-  rpc ReceiveFishingTotalCaughtReward (.google.protobuf.Empty) returns (ParkPermanenceReceiveFishingTotalCaughtRewardResponse);
-  rpc LevelUpFishingRod (ParkPermanenceLevelUpFishingRodRequest) returns (ParkPermanenceLevelUpFishingRodResponse);
+	rpc SetPosterBooth (.rpc.api.ParkPermanenceSetPosterBoothRequest) returns (.rpc.api.ParkPermanenceSetPosterBoothResponse) {
+		option (google.api.http).post = "/ParkPermanence/SetPosterBooth";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc LevelUpFacility (.rpc.api.ParkPermanenceLevelUpFacilityRequest) returns (.rpc.api.ParkPermanenceLevelUpFacilityResponse) {
+		option (google.api.http).post = "/ParkPermanence/LevelUpFacility";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReceivePresent (.rpc.api.ParkPermanenceReceivePresentRequest) returns (.rpc.api.ParkPermanenceReceivePresentResponse) {
+		option (google.api.http).post = "/ParkPermanence/ReceivePresent";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListCharacterShopItem (.rpc.api.ParkPermanenceListCharacterShopItemRequest) returns (.rpc.api.ParkPermanenceListCharacterShopItemResponse) {
+		option (google.api.http).post = "/ParkPermanence/ListCharacterShopItem";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc PurchaseCharacterShopItem (.rpc.api.ParkPermanencePurchaseCharacterShopItemRequest) returns (.rpc.api.ParkPermanencePurchaseCharacterShopItemResponse) {
+		option (google.api.http).post = "/ParkPermanence/PurchaseCharacterShopItem";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SelectCharacterShopItem (.rpc.api.ParkPermanenceSelectCharacterShopItemRequest) returns (.rpc.api.ParkPermanenceSelectCharacterShopItemResponse) {
+		option (google.api.http).post = "/ParkPermanence/SelectCharacterShopItem";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc DrawLottery (.rpc.api.ParkPermanenceDrawLotteryRequest) returns (.rpc.api.ParkPermanenceDrawLotteryResponse) {
+		option (google.api.http).post = "/ParkPermanence/DrawLottery";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartHighLow (.rpc.api.ParkPermanenceStartHighLowRequest) returns (.rpc.api.ParkPermanenceStartHighLowResponse) {
+		option (google.api.http).post = "/ParkPermanence/StartHighLow";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishHighLow (.rpc.api.ParkPermanenceFinishHighLowRequest) returns (.rpc.api.ParkPermanenceFinishHighLowResponse) {
+		option (google.api.http).post = "/ParkPermanence/FinishHighLow";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc PrepareFishing (.rpc.api.ParkPermanencePrepareFishingRequest) returns (.rpc.api.ParkPermanencePrepareFishingResponse) {
+		option (google.api.http).post = "/ParkPermanence/PrepareFishing";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartFishing (.rpc.api.ParkPermanenceStartFishingRequest) returns (.rpc.api.ParkPermanenceStartFishingResponse) {
+		option (google.api.http).post = "/ParkPermanence/StartFishing";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc MissFishing (.rpc.api.ParkPermanenceMissFishingRequest) returns (.rpc.api.ParkPermanenceMissFishingResponse) {
+		option (google.api.http).post = "/ParkPermanence/MissFishing";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc FinishFishing (.rpc.api.ParkPermanenceFinishFishingRequest) returns (.rpc.api.ParkPermanenceFinishFishingResponse) {
+		option (google.api.http).post = "/ParkPermanence/FinishFishing";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc ReceiveFishingTotalCaughtReward (.google.protobuf.Empty) returns (.rpc.api.ParkPermanenceReceiveFishingTotalCaughtRewardResponse) {
+		option (google.api.http).post = "/ParkPermanence/ReceiveFishingTotalCaughtReward";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc LevelUpFishingRod (.rpc.api.ParkPermanenceLevelUpFishingRodRequest) returns (.rpc.api.ParkPermanenceLevelUpFishingRodResponse) {
+		option (google.api.http).post = "/ParkPermanence/LevelUpFishingRod";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

@@ -1,21 +1,23 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/chase_play_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Chase {
-  string id = 1;
-  .enums.ChasePlayType play_type = 2;
-  string unlock_condition_group_id = 3;
-  repeated int32 area_key_appear_location_counts = 5;
-  repeated int32 area_laser_gimmick_appear_location_counts = 6;
-  repeated int32 area_laser_gimmick_reappear_location_counts = 7;
-  repeated int32 area_play_start_location_counts = 8;
-  repeated .common.SimplifiedReward rewards = 1000;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.ChasePlayType play_type = 2;
+	string unlock_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	repeated int32 area_key_appear_location_counts = 5 [(options.master.optional) = true];
+	repeated int32 area_laser_gimmick_appear_location_counts = 6 [(options.master.optional) = true];
+	repeated int32 area_laser_gimmick_reappear_location_counts = 7 [(options.master.optional) = true];
+	repeated int32 area_play_start_location_counts = 8 [(options.master.optional) = true];
+	repeated .common.SimplifiedReward rewards = 1000 [(options.master.optional) = true];
 }

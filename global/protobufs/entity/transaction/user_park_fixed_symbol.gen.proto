@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserParkFixedSymbol {
-  repeated string park_fixed_symbol_ids = 2;
+	repeated string park_fixed_symbol_ids = 2 [(options.master.fk) = "ParkFixedSymbol:id"];
 }

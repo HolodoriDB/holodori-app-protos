@@ -1,17 +1,19 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Stamp {
-  string id = 1;
-  string asset_id = 2;
-  string prefab_id = 3;
-  string name_lang_id = 4;
-  bool is_preset = 6;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string asset_id = 2 [(options.master.optional) = true];
+	string prefab_id = 3;
+	string name_lang_id = 4 [(options.master.fk) = "LangStamp:id"];
+	bool is_preset = 6 [(options.master.optional) = true];
+	int32 order = 999;
 }

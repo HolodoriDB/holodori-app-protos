@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum StoryAssetType {
-  STORY_ASSET_TYPE_UNKNOWN = 0;
-  STORY_ASSET_TYPE_ADV = 1;
-  STORY_ASSET_TYPE_MOVIE = 2;
+	STORY_ASSET_TYPE_UNKNOWN = 0;
+	STORY_ASSET_TYPE_ADV = 1;
+	STORY_ASSET_TYPE_MOVIE = 2;
 }

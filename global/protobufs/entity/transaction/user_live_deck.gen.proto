@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserLiveDeck {
-  string character_id = 2;
-  int32 number = 3;
-  string name = 4;
-  string costume_id = 5;
+	string character_id = 2 [(options.master.fk) = "Character:id", (options.transaction.pk) = true];
+	int32 number = 3 [(options.transaction.pk) = true];
+	string name = 4;
+	string costume_id = 5 [(options.master.fk) = "Costume:id"];
 }

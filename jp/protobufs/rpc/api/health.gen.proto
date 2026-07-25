@@ -1,22 +1,27 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "enums/health_check_serving_status.gen.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
+
+package rpc.api;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message HealthCheckRequest {
-  string service = 1;
+	string service = 1;
 }
 
 message HealthCheckResponse {
-  .enums.HealthCheckServingStatus status = 1;
+	.enums.HealthCheckServingStatus status = 1;
 }
 
 service Health {
-  rpc Check (HealthCheckRequest) returns (HealthCheckResponse);
+	rpc Check (.rpc.api.HealthCheckRequest) returns (.rpc.api.HealthCheckResponse) {
+		option (google.api.http).post = "/Health/Check";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_game_auth_token = true;
+		option (options.check_option.check).disabled_master_version = true;
+	}
 }

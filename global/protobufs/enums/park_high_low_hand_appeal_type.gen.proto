@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum ParkHighLowHandAppealType {
-  PARK_HIGH_LOW_HAND_APPEAL_TYPE_UNKNOWN = 0;
-  PARK_HIGH_LOW_HAND_APPEAL_TYPE_CHANCE = 1;
-  PARK_HIGH_LOW_HAND_APPEAL_TYPE_BIG_CHANCE = 2;
+	PARK_HIGH_LOW_HAND_APPEAL_TYPE_UNKNOWN = 0;
+	PARK_HIGH_LOW_HAND_APPEAL_TYPE_CHANCE = 1;
+	PARK_HIGH_LOW_HAND_APPEAL_TYPE_BIG_CHANCE = 2;
 }

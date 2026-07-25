@@ -1,19 +1,21 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/splash_ball_play_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SplashBall {
-  string id = 1;
-  .enums.SplashBallPlayType play_type = 2;
-  string unlock_condition_group_id = 3;
-  string splash_ball_ball_group_id = 6;
-  string start_splash_ball_player_position_group_id = 7;
-  string game_start_display_clear_condition_lang_id = 100;
-  string game_playing_display_clear_condition_lang_id = 101;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.SplashBallPlayType play_type = 2;
+	string unlock_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string splash_ball_ball_group_id = 6 [(options.master.fk) = "SplashBallBall:group_id"];
+	string start_splash_ball_player_position_group_id = 7 [(options.master.fk) = "SplashBallPlayerPosition:group_id"];
+	string game_start_display_clear_condition_lang_id = 100 [(options.master.fk) = "LangSplashBall:id"];
+	string game_playing_display_clear_condition_lang_id = 101 [(options.master.fk) = "LangSplashBall:id"];
 }

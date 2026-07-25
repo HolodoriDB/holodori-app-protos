@@ -1,20 +1,25 @@
 syntax = "proto3";
 
-package options.check_option;
-
 import "enums/error_code.gen.proto";
 import "google/protobuf/descriptor.proto";
+
+package options.check_option;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/options";
 option csharp_namespace = "Vision.Common.Proto.Api.Options";
 
+extend google.protobuf.MethodOptions {
+	CheckOption check = 51000;
+	ErrorOption error = 51001;
+}
+
 message CheckOption {
-  bool disabled_game_auth_token = 1;
-  bool disabled_master_version = 2;
-  bool enabled_response_cache = 3;
-  bool enabled_request_signature = 4;
+	bool disabled_game_auth_token = 1;
+	bool disabled_master_version = 2;
+	bool enabled_response_cache = 3;
+	bool enabled_request_signature = 4;
 }
 
 message ErrorOption {
-  repeated .enums.ErrorCode error_codes = 1;
+	repeated .enums.ErrorCode error_codes = 1;
 }

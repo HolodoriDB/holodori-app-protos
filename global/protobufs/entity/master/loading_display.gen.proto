@@ -1,20 +1,22 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/loading_display_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LoadingDisplay {
-  string id = 1;
-  .enums.LoadingDisplayType type = 2;
-  string title_lang_id = 3;
-  string text_lang_id = 4;
-  string asset_id = 6;
-  string character_id = 7;
-  int32 ratio = 8;
-  string condition_group_id = 9;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.LoadingDisplayType type = 2;
+	string title_lang_id = 3 [(options.master.fk) = "LangLoadingDisplay:id", (options.master.optional) = true];
+	string text_lang_id = 4 [(options.master.fk) = "LangLoadingDisplay:id", (options.master.optional) = true];
+	string asset_id = 6 [(options.master.optional) = true];
+	string character_id = 7 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	int32 ratio = 8;
+	string condition_group_id = 9 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 }

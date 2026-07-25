@@ -6,8 +6,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum ParkEmotionType {
-  PARK_EMOTION_TYPE_UNKNOWN = 0;
-  PARK_EMOTION_TYPE_NORMAL = 1;
-  PARK_EMOTION_TYPE_SIT = 2;
-  PARK_EMOTION_TYPE_BOAT = 3;
+	PARK_EMOTION_TYPE_UNKNOWN = 0;
+	PARK_EMOTION_TYPE_NORMAL = 1;
+	PARK_EMOTION_TYPE_SIT = 2;
+	PARK_EMOTION_TYPE_BOAT = 3;
 }

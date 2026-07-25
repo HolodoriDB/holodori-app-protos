@@ -1,24 +1,26 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveSkinGroup {
-  string id = 1;
-  string name_lang_id = 3;
-  string thumbnail_asset_id = 4;
-  bool is_visible = 5;
-  string note_live_skin_id = 100;
-  string lane_live_skin_id = 101;
-  string judgement_text_live_skin_id = 102;
-  string combo_text_live_skin_id = 103;
-  string tap_effect_live_skin_id = 104;
-  string background_live_skin_id = 105;
-  string header_live_skin_id = 106;
-  string character_effect_live_skin_id = 107;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 3 [(options.master.fk) = "LangLiveSkinGroup:id"];
+	string thumbnail_asset_id = 4;
+	bool is_visible = 5 [(options.master.optional) = true];
+	string note_live_skin_id = 100 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string lane_live_skin_id = 101 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string judgement_text_live_skin_id = 102 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string combo_text_live_skin_id = 103 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string tap_effect_live_skin_id = 104 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string background_live_skin_id = 105 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string header_live_skin_id = 106 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string character_effect_live_skin_id = 107 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	int32 order = 999;
 }

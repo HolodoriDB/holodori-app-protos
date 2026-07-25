@@ -1,22 +1,24 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/combo_card_game_card_role_effect.gen.proto";
 import "enums/combo_card_game_card_role_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ComboCardGameRoleScore {
-  string id = 1;
-  string name_lang_id = 2;
-  .enums.ComboCardGameCardRoleType role_type = 3;
-  repeated string character_grouping_ids = 4;
-  int32 required_card_quantity = 5;
-  int32 score = 6;
-  int32 same_category_score = 7;
-  .enums.ComboCardGameCardRoleEffect role_effect = 8;
-  .enums.ComboCardGameCardRoleEffect same_category_role_effect = 9;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangComboCardGameRoleScore:id"];
+	.enums.ComboCardGameCardRoleType role_type = 3;
+	repeated string character_grouping_ids = 4 [(options.master.fk) = "CharacterGrouping:id", (options.master.optional) = true];
+	int32 required_card_quantity = 5 [(options.master.optional) = true];
+	int32 score = 6 [(options.master.optional) = true];
+	int32 same_category_score = 7 [(options.master.optional) = true];
+	.enums.ComboCardGameCardRoleEffect role_effect = 8;
+	.enums.ComboCardGameCardRoleEffect same_category_role_effect = 9;
 }

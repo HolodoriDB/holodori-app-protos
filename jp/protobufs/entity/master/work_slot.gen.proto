@@ -1,14 +1,16 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message WorkSlot {
-  int32 number = 1;
-  string view_condition_group_id = 2;
-  string unlock_condition_group_id = 3;
+	option (options.master.table) = true;
+
+	int32 number = 1 [(options.master.pk) = true];
+	string view_condition_group_id = 2 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 }

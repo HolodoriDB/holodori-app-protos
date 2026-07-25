@@ -1,24 +1,26 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Membership {
-  string shop_charge_item_subscription_shop_charge_item_id = 1;
-  repeated string character_ids = 2;
-  string name_lang_id = 3;
-  repeated string stamp_ids = 4;
-  repeated string emblem_ids = 5;
-  repeated string fan_mark_ids = 6;
-  string character_coin_item_id = 7;
-  int32 character_coin_item_quantity = 8;
-  int32 first_join_reward_character_coin_item_quantity = 9;
-  string character_coin_exchange_booth_group_id = 10;
-  string thumbnail_asset_id = 11;
-  string motion_asset_id = 12;
-  int64 notification_start_time = 13;
+	option (options.master.table) = true;
+
+	string shop_charge_item_subscription_shop_charge_item_id = 1 [(options.master.fk) = "ShopChargeItemSubscription:shop_charge_item_id", (options.master.pk) = true];
+	repeated string character_ids = 2 [(options.master.fk) = "Character:id"];
+	string name_lang_id = 3 [(options.master.fk) = "LangMembership:id"];
+	repeated string stamp_ids = 4 [(options.master.fk) = "Stamp:id"];
+	repeated string emblem_ids = 5 [(options.master.fk) = "Emblem:id"];
+	repeated string fan_mark_ids = 6 [(options.master.fk) = "FanMark:id"];
+	string character_coin_item_id = 7 [(options.master.fk) = "Item:id"];
+	int32 character_coin_item_quantity = 8;
+	int32 first_join_reward_character_coin_item_quantity = 9;
+	string character_coin_exchange_booth_group_id = 10 [(options.master.fk) = "ExchangeBoothGroup:id"];
+	string thumbnail_asset_id = 11;
+	string motion_asset_id = 12;
+	int64 notification_start_time = 13;
 }

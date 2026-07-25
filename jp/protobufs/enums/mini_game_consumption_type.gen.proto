@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum MiniGameConsumptionType {
-  MINI_GAME_CONSUMPTION_TYPE_UNKNOWN = 0;
-  MINI_GAME_CONSUMPTION_TYPE_REWARD_UP_STAMINA = 1;
-  MINI_GAME_CONSUMPTION_TYPE_BET_COIN = 2;
+	MINI_GAME_CONSUMPTION_TYPE_UNKNOWN = 0;
+	MINI_GAME_CONSUMPTION_TYPE_REWARD_UP_STAMINA = 1;
+	MINI_GAME_CONSUMPTION_TYPE_BET_COIN = 2;
 }

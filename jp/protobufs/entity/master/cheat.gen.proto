@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/cheat_parameter_type.gen.proto";
 import "enums/cheat_severity_type.gen.proto";
 import "enums/cheat_type.gen.proto";
 
+package entity.master;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Cheat {
-  .enums.CheatType type = 1;
-  .enums.CheatSeverityType severity_type = 2;
-  .enums.CheatParameterType parameter_type = 3;
-  int64 threshold = 4;
+	option (options.master.table) = true;
+
+	.enums.CheatType type = 1 [(options.master.pk) = true];
+	.enums.CheatSeverityType severity_type = 2 [(options.master.pk) = true];
+	.enums.CheatParameterType parameter_type = 3 [(options.master.pk) = true];
+	int64 threshold = 4 [(options.master.optional) = true];
 }

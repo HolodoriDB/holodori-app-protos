@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
@@ -9,21 +7,27 @@ import "rpc/api/common/mission.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message AchievementReceiveRewardRequest {
-  string achievement_group_id = 1;
-  repeated common.Mission missions = 2;
+	string achievement_group_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated common.Mission missions = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 200];
 }
 
 message AchievementReceiveRewardResponse {
-  repeated common.RewardResult reward_results = 1;
-  int32 reward_character_exp = 2;
-  repeated common.RewardResult character_level_up_reward_results = 3;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	int32 reward_character_exp = 2;
+	repeated common.RewardResult character_level_up_reward_results = 3;
+	common.Response common_response = 9999;
 }
 
 service Achievement {
-  rpc ReceiveReward (AchievementReceiveRewardRequest) returns (AchievementReceiveRewardResponse);
+	rpc ReceiveReward (.rpc.api.AchievementReceiveRewardRequest) returns (.rpc.api.AchievementReceiveRewardResponse) {
+		option (google.api.http).post = "/Achievement/ReceiveReward";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

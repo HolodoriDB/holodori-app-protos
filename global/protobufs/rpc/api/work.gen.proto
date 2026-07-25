@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/work_evaluation_rank_type.gen.proto";
@@ -11,74 +9,107 @@ import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message WorkListWorkSlotPowerRequest {
-  repeated WorkSlot slots = 1;
+	repeated WorkSlot slots = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message WorkListWorkSlotPowerResponse {
-  message WorkSlotPower {
-    int32 slot_number = 1;
-    int64 work_slot_power = 2;
-  }
-  repeated WorkListWorkSlotPowerResponse.WorkSlotPower work_slot_powers = 1;
-  common.Response common_response = 9999;
+	message WorkSlotPower {
+		int32 slot_number = 1;
+		int64 work_slot_power = 2;
+	}
+
+	repeated WorkListWorkSlotPowerResponse.WorkSlotPower work_slot_powers = 1;
+	common.Response common_response = 9999;
 }
 
 message WorkStartRequest {
-  repeated WorkSlot slots = 1;
+	repeated WorkSlot slots = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message WorkSlot {
-  int32 slot_number = 1;
-  repeated string card_ids = 2;
+	int32 slot_number = 1 [(buf.validate.field).int32.gte = 1];
+	repeated string card_ids = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 5, (options.master.fk) = "Card:id"];
 }
 
 message WorkFinishRequest {
-  int32 slot_number = 1;
+	int32 slot_number = 1 [(buf.validate.field).int32.gte = 1];
 }
 
 message WorkFinishResponse {
-  WorkResult result = 1;
-  common.Response common_response = 9999;
+	WorkResult result = 1;
+	common.Response common_response = 9999;
 }
 
 message WorkFinishAllResponse {
-  repeated WorkResult results = 1;
-  common.Response common_response = 9999;
+	repeated WorkResult results = 1;
+	common.Response common_response = 9999;
 }
 
 message WorkCancelRequest {
-  int32 slot_number = 1;
+	int32 slot_number = 1 [(buf.validate.field).int32.gte = 1];
 }
 
 message WorkResult {
-  int32 slot_number = 1;
-  string work_id = 2;
-  repeated common.RewardResult reward_results = 3;
-  .enums.WorkEvaluationRankType evaluation_rank_type = 4;
-  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
+	int32 slot_number = 1;
+	string work_id = 2 [(options.master.fk) = "Work:id"];
+	repeated common.RewardResult reward_results = 3;
+	.enums.WorkEvaluationRankType evaluation_rank_type = 4;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
 }
 
 message WorkRefreshResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message WorkStartResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message WorkCancelResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Work {
-  rpc ListWorkSlotPower (WorkListWorkSlotPowerRequest) returns (WorkListWorkSlotPowerResponse);
-  rpc Refresh (.google.protobuf.Empty) returns (WorkRefreshResponse);
-  rpc Start (WorkStartRequest) returns (WorkStartResponse);
-  rpc Finish (WorkFinishRequest) returns (WorkFinishResponse);
-  rpc FinishAll (.google.protobuf.Empty) returns (WorkFinishAllResponse);
-  rpc Cancel (WorkCancelRequest) returns (WorkCancelResponse);
+	rpc ListWorkSlotPower (.rpc.api.WorkListWorkSlotPowerRequest) returns (.rpc.api.WorkListWorkSlotPowerResponse) {
+		option (google.api.http).post = "/Work/ListWorkSlotPower";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Refresh (.google.protobuf.Empty) returns (.rpc.api.WorkRefreshResponse) {
+		option (google.api.http).post = "/Work/Refresh";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Start (.rpc.api.WorkStartRequest) returns (.rpc.api.WorkStartResponse) {
+		option (google.api.http).post = "/Work/Start";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_WORK_REFRESH_REQUIRED;
+	}
+
+	rpc Finish (.rpc.api.WorkFinishRequest) returns (.rpc.api.WorkFinishResponse) {
+		option (google.api.http).post = "/Work/Finish";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishAll (.google.protobuf.Empty) returns (.rpc.api.WorkFinishAllResponse) {
+		option (google.api.http).post = "/Work/FinishAll";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Cancel (.rpc.api.WorkCancelRequest) returns (.rpc.api.WorkCancelResponse) {
+		option (google.api.http).post = "/Work/Cancel";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

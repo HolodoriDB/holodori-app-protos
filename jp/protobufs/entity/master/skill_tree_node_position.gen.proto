@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SkillTreeNodePosition {
-  string group_id = 1;
-  string skill_tree_node_group_id = 2;
-  int32 position_x = 3;
-  int32 position_y = 4;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	string skill_tree_node_group_id = 2 [(options.master.fk) = "SkillTreeNode:group_id", (options.master.pk) = true];
+	int32 position_x = 3 [(options.master.optional) = true];
+	int32 position_y = 4 [(options.master.optional) = true];
 }

@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserParkFishingFish {
-  string park_fishing_fish_id = 2;
-  int64 caught_count = 3;
-  int64 max_weight = 4;
-  int64 max_weight_updated_time = 5;
+	string park_fishing_fish_id = 2 [(options.master.fk) = "ParkFishingFish:id", (options.transaction.pk) = true];
+	int64 caught_count = 3;
+	int64 max_weight = 4;
+	int64 max_weight_updated_time = 5;
 }

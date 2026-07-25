@@ -1,35 +1,35 @@
 syntax = "proto3";
 
-package common;
-
 import "buf/validate/validate.proto";
+
+package common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
 option csharp_namespace = "Vision.Common.Proto.Common";
 
 message LiveBaseResult {
-  int64 score = 1;
-  int32 miss_count = 2;
-  int32 bad_count = 3;
-  int32 good_count = 4;
-  int32 great_count = 5;
-  int32 perfect_count = 6;
-  int32 auto_count = 7;
-  int32 max_combo_count = 8;
-  int32 remaining_life = 9;
-  int32 tap_count = 10;
-  int32 damage_count = 11;
-  bool is_all_skill_activated = 12;
-  int32 perfect_plus_count = 13;
-  int32 plain_miss_count = 100;
-  int32 plain_bad_count = 101;
-  int32 plain_good_count = 102;
-  int32 plain_great_count = 103;
-  int32 plain_perfect_count = 104;
-  int32 plain_perfect_plus_count = 105;
+	int64 score = 1 [(buf.validate.field).int64.gte = 0];
+	int32 miss_count = 2 [(buf.validate.field).int32.gte = 0];
+	int32 bad_count = 3 [(buf.validate.field).int32.gte = 0];
+	int32 good_count = 4 [(buf.validate.field).int32.gte = 0];
+	int32 great_count = 5 [(buf.validate.field).int32.gte = 0];
+	int32 perfect_count = 6 [(buf.validate.field).int32.gte = 0];
+	int32 auto_count = 7 [(buf.validate.field).int32.gte = 0];
+	int32 max_combo_count = 8 [(buf.validate.field).int32.gte = 0];
+	int32 remaining_life = 9 [(buf.validate.field).int32.gte = 0];
+	int32 tap_count = 10 [(buf.validate.field).int32.gte = 0];
+	int32 damage_count = 11 [(buf.validate.field).int32.gte = 0];
+	bool is_all_skill_activated = 12;
+	int32 perfect_plus_count = 13 [(buf.validate.field).int32.gte = 0];
+	int32 plain_miss_count = 100 [(buf.validate.field).int32.gte = 0];
+	int32 plain_bad_count = 101 [(buf.validate.field).int32.gte = 0];
+	int32 plain_good_count = 102 [(buf.validate.field).int32.gte = 0];
+	int32 plain_great_count = 103 [(buf.validate.field).int32.gte = 0];
+	int32 plain_perfect_count = 104 [(buf.validate.field).int32.gte = 0];
+	int32 plain_perfect_plus_count = 105 [(buf.validate.field).int32.gte = 0];
 }
 
 message LiveMultiUserSelectedMusic {
-  string user_id = 1;
-  string music_id = 2;
+	string user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string music_id = 2;
 }

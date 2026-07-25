@@ -6,11 +6,11 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum ShopType {
-  SHOP_TYPE_UNKNOWN = 0;
-  SHOP_TYPE_STONE = 1;
-  SHOP_TYPE_PREMIUM_MISSION_PASS = 2;
-  SHOP_TYPE_BENEFIT_LICENSE = 3;
-  SHOP_TYPE_MEMBERSHIP = 4;
-  SHOP_TYPE_NORMAL = 100;
-  SHOP_TYPE_SD_COSTUME = 101;
+	SHOP_TYPE_UNKNOWN = 0;
+	SHOP_TYPE_STONE = 1;
+	SHOP_TYPE_PREMIUM_MISSION_PASS = 2;
+	SHOP_TYPE_BENEFIT_LICENSE = 3;
+	SHOP_TYPE_MEMBERSHIP = 4;
+	SHOP_TYPE_NORMAL = 100;
+	SHOP_TYPE_SD_COSTUME = 101;
 }

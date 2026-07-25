@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
@@ -9,41 +7,57 @@ import "rpc/api/common/mission.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message MissionReceiveRewardRequest {
-  string mission_pass_id = 1;
-  repeated common.Mission missions = 2;
+	string mission_pass_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated common.Mission missions = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 200];
 }
 
 message MissionReceiveRewardResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message MissionReceivePassRewardRequest {
-  string mission_pass_id = 1;
-  repeated int32 normal_levels = 2;
-  repeated int32 premium_levels = 3;
+	string mission_pass_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated int32 normal_levels = 2 [(buf.validate.field).repeated.min_items = 0, (buf.validate.field).repeated.max_items = 200, (buf.validate.field).repeated.items.int32.gte = 1];
+	repeated int32 premium_levels = 3 [(buf.validate.field).repeated.min_items = 0, (buf.validate.field).repeated.max_items = 200, (buf.validate.field).repeated.items.int32.gte = 1];
 }
 
 message MissionReceivePassRewardResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message MissionPurchasePassLevelRequest {
-  string mission_pass_id = 1;
-  int32 level = 2;
+	string mission_pass_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 level = 2 [(buf.validate.field).int32.gte = 1];
 }
 
 message MissionPurchasePassLevelResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Mission {
-  rpc ReceiveReward (MissionReceiveRewardRequest) returns (MissionReceiveRewardResponse);
-  rpc ReceivePassReward (MissionReceivePassRewardRequest) returns (MissionReceivePassRewardResponse);
-  rpc PurchasePassLevel (MissionPurchasePassLevelRequest) returns (MissionPurchasePassLevelResponse);
+	rpc ReceiveReward (.rpc.api.MissionReceiveRewardRequest) returns (.rpc.api.MissionReceiveRewardResponse) {
+		option (google.api.http).post = "/Mission/ReceiveReward";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReceivePassReward (.rpc.api.MissionReceivePassRewardRequest) returns (.rpc.api.MissionReceivePassRewardResponse) {
+		option (google.api.http).post = "/Mission/ReceivePassReward";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc PurchasePassLevel (.rpc.api.MissionPurchasePassLevelRequest) returns (.rpc.api.MissionPurchasePassLevelResponse) {
+		option (google.api.http).post = "/Mission/PurchasePassLevel";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

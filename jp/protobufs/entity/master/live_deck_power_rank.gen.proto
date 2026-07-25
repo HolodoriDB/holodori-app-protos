@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/live_deck_rank_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveDeckPowerRank {
-  .enums.LiveDeckRankType type = 1;
-  int32 plus = 2;
-  int64 threshold = 3;
+	option (options.master.table) = true;
+
+	.enums.LiveDeckRankType type = 1 [(options.master.pk) = true];
+	int32 plus = 2 [(options.master.optional) = true, (options.master.pk) = true];
+	int64 threshold = 3 [(options.master.optional) = true];
 }

@@ -1,8 +1,13 @@
 syntax = "proto3";
 
-package options.transaction;
-
 import "google/protobuf/descriptor.proto";
+
+package options.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction/options";
 option csharp_namespace = "Vision.Common.Proto.Transaction.Options";
+
+extend google.protobuf.FieldOptions {
+	bool pk = 51030;
+	string fk = 51031;
+}

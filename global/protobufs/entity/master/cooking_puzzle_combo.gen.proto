@@ -1,14 +1,16 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CookingPuzzleCombo {
-  string group_id = 1;
-  int32 combo_count_from = 2;
-  int32 score_coefficient_permil_up = 3;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	int32 combo_count_from = 2 [(options.master.optional) = true, (options.master.pk) = true];
+	int32 score_coefficient_permil_up = 3 [(options.master.optional) = true];
 }

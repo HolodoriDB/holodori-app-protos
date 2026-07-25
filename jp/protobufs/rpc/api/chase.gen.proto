@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "enums/chase_team_type.gen.proto";
 import "google/api/annotations.proto";
@@ -14,70 +12,99 @@ import "rpc/api/common/ranking.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message ChaseMatchRandomRequest {
-  common.MultiGameMatchRandomInfo match_random_info = 1000;
+	common.MultiGameMatchRandomInfo match_random_info = 1000;
 }
 
 message ChaseMatchRandomResponse {
-  common.MultiGameMatchInfo match_info = 1;
-  common.Response common_response = 9999;
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
 }
 
 message ChaseCreatePrivateRoomRequest {
-  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+	common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
 }
 
 message ChaseCreatePrivateRoomResponse {
-  common.MultiGameMatchInfo match_info = 1;
-  common.Response common_response = 9999;
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
 }
 
 message ChaseStartRequest {
-  string chase_id = 1;
-  int32 reward_up_stamina_consumption_quantity = 2;
-  string character_id = 3;
-  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
-  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+	string chase_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
 }
 
 message ChaseFinishRequest {
-  string multi_game_result_id = 1;
+	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ChaseFinishResponse {
-  common.ChaseResultInfo chase_result_info = 1;
-  int64 past_highest_score = 2;
-  bool is_highest_score_updated = 3;
-  repeated common.RewardResult results = 4;
-  int32 reward_up_stamina_consumption_quantity = 5;
-  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
-  int64 benefit_license_reward_quantity_up_permil_up = 7;
-  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
-  common.MarathonMiniGameResult marathon_mini_game_result = 100;
-  common.Response common_response = 9999;
+	common.ChaseResultInfo chase_result_info = 1;
+	int64 past_highest_score = 2;
+	bool is_highest_score_updated = 3;
+	repeated common.RewardResult results = 4;
+	int32 reward_up_stamina_consumption_quantity = 5;
+	common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+	int64 benefit_license_reward_quantity_up_permil_up = 7;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+	common.MarathonMiniGameResult marathon_mini_game_result = 100;
+	common.Response common_response = 9999;
 }
 
 message ChaseGetRankingInfoRequest {
-  .enums.ChaseTeamType chase_team_type = 1;
+	.enums.ChaseTeamType chase_team_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 }
 
 message ChaseGetRankingInfoResponse {
-  int32 self_rank = 1;
-  repeated common.BasicRankingRankInfo rank_infos = 2;
-  common.Response common_response = 9999;
+	int32 self_rank = 1;
+	repeated common.BasicRankingRankInfo rank_infos = 2 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message ChaseStartResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Chase {
-  rpc MatchRandom (ChaseMatchRandomRequest) returns (ChaseMatchRandomResponse);
-  rpc CreatePrivateRoom (ChaseCreatePrivateRoomRequest) returns (ChaseCreatePrivateRoomResponse);
-  rpc Start (ChaseStartRequest) returns (ChaseStartResponse);
-  rpc Finish (ChaseFinishRequest) returns (ChaseFinishResponse);
-  rpc GetRankingInfo (ChaseGetRankingInfoRequest) returns (ChaseGetRankingInfoResponse);
+	rpc MatchRandom (.rpc.api.ChaseMatchRandomRequest) returns (.rpc.api.ChaseMatchRandomResponse) {
+		option (google.api.http).post = "/Chase/MatchRandom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc CreatePrivateRoom (.rpc.api.ChaseCreatePrivateRoomRequest) returns (.rpc.api.ChaseCreatePrivateRoomResponse) {
+		option (google.api.http).post = "/Chase/CreatePrivateRoom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MULTI_GAME_REMATCH_EXPIRED;
+	}
+
+	rpc Start (.rpc.api.ChaseStartRequest) returns (.rpc.api.ChaseStartResponse) {
+		option (google.api.http).post = "/Chase/Start";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Finish (.rpc.api.ChaseFinishRequest) returns (.rpc.api.ChaseFinishResponse) {
+		option (google.api.http).post = "/Chase/Finish";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetRankingInfo (.rpc.api.ChaseGetRankingInfoRequest) returns (.rpc.api.ChaseGetRankingInfoResponse) {
+		option (google.api.http).post = "/Chase/GetRankingInfo";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

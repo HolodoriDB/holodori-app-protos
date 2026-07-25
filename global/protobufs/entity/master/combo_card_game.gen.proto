@@ -1,19 +1,21 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/combo_card_game_play_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ComboCardGame {
-  string id = 1;
-  .enums.ComboCardGamePlayType play_type = 2;
-  int64 start_time = 3;
-  int64 end_time = 4;
-  string combo_card_game_card_group_id = 5;
-  string game_start_display_clear_condition_lang_id = 6;
-  string game_playing_display_clear_condition_lang_id = 7;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.ComboCardGamePlayType play_type = 2;
+	int64 start_time = 3 [(options.master.optional) = true];
+	int64 end_time = 4 [(options.master.optional) = true];
+	string combo_card_game_card_group_id = 5 [(options.master.fk) = "ComboCardGameCard:group_id"];
+	string game_start_display_clear_condition_lang_id = 6 [(options.master.fk) = "LangComboCardGame:id"];
+	string game_playing_display_clear_condition_lang_id = 7 [(options.master.fk) = "LangComboCardGame:id"];
 }

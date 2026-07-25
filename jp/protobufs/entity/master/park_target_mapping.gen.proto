@@ -1,21 +1,23 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_target_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkTargetMapping {
-  string id = 1;
-  string name_lang_id = 2;
-  .enums.ParkTargetType target_type = 3;
-  string park_npc_group_id = 4;
-  string park_npc_id = 5;
-  string facility_id = 6;
-  string park_talk_group_id = 7;
-  string park_position_id = 8;
-  string park_position_grouping_group_id = 9;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangParkTargetMapping:id", (options.master.optional) = true];
+	.enums.ParkTargetType target_type = 3;
+	string park_npc_group_id = 4 [(options.master.fk) = "ParkNpcGroup:id", (options.master.optional) = true];
+	string park_npc_id = 5 [(options.master.fk) = "ParkNpc:id", (options.master.optional) = true];
+	string facility_id = 6 [(options.master.optional) = true];
+	string park_talk_group_id = 7 [(options.master.fk) = "ParkTalk:group_id", (options.master.optional) = true];
+	string park_position_id = 8 [(options.master.fk) = "ParkPosition:id", (options.master.optional) = true];
+	string park_position_grouping_group_id = 9 [(options.master.fk) = "ParkPositionGrouping:group_id", (options.master.optional) = true];
 }

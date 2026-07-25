@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
 import "enums/poster_booth_resource_type.gen.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserPosterBooth {
-  string facility_id = 2;
-  repeated .enums.PosterBoothResourceType resource_types = 3;
-  repeated string resource_ids = 4;
+	string facility_id = 2 [(options.master.fk) = "Facility:id", (options.transaction.pk) = true];
+	repeated .enums.PosterBoothResourceType resource_types = 3;
+	repeated string resource_ids = 4;
 }

@@ -1,23 +1,25 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkTalk {
-  string group_id = 1;
-  string simple_adv_character_id = 2;
-  int32 number = 3;
-  string adv_asset_id = 4;
-  string simple_adv_text_lang_id = 5;
-  string simple_adv_motion_asset_id = 6;
-  string character_voice_id = 7;
-  string quest_navigation_character_voice_id = 8;
-  string se_asset_id = 9;
-  int32 after_time_point = 10;
-  bool is_balloon = 11;
-  string prop_asset_id = 12;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	string simple_adv_character_id = 2 [(options.master.fk) = "Character:id", (options.master.optional) = true, (options.master.pk) = true];
+	int32 number = 3 [(options.master.pk) = true];
+	string adv_asset_id = 4 [(options.master.optional) = true];
+	string simple_adv_text_lang_id = 5 [(options.master.fk) = "LangParkTalk:id", (options.master.optional) = true];
+	string simple_adv_motion_asset_id = 6 [(options.master.optional) = true];
+	string character_voice_id = 7 [(options.master.fk) = "CharacterVoice:id", (options.master.optional) = true];
+	string quest_navigation_character_voice_id = 8 [(options.master.fk) = "CharacterVoice:id", (options.master.optional) = true];
+	string se_asset_id = 9 [(options.master.optional) = true];
+	int32 after_time_point = 10 [(options.master.optional) = true];
+	bool is_balloon = 11 [(options.master.optional) = true];
+	string prop_asset_id = 12 [(options.master.optional) = true];
 }

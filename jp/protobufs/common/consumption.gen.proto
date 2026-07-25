@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package common;
-
 import "buf/validate/validate.proto";
 import "enums/resource_type.gen.proto";
+
+package common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
 option csharp_namespace = "Vision.Common.Proto.Common";
 
 message Consumption {
-  .enums.ResourceType resource_type = 1;
-  string resource_id = 2;
-  int64 quantity = 3;
+	.enums.ResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string resource_id = 2;
+	int64 quantity = 3 [(buf.validate.field).int64.gte = 1];
 }

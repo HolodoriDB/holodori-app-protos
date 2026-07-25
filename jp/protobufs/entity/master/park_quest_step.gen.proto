@@ -1,26 +1,28 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/park_quest_step_transition_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkQuestStep {
-  string park_quest_id = 1;
-  int32 step_group_number = 2;
-  int32 step = 3;
-  string target_lang_id = 4;
-  string description_lang_id = 5;
-  string unlock_condition_group_id = 6;
-  .enums.ParkQuestStepTransitionType transition_type = 7;
-  string transition_adv_asset_id = 8;
-  string after_adv_area_id = 9;
-  int32 after_adv_area_player_spawn_point_index = 10;
-  string after_adv_facility_id = 11;
-  string asset_id = 15;
-  repeated .common.Reward rewards = 1000;
+	option (options.master.table) = true;
+
+	string park_quest_id = 1 [(options.master.fk) = "ParkQuest:id", (options.master.pk) = true];
+	int32 step_group_number = 2 [(options.master.pk) = true];
+	int32 step = 3 [(options.master.pk) = true];
+	string target_lang_id = 4 [(options.master.fk) = "LangParkQuestStep:id", (options.master.optional) = true];
+	string description_lang_id = 5 [(options.master.fk) = "LangParkQuestStep:id"];
+	string unlock_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	.enums.ParkQuestStepTransitionType transition_type = 7 [(options.master.optional) = true];
+	string transition_adv_asset_id = 8 [(options.master.optional) = true];
+	string after_adv_area_id = 9 [(options.master.fk) = "Area:id", (options.master.optional) = true];
+	int32 after_adv_area_player_spawn_point_index = 10 [(options.master.optional) = true];
+	string after_adv_facility_id = 11 [(options.master.fk) = "Facility:id", (options.master.optional) = true];
+	string asset_id = 15;
+	repeated .common.Reward rewards = 1000 [(options.master.optional) = true];
 }

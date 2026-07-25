@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "enums/resource_type.gen.proto";
 import "enums/rule_type.gen.proto";
@@ -13,44 +11,59 @@ import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 import "rpc/api/common/user_content_cdn.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message HomeLoginResponse {
-  message AsyncUpdateResultInfo {
-    common.RewardResult benefit_license_renewal_reward_result = 1;
-  }
-  message ExpiredResourceResult {
-    message ExpiredResource {
-      .enums.ResourceType resource_type = 1;
-      string resource_id = 2;
-      int64 quantity = 3;
-    }
-    repeated HomeLoginResponse.ExpiredResourceResult.ExpiredResource expired_resources = 1;
-    repeated common.RewardResult reward_results = 2;
-  }
-  message RealtimeNotificationConnectionInfo {
-    string sse_token = 1;
-    string sse_url = 2;
-  }
-  HomeLoginResponse.AsyncUpdateResultInfo async_update_result_info = 1;
-  HomeLoginResponse.ExpiredResourceResult expired_resource_result = 2;
-  repeated .enums.RuleType rule_types = 3;
-  common.UserContentCdnSignedCookie user_content_cdn_signed_cookie = 4;
-  repeated string fcm_topics = 5;
-  HomeLoginResponse.RealtimeNotificationConnectionInfo realtime_notification_connection_info = 6;
-  common.Response common_response = 9999;
+	message AsyncUpdateResultInfo {
+		common.RewardResult benefit_license_renewal_reward_result = 1;
+	}
+
+	message ExpiredResourceResult {
+		message ExpiredResource {
+			.enums.ResourceType resource_type = 1;
+			string resource_id = 2;
+			int64 quantity = 3;
+		}
+
+		repeated HomeLoginResponse.ExpiredResourceResult.ExpiredResource expired_resources = 1;
+		repeated common.RewardResult reward_results = 2;
+	}
+
+	message RealtimeNotificationConnectionInfo {
+		string sse_token = 1 [(options.zap.hidden) = true];
+		string sse_url = 2;
+	}
+
+	HomeLoginResponse.AsyncUpdateResultInfo async_update_result_info = 1;
+	HomeLoginResponse.ExpiredResourceResult expired_resource_result = 2;
+	repeated .enums.RuleType rule_types = 3;
+	common.UserContentCdnSignedCookie user_content_cdn_signed_cookie = 4 [(options.zap.hidden) = true];
+	repeated string fcm_topics = 5;
+	HomeLoginResponse.RealtimeNotificationConnectionInfo realtime_notification_connection_info = 6;
+	common.Response common_response = 9999;
 }
 
 message HomeAgreeRuleRequest {
-  repeated .enums.RuleType rule_types = 1;
+	repeated .enums.RuleType rule_types = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.enum.defined_only = true, (buf.validate.field).repeated.items.enum.not_in = 0];
 }
 
 message HomeAgreeRuleResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Home {
-  rpc Login (.google.protobuf.Empty) returns (HomeLoginResponse);
-  rpc AgreeRule (HomeAgreeRuleRequest) returns (HomeAgreeRuleResponse);
+	rpc Login (.google.protobuf.Empty) returns (.rpc.api.HomeLoginResponse) {
+		option (google.api.http).post = "/Home/Login";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc AgreeRule (.rpc.api.HomeAgreeRuleRequest) returns (.rpc.api.HomeAgreeRuleResponse) {
+		option (google.api.http).post = "/Home/AgreeRule";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

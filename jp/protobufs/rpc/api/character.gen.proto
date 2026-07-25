@@ -1,32 +1,41 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message CharacterReadRequest {
-  string character_id = 1;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CharacterReadParkRequest {
-  string character_id = 1;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CharacterReadResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CharacterReadParkResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Character {
-  rpc Read (CharacterReadRequest) returns (CharacterReadResponse);
-  rpc ReadPark (CharacterReadParkRequest) returns (CharacterReadParkResponse);
+	rpc Read (.rpc.api.CharacterReadRequest) returns (.rpc.api.CharacterReadResponse) {
+		option (google.api.http).post = "/Character/Read";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadPark (.rpc.api.CharacterReadParkRequest) returns (.rpc.api.CharacterReadParkResponse) {
+		option (google.api.http).post = "/Character/ReadPark";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

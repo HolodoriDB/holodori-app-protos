@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ComboCardGameDeck {
-  string id = 1;
-  repeated string character_grouping_ids = 2;
-  int32 ratio = 3;
-  int32 finish_card_quantity = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	repeated string character_grouping_ids = 2;
+	int32 ratio = 3 [(options.master.optional) = true];
+	int32 finish_card_quantity = 4 [(options.master.optional) = true];
 }

@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_high_low_hand_appeal_type.gen.proto";
 import "enums/park_high_low_hand_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkHighLowHand {
-  string group_id = 1;
-  .enums.ParkHighLowHandType type = 2;
-  string name_lang_id = 3;
-  int64 reward_quantity_up_permil_multiply = 4;
-  .enums.ParkHighLowHandAppealType appeal_type = 5;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	.enums.ParkHighLowHandType type = 2 [(options.master.pk) = true];
+	string name_lang_id = 3 [(options.master.fk) = "LangParkHighLowHand:id"];
+	int64 reward_quantity_up_permil_multiply = 4 [(options.master.optional) = true];
+	.enums.ParkHighLowHandAppealType appeal_type = 5 [(options.master.optional) = true];
 }

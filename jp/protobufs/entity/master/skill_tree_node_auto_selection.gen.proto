@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/skill_tree_auto_selection_type.gen.proto";
 import "enums/skill_tree_node_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SkillTreeNodeAutoSelection {
-  .enums.SkillTreeAutoSelectionType auto_selection_type = 1;
-  .enums.SkillTreeNodeType node_type = 2;
-  int32 priority_ratio_permil = 3;
+	option (options.master.table) = true;
+
+	.enums.SkillTreeAutoSelectionType auto_selection_type = 1 [(options.master.pk) = true];
+	.enums.SkillTreeNodeType node_type = 2 [(options.master.pk) = true];
+	int32 priority_ratio_permil = 3 [(options.master.optional) = true];
 }

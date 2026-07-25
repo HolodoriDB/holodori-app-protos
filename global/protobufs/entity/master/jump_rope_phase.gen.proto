@@ -1,17 +1,19 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/jump_rope_phase_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message JumpRopePhase {
-  .enums.JumpRopePhaseType phase_type = 1;
-  string name_lang_id = 2;
-  bool is_rope_emission_enabled = 3;
-  bool is_spinner_change_enabled = 4;
-  string icon_asset_id = 5;
+	option (options.master.table) = true;
+
+	.enums.JumpRopePhaseType phase_type = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangJumpRopePhase:id"];
+	bool is_rope_emission_enabled = 3 [(options.master.optional) = true];
+	bool is_spinner_change_enabled = 4 [(options.master.optional) = true];
+	string icon_asset_id = 5 [(options.master.optional) = true];
 }

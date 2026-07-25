@@ -1,22 +1,23 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
 import "enums/music_difficulty_type.gen.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserMusicCharacterHighestScore {
-  message HighestScoreInfo {
-    .enums.MusicDifficultyType difficulty_type = 1;
-    int64 highest_score = 2;
-    int64 highest_score_rating_value = 3;
-    int64 highest_score_last_updated_time = 4;
-  }
-  string character_id = 2;
-  string music_id = 3;
-  repeated UserMusicCharacterHighestScore.HighestScoreInfo highest_score_infos = 100;
+	message HighestScoreInfo {
+		.enums.MusicDifficultyType difficulty_type = 1;
+		int64 highest_score = 2;
+		int64 highest_score_rating_value = 3;
+		int64 highest_score_last_updated_time = 4;
+	}
+
+	string character_id = 2 [(options.master.fk) = "Character:id", (options.transaction.pk) = true];
+	string music_id = 3 [(options.master.fk) = "Music:id", (options.transaction.pk) = true];
+	repeated UserMusicCharacterHighestScore.HighestScoreInfo highest_score_infos = 100;
 }

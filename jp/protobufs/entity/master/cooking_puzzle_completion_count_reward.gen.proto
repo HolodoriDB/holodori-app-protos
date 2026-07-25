@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CookingPuzzleCompletionCountReward {
-  string group_id = 1;
-  int32 completion_count = 2;
-  repeated .common.SimplifiedReward rewards = 1000;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	int32 completion_count = 2 [(options.master.pk) = true];
+	repeated .common.SimplifiedReward rewards = 1000 [(options.master.optional) = true];
 }

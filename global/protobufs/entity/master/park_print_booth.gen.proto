@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_print_booth_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkPrintBooth {
-  .enums.ParkPrintBoothType type = 1;
-  int32 number = 2;
-  string park_print_booth_composition_id = 3;
-  int32 ratio = 4;
-  string unlock_condition_group_id = 5;
-  string park_print_booth_motion_group_id = 6;
+	option (options.master.table) = true;
+
+	.enums.ParkPrintBoothType type = 1 [(options.master.pk) = true];
+	int32 number = 2 [(options.master.pk) = true];
+	string park_print_booth_composition_id = 3 [(options.master.fk) = "ParkPrintBoothComposition:id", (options.master.pk) = true];
+	int32 ratio = 4;
+	string unlock_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string park_print_booth_motion_group_id = 6 [(options.master.fk) = "ParkPrintBoothMotion:group_id"];
 }

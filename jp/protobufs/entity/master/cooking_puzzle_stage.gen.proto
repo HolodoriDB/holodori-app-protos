@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CookingPuzzleStage {
-  string cooking_puzzle_id = 1;
-  int32 number = 2;
-  string cooking_puzzle_stage_pattern_group_id = 3;
-  int64 score = 4;
+	option (options.master.table) = true;
+
+	string cooking_puzzle_id = 1 [(options.master.fk) = "CookingPuzzle:id", (options.master.pk) = true];
+	int32 number = 2 [(options.master.pk) = true];
+	string cooking_puzzle_stage_pattern_group_id = 3 [(options.master.fk) = "CookingPuzzleStagePattern:group_id"];
+	int64 score = 4 [(options.master.optional) = true];
 }

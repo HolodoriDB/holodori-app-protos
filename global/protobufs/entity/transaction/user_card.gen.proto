@@ -1,18 +1,18 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserCard {
-  string card_id = 2;
-  int64 exp = 3;
-  int32 level_limit_break_count = 4;
-  int32 potential_upgrade_count = 5;
-  int32 potential_upgrade_point_quantity = 6;
-  int64 acquired_time = 7;
+	string card_id = 2 [(options.master.fk) = "Card:id", (options.transaction.pk) = true];
+	int64 exp = 3;
+	int32 level_limit_break_count = 4;
+	int32 potential_upgrade_count = 5;
+	int32 potential_upgrade_point_quantity = 6;
+	int64 acquired_time = 7;
 }

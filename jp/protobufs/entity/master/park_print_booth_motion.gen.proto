@@ -1,13 +1,15 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkPrintBoothMotion {
-  string group_id = 1;
-  repeated string motion_asset_ids = 2;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	repeated string motion_asset_ids = 2;
 }

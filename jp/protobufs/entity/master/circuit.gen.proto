@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/circuit_play_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Circuit {
-  string id = 1;
-  .enums.CircuitPlayType play_type = 2;
-  string game_start_display_clear_condition_lang_id = 3;
-  string game_playing_display_clear_condition_lang_id = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.CircuitPlayType play_type = 2;
+	string game_start_display_clear_condition_lang_id = 3 [(options.master.fk) = "LangCircuit:id"];
+	string game_playing_display_clear_condition_lang_id = 4 [(options.master.fk) = "LangCircuit:id"];
 }

@@ -1,13 +1,15 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ComboCardGameRankBetCoinRate {
-  int32 end_rank = 1;
-  int32 rate_permil_multiply = 2;
+	option (options.master.table) = true;
+
+	int32 end_rank = 1 [(options.master.pk) = true];
+	int32 rate_permil_multiply = 2 [(options.master.optional) = true];
 }

@@ -6,8 +6,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message UserContentCdnSignedCookie {
-  string policy = 1;
-  string signature = 2;
-  string key_name = 3;
-  int64 expired_time_milliseconds = 4;
+	string policy = 1;
+	string signature = 2;
+	string key_name = 3;
+	int64 expired_time_milliseconds = 4;
 }

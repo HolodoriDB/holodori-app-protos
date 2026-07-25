@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/music_difficulty_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MusicDifficulty {
-  string music_id = 1;
-  .enums.MusicDifficultyType difficulty_type = 2;
-  int32 difficulty_level = 3;
-  string chart_asset_id = 4;
-  string view_condition_group_id = 5;
-  string unlock_condition_group_id = 6;
+	option (options.master.table) = true;
+
+	string music_id = 1 [(options.master.fk) = "Music:id", (options.master.pk) = true];
+	.enums.MusicDifficultyType difficulty_type = 2 [(options.master.pk) = true];
+	int32 difficulty_level = 3;
+	string chart_asset_id = 4;
+	string view_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 }

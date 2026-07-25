@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "options/check_option.proto";
@@ -9,18 +7,28 @@ import "options/zap.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/user_data.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message UserGetResponse {
-  common.UserData user_data = 1;
+	common.UserData user_data = 1 [(options.zap.hidden) = true];
 }
 
 message UserDeleteResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service User {
-  rpc Get (.google.protobuf.Empty) returns (UserGetResponse);
-  rpc Delete (.google.protobuf.Empty) returns (UserDeleteResponse);
+	rpc Get (.google.protobuf.Empty) returns (.rpc.api.UserGetResponse) {
+		option (google.api.http).post = "/User/Get";
+		option (google.api.http).body = "*";
+	}
+
+	rpc Delete (.google.protobuf.Empty) returns (.rpc.api.UserDeleteResponse) {
+		option (google.api.http).post = "/User/Delete";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

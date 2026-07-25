@@ -1,19 +1,21 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/instant_tips_display_scene_type.gen.proto";
 import "enums/instant_tips_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message InstantTips {
-  string id = 1;
-  .enums.InstantTipsType type = 2;
-  .enums.InstantTipsDisplaySceneType display_scene_type = 3;
-  string tips_id = 4;
-  string text_lang_id = 5;
-  string condition_group_id = 6;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.InstantTipsType type = 2;
+	.enums.InstantTipsDisplaySceneType display_scene_type = 3;
+	string tips_id = 4 [(options.master.fk) = "Tips:id", (options.master.optional) = true];
+	string text_lang_id = 5 [(options.master.fk) = "LangInstantTips:id", (options.master.optional) = true];
+	string condition_group_id = 6 [(options.master.fk) = "Condition:group_id"];
 }

@@ -1,38 +1,40 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/consumption.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/park_action_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkQuestStepAction {
-  string park_quest_id = 1;
-  int32 step_group_number = 2;
-  int32 step = 3;
-  string park_target_mapping_id = 4;
-  int32 action_number = 5;
-  string description_lang_id = 6;
-  .enums.ParkActionType type = 7;
-  string unlock_condition_group_id = 8;
-  string clear_condition_group_id = 9;
-  string before_park_talk_group_id = 10;
-  string after_park_talk_group_id = 11;
-  string character_voice_id = 12;
-  repeated .common.Consumption consumptions = 1000;
-  string park_quest_live_id = 1001;
-  string park_quest_jump_rope_id = 1002;
-  string park_quest_circuit_id = 1003;
-  string park_quest_cooking_puzzle_id = 1004;
-  string facility_id = 1005;
-  int32 facility_level = 1006;
-  string park_quest_combo_card_game_id = 1007;
-  string mission_id = 1008;
-  string area_selector_id = 1009;
-  string area_id = 1010;
-  string park_quest_chase_id = 1011;
-  string park_quest_splash_ball_id = 1012;
+	option (options.master.table) = true;
+
+	string park_quest_id = 1 [(options.master.fk) = "ParkQuest:id", (options.master.pk) = true];
+	int32 step_group_number = 2 [(options.master.pk) = true];
+	int32 step = 3 [(options.master.pk) = true];
+	string park_target_mapping_id = 4 [(options.master.fk) = "ParkTargetMapping:id", (options.master.optional) = true, (options.master.pk) = true];
+	int32 action_number = 5 [(options.master.pk) = true];
+	string description_lang_id = 6 [(options.master.fk) = "LangParkQuestStepAction:id", (options.master.optional) = true];
+	.enums.ParkActionType type = 7 [(options.master.optional) = true];
+	string unlock_condition_group_id = 8 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string clear_condition_group_id = 9 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string before_park_talk_group_id = 10 [(options.master.fk) = "ParkTalk:group_id", (options.master.optional) = true];
+	string after_park_talk_group_id = 11 [(options.master.fk) = "ParkTalk:group_id", (options.master.optional) = true];
+	string character_voice_id = 12 [(options.master.fk) = "CharacterVoice:id", (options.master.optional) = true];
+	repeated .common.Consumption consumptions = 1000 [(options.master.optional) = true];
+	string park_quest_live_id = 1001 [(options.master.fk) = "ParkQuestLive:id", (options.master.optional) = true];
+	string park_quest_jump_rope_id = 1002 [(options.master.fk) = "ParkQuestJumpRope:id", (options.master.optional) = true];
+	string park_quest_circuit_id = 1003 [(options.master.fk) = "ParkQuestCircuit:id", (options.master.optional) = true];
+	string park_quest_cooking_puzzle_id = 1004 [(options.master.fk) = "ParkQuestCookingPuzzle:id", (options.master.optional) = true];
+	string facility_id = 1005 [(options.master.fk) = "Facility:id", (options.master.optional) = true];
+	int32 facility_level = 1006 [(options.master.optional) = true];
+	string park_quest_combo_card_game_id = 1007 [(options.master.fk) = "ParkQuestComboCardGame:id", (options.master.optional) = true];
+	string mission_id = 1008 [(options.master.fk) = "Mission:id", (options.master.optional) = true];
+	string area_selector_id = 1009 [(options.master.fk) = "AreaSelector:id", (options.master.optional) = true];
+	string area_id = 1010 [(options.master.fk) = "Area:id", (options.master.optional) = true];
+	string park_quest_chase_id = 1011 [(options.master.fk) = "ParkQuestChase:id", (options.master.optional) = true];
+	string park_quest_splash_ball_id = 1012 [(options.master.fk) = "ParkQuestSplashBall:id", (options.master.optional) = true];
 }

@@ -1,17 +1,19 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/combo_card_game_card_category_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ComboCardGameCard {
-  string group_id = 1;
-  string character_id = 2;
-  .enums.ComboCardGameCardCategoryType category_type = 3;
-  string asset_id = 4;
-  string character_grouping_id = 5;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	string character_id = 2 [(options.master.fk) = "Character:id", (options.master.pk) = true];
+	.enums.ComboCardGameCardCategoryType category_type = 3 [(options.master.pk) = true];
+	string asset_id = 4;
+	string character_grouping_id = 5 [(options.master.fk) = "CharacterGrouping:id", (options.master.pk) = true];
 }

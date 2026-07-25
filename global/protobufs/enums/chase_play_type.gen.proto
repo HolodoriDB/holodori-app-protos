@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum ChasePlayType {
-  CHASE_PLAY_TYPE_UNKNOWN = 0;
-  CHASE_PLAY_TYPE_NORMAL = 1;
-  CHASE_PLAY_TYPE_PARK_QUEST = 2;
+	CHASE_PLAY_TYPE_UNKNOWN = 0;
+	CHASE_PLAY_TYPE_NORMAL = 1;
+	CHASE_PLAY_TYPE_PARK_QUEST = 2;
 }

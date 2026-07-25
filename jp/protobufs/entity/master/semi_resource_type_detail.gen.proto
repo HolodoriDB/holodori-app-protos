@@ -1,20 +1,22 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/resource_background_pattern_type.gen.proto";
 import "enums/semi_resource_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SemiResourceTypeDetail {
-  .enums.SemiResourceType type = 1;
-  string color = 2;
-  string name_lang_id = 3;
-  string icon_asset_id = 4;
-  string description_lang_id = 5;
-  string background_color = 6;
-  .enums.ResourceBackgroundPatternType background_pattern_type = 7;
+	option (options.master.table) = true;
+
+	.enums.SemiResourceType type = 1 [(options.master.pk) = true];
+	string color = 2;
+	string name_lang_id = 3 [(options.master.fk) = "LangSemiResourceTypeDetail:id"];
+	string icon_asset_id = 4;
+	string description_lang_id = 5 [(options.master.fk) = "LangSemiResourceTypeDetail:id", (options.master.optional) = true];
+	string background_color = 6;
+	.enums.ResourceBackgroundPatternType background_pattern_type = 7;
 }

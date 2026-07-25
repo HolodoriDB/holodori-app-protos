@@ -1,30 +1,32 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/inventory_item_category_type.gen.proto";
 import "enums/item_rarity.gen.proto";
 import "enums/item_type.gen.proto";
 
+package entity.master;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Item {
-  string id = 1;
-  string name_lang_id = 2;
-  string description_lang_id = 3;
-  .enums.ItemType type = 4;
-  int64 common_limit_time = 5;
-  int32 personal_limit_days = 6;
-  int64 effect_value = 7;
-  string asset_id = 8;
-  string resource_obtainment_route_group_id = 9;
-  .enums.InventoryItemCategoryType inventory_item_category_type = 10;
-  bool is_display_owned = 11;
-  .enums.ItemRarity rarity = 15;
-  string thumbnail_sub_asset_id = 16;
-  int32 order = 999;
-  repeated .common.Reward expiration_rewards = 1000;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangItem:id"];
+	string description_lang_id = 3 [(options.master.fk) = "LangItem:id"];
+	.enums.ItemType type = 4;
+	int64 common_limit_time = 5 [(options.master.optional) = true];
+	int32 personal_limit_days = 6 [(options.master.optional) = true];
+	int64 effect_value = 7 [(options.master.optional) = true];
+	string asset_id = 8;
+	string resource_obtainment_route_group_id = 9 [(options.master.fk) = "ResourceObtainmentRoute:group_id", (options.master.optional) = true];
+	.enums.InventoryItemCategoryType inventory_item_category_type = 10 [(options.master.optional) = true];
+	bool is_display_owned = 11 [(options.master.optional) = true];
+	.enums.ItemRarity rarity = 15 [(options.master.optional) = true];
+	string thumbnail_sub_asset_id = 16 [(options.master.optional) = true];
+	int32 order = 999;
+	repeated .common.Reward expiration_rewards = 1000 [(options.master.optional) = true];
 }

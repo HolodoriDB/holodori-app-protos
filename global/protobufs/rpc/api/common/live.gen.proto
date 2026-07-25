@@ -1,93 +1,97 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/live_deck_rank_type.gen.proto";
+
+package rpc.api.common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message LiveDeckPosition {
-  int32 position = 1;
-  string card_id = 2;
-  int64 live_deck_power = 3;
+	int32 position = 1;
+	string card_id = 2 [(options.master.fk) = "Card:id"];
+	int64 live_deck_power = 3;
 }
 
 message LiveDeckEvaluation {
-  message LiveDeckPower {
-    int64 live_deck_power = 1;
-    .enums.LiveDeckRankType live_deck_power_rank_type = 2;
-    int32 live_deck_power_rank_plus_value = 3;
-    int64 card_potential_parameter_evaluation_value = 4;
-    int64 card_parameter_up_by_live_leader_skill = 5;
-    int64 card_parameter_up_by_live_passive_skill = 6;
-    int64 card_parameter_up_by_skill_tree = 7;
-    int64 card_parameter_up_by_poster_collect = 8;
-    int64 card_training_evaluation_value = 9;
-  }
-  message LiveDeckEvaluationScoreUpPermilUp {
-    int64 score_up_permil_up = 1;
-    .enums.LiveDeckRankType score_up_permil_up_rank_type = 2;
-    int32 score_up_permil_up_rank_plus_value = 3;
-    int64 score_up_permil_up_by_live_active_skill = 4;
-    int64 score_up_permil_up_by_live_leader_skill = 5;
-    int64 score_up_permil_up_by_live_passive_skill = 6;
-    int64 score_up_permil_up_by_skill_tree = 7;
-    int64 score_up_permil_up_by_live_special_skill = 8;
-  }
-  int64 live_deck_evaluation_value = 1;
-  .enums.LiveDeckRankType live_deck_evaluation_rank_type = 2;
-  int32 live_deck_evaluation_rank_plus_value = 3;
-  LiveDeckEvaluation.LiveDeckPower live_deck_power = 4;
-  LiveDeckEvaluation.LiveDeckEvaluationScoreUpPermilUp live_deck_evaluation_score_up_permil_up = 5;
+	message LiveDeckPower {
+		int64 live_deck_power = 1;
+		.enums.LiveDeckRankType live_deck_power_rank_type = 2;
+		int32 live_deck_power_rank_plus_value = 3;
+		int64 card_potential_parameter_evaluation_value = 4;
+		int64 card_parameter_up_by_live_leader_skill = 5;
+		int64 card_parameter_up_by_live_passive_skill = 6;
+		int64 card_parameter_up_by_skill_tree = 7;
+		int64 card_parameter_up_by_poster_collect = 8;
+		int64 card_training_evaluation_value = 9;
+	}
+
+	message LiveDeckEvaluationScoreUpPermilUp {
+		int64 score_up_permil_up = 1;
+		.enums.LiveDeckRankType score_up_permil_up_rank_type = 2;
+		int32 score_up_permil_up_rank_plus_value = 3;
+		int64 score_up_permil_up_by_live_active_skill = 4;
+		int64 score_up_permil_up_by_live_leader_skill = 5;
+		int64 score_up_permil_up_by_live_passive_skill = 6;
+		int64 score_up_permil_up_by_skill_tree = 7;
+		int64 score_up_permil_up_by_live_special_skill = 8;
+	}
+
+	int64 live_deck_evaluation_value = 1;
+	.enums.LiveDeckRankType live_deck_evaluation_rank_type = 2;
+	int32 live_deck_evaluation_rank_plus_value = 3;
+	LiveDeckEvaluation.LiveDeckPower live_deck_power = 4;
+	LiveDeckEvaluation.LiveDeckEvaluationScoreUpPermilUp live_deck_evaluation_score_up_permil_up = 5;
 }
 
 message LiveDeckInGameEffect {
-  message LiveActiveSkillLevel {
-    string live_active_skill_id = 1;
-    int32 level = 2;
-  }
-  message LiveDeckPosition {
-    int32 position = 1;
-    string card_id = 2;
-    int64 performance = 3;
-    int64 technique = 4;
-    int64 sense = 5;
-    float live_active_skill_effect_up_permil_up = 6;
-    float live_active_skill_activation_probability_up_permil_up = 7;
-    float live_active_skill_cool_time_shorten_permil_up = 8;
-  }
-  int32 life_up = 1;
-  repeated LiveDeckInGameEffect.LiveActiveSkillLevel live_leader_active_skill_levels = 2;
-  float live_score_bonus_permil_up_by_skill_tree = 3;
-  repeated LiveDeckInGameEffect.LiveDeckPosition live_deck_positions = 100;
+	message LiveActiveSkillLevel {
+		string live_active_skill_id = 1 [(options.master.fk) = "LiveActiveSkill:id"];
+		int32 level = 2;
+	}
+
+	message LiveDeckPosition {
+		int32 position = 1;
+		string card_id = 2 [(options.master.fk) = "Card:id"];
+		int64 performance = 3;
+		int64 technique = 4;
+		int64 sense = 5;
+		float live_active_skill_effect_up_permil_up = 6;
+		float live_active_skill_activation_probability_up_permil_up = 7;
+		float live_active_skill_cool_time_shorten_permil_up = 8;
+	}
+
+	int32 life_up = 1;
+	repeated LiveDeckInGameEffect.LiveActiveSkillLevel live_leader_active_skill_levels = 2;
+	float live_score_bonus_permil_up_by_skill_tree = 3;
+	repeated LiveDeckInGameEffect.LiveDeckPosition live_deck_positions = 100;
 }
 
 message LiveResultMusicHighestScoreRatingInfo {
-  int64 highest_score_rating_value = 1;
-  int64 past_highest_score_rating_value = 2;
-  int64 highest_score_rating_value_per_music = 3;
-  int64 past_highest_score_rating_value_per_music = 4;
-  int32 ranking_rank = 5;
-  int32 past_ranking_rank = 6;
-  int32 ranked_in_threshold_ranking_rank = 7;
+	int64 highest_score_rating_value = 1;
+	int64 past_highest_score_rating_value = 2;
+	int64 highest_score_rating_value_per_music = 3;
+	int64 past_highest_score_rating_value_per_music = 4;
+	int32 ranking_rank = 5;
+	int32 past_ranking_rank = 6;
+	int32 ranked_in_threshold_ranking_rank = 7;
 }
 
 message LiveResultMusicHighestScoreRankingInfo {
-  int32 ranking_rank = 1;
-  int32 past_ranking_rank = 2;
+	int32 ranking_rank = 1;
+	int32 past_ranking_rank = 2;
 }
 
 message LiveSkinInfo {
-  int32 preset_number = 1;
-  string note_live_skin_id = 2;
-  string lane_live_skin_id = 3;
-  string judgement_text_live_skin_id = 4;
-  string combo_text_live_skin_id = 5;
-  string tap_effect_live_skin_id = 6;
-  string background_live_skin_id = 7;
-  string header_live_skin_id = 8;
-  string character_effect_live_skin_id = 9;
+	int32 preset_number = 1 [(buf.validate.field).int32.gte = 1];
+	string note_live_skin_id = 2 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
+	string lane_live_skin_id = 3 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
+	string judgement_text_live_skin_id = 4 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
+	string combo_text_live_skin_id = 5 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
+	string tap_effect_live_skin_id = 6 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
+	string background_live_skin_id = 7 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
+	string header_live_skin_id = 8 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
+	string character_effect_live_skin_id = 9 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "LiveSkin:id"];
 }

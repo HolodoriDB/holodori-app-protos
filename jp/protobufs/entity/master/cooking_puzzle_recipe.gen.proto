@@ -1,22 +1,24 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CookingPuzzleRecipe {
-  string id = 1;
-  string name_lang_id = 2;
-  string description_lang_id = 3;
-  string character_id = 4;
-  string cooking_puzzle_foodstuff_id1 = 5;
-  int32 required_quantity1 = 6;
-  string cooking_puzzle_foodstuff_id2 = 7;
-  int32 required_quantity2 = 8;
-  string cooking_puzzle_foodstuff_id3 = 9;
-  int32 required_quantity3 = 10;
-  string image_asset_id = 11;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangCookingPuzzleRecipe:id"];
+	string description_lang_id = 3 [(options.master.fk) = "LangCookingPuzzleRecipe:id"];
+	string character_id = 4 [(options.master.fk) = "Character:id"];
+	string cooking_puzzle_foodstuff_id1 = 5 [(options.master.fk) = "CookingPuzzleFoodstuff:id"];
+	int32 required_quantity1 = 6 [(options.master.optional) = true];
+	string cooking_puzzle_foodstuff_id2 = 7 [(options.master.fk) = "CookingPuzzleFoodstuff:id"];
+	int32 required_quantity2 = 8 [(options.master.optional) = true];
+	string cooking_puzzle_foodstuff_id3 = 9 [(options.master.fk) = "CookingPuzzleFoodstuff:id"];
+	int32 required_quantity3 = 10 [(options.master.optional) = true];
+	string image_asset_id = 11 [(options.master.optional) = true];
 }

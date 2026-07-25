@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
@@ -9,30 +7,42 @@ import "rpc/api/common/mission.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message EventMissionReadEventMissionRequest {
-  string event_mission_id = 1;
+	string event_mission_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message EventMissionReceiveMissionRewardRequest {
-  string event_mission_id = 1;
-  string marathon_chapter_id = 2;
-  string marathon_id = 3;
-  repeated common.Mission missions = 4;
+	string event_mission_id = 1;
+	string marathon_chapter_id = 2;
+	string marathon_id = 3;
+	repeated common.Mission missions = 4 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 200];
 }
 
 message EventMissionReceiveMissionRewardResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message EventMissionReadEventMissionResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service EventMission {
-  rpc ReadEventMission (EventMissionReadEventMissionRequest) returns (EventMissionReadEventMissionResponse);
-  rpc ReceiveMissionReward (EventMissionReceiveMissionRewardRequest) returns (EventMissionReceiveMissionRewardResponse);
+	rpc ReadEventMission (.rpc.api.EventMissionReadEventMissionRequest) returns (.rpc.api.EventMissionReadEventMissionResponse) {
+		option (google.api.http).post = "/EventMission/ReadEventMission";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReceiveMissionReward (.rpc.api.EventMissionReceiveMissionRewardRequest) returns (.rpc.api.EventMissionReceiveMissionRewardResponse) {
+		option (google.api.http).post = "/EventMission/ReceiveMissionReward";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_EVENT_OUT_OF_TERM;
+	}
 }

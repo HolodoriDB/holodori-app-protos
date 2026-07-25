@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/cheat_feature_type.gen.proto";
@@ -17,177 +15,250 @@ import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 import "rpc/api/common/startup_notification.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message ParkRefreshRequest {
-  string area_id = 1;
+	string area_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkEnterResponse {
-  message HomeBanner {
-    string home_banner_id = 1;
-    string asset_id = 2;
-    .enums.TransitionType transition_type = 3;
-    string transition_id = 4;
-    int64 end_time = 5;
-    int64 priority = 6;
-    string condition_group_id = 7;
-    string title = 8;
-    int64 start_time = 9;
-    string external_url = 100;
-  }
-  message ParkBanner {
-    string park_banner_id = 1;
-    .enums.ParkBannerType type = 2;
-    string asset_id = 3;
-    .enums.TransitionType transition_type = 5;
-    string transition_id = 6;
-    int64 end_time = 7;
-    int64 priority = 8;
-    string condition_group_id = 9;
-    repeated ParkEnterResponse.ParkBannerFacility park_banner_facilities = 10;
-    int64 start_time = 11;
-    string external_url = 100;
-  }
-  message ParkBannerFacility {
-    string facility_id = 1;
-    string view_condition_group_id = 2;
-  }
-  message MusicStartupNotification {
-    string id = 1;
-    .enums.MusicStartupNotificationType type = 2;
-    string music_id = 3;
-    repeated int32 music_mv_numbers = 4;
-  }
-  message MaintenanceNoticeInfo {
-    int64 start_time = 1;
-    int64 end_time = 2;
-  }
-  repeated ParkEnterResponse.HomeBanner home_banners = 1;
-  repeated ParkEnterResponse.ParkBanner park_banners = 2;
-  repeated common.StartupNotification startup_notifications = 3;
-  repeated ParkEnterResponse.MusicStartupNotification music_startup_notifications = 4;
-  ParkEnterResponse.MaintenanceNoticeInfo maintenance_notice_info = 5;
-  repeated .enums.CheatFeatureType cheat_feature_restriction_types = 6;
-  common.Response common_response = 9999;
+	message HomeBanner {
+		string home_banner_id = 1;
+		string asset_id = 2;
+		.enums.TransitionType transition_type = 3;
+		string transition_id = 4;
+		int64 end_time = 5;
+		int64 priority = 6;
+		string condition_group_id = 7 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+		string title = 8;
+		int64 start_time = 9;
+		string external_url = 100;
+	}
+
+	message ParkBanner {
+		string park_banner_id = 1;
+		.enums.ParkBannerType type = 2;
+		string asset_id = 3;
+		.enums.TransitionType transition_type = 5;
+		string transition_id = 6;
+		int64 end_time = 7;
+		int64 priority = 8;
+		string condition_group_id = 9 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+		repeated ParkEnterResponse.ParkBannerFacility park_banner_facilities = 10;
+		int64 start_time = 11;
+		string external_url = 100;
+	}
+
+	message ParkBannerFacility {
+		string facility_id = 1 [(options.master.fk) = "Facility:id"];
+		string view_condition_group_id = 2 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	}
+
+	message MusicStartupNotification {
+		string id = 1;
+		.enums.MusicStartupNotificationType type = 2;
+		string music_id = 3 [(options.master.fk) = "Music:id"];
+		repeated int32 music_mv_numbers = 4;
+	}
+
+	message MaintenanceNoticeInfo {
+		int64 start_time = 1;
+		int64 end_time = 2;
+	}
+
+	repeated ParkEnterResponse.HomeBanner home_banners = 1 [(options.zap.hidden) = true];
+	repeated ParkEnterResponse.ParkBanner park_banners = 2 [(options.zap.hidden) = true];
+	repeated common.StartupNotification startup_notifications = 3 [(options.zap.hidden) = true];
+	repeated ParkEnterResponse.MusicStartupNotification music_startup_notifications = 4 [(options.zap.hidden) = true];
+	ParkEnterResponse.MaintenanceNoticeInfo maintenance_notice_info = 5 [(options.zap.hidden) = true];
+	repeated .enums.CheatFeatureType cheat_feature_restriction_types = 6;
+	common.Response common_response = 9999;
 }
 
 message ParkSetCharacterRequest {
-  string character_id = 1;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkSetAccessoryRequest {
-  string park_accessory_id = 1;
+	string park_accessory_id = 1;
 }
 
 message ParkUpdateTimePeriodRequest {
-  int32 time_point = 1;
+	int32 time_point = 1 [(buf.validate.field).int32.gte = 0];
 }
 
 message ParkReceivePlayerLevelRewardRequest {
-  repeated int32 player_levels = 1;
+	repeated int32 player_levels = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.int32.gte = 1];
 }
 
 message ParkReceivePlayerLevelRewardResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkOpenTreasureRequest {
-  string area_id = 1;
-  string park_treasure_id = 2;
+	string area_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string park_treasure_id = 2 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkOpenTreasureResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkCollectFixedSymbolRequest {
-  string park_fixed_symbol_id = 1;
+	string park_fixed_symbol_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkCollectFixedSymbolResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkCollectRandomSymbolRequest {
-  string area_id = 1;
-  string park_target_mapping_id = 2;
+	string area_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string park_target_mapping_id = 2 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkCollectRandomSymbolResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkListenCallRequest {
-  string area_id = 1;
-  string park_call_id = 2;
+	string area_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string park_call_id = 2 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkReportActionRequest {
-  .enums.ParkMissionActionType action_type = 1;
-  int32 count = 2;
+	.enums.ParkMissionActionType action_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	int32 count = 2 [(buf.validate.field).int32.gte = 1];
 }
 
 message ParkReadTalkFreeRequest {
-  string park_talk_free_id = 1;
-  repeated string character_ids = 2;
+	string park_talk_free_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated string character_ids = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message ParkReadTalkFreeResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message ParkSelectAreaRequest {
-  string area_selector_id = 1;
-  string area_id = 2;
+	string area_selector_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string area_id = 2 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ParkRefreshResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkSetCharacterResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkSetAccessoryResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkUpdateTimePeriodResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkListenCallResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkReportActionResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message ParkSelectAreaResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Park {
-  rpc Enter (.google.protobuf.Empty) returns (ParkEnterResponse);
-  rpc Refresh (ParkRefreshRequest) returns (ParkRefreshResponse);
-  rpc SetCharacter (ParkSetCharacterRequest) returns (ParkSetCharacterResponse);
-  rpc SetAccessory (ParkSetAccessoryRequest) returns (ParkSetAccessoryResponse);
-  rpc UpdateTimePeriod (ParkUpdateTimePeriodRequest) returns (ParkUpdateTimePeriodResponse);
-  rpc ReceivePlayerLevelReward (ParkReceivePlayerLevelRewardRequest) returns (ParkReceivePlayerLevelRewardResponse);
-  rpc OpenTreasure (ParkOpenTreasureRequest) returns (ParkOpenTreasureResponse);
-  rpc CollectFixedSymbol (ParkCollectFixedSymbolRequest) returns (ParkCollectFixedSymbolResponse);
-  rpc CollectRandomSymbol (ParkCollectRandomSymbolRequest) returns (ParkCollectRandomSymbolResponse);
-  rpc ListenCall (ParkListenCallRequest) returns (ParkListenCallResponse);
-  rpc ReportAction (ParkReportActionRequest) returns (ParkReportActionResponse);
-  rpc ReadTalkFree (ParkReadTalkFreeRequest) returns (ParkReadTalkFreeResponse);
-  rpc SelectArea (ParkSelectAreaRequest) returns (ParkSelectAreaResponse);
+	rpc Enter (.google.protobuf.Empty) returns (.rpc.api.ParkEnterResponse) {
+		option (google.api.http).post = "/Park/Enter";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Refresh (.rpc.api.ParkRefreshRequest) returns (.rpc.api.ParkRefreshResponse) {
+		option (google.api.http).post = "/Park/Refresh";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SetCharacter (.rpc.api.ParkSetCharacterRequest) returns (.rpc.api.ParkSetCharacterResponse) {
+		option (google.api.http).post = "/Park/SetCharacter";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SetAccessory (.rpc.api.ParkSetAccessoryRequest) returns (.rpc.api.ParkSetAccessoryResponse) {
+		option (google.api.http).post = "/Park/SetAccessory";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc UpdateTimePeriod (.rpc.api.ParkUpdateTimePeriodRequest) returns (.rpc.api.ParkUpdateTimePeriodResponse) {
+		option (google.api.http).post = "/Park/UpdateTimePeriod";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReceivePlayerLevelReward (.rpc.api.ParkReceivePlayerLevelRewardRequest) returns (.rpc.api.ParkReceivePlayerLevelRewardResponse) {
+		option (google.api.http).post = "/Park/ReceivePlayerLevelReward";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc OpenTreasure (.rpc.api.ParkOpenTreasureRequest) returns (.rpc.api.ParkOpenTreasureResponse) {
+		option (google.api.http).post = "/Park/OpenTreasure";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc CollectFixedSymbol (.rpc.api.ParkCollectFixedSymbolRequest) returns (.rpc.api.ParkCollectFixedSymbolResponse) {
+		option (google.api.http).post = "/Park/CollectFixedSymbol";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc CollectRandomSymbol (.rpc.api.ParkCollectRandomSymbolRequest) returns (.rpc.api.ParkCollectRandomSymbolResponse) {
+		option (google.api.http).post = "/Park/CollectRandomSymbol";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListenCall (.rpc.api.ParkListenCallRequest) returns (.rpc.api.ParkListenCallResponse) {
+		option (google.api.http).post = "/Park/ListenCall";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReportAction (.rpc.api.ParkReportActionRequest) returns (.rpc.api.ParkReportActionResponse) {
+		option (google.api.http).post = "/Park/ReportAction";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadTalkFree (.rpc.api.ParkReadTalkFreeRequest) returns (.rpc.api.ParkReadTalkFreeResponse) {
+		option (google.api.http).post = "/Park/ReadTalkFree";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SelectArea (.rpc.api.ParkSelectAreaRequest) returns (.rpc.api.ParkSelectAreaResponse) {
+		option (google.api.http).post = "/Park/SelectArea";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

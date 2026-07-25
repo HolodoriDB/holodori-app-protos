@@ -6,8 +6,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum ExchangeBoothType {
-  EXCHANGE_BOOTH_TYPE_UNKNOWN = 0;
-  EXCHANGE_BOOTH_TYPE_SINGLE = 1;
-  EXCHANGE_BOOTH_TYPE_MULTIPLE = 2;
-  EXCHANGE_BOOTH_TYPE_SELL = 3;
+	EXCHANGE_BOOTH_TYPE_UNKNOWN = 0;
+	EXCHANGE_BOOTH_TYPE_SINGLE = 1;
+	EXCHANGE_BOOTH_TYPE_MULTIPLE = 2;
+	EXCHANGE_BOOTH_TYPE_SELL = 3;
 }

@@ -1,24 +1,26 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkFishingSetting {
-  string id = 1;
-  int32 capture_bar_base_tap_inertia_permil = 10;
-  int32 capture_bar_base_fall_acceleration_permil = 11;
-  int32 capture_bar_base_fall_start_millisecond = 12;
-  int32 capture_bar_base_length = 13;
-  int32 fish_icon_base_speed_permil = 100;
-  int32 fish_icon_base_speed_change_millisecond = 101;
-  int32 fish_icon_base_direction_change_milliseconds = 102;
-  int32 progress_meter_base_increase_speed = 200;
-  int32 progress_meter_base_decrease_speed = 201;
-  int32 progress_meter_time_penalty_permil = 202;
-  int32 progress_meter_max_length = 203;
-  int32 fish_shadow_rare_probability_permil_multiply = 301;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	int32 capture_bar_base_tap_inertia_permil = 10;
+	int32 capture_bar_base_fall_acceleration_permil = 11;
+	int32 capture_bar_base_fall_start_millisecond = 12;
+	int32 capture_bar_base_length = 13;
+	int32 fish_icon_base_speed_permil = 100;
+	int32 fish_icon_base_speed_change_millisecond = 101;
+	int32 fish_icon_base_direction_change_milliseconds = 102;
+	int32 progress_meter_base_increase_speed = 200;
+	int32 progress_meter_base_decrease_speed = 201;
+	int32 progress_meter_time_penalty_permil = 202;
+	int32 progress_meter_max_length = 203;
+	int32 fish_shadow_rare_probability_permil_multiply = 301;
 }

@@ -1,24 +1,26 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/consumption.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/skill_tree_node_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SkillTreeNode {
-  string group_id = 1;
-  int32 number = 2;
-  repeated string character_ids = 3;
-  .enums.SkillTreeNodeType type = 4;
-  int32 grade = 5;
-  string skill_tree_effect_id = 6;
-  string view_condition_group_id = 7;
-  string unlock_condition_group_id = 8;
-  int32 consumption_skill_tree_point_quantity = 9;
-  int32 auto_selection_priority = 13;
-  repeated .common.Consumption consumptions = 1000;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	int32 number = 2 [(options.master.pk) = true];
+	repeated string character_ids = 3 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	.enums.SkillTreeNodeType type = 4;
+	int32 grade = 5;
+	string skill_tree_effect_id = 6 [(options.master.fk) = "SkillTreeEffect:id", (options.master.optional) = true];
+	string view_condition_group_id = 7 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 8 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 consumption_skill_tree_point_quantity = 9 [(options.master.optional) = true];
+	int32 auto_selection_priority = 13;
+	repeated .common.Consumption consumptions = 1000 [(options.master.optional) = true];
 }

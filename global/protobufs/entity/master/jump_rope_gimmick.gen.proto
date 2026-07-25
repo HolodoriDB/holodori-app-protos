@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/jump_rope_gimmick_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message JumpRopeGimmick {
-  .enums.JumpRopeGimmickType gimmick_type = 1;
-  string character_id = 2;
-  string sd_costume_id = 3;
+	option (options.master.table) = true;
+
+	.enums.JumpRopeGimmickType gimmick_type = 1 [(options.master.pk) = true];
+	string character_id = 2 [(options.master.fk) = "Character:id"];
+	string sd_costume_id = 3 [(options.master.fk) = "SdCostume:id"];
 }

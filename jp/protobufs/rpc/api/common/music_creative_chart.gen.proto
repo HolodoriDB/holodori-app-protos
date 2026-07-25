@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/live_result_type.gen.proto";
@@ -11,51 +9,53 @@ import "enums/music_creative_chart_type.gen.proto";
 import "enums/reset_interval_type.gen.proto";
 import "rpc/api/common/profile.gen.proto";
 
+package rpc.api.common;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message MusicCreativeChartInfo {
-  string music_creative_chart_id = 1;
-  string music_id = 2;
-  string creator_user_name = 3;
-  bool is_favorite = 4;
-  string title = 5;
-  string thumbnail_image_url = 6;
-  int32 difficulty_value = 7;
-  repeated .enums.MusicCreativeChartType chart_types = 8;
-  repeated string music_creative_chart_tag_ids = 9;
-  int32 full_combo_note_count = 10;
-  int32 normal_note_count = 11;
-  int32 flick_note_count = 12;
-  int32 long_note_count = 13;
-  int64 like_count = 14;
-  int64 play_count = 15;
-  .enums.MusicCreativeChartPublishType publish_type = 16;
-  .enums.LiveResultType live_result_type = 17;
-  string preview_image_url = 18;
-  bool is_own = 19;
+	string music_creative_chart_id = 1;
+	string music_id = 2 [(options.master.fk) = "Music:id"];
+	string creator_user_name = 3;
+	bool is_favorite = 4;
+	string title = 5;
+	string thumbnail_image_url = 6;
+	int32 difficulty_value = 7;
+	repeated .enums.MusicCreativeChartType chart_types = 8;
+	repeated string music_creative_chart_tag_ids = 9 [(options.master.fk) = "MusicCreativeChartTag:id"];
+	int32 full_combo_note_count = 10;
+	int32 normal_note_count = 11;
+	int32 flick_note_count = 12;
+	int32 long_note_count = 13;
+	int64 like_count = 14;
+	int64 play_count = 15;
+	.enums.MusicCreativeChartPublishType publish_type = 16;
+	.enums.LiveResultType live_result_type = 17;
+	string preview_image_url = 18;
+	bool is_own = 19;
 }
 
 message MusicCreativeChartInfoMusicGrouping {
-  string music_id = 1;
-  repeated MusicCreativeChartInfo chart_infos = 2;
+	string music_id = 1 [(options.master.fk) = "Music:id"];
+	repeated MusicCreativeChartInfo chart_infos = 2;
 }
 
 message MusicCreativeChartCreatorInfo {
-  BasicUserInfo user_info = 1;
-  int64 published_chart_count = 2;
-  int64 total_like_count = 3;
+	BasicUserInfo user_info = 1;
+	int64 published_chart_count = 2;
+	int64 total_like_count = 3;
 }
 
 message MusicCreativeChartSearchParameter {
-  bool is_search_all_music = 1;
-  repeated string music_ids = 2;
-  bool is_quote_allowed_only = 3;
-  .enums.ResetIntervalType reset_interval_type = 4;
-  repeated .enums.MusicCreativeChartTextSearchType text_search_types = 5;
-  string search_text = 6;
-  int32 difficulty_value_from = 7;
-  int32 difficulty_value_to = 8;
-  repeated .enums.MusicCreativeChartType chart_types = 9;
-  repeated string music_creative_chart_tag_ids = 10;
+	bool is_search_all_music = 1;
+	repeated string music_ids = 2 [(options.master.fk) = "Music:id"];
+	bool is_quote_allowed_only = 3;
+	.enums.ResetIntervalType reset_interval_type = 4 [(buf.validate.field).enum.defined_only = true];
+	repeated .enums.MusicCreativeChartTextSearchType text_search_types = 5 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.enum.defined_only = true, (buf.validate.field).repeated.items.enum.not_in = 0];
+	string search_text = 6;
+	int32 difficulty_value_from = 7 [(buf.validate.field).int32.gte = 0];
+	int32 difficulty_value_to = 8 [(buf.validate.field).int32.gte = 0];
+	repeated .enums.MusicCreativeChartType chart_types = 9 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.enum.defined_only = true, (buf.validate.field).repeated.items.enum.not_in = 0];
+	repeated string music_creative_chart_tag_ids = 10 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1, (options.master.fk) = "MusicCreativeChartTag:id"];
 }

@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/item_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ItemTypeDetail {
-  .enums.ItemType type = 1;
-  string color = 2;
-  string name_lang_id = 3;
-  string icon_asset_id = 4;
+	option (options.master.table) = true;
+
+	.enums.ItemType type = 1 [(options.master.pk) = true];
+	string color = 2;
+	string name_lang_id = 3 [(options.master.fk) = "LangItemTypeDetail:id"];
+	string icon_asset_id = 4;
 }

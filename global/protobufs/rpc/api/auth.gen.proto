@@ -1,31 +1,44 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "options/zap.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message AuthCreateResponse {
-  string credential = 1;
+	string credential = 1 [(options.zap.hidden) = true];
 }
 
 message AuthLoginRequest {
-  string credential = 1;
+	string credential = 1 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
 }
 
 message AuthLoginResponse {
-  string game_auth_token = 1;
-  bool is_play_integrity_check_required = 2;
-  string play_integrity_nonce = 3;
+	string game_auth_token = 1 [(options.zap.hidden) = true];
+	bool is_play_integrity_check_required = 2;
+	string play_integrity_nonce = 3 [(options.zap.hidden) = true];
 }
 
 service Auth {
-  rpc Create (.google.protobuf.Empty) returns (AuthCreateResponse);
-  rpc Login (AuthLoginRequest) returns (AuthLoginResponse);
+	rpc Create (.google.protobuf.Empty) returns (.rpc.api.AuthCreateResponse) {
+		option (google.api.http).post = "/Auth/Create";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_game_auth_token = true;
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_PUBLIC_USER_ID_GENERATION_FAILED;
+		option (options.check_option.error).error_codes = ERROR_CODE_AUTH_CREATE_IP_RATE_LIMIT_EXCEEDED;
+	}
+
+	rpc Login (.rpc.api.AuthLoginRequest) returns (.rpc.api.AuthLoginResponse) {
+		option (google.api.http).post = "/Auth/Login";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_game_auth_token = true;
+		option (options.check_option.check).disabled_master_version = true;
+	}
 }

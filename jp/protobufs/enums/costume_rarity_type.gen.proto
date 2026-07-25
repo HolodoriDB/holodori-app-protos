@@ -6,8 +6,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum CostumeRarityType {
-  COSTUME_RARITY_TYPE_UNKNOWN = 0;
-  COSTUME_RARITY_TYPE_RARITY_3 = 3;
-  COSTUME_RARITY_TYPE_RARITY_4 = 4;
-  COSTUME_RARITY_TYPE_RARITY_5 = 5;
+	COSTUME_RARITY_TYPE_UNKNOWN = 0;
+	COSTUME_RARITY_TYPE_RARITY_3 = 3;
+	COSTUME_RARITY_TYPE_RARITY_4 = 4;
+	COSTUME_RARITY_TYPE_RARITY_5 = 5;
 }

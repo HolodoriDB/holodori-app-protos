@@ -1,24 +1,28 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "options/zap.proto";
 import "rpc/api/common/response.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message CheatCheckPlayIntegrityRequest {
-  string play_integrity_token = 1;
+	string play_integrity_token = 1 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
 }
 
 message CheatCheckPlayIntegrityResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Cheat {
-  rpc CheckPlayIntegrity (CheatCheckPlayIntegrityRequest) returns (CheatCheckPlayIntegrityResponse);
+	rpc CheckPlayIntegrity (.rpc.api.CheatCheckPlayIntegrityRequest) returns (.rpc.api.CheatCheckPlayIntegrityResponse) {
+		option (google.api.http).post = "/Cheat/CheckPlayIntegrity";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+	}
 }

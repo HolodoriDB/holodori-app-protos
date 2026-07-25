@@ -1,27 +1,29 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/live_skin_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveSkin {
-  string id = 1;
-  .enums.LiveSkinType skin_type = 2;
-  string name_lang_id = 3;
-  string description_lang_id = 4;
-  string character_production_id = 5;
-  string asset_id1 = 6;
-  string asset_id2 = 7;
-  string thumbnail_asset_id = 8;
-  string icon_asset_id = 9;
-  bool is_default = 10;
-  string default_character_effect_live_skin_id = 11;
-  string color1 = 100;
-  string color2 = 101;
-  string color3 = 102;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.LiveSkinType skin_type = 2;
+	string name_lang_id = 3 [(options.master.fk) = "LangLiveSkin:id"];
+	string description_lang_id = 4 [(options.master.fk) = "LangLiveSkin:id"];
+	string character_production_id = 5 [(options.master.fk) = "CharacterProduction:id", (options.master.optional) = true];
+	string asset_id1 = 6;
+	string asset_id2 = 7 [(options.master.optional) = true];
+	string thumbnail_asset_id = 8 [(options.master.optional) = true];
+	string icon_asset_id = 9 [(options.master.optional) = true];
+	bool is_default = 10 [(options.master.optional) = true];
+	string default_character_effect_live_skin_id = 11 [(options.master.fk) = "LiveSkin:id", (options.master.optional) = true];
+	string color1 = 100 [(options.master.optional) = true];
+	string color2 = 101 [(options.master.optional) = true];
+	string color3 = 102 [(options.master.optional) = true];
+	int32 order = 999;
 }

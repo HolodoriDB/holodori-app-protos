@@ -1,14 +1,14 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/transaction/options/transaction.proto";
 import "enums/mini_game_type.gen.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserMiniGameSetting {
-  .enums.MiniGameType mini_game_type = 2;
-  int64 consumption_setting_quantity = 3;
+	.enums.MiniGameType mini_game_type = 2 [(options.transaction.pk) = true];
+	int64 consumption_setting_quantity = 3;
 }

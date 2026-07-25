@@ -1,14 +1,14 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserFanMark {
-  string fan_mark_id = 2;
-  int64 acquired_time = 4;
+	string fan_mark_id = 2 [(options.master.fk) = "FanMark:id", (options.transaction.pk) = true];
+	int64 acquired_time = 4;
 }

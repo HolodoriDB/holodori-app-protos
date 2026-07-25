@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkNpc {
-  string id = 1;
-  string sd_costume_id = 2;
-  string park_graph_id = 3;
-  string costume_id = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string sd_costume_id = 2 [(options.master.fk) = "SdCostume:id"];
+	string park_graph_id = 3 [(options.master.fk) = "ParkGraph:id", (options.master.optional) = true];
+	string costume_id = 4 [(options.master.fk) = "Costume:id", (options.master.optional) = true];
 }

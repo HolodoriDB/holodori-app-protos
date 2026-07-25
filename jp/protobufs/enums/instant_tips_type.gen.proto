@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum InstantTipsType {
-  INSTANT_TIPS_TYPE_UNKNOWN = 0;
-  INSTANT_TIPS_TYPE_TIPS = 1;
-  INSTANT_TIPS_TYPE_TEXT = 2;
+	INSTANT_TIPS_TYPE_UNKNOWN = 0;
+	INSTANT_TIPS_TYPE_TIPS = 1;
+	INSTANT_TIPS_TYPE_TEXT = 2;
 }

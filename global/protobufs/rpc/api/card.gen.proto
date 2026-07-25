@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "google/api/annotations.proto";
@@ -9,74 +7,102 @@ import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message CardGetParameterRequest {
-  string card_id = 1;
+	string card_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CardGetParameterResponse {
-  message SkillTreeEffect {
-    int32 performance_up = 1;
-    float performance_up_permil_up = 2;
-    int32 technique_up = 3;
-    float technique_up_permil_up = 4;
-    int32 sense_up = 5;
-    float sense_up_permil_up = 6;
-  }
-  int64 parameter = 1;
-  int64 performance = 2;
-  int64 technique = 3;
-  int64 sense = 4;
-  CardGetParameterResponse.SkillTreeEffect skill_tree_effect = 5;
-  common.Response common_response = 9999;
+	message SkillTreeEffect {
+		int32 performance_up = 1;
+		float performance_up_permil_up = 2;
+		int32 technique_up = 3;
+		float technique_up_permil_up = 4;
+		int32 sense_up = 5;
+		float sense_up_permil_up = 6;
+	}
+
+	int64 parameter = 1;
+	int64 performance = 2;
+	int64 technique = 3;
+	int64 sense = 4;
+	CardGetParameterResponse.SkillTreeEffect skill_tree_effect = 5;
+	common.Response common_response = 9999;
 }
 
 message CardGetParametersResponse {
-  message ParameterInfo {
-    string card_id = 1;
-    int64 parameter = 2;
-    int64 performance = 3;
-    int64 technique = 4;
-    int64 sense = 5;
-  }
-  repeated CardGetParametersResponse.ParameterInfo parameter_infos = 1;
-  int32 live_deck_power_permyriad_up_by_card_level_up = 2;
-  common.Response common_response = 9999;
+	message ParameterInfo {
+		string card_id = 1 [(options.master.fk) = "Card:id"];
+		int64 parameter = 2;
+		int64 performance = 3;
+		int64 technique = 4;
+		int64 sense = 5;
+	}
+
+	repeated CardGetParametersResponse.ParameterInfo parameter_infos = 1;
+	int32 live_deck_power_permyriad_up_by_card_level_up = 2;
+	common.Response common_response = 9999;
 }
 
 message CardLevelUpRequest {
-  string card_id = 1;
-  int32 after_level = 2;
+	string card_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 after_level = 2 [(buf.validate.field).int32.gte = 1];
 }
 
 message CardLevelLimitBreakRequest {
-  string card_id = 1;
-  int32 after_level_limit_break_count = 2;
+	string card_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 after_level_limit_break_count = 2 [(buf.validate.field).int32.gte = 1];
 }
 
 message CardUpgradePotentialRequest {
-  string card_id = 1;
-  int32 after_potential_upgrade_count = 2;
+	string card_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 after_potential_upgrade_count = 2 [(buf.validate.field).int32.gte = 1];
 }
 
 message CardLevelUpResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CardLevelLimitBreakResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CardUpgradePotentialResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Card {
-  rpc GetParameter (CardGetParameterRequest) returns (CardGetParameterResponse);
-  rpc GetParameters (.google.protobuf.Empty) returns (CardGetParametersResponse);
-  rpc LevelUp (CardLevelUpRequest) returns (CardLevelUpResponse);
-  rpc LevelLimitBreak (CardLevelLimitBreakRequest) returns (CardLevelLimitBreakResponse);
-  rpc UpgradePotential (CardUpgradePotentialRequest) returns (CardUpgradePotentialResponse);
+	rpc GetParameter (.rpc.api.CardGetParameterRequest) returns (.rpc.api.CardGetParameterResponse) {
+		option (google.api.http).post = "/Card/GetParameter";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetParameters (.google.protobuf.Empty) returns (.rpc.api.CardGetParametersResponse) {
+		option (google.api.http).post = "/Card/GetParameters";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc LevelUp (.rpc.api.CardLevelUpRequest) returns (.rpc.api.CardLevelUpResponse) {
+		option (google.api.http).post = "/Card/LevelUp";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc LevelLimitBreak (.rpc.api.CardLevelLimitBreakRequest) returns (.rpc.api.CardLevelLimitBreakResponse) {
+		option (google.api.http).post = "/Card/LevelLimitBreak";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc UpgradePotential (.rpc.api.CardUpgradePotentialRequest) returns (.rpc.api.CardUpgradePotentialResponse) {
+		option (google.api.http).post = "/Card/UpgradePotential";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkPosition {
-  string id = 1;
-  string area_id = 2;
-  string facility_id = 3;
-  string position = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string area_id = 2 [(options.master.fk) = "Area:id", (options.master.optional) = true];
+	string facility_id = 3 [(options.master.fk) = "Facility:id", (options.master.optional) = true];
+	string position = 4 [(options.master.optional) = true];
 }

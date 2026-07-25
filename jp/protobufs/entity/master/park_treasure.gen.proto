@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkTreasure {
-  string id = 1;
-  string park_target_mapping_id = 2;
-  string condition_group_id = 6;
-  repeated .common.Reward rewards = 1000;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string park_target_mapping_id = 2 [(options.master.fk) = "ParkTargetMapping:id"];
+	string condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	repeated .common.Reward rewards = 1000 [(options.master.optional) = true];
 }

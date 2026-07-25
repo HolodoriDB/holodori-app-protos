@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum CardAssetType {
-  CARD_ASSET_TYPE_UNKNOWN = 0;
-  CARD_ASSET_TYPE_IMAGE = 1;
-  CARD_ASSET_TYPE_IMAGE_AND_MOVIE = 2;
+	CARD_ASSET_TYPE_UNKNOWN = 0;
+	CARD_ASSET_TYPE_IMAGE = 1;
+	CARD_ASSET_TYPE_IMAGE_AND_MOVIE = 2;
 }

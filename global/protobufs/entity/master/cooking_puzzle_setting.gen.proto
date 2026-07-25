@@ -1,27 +1,29 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CookingPuzzleSetting {
-  string id = 1;
-  string mini_game_reward_up_stamina_effect_group_id = 10;
-  int32 stock_space_quantity = 11;
-  int64 foodstuff_collecting_increment_score = 12;
-  int64 stock_space_overflow_decrement_score = 13;
-  int32 guide_activation_milliseconds = 14;
-  int32 guide_lighting_duration_milliseconds = 15;
-  int32 guide_expansion_rate_permil_up = 16;
-  int32 tap_expansion_rate_permil_up = 17;
-  int32 reward_up_stamina_consumption_unit = 18;
-  int32 gauge_yellow_remaining_time_rate_permil = 19;
-  int32 gauge_red_remaining_time_rate_permil = 20;
-  int32 alert_remaining_time_seconds = 21;
-  int64 score_attack_result_voice_threshold_score_normal = 24;
-  int64 score_attack_result_voice_threshold_score_good = 25;
-  int64 score_attack_result_voice_threshold_score_great = 26;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string mini_game_reward_up_stamina_effect_group_id = 10 [(options.master.fk) = "MiniGameRewardUpStaminaEffect:group_id"];
+	int32 stock_space_quantity = 11;
+	int64 foodstuff_collecting_increment_score = 12;
+	int64 stock_space_overflow_decrement_score = 13;
+	int32 guide_activation_milliseconds = 14;
+	int32 guide_lighting_duration_milliseconds = 15;
+	int32 guide_expansion_rate_permil_up = 16;
+	int32 tap_expansion_rate_permil_up = 17;
+	int32 reward_up_stamina_consumption_unit = 18;
+	int32 gauge_yellow_remaining_time_rate_permil = 19;
+	int32 gauge_red_remaining_time_rate_permil = 20;
+	int32 alert_remaining_time_seconds = 21;
+	int64 score_attack_result_voice_threshold_score_normal = 24;
+	int64 score_attack_result_voice_threshold_score_good = 25;
+	int64 score_attack_result_voice_threshold_score_great = 26;
 }

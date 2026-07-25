@@ -6,8 +6,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum LoadingDisplayType {
-  LOADING_DISPLAY_TYPE_UNKNOWN = 0;
-  LOADING_DISPLAY_TYPE_TIPS = 1;
-  LOADING_DISPLAY_TYPE_CHARACTER = 2;
-  LOADING_DISPLAY_TYPE_MOVIE = 3;
+	LOADING_DISPLAY_TYPE_UNKNOWN = 0;
+	LOADING_DISPLAY_TYPE_TIPS = 1;
+	LOADING_DISPLAY_TYPE_CHARACTER = 2;
+	LOADING_DISPLAY_TYPE_MOVIE = 3;
 }

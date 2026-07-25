@@ -1,34 +1,35 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "entity/master/options/master.proto";
 import "rpc/api/common/profile.gen.proto";
+
+package rpc.api.common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message BasicRankingRankInfo {
-  int32 rank = 1;
-  int64 score = 2;
-  BasicUserInfo user_info = 3;
+	int32 rank = 1;
+	int64 score = 2;
+	BasicUserInfo user_info = 3;
 }
 
 message RankingLiveDeckInfo {
-  message DeckCard {
-    int32 position = 1;
-    string card_id = 2;
-    int32 level = 3;
-    int32 potential_upgrade_count = 4;
-    int64 live_deck_power = 5;
-    int64 parameter_for_card_detail = 6;
-    int64 performance_for_card_detail = 7;
-    int64 technique_for_card_detail = 8;
-    int64 sense_for_card_detail = 9;
-  }
-  string character_id = 1;
-  string costume_id = 2;
-  repeated RankingLiveDeckInfo.DeckCard deck_cards = 3;
-  int64 deck_power = 4;
-  int64 deck_evaluation_value = 5;
+	message DeckCard {
+		int32 position = 1;
+		string card_id = 2 [(options.master.fk) = "Card:id"];
+		int32 level = 3;
+		int32 potential_upgrade_count = 4;
+		int64 live_deck_power = 5;
+		int64 parameter_for_card_detail = 6;
+		int64 performance_for_card_detail = 7;
+		int64 technique_for_card_detail = 8;
+		int64 sense_for_card_detail = 9;
+	}
+
+	string character_id = 1 [(options.master.fk) = "Character:id"];
+	string costume_id = 2 [(options.master.fk) = "Costume:id"];
+	repeated RankingLiveDeckInfo.DeckCard deck_cards = 3;
+	int64 deck_power = 4;
+	int64 deck_evaluation_value = 5;
 }

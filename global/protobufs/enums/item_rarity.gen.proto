@@ -6,10 +6,10 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum ItemRarity {
-  ITEM_RARITY_UNKNOWN = 0;
-  ITEM_RARITY_RARITY1 = 1;
-  ITEM_RARITY_RARITY2 = 2;
-  ITEM_RARITY_RARITY3 = 3;
-  ITEM_RARITY_RARITY4 = 4;
-  ITEM_RARITY_RARITY5 = 5;
+	ITEM_RARITY_UNKNOWN = 0;
+	ITEM_RARITY_RARITY1 = 1;
+	ITEM_RARITY_RARITY2 = 2;
+	ITEM_RARITY_RARITY3 = 3;
+	ITEM_RARITY_RARITY4 = 4;
+	ITEM_RARITY_RARITY5 = 5;
 }

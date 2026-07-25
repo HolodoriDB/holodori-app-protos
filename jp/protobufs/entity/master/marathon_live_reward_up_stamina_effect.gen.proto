@@ -1,13 +1,15 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MarathonLiveRewardUpStaminaEffect {
-  int32 quantity = 1;
-  int32 marathon_score_provide_count = 2;
+	option (options.master.table) = true;
+
+	int32 quantity = 1 [(options.master.pk) = true];
+	int32 marathon_score_provide_count = 2;
 }

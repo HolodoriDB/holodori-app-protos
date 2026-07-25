@@ -1,13 +1,15 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ComboCardGameDeckCharacterGrouping {
-  string character_grouping_id = 1;
-  int32 ratio = 2;
+	option (options.master.table) = true;
+
+	string character_grouping_id = 1 [(options.master.fk) = "CharacterGrouping:id", (options.master.pk) = true];
+	int32 ratio = 2 [(options.master.optional) = true];
 }

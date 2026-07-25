@@ -1,7 +1,11 @@
 syntax = "proto3";
 
-package options.zap;
-
 import "google/protobuf/descriptor.proto";
 
+package options.zap;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/options/zap";
+
+extend google.protobuf.FieldOptions {
+	bool hidden = 50050;
+}

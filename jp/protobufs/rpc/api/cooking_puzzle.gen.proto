@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -13,80 +11,115 @@ import "rpc/api/common/ranking.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message CookingPuzzleStartRequest {
-  string cooking_puzzle_id = 1;
-  int32 reward_up_stamina_consumption_quantity = 2;
-  string character_id = 3;
+	string cooking_puzzle_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CookingPuzzleFinishRequest {
-  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
-  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
-  int64 score = 3;
-  int32 stock_space_overflow_count = 4;
-  int32 foodstuff_collecting_count = 5;
-  int32 max_combo_count = 6;
+	repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1 [(buf.validate.field).repeated.max_items = 100];
+	common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+	int64 score = 3 [(buf.validate.field).int64.gte = 0];
+	int32 stock_space_overflow_count = 4 [(buf.validate.field).int32.gte = 0];
+	int32 foodstuff_collecting_count = 5 [(buf.validate.field).int32.gte = 0];
+	int32 max_combo_count = 6 [(buf.validate.field).int32.gte = 0];
 }
 
 message CookingPuzzleFinishResponse {
-  int64 past_highest_score = 1;
-  bool is_highest_score_updated = 2;
-  repeated common.RewardResult results = 3;
-  bool is_cleared = 4;
-  int32 reward_up_stamina_consumption_quantity = 5;
-  int64 benefit_license_reward_quantity_up_permil_up = 6;
-  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 7;
-  common.MarathonMiniGameResult marathon_mini_game_result = 100;
-  common.Response common_response = 9999;
+	int64 past_highest_score = 1;
+	bool is_highest_score_updated = 2;
+	repeated common.RewardResult results = 3;
+	bool is_cleared = 4;
+	int32 reward_up_stamina_consumption_quantity = 5;
+	int64 benefit_license_reward_quantity_up_permil_up = 6;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 7;
+	common.MarathonMiniGameResult marathon_mini_game_result = 100;
+	common.Response common_response = 9999;
 }
 
 message CookingPuzzleRetireRequest {
-  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
-  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
-  int64 score = 3;
-  int32 stock_space_overflow_count = 4;
-  int32 foodstuff_collecting_count = 5;
-  int32 max_combo_count = 6;
+	repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1 [(buf.validate.field).repeated.max_items = 100];
+	common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+	int64 score = 3 [(buf.validate.field).int64.gte = 0];
+	int32 stock_space_overflow_count = 4 [(buf.validate.field).int32.gte = 0];
+	int32 foodstuff_collecting_count = 5 [(buf.validate.field).int32.gte = 0];
+	int32 max_combo_count = 6 [(buf.validate.field).int32.gte = 0];
 }
 
 message CookingPuzzleGetRankingInfoResponse {
-  int32 self_rank = 1;
-  repeated common.BasicRankingRankInfo rank_infos = 2;
-  common.Response common_response = 9999;
+	int32 self_rank = 1;
+	repeated common.BasicRankingRankInfo rank_infos = 2 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message CookingPuzzleReportRecipeProgressRequest {
-  string cooking_puzzle_recipe_id = 1;
+	string cooking_puzzle_recipe_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message CookingPuzzleReadNotificationRequest {
-  repeated string cooking_puzzle_ids = 1;
+	repeated string cooking_puzzle_ids = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message CookingPuzzleStartResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CookingPuzzleRetireResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CookingPuzzleReportRecipeProgressResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message CookingPuzzleReadNotificationResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service CookingPuzzle {
-  rpc Start (CookingPuzzleStartRequest) returns (CookingPuzzleStartResponse);
-  rpc Finish (CookingPuzzleFinishRequest) returns (CookingPuzzleFinishResponse);
-  rpc Retire (CookingPuzzleRetireRequest) returns (CookingPuzzleRetireResponse);
-  rpc GetRankingInfo (.google.protobuf.Empty) returns (CookingPuzzleGetRankingInfoResponse);
-  rpc ReportRecipeProgress (CookingPuzzleReportRecipeProgressRequest) returns (CookingPuzzleReportRecipeProgressResponse);
-  rpc ReadNotification (CookingPuzzleReadNotificationRequest) returns (CookingPuzzleReadNotificationResponse);
+	rpc Start (.rpc.api.CookingPuzzleStartRequest) returns (.rpc.api.CookingPuzzleStartResponse) {
+		option (google.api.http).post = "/CookingPuzzle/Start";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Finish (.rpc.api.CookingPuzzleFinishRequest) returns (.rpc.api.CookingPuzzleFinishResponse) {
+		option (google.api.http).post = "/CookingPuzzle/Finish";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc Retire (.rpc.api.CookingPuzzleRetireRequest) returns (.rpc.api.CookingPuzzleRetireResponse) {
+		option (google.api.http).post = "/CookingPuzzle/Retire";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetRankingInfo (.google.protobuf.Empty) returns (.rpc.api.CookingPuzzleGetRankingInfoResponse) {
+		option (google.api.http).post = "/CookingPuzzle/GetRankingInfo";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReportRecipeProgress (.rpc.api.CookingPuzzleReportRecipeProgressRequest) returns (.rpc.api.CookingPuzzleReportRecipeProgressResponse) {
+		option (google.api.http).post = "/CookingPuzzle/ReportRecipeProgress";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadNotification (.rpc.api.CookingPuzzleReadNotificationRequest) returns (.rpc.api.CookingPuzzleReadNotificationResponse) {
+		option (google.api.http).post = "/CookingPuzzle/ReadNotification";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

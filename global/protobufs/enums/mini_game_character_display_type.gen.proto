@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum MiniGameCharacterDisplayType {
-  MINI_GAME_CHARACTER_DISPLAY_TYPE_UNKNOWN = 0;
-  MINI_GAME_CHARACTER_DISPLAY_TYPE_DISPLAY_2_D = 1;
-  MINI_GAME_CHARACTER_DISPLAY_TYPE_DISPLAY_3_D = 2;
+	MINI_GAME_CHARACTER_DISPLAY_TYPE_UNKNOWN = 0;
+	MINI_GAME_CHARACTER_DISPLAY_TYPE_DISPLAY_2_D = 1;
+	MINI_GAME_CHARACTER_DISPLAY_TYPE_DISPLAY_3_D = 2;
 }

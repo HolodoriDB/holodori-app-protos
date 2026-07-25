@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MarathonRankingGrade {
-  string id = 1;
-  string name_lang_id = 2;
-  string color1 = 3;
-  string color2 = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangMarathonRankingGrade:id"];
+	string color1 = 3;
+	string color2 = 4;
 }

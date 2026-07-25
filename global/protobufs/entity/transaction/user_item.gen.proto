@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserItem {
-  string item_id = 2;
-  int64 expired_time = 3;
-  int64 quantity = 4;
-  int64 last_acquired_time = 5;
+	string item_id = 2 [(options.master.fk) = "Item:id", (options.transaction.pk) = true];
+	int64 expired_time = 3 [(options.transaction.pk) = true];
+	int64 quantity = 4;
+	int64 last_acquired_time = 5;
 }

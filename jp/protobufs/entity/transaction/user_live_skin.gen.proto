@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserLiveSkin {
-  string live_skin_id = 2;
+	string live_skin_id = 2 [(options.master.fk) = "LiveSkin:id", (options.transaction.pk) = true];
 }

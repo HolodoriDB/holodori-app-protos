@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserCharacterSkillTree {
-  string character_id = 2;
-  repeated string released_skill_tree_node_group_ids = 3;
-  repeated string connected_skill_tree_node_group_ids = 4;
-  repeated string connected_skill_tree_node_card_ids = 5;
+	string character_id = 2 [(options.master.fk) = "Character:id", (options.transaction.pk) = true];
+	repeated string released_skill_tree_node_group_ids = 3;
+	repeated string connected_skill_tree_node_group_ids = 4;
+	repeated string connected_skill_tree_node_card_ids = 5 [(options.master.fk) = "Card:id"];
 }

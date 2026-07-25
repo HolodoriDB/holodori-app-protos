@@ -1,21 +1,23 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/resource_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkHighLow {
-  string id = 1;
-  string name_lang_id = 2;
-  .enums.ResourceType consumption_resource_type = 3;
-  string consumption_resource_id = 4;
-  int64 consumption_quantity = 5;
-  int64 max_reward_quantity = 6;
-  int64 daily_max_reward_quantity = 7;
-  string daily_max_reward_reached_park_talk_group_id = 8;
-  string park_high_low_hand_group_id = 9;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangParkHighLow:id"];
+	.enums.ResourceType consumption_resource_type = 3;
+	string consumption_resource_id = 4;
+	int64 consumption_quantity = 5;
+	int64 max_reward_quantity = 6;
+	int64 daily_max_reward_quantity = 7;
+	string daily_max_reward_reached_park_talk_group_id = 8 [(options.master.fk) = "ParkTalk:group_id"];
+	string park_high_low_hand_group_id = 9 [(options.master.fk) = "ParkHighLowHand:group_id"];
 }

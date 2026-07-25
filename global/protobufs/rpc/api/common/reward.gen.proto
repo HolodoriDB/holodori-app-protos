@@ -1,24 +1,24 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "enums/resource_type.gen.proto";
+
+package rpc.api.common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message RewardResult {
-  .enums.ResourceType resource_type = 1;
-  string resource_id = 2;
-  int64 quantity = 3;
-  int64 before_quantity = 4;
-  int64 after_quantity = 5;
-  bool is_new = 6;
-  bool is_gift = 7;
+	.enums.ResourceType resource_type = 1;
+	string resource_id = 2;
+	int64 quantity = 3;
+	int64 before_quantity = 4;
+	int64 after_quantity = 5;
+	bool is_new = 6;
+	bool is_gift = 7;
 }
 
 message RewardQuantityUp {
-  .enums.ResourceType resource_type = 1;
-  string resource_id = 2;
-  int32 quantity_permil_up = 3;
+	.enums.ResourceType resource_type = 1;
+	string resource_id = 2;
+	int32 quantity_permil_up = 3;
 }

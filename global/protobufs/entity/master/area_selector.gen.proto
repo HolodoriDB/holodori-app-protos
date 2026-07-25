@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message AreaSelector {
-  string id = 1;
-  string area_grouping_id = 2;
-  bool is_map_visible = 3;
-  string facility_id = 4;
-  bool is_user_selectable = 5;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string area_grouping_id = 2 [(options.master.fk) = "AreaGrouping:id"];
+	bool is_map_visible = 3 [(options.master.optional) = true];
+	string facility_id = 4 [(options.master.fk) = "Facility:id", (options.master.optional) = true];
+	bool is_user_selectable = 5 [(options.master.optional) = true];
 }

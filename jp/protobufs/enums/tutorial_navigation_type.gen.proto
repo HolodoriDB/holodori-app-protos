@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum TutorialNavigationType {
-  TUTORIAL_NAVIGATION_TYPE_UNKNOWN = 0;
-  TUTORIAL_NAVIGATION_TYPE_SYSTEM_MESSAGE = 1;
-  TUTORIAL_NAVIGATION_TYPE_TIPS = 2;
+	TUTORIAL_NAVIGATION_TYPE_UNKNOWN = 0;
+	TUTORIAL_NAVIGATION_TYPE_SYSTEM_MESSAGE = 1;
+	TUTORIAL_NAVIGATION_TYPE_TIPS = 2;
 }

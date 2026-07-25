@@ -6,9 +6,9 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum FriendStatusType {
-  FRIEND_STATUS_TYPE_UNKNOWN = 0;
-  FRIEND_STATUS_TYPE_NONE = 1;
-  FRIEND_STATUS_TYPE_FRIEND = 2;
-  FRIEND_STATUS_TYPE_OFFERING = 3;
-  FRIEND_STATUS_TYPE_OFFER_RECEIVED = 4;
+	FRIEND_STATUS_TYPE_UNKNOWN = 0;
+	FRIEND_STATUS_TYPE_NONE = 1;
+	FRIEND_STATUS_TYPE_FRIEND = 2;
+	FRIEND_STATUS_TYPE_OFFERING = 3;
+	FRIEND_STATUS_TYPE_OFFER_RECEIVED = 4;
 }

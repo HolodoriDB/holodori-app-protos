@@ -1,20 +1,22 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/card_attribute_type.gen.proto";
 import "enums/live_skill_effect_target_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveSkillEffectTarget {
-  string id = 1;
-  .enums.LiveSkillEffectTargetType type = 2;
-  int32 target_count = 3;
-  string character_id = 4;
-  string character_grouping_id = 5;
-  .enums.CardAttributeType card_attribute_type = 6;
-  string description_lang_id = 1000;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.LiveSkillEffectTargetType type = 2;
+	int32 target_count = 3 [(options.master.optional) = true];
+	string character_id = 4 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	string character_grouping_id = 5 [(options.master.fk) = "CharacterGrouping:id", (options.master.optional) = true];
+	.enums.CardAttributeType card_attribute_type = 6 [(options.master.optional) = true];
+	string description_lang_id = 1000 [(options.master.fk) = "LangGeneratedLiveSkillEffectTarget:id"];
 }

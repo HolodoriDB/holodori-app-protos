@@ -1,24 +1,27 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CustomPalettePresetLayoutGroup {
-  message CustomPalettePresetLayout {
-    string custom_palette_preset_layout_group_id = 1;
-    int32 number = 2;
-    int32 position_x_permil = 3;
-    int32 position_y_permil = 4;
-    int32 scale_permil = 5;
-    int32 rotation_permil = 6;
-    int32 layer = 7;
-  }
-  string id = 1;
-  string name_lang_id = 2;
-  int32 order = 999;
-  repeated CustomPalettePresetLayoutGroup.CustomPalettePresetLayout custom_palette_preset_layouts = 1000;
+	option (options.master.table) = true;
+
+	message CustomPalettePresetLayout {
+		string custom_palette_preset_layout_group_id = 1 [(options.master.optional) = true];
+		int32 number = 2 [(options.master.optional) = true];
+		int32 position_x_permil = 3 [(options.master.optional) = true];
+		int32 position_y_permil = 4 [(options.master.optional) = true];
+		int32 scale_permil = 5 [(options.master.optional) = true];
+		int32 rotation_permil = 6 [(options.master.optional) = true];
+		int32 layer = 7 [(options.master.optional) = true];
+	}
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangCustomPalettePresetLayoutGroup:id"];
+	int32 order = 999;
+	repeated CustomPalettePresetLayoutGroup.CustomPalettePresetLayout custom_palette_preset_layouts = 1000 [(options.master.optional) = true];
 }

@@ -6,9 +6,9 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum OsType {
-  OS_TYPE_UNKNOWN = 0;
-  OS_TYPE_IOS = 1;
-  OS_TYPE_ANDROID = 2;
-  OS_TYPE_WINDOWS = 3;
-  OS_TYPE_OTHER = 999;
+	OS_TYPE_UNKNOWN = 0;
+	OS_TYPE_IOS = 1;
+	OS_TYPE_ANDROID = 2;
+	OS_TYPE_WINDOWS = 3;
+	OS_TYPE_OTHER = 999;
 }

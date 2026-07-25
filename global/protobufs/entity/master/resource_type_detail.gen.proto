@@ -1,21 +1,23 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/resource_background_pattern_type.gen.proto";
 import "enums/resource_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ResourceTypeDetail {
-  .enums.ResourceType type = 1;
-  string color = 2;
-  string name_lang_id = 3;
-  string icon_asset_id = 4;
-  string description_lang_id = 5;
-  string resource_obtainment_route_group_id = 6;
-  string background_color = 7;
-  .enums.ResourceBackgroundPatternType background_pattern_type = 8;
+	option (options.master.table) = true;
+
+	.enums.ResourceType type = 1 [(options.master.pk) = true];
+	string color = 2;
+	string name_lang_id = 3 [(options.master.fk) = "LangResourceTypeDetail:id"];
+	string icon_asset_id = 4;
+	string description_lang_id = 5 [(options.master.fk) = "LangResourceTypeDetail:id", (options.master.optional) = true];
+	string resource_obtainment_route_group_id = 6 [(options.master.fk) = "ResourceObtainmentRoute:group_id", (options.master.optional) = true];
+	string background_color = 7;
+	.enums.ResourceBackgroundPatternType background_pattern_type = 8;
 }

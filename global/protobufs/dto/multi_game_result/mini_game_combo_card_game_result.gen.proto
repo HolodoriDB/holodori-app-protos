@@ -1,32 +1,36 @@
 syntax = "proto3";
 
-package dto.multi_game_result;
-
 import "buf/validate/validate.proto";
 import "dto/multi_game_result/common.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/combo_card_game_card_role_type.gen.proto";
 import "options/multi_game_result.proto";
 
+package dto.multi_game_result;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/dto/multi_game_result";
 option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
 
 message MiniGameComboCardGameResult {
-  message RankResult {
-    int32 rank = 1;
-    int64 end_chip_quantity = 2;
-    int64 start_bet_coin_quantity = 3;
-    int32 ronned_count = 4;
-    int32 mismatch_count = 5;
-    repeated MiniGameComboCardGameResult.CompletionRole completion_roles = 6;
-    MultiGameCommonUserResult common_user_result = 100;
-  }
-  message CompletionRole {
-    .enums.ComboCardGameCardRoleType role_type = 1;
-    string character_grouping_id = 2;
-    string character_id = 3;
-    bool is_same_category = 4;
-  }
-  repeated MiniGameComboCardGameResult.RankResult rank_results = 1;
-  int32 deck_remaining_card_count = 2;
+	option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_MINI_GAME_COMBO_CARD_GAME;
+
+	message RankResult {
+		int32 rank = 1 [(buf.validate.field).int32.gte = 1];
+		int64 end_chip_quantity = 2 [(buf.validate.field).int64.gte = 0];
+		int64 start_bet_coin_quantity = 3 [(buf.validate.field).int64.gte = 0];
+		int32 ronned_count = 4 [(buf.validate.field).int32.gte = 0];
+		int32 mismatch_count = 5 [(buf.validate.field).int32.gte = 0];
+		repeated MiniGameComboCardGameResult.CompletionRole completion_roles = 6;
+		MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+	}
+
+	message CompletionRole {
+		.enums.ComboCardGameCardRoleType role_type = 1;
+		string character_grouping_id = 2 [(options.master.fk) = "CharacterGrouping:id"];
+		string character_id = 3 [(options.master.fk) = "Character:id"];
+		bool is_same_category = 4;
+	}
+
+	repeated MiniGameComboCardGameResult.RankResult rank_results = 1 [(buf.validate.field).repeated.min_items = 1];
+	int32 deck_remaining_card_count = 2 [(buf.validate.field).int32.gte = 0];
 }

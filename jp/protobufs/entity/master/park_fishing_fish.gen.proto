@@ -1,41 +1,43 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_fishing_fish_category_type.gen.proto";
 import "enums/park_fishing_fish_rank_type.gen.proto";
 import "enums/park_time_period_type.gen.proto";
 
+package entity.master;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkFishingFish {
-  string id = 1;
-  .enums.ParkFishingFishCategoryType category_type = 2;
-  string name_lang_id = 3;
-  string description_lang_id = 4;
-  string asset_id = 5;
-  string unknown_icon_asset_id = 6;
-  string known_icon_asset_id = 7;
-  string park_fishing_fish_species_id = 8;
-  .enums.ParkFishingFishRankType rank_type = 9;
-  repeated string favorite_park_fishing_bait_ids = 10;
-  string park_fishing_fish_icon_group_id = 11;
-  int32 icon_speed_up_permil = 12;
-  int32 icon_speed_change_millisecond_up = 13;
-  int32 icon_movement_range_min_permil = 14;
-  int32 icon_movement_range_max_permil = 15;
-  int32 capture_bar_length_permil_multiply = 16;
-  int64 silver_weight_threshold = 20;
-  int64 gold_weight_threshold = 21;
-  int32 weight_coin_bonus_permil_multiply = 22;
-  int32 hit_detection_millisecond = 23;
-  int32 capture_limit_millisecond = 24;
-  int32 progress_meter_speed_increase = 25;
-  int32 progress_meter_speed_decrease = 26;
-  float progress_meter_time_penalty = 27;
-  int32 stamina = 28;
-  int32 order = 999;
-  repeated .enums.ParkTimePeriodType park_time_period_types = 1000;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.ParkFishingFishCategoryType category_type = 2;
+	string name_lang_id = 3 [(options.master.fk) = "LangParkFishingFish:id"];
+	string description_lang_id = 4 [(options.master.fk) = "LangParkFishingFish:id"];
+	string asset_id = 5;
+	string unknown_icon_asset_id = 6 [(options.master.optional) = true];
+	string known_icon_asset_id = 7 [(options.master.optional) = true];
+	string park_fishing_fish_species_id = 8 [(options.master.fk) = "ParkFishingFishSpecies:id", (options.master.optional) = true];
+	.enums.ParkFishingFishRankType rank_type = 9 [(options.master.optional) = true];
+	repeated string favorite_park_fishing_bait_ids = 10 [(options.master.fk) = "ParkFishingBait:id", (options.master.optional) = true];
+	string park_fishing_fish_icon_group_id = 11 [(options.master.fk) = "ParkFishingFishIcon:group_id"];
+	int32 icon_speed_up_permil = 12 [(options.master.optional) = true];
+	int32 icon_speed_change_millisecond_up = 13 [(options.master.optional) = true];
+	int32 icon_movement_range_min_permil = 14 [(options.master.optional) = true];
+	int32 icon_movement_range_max_permil = 15 [(options.master.optional) = true];
+	int32 capture_bar_length_permil_multiply = 16 [(options.master.optional) = true];
+	int64 silver_weight_threshold = 20 [(options.master.optional) = true];
+	int64 gold_weight_threshold = 21 [(options.master.optional) = true];
+	int32 weight_coin_bonus_permil_multiply = 22 [(options.master.optional) = true];
+	int32 hit_detection_millisecond = 23 [(options.master.optional) = true];
+	int32 capture_limit_millisecond = 24;
+	int32 progress_meter_speed_increase = 25 [(options.master.optional) = true];
+	int32 progress_meter_speed_decrease = 26 [(options.master.optional) = true];
+	float progress_meter_time_penalty = 27;
+	int32 stamina = 28 [(options.master.optional) = true];
+	int32 order = 999;
+	repeated .enums.ParkTimePeriodType park_time_period_types = 1000 [(options.master.optional) = true];
 }

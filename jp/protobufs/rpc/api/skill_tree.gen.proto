@@ -1,47 +1,61 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message SkillTreeReleaseNodeRequest {
-  string character_id = 1;
-  repeated string node_group_ids = 2;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated string node_group_ids = 2 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message SkillTreeConnectNodeRequest {
-  string character_id = 1;
-  string node_group_id = 2;
-  string card_id = 3;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string node_group_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	string card_id = 3;
 }
 
 message SkillTreeResetNodeRequest {
-  string character_id = 1;
-  repeated string node_group_ids = 2;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated string node_group_ids = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message SkillTreeResetNodeResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message SkillTreeReleaseNodeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message SkillTreeConnectNodeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service SkillTree {
-  rpc ReleaseNode (SkillTreeReleaseNodeRequest) returns (SkillTreeReleaseNodeResponse);
-  rpc ConnectNode (SkillTreeConnectNodeRequest) returns (SkillTreeConnectNodeResponse);
-  rpc ResetNode (SkillTreeResetNodeRequest) returns (SkillTreeResetNodeResponse);
+	rpc ReleaseNode (.rpc.api.SkillTreeReleaseNodeRequest) returns (.rpc.api.SkillTreeReleaseNodeResponse) {
+		option (google.api.http).post = "/SkillTree/ReleaseNode";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ConnectNode (.rpc.api.SkillTreeConnectNodeRequest) returns (.rpc.api.SkillTreeConnectNodeResponse) {
+		option (google.api.http).post = "/SkillTree/ConnectNode";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ResetNode (.rpc.api.SkillTreeResetNodeRequest) returns (.rpc.api.SkillTreeResetNodeResponse) {
+		option (google.api.http).post = "/SkillTree/ResetNode";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

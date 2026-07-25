@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum AssetDownloadType {
-  ASSET_DOWNLOAD_TYPE_UNKNOWN = 0;
-  ASSET_DOWNLOAD_TYPE_BEFORE_TUTORIAL = 1;
-  ASSET_DOWNLOAD_TYPE_AFTER_TUTORIAL = 2;
+	ASSET_DOWNLOAD_TYPE_UNKNOWN = 0;
+	ASSET_DOWNLOAD_TYPE_BEFORE_TUTORIAL = 1;
+	ASSET_DOWNLOAD_TYPE_AFTER_TUTORIAL = 2;
 }

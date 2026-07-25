@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum LoginBonusType {
-  LOGIN_BONUS_TYPE_UNKNOWN = 0;
-  LOGIN_BONUS_TYPE_NORMAL = 1;
-  LOGIN_BONUS_TYPE_EVENT = 2;
+	LOGIN_BONUS_TYPE_UNKNOWN = 0;
+	LOGIN_BONUS_TYPE_NORMAL = 1;
+	LOGIN_BONUS_TYPE_EVENT = 2;
 }

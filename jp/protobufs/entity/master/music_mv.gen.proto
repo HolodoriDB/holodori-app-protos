@@ -1,23 +1,25 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MusicMv {
-  string music_id = 1;
-  int32 number = 2;
-  string music_mv_category_id = 3;
-  string mv_asset_id = 4;
-  string slide_mv_asset_id = 5;
-  int32 slide_mv_asset_count = 6;
-  int32 mv_start_millisecond = 7;
-  string name_lang_id = 8;
-  string thumbnail_asset_id = 9;
-  string condition_group_id = 10;
-  string description_lang_id = 11;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string music_id = 1 [(options.master.fk) = "Music:id", (options.master.pk) = true];
+	int32 number = 2 [(options.master.pk) = true];
+	string music_mv_category_id = 3 [(options.master.fk) = "MusicMvCategory:id"];
+	string mv_asset_id = 4 [(options.master.optional) = true];
+	string slide_mv_asset_id = 5 [(options.master.optional) = true];
+	int32 slide_mv_asset_count = 6 [(options.master.optional) = true];
+	int32 mv_start_millisecond = 7 [(options.master.optional) = true];
+	string name_lang_id = 8 [(options.master.fk) = "LangMusicMv:id", (options.master.optional) = true];
+	string thumbnail_asset_id = 9;
+	string condition_group_id = 10 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string description_lang_id = 11 [(options.master.fk) = "LangMusicMv:id", (options.master.optional) = true];
+	int32 order = 999;
 }

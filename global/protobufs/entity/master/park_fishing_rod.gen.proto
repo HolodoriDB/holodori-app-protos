@@ -1,26 +1,28 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/consumption.gen.proto";
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkFishingRod {
-  int32 level = 1;
-  string name_lang_id = 2;
-  string asset_id = 3;
-  string description_lang_id = 4;
-  string unlock_condition_group_id = 5;
-  int32 capture_bar_length_up = 9;
-  int32 capture_bar_tap_inertia_up_permil = 10;
-  int32 capture_bar_fall_acceleration_up_permil = 11;
-  int64 capture_bar_fall_start_millisecond_up = 12;
-  int32 icon_speed_up_permil = 13;
-  int32 icon_speed_change_millisecond_up = 14;
-  int32 progress_meter_speed_increase_up = 15;
-  int32 progress_meter_speed_decrease_up = 16;
-  repeated .common.Consumption consumptions = 1000;
+	option (options.master.table) = true;
+
+	int32 level = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangParkFishingRod:id"];
+	string asset_id = 3;
+	string description_lang_id = 4 [(options.master.fk) = "LangParkFishingRod:id"];
+	string unlock_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 capture_bar_length_up = 9 [(options.master.optional) = true];
+	int32 capture_bar_tap_inertia_up_permil = 10 [(options.master.optional) = true];
+	int32 capture_bar_fall_acceleration_up_permil = 11 [(options.master.optional) = true];
+	int64 capture_bar_fall_start_millisecond_up = 12 [(options.master.optional) = true];
+	int32 icon_speed_up_permil = 13 [(options.master.optional) = true];
+	int32 icon_speed_change_millisecond_up = 14 [(options.master.optional) = true];
+	int32 progress_meter_speed_increase_up = 15 [(options.master.optional) = true];
+	int32 progress_meter_speed_decrease_up = 16 [(options.master.optional) = true];
+	repeated .common.Consumption consumptions = 1000 [(options.master.optional) = true];
 }

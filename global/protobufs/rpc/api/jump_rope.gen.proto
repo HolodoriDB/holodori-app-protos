@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -15,114 +13,161 @@ import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 import "rpc/api/common/storage_url.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message JumpRopeMatchRandomRequest {
-  string jump_rope_id = 1;
-  common.MultiGameMatchRandomInfo match_random_info = 1000;
+	string jump_rope_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	common.MultiGameMatchRandomInfo match_random_info = 1000;
 }
 
 message JumpRopeMatchRandomResponse {
-  common.MultiGameMatchInfo match_info = 1;
-  common.Response common_response = 9999;
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
 }
 
 message JumpRopeCreatePrivateRoomRequest {
-  string jump_rope_id = 1;
-  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+	string jump_rope_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
 }
 
 message JumpRopeCreatePrivateRoomResponse {
-  common.MultiGameMatchInfo match_info = 1;
-  common.Response common_response = 9999;
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
 }
 
 message JumpRopeStartSingleRequest {
-  string jump_rope_id = 1;
-  int32 reward_up_stamina_consumption_quantity = 2;
-  string character_id = 3;
+	string jump_rope_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message JumpRopeStartSingleResponse {
-  int32 seed = 1;
-  common.Response common_response = 9999;
+	int32 seed = 1;
+	common.Response common_response = 9999;
 }
 
 message JumpRopeStartMultiRequest {
-  string jump_rope_id = 1;
-  int32 reward_up_stamina_consumption_quantity = 2;
-  string character_id = 3;
-  bool is_private_room = 4;
-  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
-  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+	string jump_rope_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	bool is_private_room = 4;
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
 }
 
 message JumpRopeFinishSingleRequest {
-  int32 jump_count = 1;
-  int32 success_jump_count = 2;
-  int32 failure_jump_count = 3;
-  int32 continuous_jump_count = 4;
-  int64 gimmick_random_seed = 50;
+	int32 jump_count = 1 [(buf.validate.field).int32.gte = 0];
+	int32 success_jump_count = 2 [(buf.validate.field).int32.gte = 0];
+	int32 failure_jump_count = 3 [(buf.validate.field).int32.gte = 0];
+	int32 continuous_jump_count = 4 [(buf.validate.field).int32.gte = 0];
+	int64 gimmick_random_seed = 50;
 }
 
 message JumpRopeFinishSingleResponse {
-  int32 past_best_jump_count = 1;
-  bool is_best_jump_count_updated = 2;
-  repeated common.RewardResult results = 3;
-  bool is_cleared = 4;
-  int32 reward_up_stamina_consumption_quantity = 5;
-  int64 benefit_license_reward_quantity_up_permil_up = 6;
-  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 7;
-  common.StorageUrlInfo play_log_upload_url = 50;
-  int64 gimmick_random_seed = 51;
-  common.MarathonMiniGameResult marathon_mini_game_result = 100;
-  common.Response common_response = 9999;
+	int32 past_best_jump_count = 1;
+	bool is_best_jump_count_updated = 2;
+	repeated common.RewardResult results = 3;
+	bool is_cleared = 4;
+	int32 reward_up_stamina_consumption_quantity = 5;
+	int64 benefit_license_reward_quantity_up_permil_up = 6;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 7;
+	common.StorageUrlInfo play_log_upload_url = 50 [(options.zap.hidden) = true];
+	int64 gimmick_random_seed = 51;
+	common.MarathonMiniGameResult marathon_mini_game_result = 100;
+	common.Response common_response = 9999;
 }
 
 message JumpRopeFinishMultiRequest {
-  string multi_game_result_id = 1;
+	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message JumpRopeFinishMultiResponse {
-  common.JumpRopeResultInfo jump_rope_result_info = 1;
-  int32 self_past_best_jump_count = 2;
-  bool is_self_best_jump_count_updated = 3;
-  repeated common.RewardResult results = 4;
-  int32 reward_up_stamina_consumption_quantity = 5;
-  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
-  int64 benefit_license_reward_quantity_up_permil_up = 7;
-  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
-  common.StorageUrlInfo play_log_upload_url = 9;
-  common.MarathonMiniGameResult marathon_mini_game_result = 100;
-  common.Response common_response = 9999;
+	common.JumpRopeResultInfo jump_rope_result_info = 1;
+	int32 self_past_best_jump_count = 2;
+	bool is_self_best_jump_count_updated = 3;
+	repeated common.RewardResult results = 4;
+	int32 reward_up_stamina_consumption_quantity = 5;
+	common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+	int64 benefit_license_reward_quantity_up_permil_up = 7;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+	common.StorageUrlInfo play_log_upload_url = 9 [(options.zap.hidden) = true];
+	common.MarathonMiniGameResult marathon_mini_game_result = 100;
+	common.Response common_response = 9999;
 }
 
 message JumpRopeGetRankingInfoResponse {
-  int32 self_rank = 1;
-  repeated common.BasicRankingRankInfo rank_infos = 2;
-  common.Response common_response = 9999;
+	int32 self_rank = 1;
+	repeated common.BasicRankingRankInfo rank_infos = 2 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message JumpRopeReadNotificationRequest {
-  repeated string jump_rope_ids = 1;
+	repeated string jump_rope_ids = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message JumpRopeStartMultiResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message JumpRopeReadNotificationResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service JumpRope {
-  rpc MatchRandom (JumpRopeMatchRandomRequest) returns (JumpRopeMatchRandomResponse);
-  rpc CreatePrivateRoom (JumpRopeCreatePrivateRoomRequest) returns (JumpRopeCreatePrivateRoomResponse);
-  rpc StartSingle (JumpRopeStartSingleRequest) returns (JumpRopeStartSingleResponse);
-  rpc StartMulti (JumpRopeStartMultiRequest) returns (JumpRopeStartMultiResponse);
-  rpc FinishSingle (JumpRopeFinishSingleRequest) returns (JumpRopeFinishSingleResponse);
-  rpc FinishMulti (JumpRopeFinishMultiRequest) returns (JumpRopeFinishMultiResponse);
-  rpc GetRankingInfo (.google.protobuf.Empty) returns (JumpRopeGetRankingInfoResponse);
-  rpc ReadNotification (JumpRopeReadNotificationRequest) returns (JumpRopeReadNotificationResponse);
+	rpc MatchRandom (.rpc.api.JumpRopeMatchRandomRequest) returns (.rpc.api.JumpRopeMatchRandomResponse) {
+		option (google.api.http).post = "/JumpRope/MatchRandom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc CreatePrivateRoom (.rpc.api.JumpRopeCreatePrivateRoomRequest) returns (.rpc.api.JumpRopeCreatePrivateRoomResponse) {
+		option (google.api.http).post = "/JumpRope/CreatePrivateRoom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MULTI_GAME_REMATCH_EXPIRED;
+	}
+
+	rpc StartSingle (.rpc.api.JumpRopeStartSingleRequest) returns (.rpc.api.JumpRopeStartSingleResponse) {
+		option (google.api.http).post = "/JumpRope/StartSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartMulti (.rpc.api.JumpRopeStartMultiRequest) returns (.rpc.api.JumpRopeStartMultiResponse) {
+		option (google.api.http).post = "/JumpRope/StartMulti";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishSingle (.rpc.api.JumpRopeFinishSingleRequest) returns (.rpc.api.JumpRopeFinishSingleResponse) {
+		option (google.api.http).post = "/JumpRope/FinishSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc FinishMulti (.rpc.api.JumpRopeFinishMultiRequest) returns (.rpc.api.JumpRopeFinishMultiResponse) {
+		option (google.api.http).post = "/JumpRope/FinishMulti";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetRankingInfo (.google.protobuf.Empty) returns (.rpc.api.JumpRopeGetRankingInfoResponse) {
+		option (google.api.http).post = "/JumpRope/GetRankingInfo";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadNotification (.rpc.api.JumpRopeReadNotificationRequest) returns (.rpc.api.JumpRopeReadNotificationResponse) {
+		option (google.api.http).post = "/JumpRope/ReadNotification";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

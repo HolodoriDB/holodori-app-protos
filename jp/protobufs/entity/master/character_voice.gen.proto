@@ -1,24 +1,26 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CharacterVoice {
-  string id = 1;
-  string character_id = 2;
-  string character_voice_category_id = 3;
-  string name_lang_id = 4;
-  string text_lang_id = 5;
-  string view_condition_group_id = 6;
-  string unlock_condition_group_id = 7;
-  string voice_asset_id = 8;
-  string motion_asset_id = 9;
-  string expression_asset_id = 10;
-  bool is_lip_sync = 11;
-  bool is_disable_lip_sync_u = 12;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string character_id = 2 [(options.master.fk) = "Character:id"];
+	string character_voice_category_id = 3 [(options.master.fk) = "CharacterVoiceCategory:id", (options.master.optional) = true];
+	string name_lang_id = 4 [(options.master.fk) = "LangCharacterVoice:id"];
+	string text_lang_id = 5 [(options.master.fk) = "LangCharacterVoice:id"];
+	string view_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 7 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string voice_asset_id = 8;
+	string motion_asset_id = 9 [(options.master.optional) = true];
+	string expression_asset_id = 10 [(options.master.optional) = true];
+	bool is_lip_sync = 11 [(options.master.optional) = true];
+	bool is_disable_lip_sync_u = 12 [(options.master.optional) = true];
+	int32 order = 999;
 }

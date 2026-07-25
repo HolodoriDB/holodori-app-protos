@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -10,37 +8,54 @@ import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 import "rpc/api/common/shop.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message ShopListResponse {
-  repeated common.Shop shops = 1;
-  common.Response common_response = 9999;
+	repeated common.Shop shops = 1;
+	common.Response common_response = 9999;
 }
 
 message ShopPurchaseConsumptionItemRequest {
-  string shop_consumption_item_id = 1;
-  int32 quantity = 2;
+	string shop_consumption_item_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 quantity = 2 [(buf.validate.field).int32.gte = 1];
 }
 
 message ShopPurchaseConsumptionItemResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Shop shop = 2;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Shop shop = 2;
+	common.Response common_response = 9999;
 }
 
 message ShopReadRequest {
-  string shop_id = 1;
-  repeated string shop_charge_item_consumable_shop_charge_item_ids = 2;
-  repeated string shop_consumption_item_ids = 3;
+	string shop_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated string shop_charge_item_consumable_shop_charge_item_ids = 2 [(buf.validate.field).repeated.items.string.min_bytes = 1];
+	repeated string shop_consumption_item_ids = 3 [(buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message ShopReadResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Shop {
-  rpc List (.google.protobuf.Empty) returns (ShopListResponse);
-  rpc PurchaseConsumptionItem (ShopPurchaseConsumptionItemRequest) returns (ShopPurchaseConsumptionItemResponse);
-  rpc Read (ShopReadRequest) returns (ShopReadResponse);
+	rpc List (.google.protobuf.Empty) returns (.rpc.api.ShopListResponse) {
+		option (google.api.http).post = "/Shop/List";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc PurchaseConsumptionItem (.rpc.api.ShopPurchaseConsumptionItemRequest) returns (.rpc.api.ShopPurchaseConsumptionItemResponse) {
+		option (google.api.http).post = "/Shop/PurchaseConsumptionItem";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_SHOP_OUT_OF_TERM;
+	}
+
+	rpc Read (.rpc.api.ShopReadRequest) returns (.rpc.api.ShopReadResponse) {
+		option (google.api.http).post = "/Shop/Read";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

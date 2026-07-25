@@ -1,21 +1,21 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "rpc/api/common/profile.gen.proto";
+
+package rpc.api.common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message JumpRopeResultInfo {
-  int32 total_jump_count = 1;
-  int32 self_continuous_jump_count = 2;
-  repeated JumpRopeUserInfo user_infos = 3;
+	int32 total_jump_count = 1;
+	int32 self_continuous_jump_count = 2;
+	repeated JumpRopeUserInfo user_infos = 3;
 }
 
 message JumpRopeUserInfo {
-  BasicUserInfo user_info = 1;
-  bool is_npc = 2;
-  int32 continuous_jump_count = 3;
-  bool is_disconnected = 4;
+	BasicUserInfo user_info = 1;
+	bool is_npc = 2;
+	int32 continuous_jump_count = 3;
+	bool is_disconnected = 4;
 }

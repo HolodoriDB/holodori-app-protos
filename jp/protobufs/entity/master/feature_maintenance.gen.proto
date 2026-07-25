@@ -1,19 +1,21 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/feature_maintenance_type.gen.proto";
 import "enums/region.gen.proto";
 import "enums/store_type.gen.proto";
 
+package entity.master;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message FeatureMaintenance {
-  .enums.FeatureMaintenanceType type = 1;
-  int64 start_time = 2;
-  int64 end_time = 3;
-  repeated .enums.Region target_regions = 4;
-  repeated .enums.StoreType target_store_types = 5;
+	option (options.master.table) = true;
+
+	.enums.FeatureMaintenanceType type = 1 [(options.master.pk) = true];
+	int64 start_time = 2 [(options.master.optional) = true];
+	int64 end_time = 3 [(options.master.optional) = true];
+	repeated .enums.Region target_regions = 4 [(options.master.optional) = true];
+	repeated .enums.StoreType target_store_types = 5 [(options.master.optional) = true];
 }

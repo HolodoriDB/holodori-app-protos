@@ -1,20 +1,22 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkPrintBoothComposition {
-  string id = 1;
-  int32 position_number = 2;
-  float focus_distance = 3;
-  float position_x = 4;
-  float position_y = 5;
-  float position_z = 6;
-  float rotation_x = 7;
-  float rotation_y = 8;
-  float rotation_z = 9;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	int32 position_number = 2 [(options.master.pk) = true];
+	float focus_distance = 3 [(options.master.optional) = true];
+	float position_x = 4 [(options.master.optional) = true];
+	float position_y = 5 [(options.master.optional) = true];
+	float position_z = 6 [(options.master.optional) = true];
+	float rotation_x = 7 [(options.master.optional) = true];
+	float rotation_y = 8 [(options.master.optional) = true];
+	float rotation_z = 9 [(options.master.optional) = true];
 }

@@ -6,10 +6,10 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum LiveDeckRankType {
-  LIVE_DECK_RANK_TYPE_UNKNOWN = 0;
-  LIVE_DECK_RANK_TYPE_D = 1;
-  LIVE_DECK_RANK_TYPE_C = 2;
-  LIVE_DECK_RANK_TYPE_B = 3;
-  LIVE_DECK_RANK_TYPE_A = 4;
-  LIVE_DECK_RANK_TYPE_S = 5;
+	LIVE_DECK_RANK_TYPE_UNKNOWN = 0;
+	LIVE_DECK_RANK_TYPE_D = 1;
+	LIVE_DECK_RANK_TYPE_C = 2;
+	LIVE_DECK_RANK_TYPE_B = 3;
+	LIVE_DECK_RANK_TYPE_A = 4;
+	LIVE_DECK_RANK_TYPE_S = 5;
 }

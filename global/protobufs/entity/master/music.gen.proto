@@ -1,49 +1,51 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/music_category_type.gen.proto";
 import "enums/music_release_type.gen.proto";
 import "enums/music_singer_type.gen.proto";
 
+package entity.master;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Music {
-  string id = 1;
-  string title_lang_id = 2;
-  string title_ruby_lang_id = 3;
-  string sub_title_lang_id = 4;
-  string description_lang_id = 6;
-  string lyricist_lang_id = 7;
-  string lyricist_ruby_lang_id = 8;
-  string composer_lang_id = 9;
-  string composer_ruby_lang_id = 10;
-  string arranger_lang_id = 11;
-  string arranger_ruby_lang_id = 12;
-  string jacket_asset_id = 13;
-  int64 start_time = 14;
-  int32 playing_seconds = 15;
-  .enums.MusicCategoryType category_type = 16;
-  int32 live_score_coefficient_permil = 17;
-  string single_live_score_evaluation_rank_group_id = 18;
-  string multi_live_score_evaluation_rank_group_id = 19;
-  string live_combo_group_id = 23;
-  .enums.MusicReleaseType release_type = 24;
-  int32 required_release_item_quantity = 25;
-  string lock_description_lang_id = 26;
-  bool is_highest_score_rating_target = 27;
-  bool is_tutorial = 28;
-  string mv_url = 29;
-  string mv_thumbnail_asset_id = 30;
-  string copyright = 31;
-  .enums.MusicSingerType music_singer_type = 100;
-  repeated string character_ids = 101;
-  string character_group_display_name_lang_id = 102;
-  string character_group_display_name_ruby_lang_id = 103;
-  int32 chorus_start_millisecond = 104;
-  int32 chorus_end_millisecond = 105;
-  string asset_id = 106;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string title_lang_id = 2 [(options.master.fk) = "LangMusic:id"];
+	string title_ruby_lang_id = 3 [(options.master.fk) = "LangMusic:id"];
+	string sub_title_lang_id = 4 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string description_lang_id = 6 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string lyricist_lang_id = 7 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string lyricist_ruby_lang_id = 8 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string composer_lang_id = 9 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string composer_ruby_lang_id = 10 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string arranger_lang_id = 11 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string arranger_ruby_lang_id = 12 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string jacket_asset_id = 13;
+	int64 start_time = 14 [(options.master.optional) = true];
+	int32 playing_seconds = 15;
+	.enums.MusicCategoryType category_type = 16;
+	int32 live_score_coefficient_permil = 17 [(options.master.optional) = true];
+	string single_live_score_evaluation_rank_group_id = 18 [(options.master.fk) = "LiveScoreEvaluationRank:group_id"];
+	string multi_live_score_evaluation_rank_group_id = 19 [(options.master.fk) = "LiveScoreEvaluationRank:group_id"];
+	string live_combo_group_id = 23 [(options.master.fk) = "LiveCombo:group_id"];
+	.enums.MusicReleaseType release_type = 24;
+	int32 required_release_item_quantity = 25 [(options.master.optional) = true];
+	string lock_description_lang_id = 26 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	bool is_highest_score_rating_target = 27 [(options.master.optional) = true];
+	bool is_tutorial = 28 [(options.master.optional) = true];
+	string mv_url = 29 [(options.master.optional) = true];
+	string mv_thumbnail_asset_id = 30 [(options.master.optional) = true];
+	string copyright = 31 [(options.master.optional) = true];
+	.enums.MusicSingerType music_singer_type = 100;
+	repeated string character_ids = 101 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	string character_group_display_name_lang_id = 102 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	string character_group_display_name_ruby_lang_id = 103 [(options.master.fk) = "LangMusic:id", (options.master.optional) = true];
+	int32 chorus_start_millisecond = 104 [(options.master.optional) = true];
+	int32 chorus_end_millisecond = 105 [(options.master.optional) = true];
+	string asset_id = 106;
+	int32 order = 999;
 }

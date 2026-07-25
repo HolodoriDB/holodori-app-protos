@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/tutorial_type.gen.proto";
@@ -11,82 +9,127 @@ import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message TutorialProgressRequest {
-  .enums.TutorialType tutorial_type = 1;
-  int32 progress = 2;
+	.enums.TutorialType tutorial_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	int32 progress = 2 [(buf.validate.field).int32.gte = 1];
 }
 
 message TutorialRegisterCountryRequest {
-  string country_code = 1;
+	string country_code = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message TutorialRegisterBirthdayRequest {
-  int32 year = 1;
-  int32 month = 2;
-  int32 day = 3;
+	int32 year = 1 [(buf.validate.field).int32.lte = 2100, (buf.validate.field).int32.gte = 1900];
+	int32 month = 2 [(buf.validate.field).int32.lte = 12, (buf.validate.field).int32.gte = 1];
+	int32 day = 3 [(buf.validate.field).int32.lte = 31, (buf.validate.field).int32.gte = 1];
 }
 
 message TutorialSetNameRequest {
-  string name = 1;
+	string name = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message TutorialRegisterInitialUserInfoRequest {
-  string country_code = 1;
-  int32 birth_year = 2;
-  int32 birth_month = 3;
-  string user_name = 4;
+	string country_code = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 birth_year = 2 [(buf.validate.field).int32.lte = 2100, (buf.validate.field).int32.gte = 1900];
+	int32 birth_month = 3 [(buf.validate.field).int32.lte = 12, (buf.validate.field).int32.gte = 1];
+	string user_name = 4 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message TutorialChooseCharacterRequest {
-  string character_id = 1;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message TutorialChooseCharacterResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message TutorialDrawGachaResponse {
-  repeated string card_ids = 1;
-  string gacha_animation_grouping_id = 2;
-  common.Response common_response = 9999;
+	repeated string card_ids = 1 [(options.master.fk) = "Card:id"];
+	string gacha_animation_grouping_id = 2 [(options.master.fk) = "GachaAnimationGrouping:id"];
+	common.Response common_response = 9999;
 }
 
 message TutorialConfirmGachaResponse {
-  repeated common.RewardResult card_reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult card_reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message TutorialListGachaCardResponse {
-  repeated string card_ids = 1;
-  common.Response common_response = 9999;
+	repeated string card_ids = 1 [(options.master.fk) = "Card:id"];
+	common.Response common_response = 9999;
 }
 
 message TutorialReadInstantTipsRequest {
-  string instant_tips_id = 1;
+	string instant_tips_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message TutorialProgressResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message TutorialRegisterInitialUserInfoResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message TutorialReadInstantTipsResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Tutorial {
-  rpc Progress (TutorialProgressRequest) returns (TutorialProgressResponse);
-  rpc RegisterInitialUserInfo (TutorialRegisterInitialUserInfoRequest) returns (TutorialRegisterInitialUserInfoResponse);
-  rpc ChooseCharacter (TutorialChooseCharacterRequest) returns (TutorialChooseCharacterResponse);
-  rpc DrawGacha (.google.protobuf.Empty) returns (TutorialDrawGachaResponse);
-  rpc ConfirmGacha (.google.protobuf.Empty) returns (TutorialConfirmGachaResponse);
-  rpc ListGachaCard (.google.protobuf.Empty) returns (TutorialListGachaCardResponse);
-  rpc ReadInstantTips (TutorialReadInstantTipsRequest) returns (TutorialReadInstantTipsResponse);
+	rpc Progress (.rpc.api.TutorialProgressRequest) returns (.rpc.api.TutorialProgressResponse) {
+		option (google.api.http).post = "/Tutorial/Progress";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc RegisterInitialUserInfo (.rpc.api.TutorialRegisterInitialUserInfoRequest) returns (.rpc.api.TutorialRegisterInitialUserInfoResponse) {
+		option (google.api.http).post = "/Tutorial/RegisterInitialUserInfo";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+		option (options.check_option.error).error_codes = ERROR_CODE_PAYMENT_INVALID_BIRTHDAY;
+	}
+
+	rpc ChooseCharacter (.rpc.api.TutorialChooseCharacterRequest) returns (.rpc.api.TutorialChooseCharacterResponse) {
+		option (google.api.http).post = "/Tutorial/ChooseCharacter";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc DrawGacha (.google.protobuf.Empty) returns (.rpc.api.TutorialDrawGachaResponse) {
+		option (google.api.http).post = "/Tutorial/DrawGacha";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ConfirmGacha (.google.protobuf.Empty) returns (.rpc.api.TutorialConfirmGachaResponse) {
+		option (google.api.http).post = "/Tutorial/ConfirmGacha";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListGachaCard (.google.protobuf.Empty) returns (.rpc.api.TutorialListGachaCardResponse) {
+		option (google.api.http).post = "/Tutorial/ListGachaCard";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadInstantTips (.rpc.api.TutorialReadInstantTipsRequest) returns (.rpc.api.TutorialReadInstantTipsResponse) {
+		option (google.api.http).post = "/Tutorial/ReadInstantTips";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

@@ -1,21 +1,23 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_emotion_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkEmotion {
-  string id = 1;
-  .enums.ParkEmotionType type = 2;
-  string character_id = 3;
-  string name_lang_id = 4;
-  string asset_id = 5;
-  string thumbnail_asset_id = 6;
-  repeated string park_accessory_ids = 7;
-  bool is_preset = 8;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.ParkEmotionType type = 2;
+	string character_id = 3 [(options.master.fk) = "Character:id"];
+	string name_lang_id = 4 [(options.master.fk) = "LangParkEmotion:id"];
+	string asset_id = 5;
+	string thumbnail_asset_id = 6;
+	repeated string park_accessory_ids = 7 [(options.master.fk) = "ParkAccessory:id", (options.master.optional) = true];
+	bool is_preset = 8 [(options.master.optional) = true];
+	int32 order = 999;
 }

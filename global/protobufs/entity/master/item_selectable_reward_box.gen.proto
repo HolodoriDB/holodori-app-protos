@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ItemSelectableRewardBox {
-  string item_id = 1;
-  int32 number = 2;
-  string view_condition_group_id = 6;
-  string unlock_condition_group_id = 7;
-  int32 order = 999;
-  .common.Reward reward = 1000;
+	option (options.master.table) = true;
+
+	string item_id = 1 [(options.master.fk) = "Item:id", (options.master.pk) = true];
+	int32 number = 2 [(options.master.pk) = true];
+	string view_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 7 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 order = 999;
+	.common.Reward reward = 1000 [(options.master.optional) = true];
 }

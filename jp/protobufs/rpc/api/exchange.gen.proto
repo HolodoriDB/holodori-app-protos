@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "common/reward.gen.proto";
 import "enums/exchange_booth_item_type.gen.proto";
@@ -14,87 +12,107 @@ import "options/zap.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message ExchangeListRequest {
-  string booth_group_id = 1;
+	string booth_group_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ExchangeItem {
-  message Consumption {
-    .enums.ResourceType resource_type = 1;
-    string resource_id = 2;
-    int64 quantity = 3;
-    int64 original_quantity = 4;
-    int32 discount_ratio_permil = 5;
-  }
-  .enums.ExchangeBoothItemType booth_item_type = 1;
-  string booth_item_id = 2;
-  string name = 3;
-  string thumbnail_asset_id = 4;
-  int32 limit_quantity = 5;
-  int32 purchased_quantity = 6;
-  repeated ExchangeItem.Consumption consumptions = 7;
-  repeated .common.Reward rewards = 8;
-  int64 next_reset_time = 9;
-  int64 end_time = 10;
-  bool is_locked = 11;
-  string unlock_condition_group_id = 12;
-  string description = 13;
-  .enums.ResetIntervalType reset_interval_type = 14;
-  int64 release_time = 15;
+	message Consumption {
+		.enums.ResourceType resource_type = 1;
+		string resource_id = 2;
+		int64 quantity = 3;
+		int64 original_quantity = 4;
+		int32 discount_ratio_permil = 5;
+	}
+
+	.enums.ExchangeBoothItemType booth_item_type = 1;
+	string booth_item_id = 2;
+	string name = 3;
+	string thumbnail_asset_id = 4;
+	int32 limit_quantity = 5;
+	int32 purchased_quantity = 6;
+	repeated ExchangeItem.Consumption consumptions = 7;
+	repeated .common.Reward rewards = 8;
+	int64 next_reset_time = 9;
+	int64 end_time = 10;
+	bool is_locked = 11;
+	string unlock_condition_group_id = 12;
+	string description = 13 [(options.zap.hidden) = true];
+	.enums.ResetIntervalType reset_interval_type = 14;
+	int64 release_time = 15;
 }
 
 message ExchangeListResponse {
-  message Booth {
-    string id = 1;
-    string name = 2;
-    .enums.ExchangeBoothType booth_type = 3;
-    repeated ExchangeItem items = 4;
-    int64 next_reset_time = 5;
-    int64 end_time = 6;
-    bool is_locked = 7;
-    string unlock_condition_group_id = 8;
-  }
-  string id = 1;
-  string name = 2;
-  repeated ExchangeListResponse.Booth booths = 3;
-  string background_asset_id = 4;
-  string header_asset_id = 5;
-  string logo_asset_id = 6;
-  string pegboard_color = 7;
-  string hook_color = 8;
-  string icon_asset_id = 9;
-  string color1 = 100;
-  string color2 = 101;
-  string color3 = 102;
-  string color4 = 103;
-  common.Response common_response = 9999;
+	message Booth {
+		string id = 1;
+		string name = 2;
+		.enums.ExchangeBoothType booth_type = 3;
+		repeated ExchangeItem items = 4;
+		int64 next_reset_time = 5;
+		int64 end_time = 6;
+		bool is_locked = 7;
+		string unlock_condition_group_id = 8;
+	}
+
+	string id = 1;
+	string name = 2;
+	repeated ExchangeListResponse.Booth booths = 3;
+	string background_asset_id = 4;
+	string header_asset_id = 5;
+	string logo_asset_id = 6;
+	string pegboard_color = 7;
+	string hook_color = 8;
+	string icon_asset_id = 9;
+	string color1 = 100;
+	string color2 = 101;
+	string color3 = 102;
+	string color4 = 103;
+	common.Response common_response = 9999;
 }
 
 message ExchangePurchaseRequest {
-  .enums.ExchangeBoothItemType booth_item_type = 1;
-  string booth_item_id = 2;
-  int32 quantity = 3;
+	.enums.ExchangeBoothItemType booth_item_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string booth_item_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	int32 quantity = 3 [(buf.validate.field).int32.gte = 1];
 }
 
 message ExchangePurchaseResponse {
-  repeated common.RewardResult reward_results = 1;
-  ExchangeItem after_item = 2;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	ExchangeItem after_item = 2;
+	common.Response common_response = 9999;
 }
 
 message ExchangeReadBoothRequest {
-  string exchange_booth_id = 1;
+	string exchange_booth_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message ExchangeReadBoothResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Exchange {
-  rpc List (ExchangeListRequest) returns (ExchangeListResponse);
-  rpc Purchase (ExchangePurchaseRequest) returns (ExchangePurchaseResponse);
-  rpc ReadBooth (ExchangeReadBoothRequest) returns (ExchangeReadBoothResponse);
+	rpc List (.rpc.api.ExchangeListRequest) returns (.rpc.api.ExchangeListResponse) {
+		option (google.api.http).post = "/Exchange/List";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Purchase (.rpc.api.ExchangePurchaseRequest) returns (.rpc.api.ExchangePurchaseResponse) {
+		option (google.api.http).post = "/Exchange/Purchase";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_EXCHANGE_BOOTH_EXPIRED;
+		option (options.check_option.error).error_codes = ERROR_CODE_EXCHANGE_ITEM_EXPIRED;
+	}
+
+	rpc ReadBooth (.rpc.api.ExchangeReadBoothRequest) returns (.rpc.api.ExchangeReadBoothResponse) {
+		option (google.api.http).post = "/Exchange/ReadBooth";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

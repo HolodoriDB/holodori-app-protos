@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/reset_interval_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message GachaButton {
-  string id = 1;
-  string gacha_id = 2;
-  .enums.ResetIntervalType reset_interval_type = 14;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string gacha_id = 2 [(options.master.fk) = "Gacha:id"];
+	.enums.ResetIntervalType reset_interval_type = 14 [(options.master.optional) = true];
 }

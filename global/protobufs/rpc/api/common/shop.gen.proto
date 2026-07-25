@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "common/consumption.gen.proto";
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
@@ -12,85 +10,93 @@ import "enums/shop_charge_item_type.gen.proto";
 import "enums/shop_item_type.gen.proto";
 import "enums/shop_type.gen.proto";
 
+package rpc.api.common;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message Shop {
-  message Item {
-    .enums.ShopItemType type = 1;
-    Shop.ConsumptionItem consumption_item = 2;
-    Shop.ChargeItem charge_item = 3;
-  }
-  message ConsumptionItem {
-    message ConsumptionItemConsumption {
-      .common.Consumption consumption = 1;
-      int32 discount_permil_down = 2;
-      int64 discounted_quantity = 3;
-    }
-    string id = 1;
-    string name = 2;
-    Shop.ConsumptionItem.ConsumptionItemConsumption consumption = 3;
-    repeated .common.Reward rewards = 4;
-    bool is_unlocked = 5;
-    string unlock_condition_group_id = 6;
-    int64 end_time = 7;
-    .enums.ResetIntervalType reset_interval_type = 8;
-    int64 next_reset_time = 9;
-    int32 limit_count = 10;
-    int32 purchased_count = 11;
-    string asset_id = 12;
-    int64 last_reset_time = 13;
-    bool is_background_special = 14;
-    string color = 15;
-    bool is_new = 16;
-    bool is_enable_multiple_purchase = 17;
-  }
-  message ChargeItem {
-    string id = 1;
-    .enums.ShopChargeItemType type = 2;
-    Shop.ChargeItemConsumable consumable = 3;
-    Shop.ChargeItemSubscription subscription = 4;
-  }
-  message ChargeItemConsumable {
-    string name = 1;
-    int32 provide_paid_stone_quantity = 4;
-    repeated .common.Reward rewards = 5;
-    bool is_unlocked = 6;
-    string unlock_condition_group_id = 7;
-    int64 end_time = 10;
-    .enums.ResetIntervalType reset_interval_type = 11;
-    int64 next_reset_time = 12;
-    int32 limit_count = 13;
-    int32 purchased_count = 14;
-    string asset_id = 15;
-    int64 last_reset_time = 16;
-    bool is_background_special = 17;
-    string color = 18;
-    bool is_new = 19;
-    string apple_iap_product_id = 100;
-    string google_iap_product_id = 101;
-    string steam_mtx_product_id = 102;
-    string steam_price = 200;
-  }
-  message ChargeItemSubscription {
-    .enums.ShopChargeItemSubscriptionType type = 1;
-    bool is_unlocked = 4;
-    string unlock_condition_group_id = 5;
-    bool is_subscribed = 6;
-    int32 provide_paid_stone_quantity = 7;
-    string apple_iap_product_id = 100;
-    string google_iap_product_id = 101;
-  }
-  string id = 1;
-  repeated Shop.Item items = 2;
-  .enums.ShopType type = 3;
-  string name = 4;
-  int64 end_time = 5;
-  .enums.ResetIntervalType reset_interval_type = 6;
-  int64 next_reset_time = 7;
-  string thumbnail_asset_id = 8;
-  string description_title = 9;
-  string description_text = 10;
-  repeated .enums.ResourceType display_possession_resource_types = 11;
-  repeated string display_possession_resource_ids = 12;
+	message Item {
+		.enums.ShopItemType type = 1;
+		Shop.ConsumptionItem consumption_item = 2;
+		Shop.ChargeItem charge_item = 3;
+	}
+
+	message ConsumptionItem {
+		message ConsumptionItemConsumption {
+			.common.Consumption consumption = 1;
+			int32 discount_permil_down = 2;
+			int64 discounted_quantity = 3;
+		}
+
+		string id = 1;
+		string name = 2;
+		Shop.ConsumptionItem.ConsumptionItemConsumption consumption = 3;
+		repeated .common.Reward rewards = 4;
+		bool is_unlocked = 5;
+		string unlock_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+		int64 end_time = 7;
+		.enums.ResetIntervalType reset_interval_type = 8;
+		int64 next_reset_time = 9;
+		int32 limit_count = 10;
+		int32 purchased_count = 11;
+		string asset_id = 12;
+		int64 last_reset_time = 13;
+		bool is_background_special = 14;
+		string color = 15;
+		bool is_new = 16;
+		bool is_enable_multiple_purchase = 17;
+	}
+
+	message ChargeItem {
+		string id = 1;
+		.enums.ShopChargeItemType type = 2;
+		Shop.ChargeItemConsumable consumable = 3;
+		Shop.ChargeItemSubscription subscription = 4;
+	}
+
+	message ChargeItemConsumable {
+		string name = 1;
+		int32 provide_paid_stone_quantity = 4;
+		repeated .common.Reward rewards = 5;
+		bool is_unlocked = 6;
+		string unlock_condition_group_id = 7 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+		int64 end_time = 10;
+		.enums.ResetIntervalType reset_interval_type = 11;
+		int64 next_reset_time = 12;
+		int32 limit_count = 13;
+		int32 purchased_count = 14;
+		string asset_id = 15;
+		int64 last_reset_time = 16;
+		bool is_background_special = 17;
+		string color = 18;
+		bool is_new = 19;
+		string apple_iap_product_id = 100;
+		string google_iap_product_id = 101;
+		string steam_mtx_product_id = 102;
+		string steam_price = 200;
+	}
+
+	message ChargeItemSubscription {
+		.enums.ShopChargeItemSubscriptionType type = 1;
+		bool is_unlocked = 4;
+		string unlock_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+		bool is_subscribed = 6;
+		int32 provide_paid_stone_quantity = 7;
+		string apple_iap_product_id = 100;
+		string google_iap_product_id = 101;
+	}
+
+	string id = 1;
+	repeated Shop.Item items = 2;
+	.enums.ShopType type = 3;
+	string name = 4;
+	int64 end_time = 5;
+	.enums.ResetIntervalType reset_interval_type = 6;
+	int64 next_reset_time = 7;
+	string thumbnail_asset_id = 8;
+	string description_title = 9;
+	string description_text = 10;
+	repeated .enums.ResourceType display_possession_resource_types = 11;
+	repeated string display_possession_resource_ids = 12;
 }

@@ -1,8 +1,18 @@
 syntax = "proto3";
 
-package options.master;
-
 import "google/protobuf/descriptor.proto";
+
+package options.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master/options";
 option csharp_namespace = "Vision.Common.Proto.Master.Options";
+
+extend google.protobuf.MessageOptions {
+	bool table = 51010;
+}
+
+extend google.protobuf.FieldOptions {
+	bool pk = 51010;
+	string fk = 51011;
+	bool optional = 51012;
+}

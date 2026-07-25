@@ -1,21 +1,23 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CircuitSetting {
-  string id = 1;
-  int32 max_user_count = 10;
-  int32 random_match_min_user_count = 11;
-  int32 private_room_min_user_count = 12;
-  string mini_game_bet_coin_consumption_group_id = 13;
-  int32 time_limit_seconds_after_top_rank_clear = 14;
-  int32 first_lap_clear_threshold_rank = 15;
-  int32 random_match_start_time_limit_seconds = 16;
-  int32 multi_game_setup_time_limit_seconds = 18;
-  int32 total_finish_time_limit_seconds = 19;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	int32 max_user_count = 10;
+	int32 random_match_min_user_count = 11;
+	int32 private_room_min_user_count = 12;
+	string mini_game_bet_coin_consumption_group_id = 13 [(options.master.fk) = "MiniGameBetCoinConsumption:group_id"];
+	int32 time_limit_seconds_after_top_rank_clear = 14;
+	int32 first_lap_clear_threshold_rank = 15;
+	int32 random_match_start_time_limit_seconds = 16;
+	int32 multi_game_setup_time_limit_seconds = 18;
+	int32 total_finish_time_limit_seconds = 19;
 }

@@ -1,18 +1,18 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserMission {
-  string mission_id = 2;
-  string mission_pass_id = 3;
-  int64 progress = 4;
-  repeated int64 reward_received_thresholds = 5;
-  int64 last_progress_time = 6;
-  int64 ttl_base_time = 7;
+	string mission_id = 2 [(options.master.fk) = "Mission:id", (options.transaction.pk) = true];
+	string mission_pass_id = 3 [(options.transaction.pk) = true];
+	int64 progress = 4;
+	repeated int64 reward_received_thresholds = 5;
+	int64 last_progress_time = 6;
+	int64 ttl_base_time = 7;
 }

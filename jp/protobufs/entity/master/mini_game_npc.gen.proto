@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MiniGameNpc {
-  string id = 1;
-  string character_id = 2;
-  string sd_costume_id = 3;
-  string sd_costume_hair_accessory_id = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string character_id = 2 [(options.master.fk) = "Character:id"];
+	string sd_costume_id = 3 [(options.master.fk) = "SdCostume:id", (options.master.optional) = true];
+	string sd_costume_hair_accessory_id = 4 [(options.master.fk) = "SdCostumeHairAccessory:id", (options.master.optional) = true];
 }

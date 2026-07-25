@@ -1,17 +1,19 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/payment_method.gen.proto";
 import "enums/shop_charge_item_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ShopChargeItemProduct {
-  .enums.PaymentMethod payment_method = 1;
-  .enums.ShopChargeItemType shop_charge_item_type = 2;
-  string product_id = 3;
-  string shop_charge_item_id = 4;
+	option (options.master.table) = true;
+
+	.enums.PaymentMethod payment_method = 1 [(options.master.pk) = true];
+	.enums.ShopChargeItemType shop_charge_item_type = 2 [(options.master.pk) = true];
+	string product_id = 3 [(options.master.pk) = true];
+	string shop_charge_item_id = 4 [(options.master.fk) = "ShopChargeItem:id", (options.master.pk) = true];
 }

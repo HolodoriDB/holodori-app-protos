@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum HelpCategoryScreenType {
-  HELP_CATEGORY_SCREEN_TYPE_UNKNOWN = 0;
-  HELP_CATEGORY_SCREEN_TYPE_NONE = 1;
-  HELP_CATEGORY_SCREEN_TYPE_MUSIC_CREATIVE_CHART = 2;
+	HELP_CATEGORY_SCREEN_TYPE_UNKNOWN = 0;
+	HELP_CATEGORY_SCREEN_TYPE_NONE = 1;
+	HELP_CATEGORY_SCREEN_TYPE_MUSIC_CREATIVE_CHART = 2;
 }

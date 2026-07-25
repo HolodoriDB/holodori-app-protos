@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message AppealText {
-  string id = 1;
-  string text_lang_id = 2;
-  string description_lang_id = 3;
-  string asset_id = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string text_lang_id = 2 [(options.master.fk) = "LangAppealText:id"];
+	string description_lang_id = 3 [(options.master.fk) = "LangAppealText:id"];
+	string asset_id = 4;
 }

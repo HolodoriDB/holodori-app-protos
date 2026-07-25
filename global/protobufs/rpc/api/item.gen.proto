@@ -1,27 +1,31 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message ItemSelectRewardBoxRequest {
-  string item_id = 1;
-  int32 number = 2;
-  int32 consumption_quantity = 3;
+	string item_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	int32 consumption_quantity = 3 [(buf.validate.field).int32.gte = 1];
 }
 
 message ItemSelectRewardBoxResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 service Item {
-  rpc SelectRewardBox (ItemSelectRewardBoxRequest) returns (ItemSelectRewardBoxResponse);
+	rpc SelectRewardBox (.rpc.api.ItemSelectRewardBoxRequest) returns (.rpc.api.ItemSelectRewardBoxResponse) {
+		option (google.api.http).post = "/Item/SelectRewardBox";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

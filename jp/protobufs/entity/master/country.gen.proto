@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Country {
-  string code = 1;
-  string name_lang_id = 2;
-  int32 adult_age = 3;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string code = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangCountry:id"];
+	int32 adult_age = 3;
+	int32 order = 999;
 }

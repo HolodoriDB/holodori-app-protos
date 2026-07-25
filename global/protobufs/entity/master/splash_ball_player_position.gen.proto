@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/splash_ball_team_color.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SplashBallPlayerPosition {
-  string group_id = 1;
-  .enums.SplashBallTeamColor team_color = 2;
-  int32 number = 3;
-  float position_x = 4;
-  float position_y = 5;
-  float position_z = 6;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	.enums.SplashBallTeamColor team_color = 2 [(options.master.pk) = true];
+	int32 number = 3 [(options.master.pk) = true];
+	float position_x = 4 [(options.master.optional) = true];
+	float position_y = 5 [(options.master.optional) = true];
+	float position_z = 6 [(options.master.optional) = true];
 }

@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkPermanence {
-  string id = 1;
-  string park_target_mapping_id = 2;
-  string description_lang_id = 3;
-  string condition_group_id = 4;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string park_target_mapping_id = 2 [(options.master.fk) = "ParkTargetMapping:id"];
+	string description_lang_id = 3 [(options.master.fk) = "LangParkPermanence:id", (options.master.optional) = true];
+	string condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 }

@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "buf/validate/validate.proto";
 import "common/emblem_position.gen.proto";
 import "entity/master/options/master.proto";
@@ -12,105 +10,113 @@ import "enums/live_deck_rank_type.gen.proto";
 import "enums/music_difficulty_type.gen.proto";
 import "enums/profile_mini_game_result_type.gen.proto";
 
+package rpc.api.common;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message BasicUserInfo {
-  string public_user_id = 1;
-  UserProfileInfo user_profile_info = 2;
+	string public_user_id = 1;
+	UserProfileInfo user_profile_info = 2;
 }
 
 message UserProfileInfo {
-  string name = 1;
-  int32 level = 2;
-  string message = 3;
-  string park_character_id = 4;
-  string fan_mark_id = 5;
-  string custom_palette_image_url = 6;
-  repeated .common.EmblemPosition emblem_positions = 7;
-  int64 login_status_last_updated_time = 8;
-  int32 custom_palette_background_card_potential_upgrade_count = 9;
-  string custom_palette_background_card_id = 10;
-  string multi_game_unpublished_user_name = 11;
-  bool is_public_user_id_publish = 100;
-  bool is_basic_info_publish = 101;
-  bool is_character_rank_publish = 102;
-  bool is_live_result_publish = 103;
-  bool is_mini_game_result_publish = 104;
-  bool is_user_info_publish_in_multi_game = 105;
-  string sd_costume_id = 200;
-  string sd_costume_hair_accessory_id = 201;
+	string name = 1;
+	int32 level = 2;
+	string message = 3;
+	string park_character_id = 4 [(options.master.fk) = "Character:id"];
+	string fan_mark_id = 5 [(options.master.fk) = "FanMark:id", (options.master.optional) = true];
+	string custom_palette_image_url = 6;
+	repeated .common.EmblemPosition emblem_positions = 7;
+	int64 login_status_last_updated_time = 8;
+	int32 custom_palette_background_card_potential_upgrade_count = 9;
+	string custom_palette_background_card_id = 10 [(options.master.fk) = "Card:id", (options.master.optional) = true];
+	string multi_game_unpublished_user_name = 11;
+	bool is_public_user_id_publish = 100;
+	bool is_basic_info_publish = 101;
+	bool is_character_rank_publish = 102;
+	bool is_live_result_publish = 103;
+	bool is_mini_game_result_publish = 104;
+	bool is_user_info_publish_in_multi_game = 105;
+	string sd_costume_id = 200 [(options.master.fk) = "SdCostumeCostume:id"];
+	string sd_costume_hair_accessory_id = 201 [(options.master.fk) = "SdCostumeHairAccessory:id"];
 }
 
 message UserProfileDetailInfo {
-  message HighestLiveDeckEvaluationLiveDeck {
-    message LiveDeckPosition {
-      int32 position = 1;
-      string card_id = 2;
-      int32 level = 3;
-      int32 potential_upgrade_count = 4;
-    }
-    string character_id = 1;
-    string costume_id = 2;
-    repeated UserProfileDetailInfo.HighestLiveDeckEvaluationLiveDeck.LiveDeckPosition live_deck_positions = 3;
-    int64 live_deck_evaluation_value = 4;
-    .enums.LiveDeckRankType live_deck_evaluation_rank_type = 5;
-    int32 live_deck_evaluation_rank_plus_value = 6;
-  }
-  message CharacterLevel {
-    string character_id = 1;
-    int32 level = 2;
-  }
-  message LiveResultInfo {
-    .enums.MusicDifficultyType music_difficulty_type = 1;
-    int32 count = 2;
-  }
-  message MiniGameResultInfo {
-    .enums.ProfileMiniGameResultType result_type = 1;
-    int64 value = 2;
-  }
-  message MusicHighestScoreRatingInfo {
-    string character_id = 1;
-    int64 value = 2;
-  }
-  string public_user_id = 1;
-  UserProfileInfo user_profile_info = 2;
-  int32 achievement_clear_count = 3;
-  UserProfileDetailInfo.HighestLiveDeckEvaluationLiveDeck highest_live_deck_evaluation_live_deck = 4;
-  repeated UserProfileDetailInfo.CharacterLevel character_levels = 5;
-  int64 total_music_highest_score_rating_value = 6;
-  repeated UserProfileDetailInfo.LiveResultInfo live_clear_results = 7;
-  repeated UserProfileDetailInfo.LiveResultInfo live_full_combo_results = 8;
-  repeated UserProfileDetailInfo.LiveResultInfo live_all_perfect_results = 9;
-  repeated UserProfileDetailInfo.MiniGameResultInfo mini_game_results = 10;
-  bool is_blocked_user = 11;
-  .enums.FriendStatusType friend_status_type = 12;
-  repeated UserProfileDetailInfo.MusicHighestScoreRatingInfo top_music_highest_score_rating_infos = 13;
-  int32 combo_card_game_average_rank_percent = 14;
-  int64 combo_card_game_chip_diff_total_quantity = 15;
+	message HighestLiveDeckEvaluationLiveDeck {
+		message LiveDeckPosition {
+			int32 position = 1;
+			string card_id = 2 [(options.master.fk) = "Card:id"];
+			int32 level = 3;
+			int32 potential_upgrade_count = 4;
+		}
+
+		string character_id = 1 [(options.master.fk) = "Character:id"];
+		string costume_id = 2 [(options.master.fk) = "Costume:id"];
+		repeated UserProfileDetailInfo.HighestLiveDeckEvaluationLiveDeck.LiveDeckPosition live_deck_positions = 3;
+		int64 live_deck_evaluation_value = 4;
+		.enums.LiveDeckRankType live_deck_evaluation_rank_type = 5;
+		int32 live_deck_evaluation_rank_plus_value = 6;
+	}
+
+	message CharacterLevel {
+		string character_id = 1 [(options.master.fk) = "Character:id"];
+		int32 level = 2;
+	}
+
+	message LiveResultInfo {
+		.enums.MusicDifficultyType music_difficulty_type = 1;
+		int32 count = 2;
+	}
+
+	message MiniGameResultInfo {
+		.enums.ProfileMiniGameResultType result_type = 1;
+		int64 value = 2;
+	}
+
+	message MusicHighestScoreRatingInfo {
+		string character_id = 1 [(options.master.fk) = "Character:id"];
+		int64 value = 2;
+	}
+
+	string public_user_id = 1;
+	UserProfileInfo user_profile_info = 2;
+	int32 achievement_clear_count = 3;
+	UserProfileDetailInfo.HighestLiveDeckEvaluationLiveDeck highest_live_deck_evaluation_live_deck = 4;
+	repeated UserProfileDetailInfo.CharacterLevel character_levels = 5;
+	int64 total_music_highest_score_rating_value = 6;
+	repeated UserProfileDetailInfo.LiveResultInfo live_clear_results = 7;
+	repeated UserProfileDetailInfo.LiveResultInfo live_full_combo_results = 8;
+	repeated UserProfileDetailInfo.LiveResultInfo live_all_perfect_results = 9;
+	repeated UserProfileDetailInfo.MiniGameResultInfo mini_game_results = 10;
+	bool is_blocked_user = 11;
+	.enums.FriendStatusType friend_status_type = 12;
+	repeated UserProfileDetailInfo.MusicHighestScoreRatingInfo top_music_highest_score_rating_infos = 13;
+	int32 combo_card_game_average_rank_percent = 14;
+	int64 combo_card_game_chip_diff_total_quantity = 15;
 }
 
 message CustomPalette {
-  int32 number = 1;
-  string custom_palette_preset_layout_group_id = 2;
-  CustomPaletteBackground background = 3;
-  repeated CustomPalettePart parts = 4;
+	int32 number = 1;
+	string custom_palette_preset_layout_group_id = 2 [(options.master.fk) = "CustomPalettePresetLayoutGroup:id"];
+	CustomPaletteBackground background = 3;
+	repeated CustomPalettePart parts = 4;
 }
 
 message CustomPaletteBackground {
-  .enums.CustomPaletteBackgroundResourceType resource_type = 1;
-  string resource_id = 2;
-  int32 position_x_permil = 3;
-  int32 position_y_permil = 4;
-  int32 scale_permil = 5;
+	.enums.CustomPaletteBackgroundResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string resource_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	int32 position_x_permil = 3 [(buf.validate.field).int32.lte = 3000000, (buf.validate.field).int32.gte = -3000000];
+	int32 position_y_permil = 4 [(buf.validate.field).int32.lte = 1800000, (buf.validate.field).int32.gte = -1800000];
+	int32 scale_permil = 5;
 }
 
 message CustomPalettePart {
-  .enums.CustomPalettePartResourceType resource_type = 1;
-  string resource_id = 2;
-  int32 position_x_permil = 3;
-  int32 position_y_permil = 4;
-  int32 scale_permil = 5;
-  int32 rotation_permil = 6;
-  int32 layer = 7;
+	.enums.CustomPalettePartResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string resource_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	int32 position_x_permil = 3 [(buf.validate.field).int32.lte = 3000000, (buf.validate.field).int32.gte = -3000000];
+	int32 position_y_permil = 4 [(buf.validate.field).int32.lte = 1800000, (buf.validate.field).int32.gte = -1800000];
+	int32 scale_permil = 5;
+	int32 rotation_permil = 6 [(buf.validate.field).int32.lt = 360000, (buf.validate.field).int32.gte = 0];
+	int32 layer = 7 [(buf.validate.field).int32.lte = 30, (buf.validate.field).int32.gte = 0];
 }

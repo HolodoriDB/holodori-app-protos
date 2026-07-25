@@ -1,17 +1,19 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_quest_jump_rope_clear_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkQuestJumpRope {
-  string id = 1;
-  string jump_rope_id = 2;
-  .enums.ParkQuestJumpRopeClearType clear_type = 3;
-  int32 clear_jump_count = 4;
-  repeated string mini_game_npc_ids = 5;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string jump_rope_id = 2 [(options.master.fk) = "JumpRope:id"];
+	.enums.ParkQuestJumpRopeClearType clear_type = 3;
+	int32 clear_jump_count = 4 [(options.master.optional) = true];
+	repeated string mini_game_npc_ids = 5 [(options.master.fk) = "MiniGameNpc:id", (options.master.optional) = true];
 }

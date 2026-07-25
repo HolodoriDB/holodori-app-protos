@@ -6,8 +6,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum SplashBallTeamColor {
-  SPLASH_BALL_TEAM_COLOR_UNKNOWN = 0;
-  SPLASH_BALL_TEAM_COLOR_YELLOW = 1;
-  SPLASH_BALL_TEAM_COLOR_PINK = 2;
-  SPLASH_BALL_TEAM_COLOR_BLUE = 3;
+	SPLASH_BALL_TEAM_COLOR_UNKNOWN = 0;
+	SPLASH_BALL_TEAM_COLOR_YELLOW = 1;
+	SPLASH_BALL_TEAM_COLOR_PINK = 2;
+	SPLASH_BALL_TEAM_COLOR_BLUE = 3;
 }

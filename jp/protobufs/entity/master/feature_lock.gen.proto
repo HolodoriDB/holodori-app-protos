@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/tutorial_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message FeatureLock {
-  .enums.TutorialType tutorial_type = 1;
-  string title_lang_id = 2;
-  string description_lang_id = 3;
-  string view_condition_group_id = 4;
-  string unlock_condition_group_id = 5;
-  bool is_force_transition = 6;
+	option (options.master.table) = true;
+
+	.enums.TutorialType tutorial_type = 1 [(options.master.pk) = true];
+	string title_lang_id = 2 [(options.master.fk) = "LangFeatureLock:id"];
+	string description_lang_id = 3 [(options.master.fk) = "LangFeatureLock:id", (options.master.optional) = true];
+	string view_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	bool is_force_transition = 6 [(options.master.optional) = true];
 }

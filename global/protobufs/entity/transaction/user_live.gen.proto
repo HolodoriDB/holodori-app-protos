@@ -1,22 +1,22 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "enums/music_difficulty_type.gen.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserLive {
-  int32 reward_up_stamina = 2;
-  int64 last_reward_up_stamina_auto_recovery_time = 3;
-  int64 reward_up_stamina_consumption_setting_quantity = 4;
-  string last_single_played_music_id = 5;
-  .enums.MusicDifficultyType last_single_played_music_difficulty_type = 6;
-  string last_multi_selected_music_id = 7;
-  .enums.MusicDifficultyType last_multi_selected_music_difficulty_type = 8;
-  string last_watched_live_deck_character_id = 9;
-  int32 last_watched_live_deck_number = 10;
-  string last_played_character_id = 11;
+	int32 reward_up_stamina = 2;
+	int64 last_reward_up_stamina_auto_recovery_time = 3;
+	int64 reward_up_stamina_consumption_setting_quantity = 4;
+	string last_single_played_music_id = 5 [(options.master.fk) = "Music:id"];
+	.enums.MusicDifficultyType last_single_played_music_difficulty_type = 6;
+	string last_multi_selected_music_id = 7 [(options.master.fk) = "Music:id"];
+	.enums.MusicDifficultyType last_multi_selected_music_difficulty_type = 8;
+	string last_watched_live_deck_character_id = 9 [(options.master.fk) = "Character:id"];
+	int32 last_watched_live_deck_number = 10;
+	string last_played_character_id = 11 [(options.master.fk) = "Character:id"];
 }

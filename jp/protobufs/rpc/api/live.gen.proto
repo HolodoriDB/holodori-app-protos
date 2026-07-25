@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "common/consumption.gen.proto";
 import "common/live.gen.proto";
@@ -22,305 +20,417 @@ import "rpc/api/common/profile.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message LiveGetDeckCandidateCardParametersRequest {
-  string character_id = 1;
-  string costume_id = 2;
-  string music_id = 3;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string costume_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	string music_id = 3;
 }
 
 message LiveGetDeckCandidateCardParametersResponse {
-  message ParameterInfo {
-    string card_id = 1;
-    int64 parameter = 2;
-    int64 performance = 3;
-    int64 technique = 4;
-    int64 sense = 5;
-  }
-  repeated LiveGetDeckCandidateCardParametersResponse.ParameterInfo parameter_infos = 1;
-  common.Response common_response = 9999;
+	message ParameterInfo {
+		string card_id = 1 [(options.master.fk) = "Card:id"];
+		int64 parameter = 2;
+		int64 performance = 3;
+		int64 technique = 4;
+		int64 sense = 5;
+	}
+
+	repeated LiveGetDeckCandidateCardParametersResponse.ParameterInfo parameter_infos = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveGetDraftDeckInfoRequest {
-  string character_id = 1;
-  string costume_id = 2;
-  repeated LiveDeckPosition deck_positions = 3;
-  string music_id = 4;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string costume_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	repeated LiveDeckPosition deck_positions = 3 [(buf.validate.field).repeated.max_items = 5];
+	string music_id = 4;
 }
 
 message LiveGetDraftDeckInfoResponse {
-  int64 live_deck_power = 1;
-  repeated common.LiveDeckPosition deck_positions = 2;
-  common.Response common_response = 9999;
+	int64 live_deck_power = 1;
+	repeated common.LiveDeckPosition deck_positions = 2;
+	common.Response common_response = 9999;
 }
 
 message LiveGetDeckRequest {
-  string character_id = 1;
-  int32 number = 2;
-  string music_id = 3;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	string music_id = 3;
 }
 
 message LiveGetDeckResponse {
-  repeated common.LiveDeckPosition deck_positions = 1;
-  common.LiveDeckEvaluation live_deck_evaluation = 2;
-  common.LiveDeckInGameEffect live_deck_in_game_effect = 3;
-  common.Response common_response = 9999;
+	repeated common.LiveDeckPosition deck_positions = 1;
+	common.LiveDeckEvaluation live_deck_evaluation = 2;
+	common.LiveDeckInGameEffect live_deck_in_game_effect = 3;
+	common.Response common_response = 9999;
 }
 
 message LiveSaveDeckRequest {
-  string character_id = 1;
-  string costume_id = 2;
-  int32 number = 3;
-  string name = 4;
-  repeated LiveDeckPosition deck_positions = 5;
-  string music_id = 6;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string costume_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 3 [(buf.validate.field).int32.gte = 1];
+	string name = 4 [(buf.validate.field).string.min_bytes = 1];
+	repeated LiveDeckPosition deck_positions = 5 [(buf.validate.field).repeated.max_items = 5];
+	string music_id = 6;
 }
 
 message LiveSaveDeckResponse {
-  common.LiveDeckEvaluation live_deck_evaluation = 1;
-  common.LiveDeckInGameEffect live_deck_in_game_effect = 2;
-  repeated common.LiveDeckPosition deck_positions = 3;
-  common.Response common_response = 9999;
+	common.LiveDeckEvaluation live_deck_evaluation = 1;
+	common.LiveDeckInGameEffect live_deck_in_game_effect = 2;
+	repeated common.LiveDeckPosition deck_positions = 3;
+	common.Response common_response = 9999;
 }
 
 message LiveSetSkinLogRequest {
-  repeated common.LiveSkinInfo skin_infos = 1;
+	repeated common.LiveSkinInfo skin_infos = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message LiveSetRewardUpStaminaConsumptionSettingRequest {
-  int64 quantity = 1;
+	int64 quantity = 1 [(buf.validate.field).int64.gte = 0];
 }
 
 message LiveRecoverRewardUpStaminaRequest {
-  repeated .common.Consumption consumptions = 1;
+	repeated .common.Consumption consumptions = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message LiveMatchRandomRequest {
-  .enums.LivePlayType play_type = 1;
-  bool is_auto_play_allowed = 2;
-  string deck_character_id = 3;
-  int32 deck_number = 4;
-  common.MultiGameMatchRandomInfo match_random_info = 1000;
+	.enums.LivePlayType play_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	bool is_auto_play_allowed = 2;
+	string deck_character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	int32 deck_number = 4 [(buf.validate.field).int32.gte = 1];
+	common.MultiGameMatchRandomInfo match_random_info = 1000;
 }
 
 message LiveMatchRandomResponse {
-  common.MultiGameMatchInfo match_info = 1;
-  common.Response common_response = 9999;
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveCreatePrivateRoomRequest {
-  bool is_auto_play_allowed = 1;
-  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+	bool is_auto_play_allowed = 1;
+	common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
 }
 
 message LiveCreatePrivateRoomResponse {
-  common.MultiGameMatchInfo match_info = 1;
-  common.Response common_response = 9999;
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveStartSingleRequest {
-  string music_id = 1;
-  .enums.MusicDifficultyType music_difficulty_type = 2;
-  string character_id = 3;
-  int32 deck_number = 4;
-  int32 reward_up_stamina_consumption_quantity = 5;
-  bool is_auto_play = 6;
-  common.LiveSkinInfo skin_info = 7;
-  string music_mv_category_id = 8;
+	string music_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	.enums.MusicDifficultyType music_difficulty_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	int32 deck_number = 4 [(buf.validate.field).int32.gte = 1];
+	int32 reward_up_stamina_consumption_quantity = 5 [(buf.validate.field).int32.gte = 0];
+	bool is_auto_play = 6;
+	common.LiveSkinInfo skin_info = 7;
+	string music_mv_category_id = 8;
 }
 
 message LiveStartSingleResponse {
-  int32 seed = 1;
-  common.Response common_response = 9999;
+	int32 seed = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveStartMultiRequest {
-  .enums.LivePlayType play_type = 1;
-  string self_selected_music_id = 2;
-  string picked_music_id = 3;
-  .enums.MusicDifficultyType music_difficulty_type = 4;
-  string character_id = 5;
-  int32 deck_number = 6;
-  int32 reward_up_stamina_consumption_quantity = 7;
-  bool is_auto_play = 8;
-  common.LiveSkinInfo skin_info = 9;
-  string music_mv_category_id = 10;
-  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
-  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+	.enums.LivePlayType play_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0, (buf.validate.field).enum.not_in = 1];
+	string self_selected_music_id = 2;
+	string picked_music_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	.enums.MusicDifficultyType music_difficulty_type = 4 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string character_id = 5 [(buf.validate.field).string.min_bytes = 1];
+	int32 deck_number = 6 [(buf.validate.field).int32.gte = 1];
+	int32 reward_up_stamina_consumption_quantity = 7 [(buf.validate.field).int32.gte = 0];
+	bool is_auto_play = 8;
+	common.LiveSkinInfo skin_info = 9;
+	string music_mv_category_id = 10;
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
 }
 
 message LiveStartMultiResponse {
-  int32 seed = 1;
-  common.Response common_response = 9999;
+	int32 seed = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveFinishSingleRequest {
-  .common.LiveBaseResult result = 1;
+	.common.LiveBaseResult result = 1;
 }
 
 message LiveFinishSingleResponse {
-  .enums.LiveResultType result_type = 1;
-  .enums.LiveEvaluationRankType evaluation_rank_type = 2;
-  int32 evaluation_rank_plus = 3;
-  int64 past_character_highest_score = 4;
-  int64 reward_card_exp_quantity = 5;
-  repeated .common.Reward card_exp_overflow_rewards = 6;
-  repeated .common.Reward score_evaluation_rank_rewards = 7;
-  repeated .common.Reward music_clear_count_rewards = 8;
-  repeated .common.Reward music_full_combo_rewards = 9;
-  repeated .common.Reward music_highest_score_rank_rewards = 10;
-  repeated .common.Reward music_max_combo_count_phase_rewards = 11;
-  common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 12;
-  int32 music_length_bonus_reward_quantity_up_permil_multiply = 13;
-  int32 reward_quantity_up_permil_up_by_benefit_license = 14;
-  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 15;
-  repeated common.RewardQuantityUp reward_ups_by_passive_skill = 16;
-  int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 17;
-  common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 19;
-  int64 technical_score = 20;
-  common.MarathonLiveResult marathon_live_result = 100;
-  common.Response common_response = 9999;
+	.enums.LiveResultType result_type = 1;
+	.enums.LiveEvaluationRankType evaluation_rank_type = 2;
+	int32 evaluation_rank_plus = 3;
+	int64 past_character_highest_score = 4;
+	int64 reward_card_exp_quantity = 5;
+	repeated .common.Reward card_exp_overflow_rewards = 6;
+	repeated .common.Reward score_evaluation_rank_rewards = 7;
+	repeated .common.Reward music_clear_count_rewards = 8;
+	repeated .common.Reward music_full_combo_rewards = 9;
+	repeated .common.Reward music_highest_score_rank_rewards = 10;
+	repeated .common.Reward music_max_combo_count_phase_rewards = 11;
+	common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 12;
+	int32 music_length_bonus_reward_quantity_up_permil_multiply = 13;
+	int32 reward_quantity_up_permil_up_by_benefit_license = 14;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 15;
+	repeated common.RewardQuantityUp reward_ups_by_passive_skill = 16;
+	int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 17;
+	common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 19;
+	int64 technical_score = 20;
+	common.MarathonLiveResult marathon_live_result = 100;
+	common.Response common_response = 9999;
 }
 
 message LiveFinishMultiLiveCooperationRequest {
-  string multi_game_result_id = 1;
+	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message LiveFinishMultiLiveCooperationResponse {
-  LiveFinishMultiLiveCooperationResult result = 1;
-  common.Response common_response = 9999;
+	LiveFinishMultiLiveCooperationResult result = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveFinishDisconnectedMultiLiveCooperationRequest {
-  string multi_game_result_id = 1;
-  .dto.multi_game_result.LiveCooperationResult result = 2;
+	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	.dto.multi_game_result.LiveCooperationResult result = 2;
 }
 
 message LiveFinishDisconnectedMultiLiveCooperationResponse {
-  LiveFinishMultiLiveCooperationResult result = 1;
-  common.Response common_response = 9999;
+	LiveFinishMultiLiveCooperationResult result = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveFinishMultiLiveCooperationResult {
-  message UserResult {
-    common.BasicUserInfo user_info = 1;
-    bool is_blocked_user = 2;
-    .enums.FriendStatusType friend_status_type = 3;
-    .enums.MusicDifficultyType music_difficulty_type = 4;
-    .common.LiveBaseResult result = 5;
-    int64 bonus_score = 6;
-    .enums.LiveResultType result_type = 7;
-    bool is_disconnected = 8;
-  }
-  string music_id = 1;
-  .enums.LiveEvaluationRankType multi_evaluation_rank_type = 2;
-  int32 multi_evaluation_rank_plus = 3;
-  .enums.LiveEvaluationRankType self_evaluation_rank_type = 4;
-  int32 self_evaluation_rank_plus = 5;
-  repeated LiveFinishMultiLiveCooperationResult.UserResult user_results = 6;
-  int64 past_character_highest_score = 7;
-  int64 reward_card_exp_quantity = 8;
-  repeated .common.Reward card_exp_overflow_rewards = 9;
-  repeated .common.Reward score_evaluation_rank_rewards = 10;
-  repeated .common.Reward music_clear_count_rewards = 11;
-  repeated .common.Reward music_full_combo_rewards = 12;
-  repeated .common.Reward music_highest_score_rank_rewards = 13;
-  repeated .common.Reward music_max_combo_count_phase_rewards = 14;
-  common.MultiGameResultPrivateRoomInfo private_room_info = 15;
-  common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 16;
-  int32 music_length_bonus_reward_quantity_up_permil_multiply = 17;
-  int32 reward_quantity_up_permil_up_by_benefit_license = 18;
-  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 19;
-  repeated common.RewardQuantityUp reward_ups_by_passive_skill = 20;
-  int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 21;
-  common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 23;
-  int64 technical_score = 24;
-  common.MarathonLiveResult marathon_live_result = 100;
+	message UserResult {
+		common.BasicUserInfo user_info = 1;
+		bool is_blocked_user = 2;
+		.enums.FriendStatusType friend_status_type = 3;
+		.enums.MusicDifficultyType music_difficulty_type = 4;
+		.common.LiveBaseResult result = 5;
+		int64 bonus_score = 6;
+		.enums.LiveResultType result_type = 7;
+		bool is_disconnected = 8;
+	}
+
+	string music_id = 1 [(options.master.fk) = "Music:id"];
+	.enums.LiveEvaluationRankType multi_evaluation_rank_type = 2;
+	int32 multi_evaluation_rank_plus = 3;
+	.enums.LiveEvaluationRankType self_evaluation_rank_type = 4;
+	int32 self_evaluation_rank_plus = 5;
+	repeated LiveFinishMultiLiveCooperationResult.UserResult user_results = 6;
+	int64 past_character_highest_score = 7;
+	int64 reward_card_exp_quantity = 8;
+	repeated .common.Reward card_exp_overflow_rewards = 9;
+	repeated .common.Reward score_evaluation_rank_rewards = 10;
+	repeated .common.Reward music_clear_count_rewards = 11;
+	repeated .common.Reward music_full_combo_rewards = 12;
+	repeated .common.Reward music_highest_score_rank_rewards = 13;
+	repeated .common.Reward music_max_combo_count_phase_rewards = 14;
+	common.MultiGameResultPrivateRoomInfo private_room_info = 15;
+	common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 16;
+	int32 music_length_bonus_reward_quantity_up_permil_multiply = 17;
+	int32 reward_quantity_up_permil_up_by_benefit_license = 18;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 19;
+	repeated common.RewardQuantityUp reward_ups_by_passive_skill = 20;
+	int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 21;
+	common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 23;
+	int64 technical_score = 24;
+	common.MarathonLiveResult marathon_live_result = 100;
 }
 
 message LiveContinueRequest {
-  .common.LiveBaseResult result = 1;
-  int64 progress_millisecond = 2;
+	.common.LiveBaseResult result = 1;
+	int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
 }
 
 message LiveRetryRequest {
-  .common.LiveBaseResult result = 1;
-  int64 progress_millisecond = 2;
+	.common.LiveBaseResult result = 1;
+	int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
 }
 
 message LiveRetryResponse {
-  int32 seed = 1;
-  common.Response common_response = 9999;
+	int32 seed = 1;
+	common.Response common_response = 9999;
 }
 
 message LiveRetireRequest {
-  .common.LiveBaseResult result = 1;
-  int64 progress_millisecond = 2;
+	.common.LiveBaseResult result = 1;
+	int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
 }
 
 message LiveDeckPosition {
-  int32 position = 1;
-  string card_id = 2;
+	int32 position = 1 [(buf.validate.field).int32.lte = 5, (buf.validate.field).int32.gte = 1];
+	string card_id = 2 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "Card:id"];
 }
 
 message LiveListRecommendCharacterDeckRequest {
-  string music_id = 1;
-  string current_character_id = 2;
-  int32 current_deck_number = 3;
+	string music_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string current_character_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	int32 current_deck_number = 3 [(buf.validate.field).int32.gte = 1];
 }
 
 message LiveListRecommendCharacterDeckResponse {
-  message LiveDeck {
-    string character_id = 1;
-    int32 number = 2;
-    repeated common.LiveDeckPosition deck_positions = 3;
-    common.LiveDeckEvaluation live_deck_evaluation = 4;
-    common.LiveDeckInGameEffect live_deck_in_game_effect = 5;
-  }
-  repeated LiveListRecommendCharacterDeckResponse.LiveDeck strong_live_decks = 1;
-  repeated LiveListRecommendCharacterDeckResponse.LiveDeck high_score_rating_target_live_decks = 2;
-  common.Response common_response = 9999;
+	message LiveDeck {
+		string character_id = 1 [(options.master.fk) = "Character:id"];
+		int32 number = 2;
+		repeated common.LiveDeckPosition deck_positions = 3;
+		common.LiveDeckEvaluation live_deck_evaluation = 4;
+		common.LiveDeckInGameEffect live_deck_in_game_effect = 5;
+	}
+
+	repeated LiveListRecommendCharacterDeckResponse.LiveDeck strong_live_decks = 1;
+	repeated LiveListRecommendCharacterDeckResponse.LiveDeck high_score_rating_target_live_decks = 2;
+	common.Response common_response = 9999;
 }
 
 message LiveSetSkinLogResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message LiveSetRewardUpStaminaConsumptionSettingResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message LiveRecoverRewardUpStaminaResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message LiveContinueResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message LiveRetireResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Live {
-  rpc GetDeckCandidateCardParameters (LiveGetDeckCandidateCardParametersRequest) returns (LiveGetDeckCandidateCardParametersResponse);
-  rpc GetDraftDeckInfo (LiveGetDraftDeckInfoRequest) returns (LiveGetDraftDeckInfoResponse);
-  rpc GetDeck (LiveGetDeckRequest) returns (LiveGetDeckResponse);
-  rpc SaveDeck (LiveSaveDeckRequest) returns (LiveSaveDeckResponse);
-  rpc SetSkinLog (LiveSetSkinLogRequest) returns (LiveSetSkinLogResponse);
-  rpc SetRewardUpStaminaConsumptionSetting (LiveSetRewardUpStaminaConsumptionSettingRequest) returns (LiveSetRewardUpStaminaConsumptionSettingResponse);
-  rpc RecoverRewardUpStamina (LiveRecoverRewardUpStaminaRequest) returns (LiveRecoverRewardUpStaminaResponse);
-  rpc MatchRandom (LiveMatchRandomRequest) returns (LiveMatchRandomResponse);
-  rpc CreatePrivateRoom (LiveCreatePrivateRoomRequest) returns (LiveCreatePrivateRoomResponse);
-  rpc StartSingle (LiveStartSingleRequest) returns (LiveStartSingleResponse);
-  rpc StartMulti (LiveStartMultiRequest) returns (LiveStartMultiResponse);
-  rpc FinishSingle (LiveFinishSingleRequest) returns (LiveFinishSingleResponse);
-  rpc FinishMultiLiveCooperation (LiveFinishMultiLiveCooperationRequest) returns (LiveFinishMultiLiveCooperationResponse);
-  rpc FinishDisconnectedMultiLiveCooperation (LiveFinishDisconnectedMultiLiveCooperationRequest) returns (LiveFinishDisconnectedMultiLiveCooperationResponse);
-  rpc Continue (LiveContinueRequest) returns (LiveContinueResponse);
-  rpc Retry (LiveRetryRequest) returns (LiveRetryResponse);
-  rpc Retire (LiveRetireRequest) returns (LiveRetireResponse);
-  rpc ListRecommendCharacterDeck (LiveListRecommendCharacterDeckRequest) returns (LiveListRecommendCharacterDeckResponse);
+	rpc GetDeckCandidateCardParameters (.rpc.api.LiveGetDeckCandidateCardParametersRequest) returns (.rpc.api.LiveGetDeckCandidateCardParametersResponse) {
+		option (google.api.http).post = "/Live/GetDeckCandidateCardParameters";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetDraftDeckInfo (.rpc.api.LiveGetDraftDeckInfoRequest) returns (.rpc.api.LiveGetDraftDeckInfoResponse) {
+		option (google.api.http).post = "/Live/GetDraftDeckInfo";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetDeck (.rpc.api.LiveGetDeckRequest) returns (.rpc.api.LiveGetDeckResponse) {
+		option (google.api.http).post = "/Live/GetDeck";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SaveDeck (.rpc.api.LiveSaveDeckRequest) returns (.rpc.api.LiveSaveDeckResponse) {
+		option (google.api.http).post = "/Live/SaveDeck";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+	}
+
+	rpc SetSkinLog (.rpc.api.LiveSetSkinLogRequest) returns (.rpc.api.LiveSetSkinLogResponse) {
+		option (google.api.http).post = "/Live/SetSkinLog";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SetRewardUpStaminaConsumptionSetting (.rpc.api.LiveSetRewardUpStaminaConsumptionSettingRequest) returns (.rpc.api.LiveSetRewardUpStaminaConsumptionSettingResponse) {
+		option (google.api.http).post = "/Live/SetRewardUpStaminaConsumptionSetting";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc RecoverRewardUpStamina (.rpc.api.LiveRecoverRewardUpStaminaRequest) returns (.rpc.api.LiveRecoverRewardUpStaminaResponse) {
+		option (google.api.http).post = "/Live/RecoverRewardUpStamina";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc MatchRandom (.rpc.api.LiveMatchRandomRequest) returns (.rpc.api.LiveMatchRandomResponse) {
+		option (google.api.http).post = "/Live/MatchRandom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc CreatePrivateRoom (.rpc.api.LiveCreatePrivateRoomRequest) returns (.rpc.api.LiveCreatePrivateRoomResponse) {
+		option (google.api.http).post = "/Live/CreatePrivateRoom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MULTI_GAME_REMATCH_EXPIRED;
+	}
+
+	rpc StartSingle (.rpc.api.LiveStartSingleRequest) returns (.rpc.api.LiveStartSingleResponse) {
+		option (google.api.http).post = "/Live/StartSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartMulti (.rpc.api.LiveStartMultiRequest) returns (.rpc.api.LiveStartMultiResponse) {
+		option (google.api.http).post = "/Live/StartMulti";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishSingle (.rpc.api.LiveFinishSingleRequest) returns (.rpc.api.LiveFinishSingleResponse) {
+		option (google.api.http).post = "/Live/FinishSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc FinishMultiLiveCooperation (.rpc.api.LiveFinishMultiLiveCooperationRequest) returns (.rpc.api.LiveFinishMultiLiveCooperationResponse) {
+		option (google.api.http).post = "/Live/FinishMultiLiveCooperation";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishDisconnectedMultiLiveCooperation (.rpc.api.LiveFinishDisconnectedMultiLiveCooperationRequest) returns (.rpc.api.LiveFinishDisconnectedMultiLiveCooperationResponse) {
+		option (google.api.http).post = "/Live/FinishDisconnectedMultiLiveCooperation";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc Continue (.rpc.api.LiveContinueRequest) returns (.rpc.api.LiveContinueResponse) {
+		option (google.api.http).post = "/Live/Continue";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc Retry (.rpc.api.LiveRetryRequest) returns (.rpc.api.LiveRetryResponse) {
+		option (google.api.http).post = "/Live/Retry";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc Retire (.rpc.api.LiveRetireRequest) returns (.rpc.api.LiveRetireResponse) {
+		option (google.api.http).post = "/Live/Retire";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc ListRecommendCharacterDeck (.rpc.api.LiveListRecommendCharacterDeckRequest) returns (.rpc.api.LiveListRecommendCharacterDeckResponse) {
+		option (google.api.http).post = "/Live/ListRecommendCharacterDeck";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
 }

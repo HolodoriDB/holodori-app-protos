@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message World {
-  string id = 1;
-  string name_lang_id = 2;
-  string description_lang_id = 3;
-  string asset_id = 4;
-  string view_condition_group_id = 5;
-  string unlock_condition_group_id = 6;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 2 [(options.master.fk) = "LangWorld:id"];
+	string description_lang_id = 3 [(options.master.fk) = "LangWorld:id"];
+	string asset_id = 4 [(options.master.optional) = true];
+	string view_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 order = 999;
 }

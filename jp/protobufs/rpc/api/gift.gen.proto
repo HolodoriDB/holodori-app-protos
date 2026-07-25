@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "enums/gift_sort_type.gen.proto";
 import "enums/resource_type.gen.proto";
@@ -12,72 +10,100 @@ import "options/zap.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message GiftItem {
-  string gift_id = 1;
-  .enums.ResourceType resource_type = 2;
-  string resource_id = 3;
-  int64 quantity = 4;
-  string description = 5;
-  int64 posted_time = 6;
-  int64 limit_time = 7;
+	string gift_id = 1;
+	.enums.ResourceType resource_type = 2;
+	string resource_id = 3;
+	int64 quantity = 4;
+	string description = 5 [(options.zap.hidden) = true];
+	int64 posted_time = 6;
+	int64 limit_time = 7;
 }
 
 message GiftTopResponse {
-  repeated GiftItem items = 1;
-  int32 count = 2;
-  bool is_next = 3;
-  int32 unread_announcement_count = 4;
-  common.Response common_response = 9999;
+	repeated GiftItem items = 1;
+	int32 count = 2;
+	bool is_next = 3;
+	int32 unread_announcement_count = 4;
+	common.Response common_response = 9999;
 }
 
 message GiftListRequest {
-  int32 offset = 1;
-  .enums.GiftSortType sort_type = 2;
-  bool is_desc = 3;
+	int32 offset = 1 [(buf.validate.field).int32.gte = 0];
+	.enums.GiftSortType sort_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	bool is_desc = 3;
 }
 
 message GiftListResponse {
-  repeated GiftItem items = 1;
-  int32 count = 2;
-  bool is_next = 3;
-  common.Response common_response = 9999;
+	repeated GiftItem items = 1;
+	int32 count = 2;
+	bool is_next = 3;
+	common.Response common_response = 9999;
 }
 
 message GiftOpenRequest {
-  repeated string gift_ids = 1;
+	repeated string gift_ids = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message GiftOpenResponse {
-  repeated common.RewardResult results = 1;
-  repeated string opened_gift_ids = 2;
-  repeated string unopened_gift_ids = 3;
-  common.Response common_response = 9999;
+	repeated common.RewardResult results = 1;
+	repeated string opened_gift_ids = 2;
+	repeated string unopened_gift_ids = 3;
+	common.Response common_response = 9999;
 }
 
 message GiftListHistoryResponse {
-  message GiftHistoryItem {
-    .enums.ResourceType resource_type = 1;
-    string resource_id = 2;
-    int64 quantity = 3;
-    string description = 4;
-    int64 opened_time = 5;
-  }
-  repeated GiftListHistoryResponse.GiftHistoryItem items = 1;
-  common.Response common_response = 9999;
+	message GiftHistoryItem {
+		.enums.ResourceType resource_type = 1;
+		string resource_id = 2;
+		int64 quantity = 3;
+		string description = 4 [(options.zap.hidden) = true];
+		int64 opened_time = 5;
+	}
+
+	repeated GiftListHistoryResponse.GiftHistoryItem items = 1;
+	common.Response common_response = 9999;
 }
 
 message GiftCountResponse {
-  int32 count = 1;
-  common.Response common_response = 9999;
+	int32 count = 1;
+	common.Response common_response = 9999;
 }
 
 service Gift {
-  rpc Top (.google.protobuf.Empty) returns (GiftTopResponse);
-  rpc List (GiftListRequest) returns (GiftListResponse);
-  rpc Open (GiftOpenRequest) returns (GiftOpenResponse);
-  rpc ListHistory (.google.protobuf.Empty) returns (GiftListHistoryResponse);
-  rpc Count (.google.protobuf.Empty) returns (GiftCountResponse);
+	rpc Top (.google.protobuf.Empty) returns (.rpc.api.GiftTopResponse) {
+		option (google.api.http).post = "/Gift/Top";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc List (.rpc.api.GiftListRequest) returns (.rpc.api.GiftListResponse) {
+		option (google.api.http).post = "/Gift/List";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Open (.rpc.api.GiftOpenRequest) returns (.rpc.api.GiftOpenResponse) {
+		option (google.api.http).post = "/Gift/Open";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_GIFT_REWARD_EXPIRED;
+	}
+
+	rpc ListHistory (.google.protobuf.Empty) returns (.rpc.api.GiftListHistoryResponse) {
+		option (google.api.http).post = "/Gift/ListHistory";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Count (.google.protobuf.Empty) returns (.rpc.api.GiftCountResponse) {
+		option (google.api.http).post = "/Gift/Count";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

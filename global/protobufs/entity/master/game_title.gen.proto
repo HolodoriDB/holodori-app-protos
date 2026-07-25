@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/game_title_asset_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message GameTitle {
-  string id = 1;
-  .enums.GameTitleAssetType asset_type = 2;
-  string asset_id = 3;
-  string bgm_asset_id = 4;
-  string condition_group_id = 5;
-  int32 priority = 6;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.GameTitleAssetType asset_type = 2;
+	string asset_id = 3;
+	string bgm_asset_id = 4;
+	string condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 priority = 6 [(options.master.optional) = true];
 }

@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/gacha_animation_rarity_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message GachaAnimationFake {
-  string gacha_animation_grouping_id = 1;
-  .enums.GachaAnimationRarityType fake_animation_rarity = 2;
-  .enums.GachaAnimationRarityType actual_animation_rarity = 3;
-  int32 ratio = 4;
+	option (options.master.table) = true;
+
+	string gacha_animation_grouping_id = 1 [(options.master.pk) = true];
+	.enums.GachaAnimationRarityType fake_animation_rarity = 2 [(options.master.pk) = true];
+	.enums.GachaAnimationRarityType actual_animation_rarity = 3 [(options.master.pk) = true];
+	int32 ratio = 4 [(options.master.optional) = true];
 }

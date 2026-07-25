@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/circuit_area_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CircuitArea {
-  .enums.CircuitAreaType type = 1;
-  string crash_gimmick_name_lang_id = 2;
-  string damage_gimmick_name_lang_id = 3;
+	option (options.master.table) = true;
+
+	.enums.CircuitAreaType type = 1 [(options.master.pk) = true];
+	string crash_gimmick_name_lang_id = 2 [(options.master.fk) = "LangCircuitArea:id", (options.master.optional) = true];
+	string damage_gimmick_name_lang_id = 3 [(options.master.fk) = "LangCircuitArea:id", (options.master.optional) = true];
 }

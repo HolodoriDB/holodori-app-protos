@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum MusicStartupNotificationType {
-  MUSIC_STARTUP_NOTIFICATION_TYPE_UNKNOWN = 0;
-  MUSIC_STARTUP_NOTIFICATION_TYPE_MUSIC = 1;
-  MUSIC_STARTUP_NOTIFICATION_TYPE_MUSIC_MV = 2;
+	MUSIC_STARTUP_NOTIFICATION_TYPE_UNKNOWN = 0;
+	MUSIC_STARTUP_NOTIFICATION_TYPE_MUSIC = 1;
+	MUSIC_STARTUP_NOTIFICATION_TYPE_MUSIC_MV = 2;
 }

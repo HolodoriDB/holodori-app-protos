@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserParkTalkFreePickResultDetail {
-  string picked_park_talk_free_grouping_group_id = 2;
-  string park_talk_free_id = 3;
-  repeated string already_read_character_ids = 4;
+	string picked_park_talk_free_grouping_group_id = 2 [(options.master.fk) = "ParkTalkFreeGrouping:groupId", (options.transaction.pk) = true];
+	string park_talk_free_id = 3 [(options.master.fk) = "ParkTalkFree:id", (options.transaction.pk) = true];
+	repeated string already_read_character_ids = 4 [(options.master.fk) = "Character:id"];
 }

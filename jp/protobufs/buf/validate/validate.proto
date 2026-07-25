@@ -1,415 +1,462 @@
-syntax = "proto2";
-
-package buf.validate;
-
 import "google/protobuf/descriptor.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
+package buf.validate;
+
 option java_package = "build.buf.validate";
 option java_outer_classname = "ValidateProto";
+option java_multiple_files = true;
 option go_package = "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate";
 
+extend google.protobuf.MessageOptions {
+	optional MessageRules message = 1159;
+}
+
+extend google.protobuf.OneofOptions {
+	optional OneofRules oneof = 1159;
+}
+
+extend google.protobuf.FieldOptions {
+	optional FieldRules field = 1159;
+	optional PredefinedRules predefined = 1160;
+}
+
 enum Ignore {
-  IGNORE_UNSPECIFIED = 0;
-  IGNORE_IF_UNPOPULATED = 1;
-  IGNORE_IF_DEFAULT_VALUE = 2;
-  IGNORE_ALWAYS = 3;
+	IGNORE_UNSPECIFIED = 0;
+	IGNORE_IF_UNPOPULATED = 1;
+	IGNORE_IF_DEFAULT_VALUE = 2;
+	IGNORE_ALWAYS = 3;
 }
 
 enum KnownRegex {
-  KNOWN_REGEX_UNSPECIFIED = 0;
-  KNOWN_REGEX_HTTP_HEADER_NAME = 1;
-  KNOWN_REGEX_HTTP_HEADER_VALUE = 2;
+	KNOWN_REGEX_UNSPECIFIED = 0;
+	KNOWN_REGEX_HTTP_HEADER_NAME = 1;
+	KNOWN_REGEX_HTTP_HEADER_VALUE = 2;
 }
 
 message Rule {
-  optional string id = 1;
-  optional string message = 2;
-  optional string expression = 3;
+	optional string id = 1;
+	optional string message = 2;
+	optional string expression = 3;
 }
 
 message MessageRules {
-  optional bool disabled = 1;
-  repeated Rule cel = 3;
+	optional bool disabled = 1;
+	repeated Rule cel = 3;
 }
 
 message OneofRules {
-  optional bool required = 1;
+	optional bool required = 1;
 }
 
 message FieldRules {
-  repeated Rule cel = 23;
-  optional bool required = 25;
-  optional Ignore ignore = 27;
-  oneof type {
-    FloatRules float = 1;
-    DoubleRules double = 2;
-    Int32Rules int32 = 3;
-    Int64Rules int64 = 4;
-    UInt32Rules uint32 = 5;
-    UInt64Rules uint64 = 6;
-    SInt32Rules sint32 = 7;
-    SInt64Rules sint64 = 8;
-    Fixed32Rules fixed32 = 9;
-    Fixed64Rules fixed64 = 10;
-    SFixed32Rules sfixed32 = 11;
-    SFixed64Rules sfixed64 = 12;
-    BoolRules bool = 13;
-    StringRules string = 14;
-    BytesRules bytes = 15;
-    EnumRules enum = 16;
-    RepeatedRules repeated = 18;
-    MapRules map = 19;
-    AnyRules any = 20;
-    DurationRules duration = 21;
-    TimestampRules timestamp = 22;
-  }
-  reserved 24;
-  reserved 26;
-  reserved "skipped";
-  reserved "ignore_empty";
+	repeated Rule cel = 23;
+	optional bool required = 25;
+	optional Ignore ignore = 27;
+
+	oneof type {
+		FloatRules float = 1;
+		DoubleRules double = 2;
+		Int32Rules int32 = 3;
+		Int64Rules int64 = 4;
+		UInt32Rules uint32 = 5;
+		UInt64Rules uint64 = 6;
+		SInt32Rules sint32 = 7;
+		SInt64Rules sint64 = 8;
+		Fixed32Rules fixed32 = 9;
+		Fixed64Rules fixed64 = 10;
+		SFixed32Rules sfixed32 = 11;
+		SFixed64Rules sfixed64 = 12;
+		BoolRules bool = 13;
+		StringRules string = 14;
+		BytesRules bytes = 15;
+		EnumRules enum = 16;
+		RepeatedRules repeated = 18;
+		MapRules map = 19;
+		AnyRules any = 20;
+		DurationRules duration = 21;
+		TimestampRules timestamp = 22;
+	}
+
+	reserved 24;
+	reserved 26;
+	reserved "skipped";
+	reserved "ignore_empty";
 }
 
 message PredefinedRules {
-  repeated Rule cel = 1;
-  reserved 24;
-  reserved 26;
-  reserved "skippedignore_empty";
+	repeated Rule cel = 1;
+
+	reserved 24;
+	reserved 26;
+	reserved "skippedignore_empty";
 }
 
 message FloatRules {
-  optional float const = 1;
-  repeated float in = 6;
-  repeated float not_in = 7;
-  optional bool finite = 8;
-  repeated float example = 9;
-  oneof less_than {
-    float lt = 2;
-    float lte = 3;
-  }
-  oneof greater_than {
-    float gt = 4;
-    float gte = 5;
-  }
+	optional float const = 1 [(buf.validate.predefined).cel.id = "float.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated float in = 6 [(buf.validate.predefined).cel.id = "float.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated float not_in = 7 [(buf.validate.predefined).cel.id = "float.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	optional bool finite = 8 [(buf.validate.predefined).cel.id = "float.finite", (buf.validate.predefined).cel.expression = "rules.finite ? (this.isNan() || this.isInf() ? 'value must be finite' : '') : ''"];
+	repeated float example = 9 [(buf.validate.predefined).cel.id = "float.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		float lt = 2 [(buf.validate.predefined).cel.id = "float.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && (this.isNan() || this >= rules.lt)? 'value must be less than %s'.format([rules.lt]) : ''"];
+		float lte = 3 [(buf.validate.predefined).cel.id = "float.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && (this.isNan() || this > rules.lte)? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		float gt = 4 [(buf.validate.predefined).cel.id = "float.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && (this.isNan() || this <= rules.gt)? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "float.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this.isNan() || this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "float.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (this.isNan() || (rules.lt <= this && this <= rules.gt))? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "float.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this.isNan() || this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "float.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (this.isNan() || (rules.lte < this && this <= rules.gt))? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		float gte = 5 [(buf.validate.predefined).cel.id = "float.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && (this.isNan() || this < rules.gte)? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "float.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this.isNan() || this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "float.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (this.isNan() || (rules.lt <= this && this < rules.gte))? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "float.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this.isNan() || this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "float.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (this.isNan() || (rules.lte < this && this < rules.gte))? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message DoubleRules {
-  optional double const = 1;
-  repeated double in = 6;
-  repeated double not_in = 7;
-  optional bool finite = 8;
-  repeated double example = 9;
-  oneof less_than {
-    double lt = 2;
-    double lte = 3;
-  }
-  oneof greater_than {
-    double gt = 4;
-    double gte = 5;
-  }
+	optional double const = 1 [(buf.validate.predefined).cel.id = "double.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated double in = 6 [(buf.validate.predefined).cel.id = "double.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated double not_in = 7 [(buf.validate.predefined).cel.id = "double.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	optional bool finite = 8 [(buf.validate.predefined).cel.id = "double.finite", (buf.validate.predefined).cel.expression = "rules.finite ? (this.isNan() || this.isInf() ? 'value must be finite' : '') : ''"];
+	repeated double example = 9 [(buf.validate.predefined).cel.id = "double.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		double lt = 2 [(buf.validate.predefined).cel.id = "double.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && (this.isNan() || this >= rules.lt)? 'value must be less than %s'.format([rules.lt]) : ''"];
+		double lte = 3 [(buf.validate.predefined).cel.id = "double.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && (this.isNan() || this > rules.lte)? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		double gt = 4 [(buf.validate.predefined).cel.id = "double.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && (this.isNan() || this <= rules.gt)? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "double.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this.isNan() || this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "double.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (this.isNan() || (rules.lt <= this && this <= rules.gt))? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "double.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this.isNan() || this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "double.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (this.isNan() || (rules.lte < this && this <= rules.gt))? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		double gte = 5 [(buf.validate.predefined).cel.id = "double.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && (this.isNan() || this < rules.gte)? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "double.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this.isNan() || this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "double.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (this.isNan() || (rules.lt <= this && this < rules.gte))? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "double.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this.isNan() || this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "double.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (this.isNan() || (rules.lte < this && this < rules.gte))? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message Int32Rules {
-  optional int32 const = 1;
-  repeated int32 in = 6;
-  repeated int32 not_in = 7;
-  repeated int32 example = 8;
-  oneof less_than {
-    int32 lt = 2;
-    int32 lte = 3;
-  }
-  oneof greater_than {
-    int32 gt = 4;
-    int32 gte = 5;
-  }
+	optional int32 const = 1 [(buf.validate.predefined).cel.id = "int32.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated int32 in = 6 [(buf.validate.predefined).cel.id = "int32.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated int32 not_in = 7 [(buf.validate.predefined).cel.id = "int32.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated int32 example = 8 [(buf.validate.predefined).cel.id = "int32.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		int32 lt = 2 [(buf.validate.predefined).cel.id = "int32.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		int32 lte = 3 [(buf.validate.predefined).cel.id = "int32.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		int32 gt = 4 [(buf.validate.predefined).cel.id = "int32.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "int32.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int32.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int32.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "int32.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		int32 gte = 5 [(buf.validate.predefined).cel.id = "int32.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "int32.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int32.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int32.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "int32.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message Int64Rules {
-  optional int64 const = 1;
-  repeated int64 in = 6;
-  repeated int64 not_in = 7;
-  repeated int64 example = 9;
-  oneof less_than {
-    int64 lt = 2;
-    int64 lte = 3;
-  }
-  oneof greater_than {
-    int64 gt = 4;
-    int64 gte = 5;
-  }
+	optional int64 const = 1 [(buf.validate.predefined).cel.id = "int64.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated int64 in = 6 [(buf.validate.predefined).cel.id = "int64.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated int64 not_in = 7 [(buf.validate.predefined).cel.id = "int64.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated int64 example = 9 [(buf.validate.predefined).cel.id = "int64.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		int64 lt = 2 [(buf.validate.predefined).cel.id = "int64.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		int64 lte = 3 [(buf.validate.predefined).cel.id = "int64.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		int64 gt = 4 [(buf.validate.predefined).cel.id = "int64.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "int64.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int64.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int64.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "int64.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		int64 gte = 5 [(buf.validate.predefined).cel.id = "int64.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "int64.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int64.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "int64.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "int64.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message UInt32Rules {
-  optional uint32 const = 1;
-  repeated uint32 in = 6;
-  repeated uint32 not_in = 7;
-  repeated uint32 example = 8;
-  oneof less_than {
-    uint32 lt = 2;
-    uint32 lte = 3;
-  }
-  oneof greater_than {
-    uint32 gt = 4;
-    uint32 gte = 5;
-  }
+	optional uint32 const = 1 [(buf.validate.predefined).cel.id = "uint32.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated uint32 in = 6 [(buf.validate.predefined).cel.id = "uint32.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated uint32 not_in = 7 [(buf.validate.predefined).cel.id = "uint32.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated uint32 example = 8 [(buf.validate.predefined).cel.id = "uint32.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		uint32 lt = 2 [(buf.validate.predefined).cel.id = "uint32.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		uint32 lte = 3 [(buf.validate.predefined).cel.id = "uint32.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		uint32 gt = 4 [(buf.validate.predefined).cel.id = "uint32.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "uint32.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint32.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint32.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "uint32.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		uint32 gte = 5 [(buf.validate.predefined).cel.id = "uint32.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "uint32.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint32.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint32.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "uint32.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message UInt64Rules {
-  optional uint64 const = 1;
-  repeated uint64 in = 6;
-  repeated uint64 not_in = 7;
-  repeated uint64 example = 8;
-  oneof less_than {
-    uint64 lt = 2;
-    uint64 lte = 3;
-  }
-  oneof greater_than {
-    uint64 gt = 4;
-    uint64 gte = 5;
-  }
+	optional uint64 const = 1 [(buf.validate.predefined).cel.id = "uint64.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated uint64 in = 6 [(buf.validate.predefined).cel.id = "uint64.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated uint64 not_in = 7 [(buf.validate.predefined).cel.id = "uint64.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated uint64 example = 8 [(buf.validate.predefined).cel.id = "uint64.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		uint64 lt = 2 [(buf.validate.predefined).cel.id = "uint64.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		uint64 lte = 3 [(buf.validate.predefined).cel.id = "uint64.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		uint64 gt = 4 [(buf.validate.predefined).cel.id = "uint64.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "uint64.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint64.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint64.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "uint64.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		uint64 gte = 5 [(buf.validate.predefined).cel.id = "uint64.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "uint64.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint64.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "uint64.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "uint64.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message SInt32Rules {
-  optional sint32 const = 1;
-  repeated sint32 in = 6;
-  repeated sint32 not_in = 7;
-  repeated sint32 example = 8;
-  oneof less_than {
-    sint32 lt = 2;
-    sint32 lte = 3;
-  }
-  oneof greater_than {
-    sint32 gt = 4;
-    sint32 gte = 5;
-  }
+	optional sint32 const = 1 [(buf.validate.predefined).cel.id = "sint32.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated sint32 in = 6 [(buf.validate.predefined).cel.id = "sint32.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated sint32 not_in = 7 [(buf.validate.predefined).cel.id = "sint32.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated sint32 example = 8 [(buf.validate.predefined).cel.id = "sint32.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		sint32 lt = 2 [(buf.validate.predefined).cel.id = "sint32.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		sint32 lte = 3 [(buf.validate.predefined).cel.id = "sint32.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		sint32 gt = 4 [(buf.validate.predefined).cel.id = "sint32.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "sint32.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint32.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint32.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sint32.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		sint32 gte = 5 [(buf.validate.predefined).cel.id = "sint32.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "sint32.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint32.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint32.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sint32.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message SInt64Rules {
-  optional sint64 const = 1;
-  repeated sint64 in = 6;
-  repeated sint64 not_in = 7;
-  repeated sint64 example = 8;
-  oneof less_than {
-    sint64 lt = 2;
-    sint64 lte = 3;
-  }
-  oneof greater_than {
-    sint64 gt = 4;
-    sint64 gte = 5;
-  }
+	optional sint64 const = 1 [(buf.validate.predefined).cel.id = "sint64.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated sint64 in = 6 [(buf.validate.predefined).cel.id = "sint64.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated sint64 not_in = 7 [(buf.validate.predefined).cel.id = "sint64.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated sint64 example = 8 [(buf.validate.predefined).cel.id = "sint64.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		sint64 lt = 2 [(buf.validate.predefined).cel.id = "sint64.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		sint64 lte = 3 [(buf.validate.predefined).cel.id = "sint64.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		sint64 gt = 4 [(buf.validate.predefined).cel.id = "sint64.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "sint64.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint64.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint64.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sint64.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		sint64 gte = 5 [(buf.validate.predefined).cel.id = "sint64.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "sint64.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint64.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sint64.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sint64.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message Fixed32Rules {
-  optional fixed32 const = 1;
-  repeated fixed32 in = 6;
-  repeated fixed32 not_in = 7;
-  repeated fixed32 example = 8;
-  oneof less_than {
-    fixed32 lt = 2;
-    fixed32 lte = 3;
-  }
-  oneof greater_than {
-    fixed32 gt = 4;
-    fixed32 gte = 5;
-  }
+	optional fixed32 const = 1 [(buf.validate.predefined).cel.id = "fixed32.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated fixed32 in = 6 [(buf.validate.predefined).cel.id = "fixed32.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated fixed32 not_in = 7 [(buf.validate.predefined).cel.id = "fixed32.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated fixed32 example = 8 [(buf.validate.predefined).cel.id = "fixed32.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		fixed32 lt = 2 [(buf.validate.predefined).cel.id = "fixed32.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		fixed32 lte = 3 [(buf.validate.predefined).cel.id = "fixed32.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		fixed32 gt = 4 [(buf.validate.predefined).cel.id = "fixed32.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "fixed32.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed32.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed32.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "fixed32.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		fixed32 gte = 5 [(buf.validate.predefined).cel.id = "fixed32.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "fixed32.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed32.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed32.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "fixed32.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message Fixed64Rules {
-  optional fixed64 const = 1;
-  repeated fixed64 in = 6;
-  repeated fixed64 not_in = 7;
-  repeated fixed64 example = 8;
-  oneof less_than {
-    fixed64 lt = 2;
-    fixed64 lte = 3;
-  }
-  oneof greater_than {
-    fixed64 gt = 4;
-    fixed64 gte = 5;
-  }
+	optional fixed64 const = 1 [(buf.validate.predefined).cel.id = "fixed64.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated fixed64 in = 6 [(buf.validate.predefined).cel.id = "fixed64.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated fixed64 not_in = 7 [(buf.validate.predefined).cel.id = "fixed64.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated fixed64 example = 8 [(buf.validate.predefined).cel.id = "fixed64.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		fixed64 lt = 2 [(buf.validate.predefined).cel.id = "fixed64.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		fixed64 lte = 3 [(buf.validate.predefined).cel.id = "fixed64.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		fixed64 gt = 4 [(buf.validate.predefined).cel.id = "fixed64.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "fixed64.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed64.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed64.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "fixed64.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		fixed64 gte = 5 [(buf.validate.predefined).cel.id = "fixed64.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "fixed64.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed64.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "fixed64.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "fixed64.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message SFixed32Rules {
-  optional sfixed32 const = 1;
-  repeated sfixed32 in = 6;
-  repeated sfixed32 not_in = 7;
-  repeated sfixed32 example = 8;
-  oneof less_than {
-    sfixed32 lt = 2;
-    sfixed32 lte = 3;
-  }
-  oneof greater_than {
-    sfixed32 gt = 4;
-    sfixed32 gte = 5;
-  }
+	optional sfixed32 const = 1 [(buf.validate.predefined).cel.id = "sfixed32.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated sfixed32 in = 6 [(buf.validate.predefined).cel.id = "sfixed32.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated sfixed32 not_in = 7 [(buf.validate.predefined).cel.id = "sfixed32.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated sfixed32 example = 8 [(buf.validate.predefined).cel.id = "sfixed32.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		sfixed32 lt = 2 [(buf.validate.predefined).cel.id = "sfixed32.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		sfixed32 lte = 3 [(buf.validate.predefined).cel.id = "sfixed32.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		sfixed32 gt = 4 [(buf.validate.predefined).cel.id = "sfixed32.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		sfixed32 gte = 5 [(buf.validate.predefined).cel.id = "sfixed32.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sfixed32.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message SFixed64Rules {
-  optional sfixed64 const = 1;
-  repeated sfixed64 in = 6;
-  repeated sfixed64 not_in = 7;
-  repeated sfixed64 example = 8;
-  oneof less_than {
-    sfixed64 lt = 2;
-    sfixed64 lte = 3;
-  }
-  oneof greater_than {
-    sfixed64 gt = 4;
-    sfixed64 gte = 5;
-  }
+	optional sfixed64 const = 1 [(buf.validate.predefined).cel.id = "sfixed64.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated sfixed64 in = 6 [(buf.validate.predefined).cel.id = "sfixed64.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated sfixed64 not_in = 7 [(buf.validate.predefined).cel.id = "sfixed64.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated sfixed64 example = 8 [(buf.validate.predefined).cel.id = "sfixed64.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		sfixed64 lt = 2 [(buf.validate.predefined).cel.id = "sfixed64.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		sfixed64 lte = 3 [(buf.validate.predefined).cel.id = "sfixed64.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		sfixed64 gt = 4 [(buf.validate.predefined).cel.id = "sfixed64.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		sfixed64 gte = 5 [(buf.validate.predefined).cel.id = "sfixed64.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "sfixed64.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message BoolRules {
-  optional bool const = 1;
-  repeated bool example = 2;
+	optional bool const = 1 [(buf.validate.predefined).cel.id = "bool.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated bool example = 2 [(buf.validate.predefined).cel.id = "bool.example", (buf.validate.predefined).cel.expression = "true"];
 }
 
 message StringRules {
-  optional string const = 1;
-  optional uint64 len = 19;
-  optional uint64 min_len = 2;
-  optional uint64 max_len = 3;
-  optional uint64 len_bytes = 20;
-  optional uint64 min_bytes = 4;
-  optional uint64 max_bytes = 5;
-  optional string pattern = 6;
-  optional string prefix = 7;
-  optional string suffix = 8;
-  optional string contains = 9;
-  optional string not_contains = 23;
-  repeated string in = 10;
-  repeated string not_in = 11;
-  optional bool strict = 25;
-  repeated string example = 34;
-  oneof well_known {
-    bool email = 12;
-    bool hostname = 13;
-    bool ip = 14;
-    bool ipv4 = 15;
-    bool ipv6 = 16;
-    bool uri = 17;
-    bool uri_ref = 18;
-    bool address = 21;
-    bool uuid = 22;
-    bool tuuid = 33;
-    bool ip_with_prefixlen = 26;
-    bool ipv4_with_prefixlen = 27;
-    bool ipv6_with_prefixlen = 28;
-    bool ip_prefix = 29;
-    bool ipv4_prefix = 30;
-    bool ipv6_prefix = 31;
-    bool host_and_port = 32;
-    KnownRegex well_known_regex = 24;
-  }
+	optional string const = 1 [(buf.validate.predefined).cel.id = "string.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal `%s`'.format([getField(rules, 'const')]) : ''"];
+	optional uint64 len = 19 [(buf.validate.predefined).cel.id = "string.len", (buf.validate.predefined).cel.expression = "uint(this.size()) != rules.len ? 'value length must be %s characters'.format([rules.len]) : ''"];
+	optional uint64 min_len = 2 [(buf.validate.predefined).cel.id = "string.min_len", (buf.validate.predefined).cel.expression = "uint(this.size()) < rules.min_len ? 'value length must be at least %s characters'.format([rules.min_len]) : ''"];
+	optional uint64 max_len = 3 [(buf.validate.predefined).cel.id = "string.max_len", (buf.validate.predefined).cel.expression = "uint(this.size()) > rules.max_len ? 'value length must be at most %s characters'.format([rules.max_len]) : ''"];
+	optional uint64 len_bytes = 20 [(buf.validate.predefined).cel.id = "string.len_bytes", (buf.validate.predefined).cel.expression = "uint(bytes(this).size()) != rules.len_bytes ? 'value length must be %s bytes'.format([rules.len_bytes]) : ''"];
+	optional uint64 min_bytes = 4 [(buf.validate.predefined).cel.id = "string.min_bytes", (buf.validate.predefined).cel.expression = "uint(bytes(this).size()) < rules.min_bytes ? 'value length must be at least %s bytes'.format([rules.min_bytes]) : ''"];
+	optional uint64 max_bytes = 5 [(buf.validate.predefined).cel.id = "string.max_bytes", (buf.validate.predefined).cel.expression = "uint(bytes(this).size()) > rules.max_bytes ? 'value length must be at most %s bytes'.format([rules.max_bytes]) : ''"];
+	optional string pattern = 6 [(buf.validate.predefined).cel.id = "string.pattern", (buf.validate.predefined).cel.expression = "!this.matches(rules.pattern) ? 'value does not match regex pattern `%s`'.format([rules.pattern]) : ''"];
+	optional string prefix = 7 [(buf.validate.predefined).cel.id = "string.prefix", (buf.validate.predefined).cel.expression = "!this.startsWith(rules.prefix) ? 'value does not have prefix `%s`'.format([rules.prefix]) : ''"];
+	optional string suffix = 8 [(buf.validate.predefined).cel.id = "string.suffix", (buf.validate.predefined).cel.expression = "!this.endsWith(rules.suffix) ? 'value does not have suffix `%s`'.format([rules.suffix]) : ''"];
+	optional string contains = 9 [(buf.validate.predefined).cel.id = "string.contains", (buf.validate.predefined).cel.expression = "!this.contains(rules.contains) ? 'value does not contain substring `%s`'.format([rules.contains]) : ''"];
+	optional string not_contains = 23 [(buf.validate.predefined).cel.id = "string.not_contains", (buf.validate.predefined).cel.expression = "this.contains(rules.not_contains) ? 'value contains substring `%s`'.format([rules.not_contains]) : ''"];
+	repeated string in = 10 [(buf.validate.predefined).cel.id = "string.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated string not_in = 11 [(buf.validate.predefined).cel.id = "string.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	optional bool strict = 25;
+	repeated string example = 34 [(buf.validate.predefined).cel.id = "string.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof well_known {
+		bool email = 12 [(buf.validate.predefined).cel.id = "string.email", (buf.validate.predefined).cel.message = "value must be a valid email address", (buf.validate.predefined).cel.expression = "!rules.email || this == '' || this.isEmail()", (buf.validate.predefined).cel.id = "string.email_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid email address", (buf.validate.predefined).cel.expression = "!rules.email || this != ''"];
+		bool hostname = 13 [(buf.validate.predefined).cel.id = "string.hostname", (buf.validate.predefined).cel.message = "value must be a valid hostname", (buf.validate.predefined).cel.expression = "!rules.hostname || this == '' || this.isHostname()", (buf.validate.predefined).cel.id = "string.hostname_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid hostname", (buf.validate.predefined).cel.expression = "!rules.hostname || this != ''"];
+		bool ip = 14 [(buf.validate.predefined).cel.id = "string.ip", (buf.validate.predefined).cel.message = "value must be a valid IP address", (buf.validate.predefined).cel.expression = "!rules.ip || this == '' || this.isIp()", (buf.validate.predefined).cel.id = "string.ip_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IP address", (buf.validate.predefined).cel.expression = "!rules.ip || this != ''"];
+		bool ipv4 = 15 [(buf.validate.predefined).cel.id = "string.ipv4", (buf.validate.predefined).cel.message = "value must be a valid IPv4 address", (buf.validate.predefined).cel.expression = "!rules.ipv4 || this == '' || this.isIp(4)", (buf.validate.predefined).cel.id = "string.ipv4_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv4 address", (buf.validate.predefined).cel.expression = "!rules.ipv4 || this != ''"];
+		bool ipv6 = 16 [(buf.validate.predefined).cel.id = "string.ipv6", (buf.validate.predefined).cel.message = "value must be a valid IPv6 address", (buf.validate.predefined).cel.expression = "!rules.ipv6 || this == '' || this.isIp(6)", (buf.validate.predefined).cel.id = "string.ipv6_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv6 address", (buf.validate.predefined).cel.expression = "!rules.ipv6 || this != ''"];
+		bool uri = 17 [(buf.validate.predefined).cel.id = "string.uri", (buf.validate.predefined).cel.message = "value must be a valid URI", (buf.validate.predefined).cel.expression = "!rules.uri || this == '' || this.isUri()", (buf.validate.predefined).cel.id = "string.uri_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid URI", (buf.validate.predefined).cel.expression = "!rules.uri || this != ''"];
+		bool uri_ref = 18 [(buf.validate.predefined).cel.id = "string.uri_ref", (buf.validate.predefined).cel.message = "value must be a valid URI Reference", (buf.validate.predefined).cel.expression = "!rules.uri_ref || this.isUriRef()"];
+		bool address = 21 [(buf.validate.predefined).cel.id = "string.address", (buf.validate.predefined).cel.message = "value must be a valid hostname, or ip address", (buf.validate.predefined).cel.expression = "!rules.address || this == '' || this.isHostname() || this.isIp()", (buf.validate.predefined).cel.id = "string.address_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid hostname, or ip address", (buf.validate.predefined).cel.expression = "!rules.address || this != ''"];
+		bool uuid = 22 [(buf.validate.predefined).cel.id = "string.uuid", (buf.validate.predefined).cel.message = "value must be a valid UUID", (buf.validate.predefined).cel.expression = "!rules.uuid || this == '' || this.matches('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')", (buf.validate.predefined).cel.id = "string.uuid_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid UUID", (buf.validate.predefined).cel.expression = "!rules.uuid || this != ''"];
+		bool tuuid = 33 [(buf.validate.predefined).cel.id = "string.tuuid", (buf.validate.predefined).cel.message = "value must be a valid trimmed UUID", (buf.validate.predefined).cel.expression = "!rules.tuuid || this == '' || this.matches('^[0-9a-fA-F]{32}$')", (buf.validate.predefined).cel.id = "string.tuuid_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid trimmed UUID", (buf.validate.predefined).cel.expression = "!rules.tuuid || this != ''"];
+		bool ip_with_prefixlen = 26 [(buf.validate.predefined).cel.id = "string.ip_with_prefixlen", (buf.validate.predefined).cel.message = "value must be a valid IP prefix", (buf.validate.predefined).cel.expression = "!rules.ip_with_prefixlen || this == '' || this.isIpPrefix()", (buf.validate.predefined).cel.id = "string.ip_with_prefixlen_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IP prefix", (buf.validate.predefined).cel.expression = "!rules.ip_with_prefixlen || this != ''"];
+		bool ipv4_with_prefixlen = 27 [(buf.validate.predefined).cel.id = "string.ipv4_with_prefixlen", (buf.validate.predefined).cel.message = "value must be a valid IPv4 address with prefix length", (buf.validate.predefined).cel.expression = "!rules.ipv4_with_prefixlen || this == '' || this.isIpPrefix(4)", (buf.validate.predefined).cel.id = "string.ipv4_with_prefixlen_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv4 address with prefix length", (buf.validate.predefined).cel.expression = "!rules.ipv4_with_prefixlen || this != ''"];
+		bool ipv6_with_prefixlen = 28 [(buf.validate.predefined).cel.id = "string.ipv6_with_prefixlen", (buf.validate.predefined).cel.message = "value must be a valid IPv6 address with prefix length", (buf.validate.predefined).cel.expression = "!rules.ipv6_with_prefixlen || this == '' || this.isIpPrefix(6)", (buf.validate.predefined).cel.id = "string.ipv6_with_prefixlen_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv6 address with prefix length", (buf.validate.predefined).cel.expression = "!rules.ipv6_with_prefixlen || this != ''"];
+		bool ip_prefix = 29 [(buf.validate.predefined).cel.id = "string.ip_prefix", (buf.validate.predefined).cel.message = "value must be a valid IP prefix", (buf.validate.predefined).cel.expression = "!rules.ip_prefix || this == '' || this.isIpPrefix(true)", (buf.validate.predefined).cel.id = "string.ip_prefix_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IP prefix", (buf.validate.predefined).cel.expression = "!rules.ip_prefix || this != ''"];
+		bool ipv4_prefix = 30 [(buf.validate.predefined).cel.id = "string.ipv4_prefix", (buf.validate.predefined).cel.message = "value must be a valid IPv4 prefix", (buf.validate.predefined).cel.expression = "!rules.ipv4_prefix || this == '' || this.isIpPrefix(4, true)", (buf.validate.predefined).cel.id = "string.ipv4_prefix_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv4 prefix", (buf.validate.predefined).cel.expression = "!rules.ipv4_prefix || this != ''"];
+		bool ipv6_prefix = 31 [(buf.validate.predefined).cel.id = "string.ipv6_prefix", (buf.validate.predefined).cel.message = "value must be a valid IPv6 prefix", (buf.validate.predefined).cel.expression = "!rules.ipv6_prefix || this == '' || this.isIpPrefix(6, true)", (buf.validate.predefined).cel.id = "string.ipv6_prefix_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv6 prefix", (buf.validate.predefined).cel.expression = "!rules.ipv6_prefix || this != ''"];
+		bool host_and_port = 32 [(buf.validate.predefined).cel.id = "string.host_and_port", (buf.validate.predefined).cel.message = "value must be a valid host (hostname or IP address) and port pair", (buf.validate.predefined).cel.expression = "!rules.host_and_port || this == '' || this.isHostAndPort(true)", (buf.validate.predefined).cel.id = "string.host_and_port_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid host and port pair", (buf.validate.predefined).cel.expression = "!rules.host_and_port || this != ''"];
+		KnownRegex well_known_regex = 24 [(buf.validate.predefined).cel.id = "string.well_known_regex.header_name", (buf.validate.predefined).cel.message = "value must be a valid HTTP header name", (buf.validate.predefined).cel.expression = "rules.well_known_regex != 1 || this == '' || this.matches(!has(rules.strict) || rules.strict ?'^:?[0-9a-zA-Z!#$%&\'*+-.^_|~\x60]+$' :'^[^\u0000\u000A\u000D]+$')", (buf.validate.predefined).cel.id = "string.well_known_regex.header_name_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid HTTP header name", (buf.validate.predefined).cel.expression = "rules.well_known_regex != 1 || this != ''", (buf.validate.predefined).cel.id = "string.well_known_regex.header_value", (buf.validate.predefined).cel.message = "value must be a valid HTTP header value", (buf.validate.predefined).cel.expression = "rules.well_known_regex != 2 || this.matches(!has(rules.strict) || rules.strict ?'^[^\u0000-\u0008\u000A-\u001F\u007F]*$' :'^[^\u0000\u000A\u000D]*$')"];
+	}
 }
 
 message BytesRules {
-  optional bytes const = 1;
-  optional uint64 len = 13;
-  optional uint64 min_len = 2;
-  optional uint64 max_len = 3;
-  optional string pattern = 4;
-  optional bytes prefix = 5;
-  optional bytes suffix = 6;
-  optional bytes contains = 7;
-  repeated bytes in = 8;
-  repeated bytes not_in = 9;
-  repeated bytes example = 14;
-  oneof well_known {
-    bool ip = 10;
-    bool ipv4 = 11;
-    bool ipv6 = 12;
-  }
+	optional bytes const = 1 [(buf.validate.predefined).cel.id = "bytes.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must be %x'.format([getField(rules, 'const')]) : ''"];
+	optional uint64 len = 13 [(buf.validate.predefined).cel.id = "bytes.len", (buf.validate.predefined).cel.expression = "uint(this.size()) != rules.len ? 'value length must be %s bytes'.format([rules.len]) : ''"];
+	optional uint64 min_len = 2 [(buf.validate.predefined).cel.id = "bytes.min_len", (buf.validate.predefined).cel.expression = "uint(this.size()) < rules.min_len ? 'value length must be at least %s bytes'.format([rules.min_len]) : ''"];
+	optional uint64 max_len = 3 [(buf.validate.predefined).cel.id = "bytes.max_len", (buf.validate.predefined).cel.expression = "uint(this.size()) > rules.max_len ? 'value must be at most %s bytes'.format([rules.max_len]) : ''"];
+	optional string pattern = 4 [(buf.validate.predefined).cel.id = "bytes.pattern", (buf.validate.predefined).cel.expression = "!string(this).matches(rules.pattern) ? 'value must match regex pattern `%s`'.format([rules.pattern]) : ''"];
+	optional bytes prefix = 5 [(buf.validate.predefined).cel.id = "bytes.prefix", (buf.validate.predefined).cel.expression = "!this.startsWith(rules.prefix) ? 'value does not have prefix %x'.format([rules.prefix]) : ''"];
+	optional bytes suffix = 6 [(buf.validate.predefined).cel.id = "bytes.suffix", (buf.validate.predefined).cel.expression = "!this.endsWith(rules.suffix) ? 'value does not have suffix %x'.format([rules.suffix]) : ''"];
+	optional bytes contains = 7 [(buf.validate.predefined).cel.id = "bytes.contains", (buf.validate.predefined).cel.expression = "!this.contains(rules.contains) ? 'value does not contain %x'.format([rules.contains]) : ''"];
+	repeated bytes in = 8 [(buf.validate.predefined).cel.id = "bytes.in", (buf.validate.predefined).cel.expression = "getField(rules, 'in').size() > 0 && !(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated bytes not_in = 9 [(buf.validate.predefined).cel.id = "bytes.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated bytes example = 14 [(buf.validate.predefined).cel.id = "bytes.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof well_known {
+		bool ip = 10 [(buf.validate.predefined).cel.id = "bytes.ip", (buf.validate.predefined).cel.message = "value must be a valid IP address", (buf.validate.predefined).cel.expression = "!rules.ip || this.size() == 0 || this.size() == 4 || this.size() == 16", (buf.validate.predefined).cel.id = "bytes.ip_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IP address", (buf.validate.predefined).cel.expression = "!rules.ip || this.size() != 0"];
+		bool ipv4 = 11 [(buf.validate.predefined).cel.id = "bytes.ipv4", (buf.validate.predefined).cel.message = "value must be a valid IPv4 address", (buf.validate.predefined).cel.expression = "!rules.ipv4 || this.size() == 0 || this.size() == 4", (buf.validate.predefined).cel.id = "bytes.ipv4_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv4 address", (buf.validate.predefined).cel.expression = "!rules.ipv4 || this.size() != 0"];
+		bool ipv6 = 12 [(buf.validate.predefined).cel.id = "bytes.ipv6", (buf.validate.predefined).cel.message = "value must be a valid IPv6 address", (buf.validate.predefined).cel.expression = "!rules.ipv6 || this.size() == 0 || this.size() == 16", (buf.validate.predefined).cel.id = "bytes.ipv6_empty", (buf.validate.predefined).cel.message = "value is empty, which is not a valid IPv6 address", (buf.validate.predefined).cel.expression = "!rules.ipv6 || this.size() != 0"];
+	}
 }
 
 message EnumRules {
-  optional int32 const = 1;
-  optional bool defined_only = 2;
-  repeated int32 in = 3;
-  repeated int32 not_in = 4;
-  repeated int32 example = 5;
+	optional int32 const = 1 [(buf.validate.predefined).cel.id = "enum.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	optional bool defined_only = 2;
+	repeated int32 in = 3 [(buf.validate.predefined).cel.id = "enum.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated int32 not_in = 4 [(buf.validate.predefined).cel.id = "enum.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated int32 example = 5 [(buf.validate.predefined).cel.id = "enum.example", (buf.validate.predefined).cel.expression = "true"];
 }
 
 message RepeatedRules {
-  optional uint64 min_items = 1;
-  optional uint64 max_items = 2;
-  optional bool unique = 3;
-  optional FieldRules items = 4;
+	optional uint64 min_items = 1 [(buf.validate.predefined).cel.id = "repeated.min_items", (buf.validate.predefined).cel.expression = "uint(this.size()) < rules.min_items ? 'value must contain at least %d item(s)'.format([rules.min_items]) : ''"];
+	optional uint64 max_items = 2 [(buf.validate.predefined).cel.id = "repeated.max_items", (buf.validate.predefined).cel.expression = "uint(this.size()) > rules.max_items ? 'value must contain no more than %s item(s)'.format([rules.max_items]) : ''"];
+	optional bool unique = 3 [(buf.validate.predefined).cel.id = "repeated.unique", (buf.validate.predefined).cel.message = "repeated value must contain unique items", (buf.validate.predefined).cel.expression = "!rules.unique || this.unique()"];
+	optional FieldRules items = 4;
 }
 
 message MapRules {
-  optional uint64 min_pairs = 1;
-  optional uint64 max_pairs = 2;
-  optional FieldRules keys = 4;
-  optional FieldRules values = 5;
+	optional uint64 min_pairs = 1 [(buf.validate.predefined).cel.id = "map.min_pairs", (buf.validate.predefined).cel.expression = "uint(this.size()) < rules.min_pairs ? 'map must be at least %d entries'.format([rules.min_pairs]) : ''"];
+	optional uint64 max_pairs = 2 [(buf.validate.predefined).cel.id = "map.max_pairs", (buf.validate.predefined).cel.expression = "uint(this.size()) > rules.max_pairs ? 'map must be at most %d entries'.format([rules.max_pairs]) : ''"];
+	optional FieldRules keys = 4;
+	optional FieldRules values = 5;
 }
 
 message AnyRules {
-  repeated string in = 2;
-  repeated string not_in = 3;
+	repeated string in = 2;
+	repeated string not_in = 3;
 }
 
 message DurationRules {
-  optional .google.protobuf.Duration const = 2;
-  repeated .google.protobuf.Duration in = 7;
-  repeated .google.protobuf.Duration not_in = 8;
-  repeated .google.protobuf.Duration example = 9;
-  oneof less_than {
-    .google.protobuf.Duration lt = 3;
-    .google.protobuf.Duration lte = 4;
-  }
-  oneof greater_than {
-    .google.protobuf.Duration gt = 5;
-    .google.protobuf.Duration gte = 6;
-  }
+	optional .google.protobuf.Duration const = 2 [(buf.validate.predefined).cel.id = "duration.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	repeated .google.protobuf.Duration in = 7 [(buf.validate.predefined).cel.id = "duration.in", (buf.validate.predefined).cel.expression = "!(this in getField(rules, 'in')) ? 'value must be in list %s'.format([getField(rules, 'in')]) : ''"];
+	repeated .google.protobuf.Duration not_in = 8 [(buf.validate.predefined).cel.id = "duration.not_in", (buf.validate.predefined).cel.expression = "this in rules.not_in ? 'value must not be in list %s'.format([rules.not_in]) : ''"];
+	repeated .google.protobuf.Duration example = 9 [(buf.validate.predefined).cel.id = "duration.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		.google.protobuf.Duration lt = 3 [(buf.validate.predefined).cel.id = "duration.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		.google.protobuf.Duration lte = 4 [(buf.validate.predefined).cel.id = "duration.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+	}
+
+	oneof greater_than {
+		.google.protobuf.Duration gt = 5 [(buf.validate.predefined).cel.id = "duration.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "duration.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "duration.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "duration.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "duration.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		.google.protobuf.Duration gte = 6 [(buf.validate.predefined).cel.id = "duration.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "duration.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "duration.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "duration.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "duration.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+	}
 }
 
 message TimestampRules {
-  optional .google.protobuf.Timestamp const = 2;
-  optional .google.protobuf.Duration within = 9;
-  repeated .google.protobuf.Timestamp example = 10;
-  oneof less_than {
-    .google.protobuf.Timestamp lt = 3;
-    .google.protobuf.Timestamp lte = 4;
-    bool lt_now = 7;
-  }
-  oneof greater_than {
-    .google.protobuf.Timestamp gt = 5;
-    .google.protobuf.Timestamp gte = 6;
-    bool gt_now = 8;
-  }
+	optional .google.protobuf.Timestamp const = 2 [(buf.validate.predefined).cel.id = "timestamp.const", (buf.validate.predefined).cel.expression = "this != getField(rules, 'const') ? 'value must equal %s'.format([getField(rules, 'const')]) : ''"];
+	optional .google.protobuf.Duration within = 9 [(buf.validate.predefined).cel.id = "timestamp.within", (buf.validate.predefined).cel.expression = "this < now-rules.within || this > now+rules.within ? 'value must be within %s of now'.format([rules.within]) : ''"];
+	repeated .google.protobuf.Timestamp example = 10 [(buf.validate.predefined).cel.id = "timestamp.example", (buf.validate.predefined).cel.expression = "true"];
+
+	oneof less_than {
+		.google.protobuf.Timestamp lt = 3 [(buf.validate.predefined).cel.id = "timestamp.lt", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this >= rules.lt? 'value must be less than %s'.format([rules.lt]) : ''"];
+		.google.protobuf.Timestamp lte = 4 [(buf.validate.predefined).cel.id = "timestamp.lte", (buf.validate.predefined).cel.expression = "!has(rules.gte) && !has(rules.gt) && this > rules.lte? 'value must be less than or equal to %s'.format([rules.lte]) : ''"];
+		bool lt_now = 7 [(buf.validate.predefined).cel.id = "timestamp.lt_now", (buf.validate.predefined).cel.expression = "(rules.lt_now && this > now) ? 'value must be less than now' : ''"];
+	}
+
+	oneof greater_than {
+		.google.protobuf.Timestamp gt = 5 [(buf.validate.predefined).cel.id = "timestamp.gt", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this <= rules.gt? 'value must be greater than %s'.format([rules.gt]) : ''", (buf.validate.predefined).cel.id = "timestamp.gt_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gt && (this >= rules.lt || this <= rules.gt)? 'value must be greater than %s and less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "timestamp.gt_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gt && (rules.lt <= this && this <= rules.gt)? 'value must be greater than %s or less than %s'.format([rules.gt, rules.lt]) : ''", (buf.validate.predefined).cel.id = "timestamp.gt_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gt && (this > rules.lte || this <= rules.gt)? 'value must be greater than %s and less than or equal to %s'.format([rules.gt, rules.lte]) : ''", (buf.validate.predefined).cel.id = "timestamp.gt_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gt && (rules.lte < this && this <= rules.gt)? 'value must be greater than %s or less than or equal to %s'.format([rules.gt, rules.lte]) : ''"];
+		.google.protobuf.Timestamp gte = 6 [(buf.validate.predefined).cel.id = "timestamp.gte", (buf.validate.predefined).cel.expression = "!has(rules.lt) && !has(rules.lte) && this < rules.gte? 'value must be greater than or equal to %s'.format([rules.gte]) : ''", (buf.validate.predefined).cel.id = "timestamp.gte_lt", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt >= rules.gte && (this >= rules.lt || this < rules.gte)? 'value must be greater than or equal to %s and less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "timestamp.gte_lt_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lt) && rules.lt < rules.gte && (rules.lt <= this && this < rules.gte)? 'value must be greater than or equal to %s or less than %s'.format([rules.gte, rules.lt]) : ''", (buf.validate.predefined).cel.id = "timestamp.gte_lte", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte >= rules.gte && (this > rules.lte || this < rules.gte)? 'value must be greater than or equal to %s and less than or equal to %s'.format([rules.gte, rules.lte]) : ''", (buf.validate.predefined).cel.id = "timestamp.gte_lte_exclusive", (buf.validate.predefined).cel.expression = "has(rules.lte) && rules.lte < rules.gte && (rules.lte < this && this < rules.gte)? 'value must be greater than or equal to %s or less than or equal to %s'.format([rules.gte, rules.lte]) : ''"];
+		bool gt_now = 8 [(buf.validate.predefined).cel.id = "timestamp.gt_now", (buf.validate.predefined).cel.expression = "(rules.gt_now && this < now) ? 'value must be greater than now' : ''"];
+	}
 }
 
 message Violations {
-  repeated Violation violations = 1;
+	repeated Violation violations = 1;
 }
 
 message Violation {
-  optional FieldPath field = 5;
-  optional FieldPath rule = 6;
-  optional string rule_id = 2;
-  optional string message = 3;
-  optional bool for_key = 4;
-  reserved 1;
-  reserved "field_path";
+	optional FieldPath field = 5;
+	optional FieldPath rule = 6;
+	optional string rule_id = 2;
+	optional string message = 3;
+	optional bool for_key = 4;
+
+	reserved 1;
+	reserved "field_path";
 }
 
 message FieldPath {
-  repeated FieldPathElement elements = 1;
+	repeated FieldPathElement elements = 1;
 }
 
 message FieldPathElement {
-  optional int32 field_number = 1;
-  optional string field_name = 2;
-  optional .google.protobuf.FieldDescriptorProto.Type field_type = 3;
-  optional .google.protobuf.FieldDescriptorProto.Type key_type = 4;
-  optional .google.protobuf.FieldDescriptorProto.Type value_type = 5;
-  oneof subscript {
-    uint64 index = 6;
-    bool bool_key = 7;
-    int64 int_key = 8;
-    uint64 uint_key = 9;
-    string string_key = 10;
-  }
+	optional int32 field_number = 1;
+	optional string field_name = 2;
+	optional .google.protobuf.FieldDescriptorProto.Type field_type = 3;
+	optional .google.protobuf.FieldDescriptorProto.Type key_type = 4;
+	optional .google.protobuf.FieldDescriptorProto.Type value_type = 5;
+
+	oneof subscript {
+		uint64 index = 6;
+		bool bool_key = 7;
+		int64 int_key = 8;
+		uint64 uint_key = 9;
+		string string_key = 10;
+	}
 }

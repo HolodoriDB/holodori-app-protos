@@ -1,89 +1,118 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message StoryReadMainRequest {
-  string main_story_chapter_id = 1;
-  int32 number = 2;
-  bool is_skipped = 3;
+	string main_story_chapter_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	bool is_skipped = 3;
 }
 
 message StoryReadMainResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message StoryReadAreaRequest {
-  string area_story_chapter_id = 1;
-  int32 number = 2;
-  bool is_skipped = 3;
+	string area_story_chapter_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	bool is_skipped = 3;
 }
 
 message StoryReadAreaResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message StoryReadCharacterRequest {
-  string character_id = 1;
-  int32 number = 2;
-  bool is_skipped = 3;
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	bool is_skipped = 3;
 }
 
 message StoryReadCharacterResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message StoryReadCharacterGroupResponse {
-  repeated common.RewardResult reward_results = 1;
+	repeated common.RewardResult reward_results = 1;
 }
 
 message StoryReadEventRequest {
-  string event_story_chapter_id = 1;
-  int32 number = 2;
-  bool is_skipped = 3;
+	string event_story_chapter_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	bool is_skipped = 3;
 }
 
 message StoryReadEventResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message StoryReadSpecialRequest {
-  string special_story_id = 1;
-  bool is_skipped = 2;
+	string special_story_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	bool is_skipped = 2;
 }
 
 message StoryReadSpecialResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 message StoryReadHolograRequest {
-  string hologra_story_id = 1;
-  bool is_skipped = 2;
+	string hologra_story_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	bool is_skipped = 2;
 }
 
 message StoryReadHolograResponse {
-  repeated common.RewardResult reward_results = 1;
-  common.Response common_response = 9999;
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
 }
 
 service Story {
-  rpc ReadMain (StoryReadMainRequest) returns (StoryReadMainResponse);
-  rpc ReadArea (StoryReadAreaRequest) returns (StoryReadAreaResponse);
-  rpc ReadCharacter (StoryReadCharacterRequest) returns (StoryReadCharacterResponse);
-  rpc ReadEvent (StoryReadEventRequest) returns (StoryReadEventResponse);
-  rpc ReadSpecial (StoryReadSpecialRequest) returns (StoryReadSpecialResponse);
-  rpc ReadHologra (StoryReadHolograRequest) returns (StoryReadHolograResponse);
+	rpc ReadMain (.rpc.api.StoryReadMainRequest) returns (.rpc.api.StoryReadMainResponse) {
+		option (google.api.http).post = "/Story/ReadMain";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadArea (.rpc.api.StoryReadAreaRequest) returns (.rpc.api.StoryReadAreaResponse) {
+		option (google.api.http).post = "/Story/ReadArea";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadCharacter (.rpc.api.StoryReadCharacterRequest) returns (.rpc.api.StoryReadCharacterResponse) {
+		option (google.api.http).post = "/Story/ReadCharacter";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadEvent (.rpc.api.StoryReadEventRequest) returns (.rpc.api.StoryReadEventResponse) {
+		option (google.api.http).post = "/Story/ReadEvent";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadSpecial (.rpc.api.StoryReadSpecialRequest) returns (.rpc.api.StoryReadSpecialResponse) {
+		option (google.api.http).post = "/Story/ReadSpecial";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReadHologra (.rpc.api.StoryReadHolograRequest) returns (.rpc.api.StoryReadHolograResponse) {
+		option (google.api.http).post = "/Story/ReadHologra";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

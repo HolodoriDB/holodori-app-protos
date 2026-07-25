@@ -1,21 +1,25 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/shop.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message MembershipGetShopResponse {
-  common.Shop shop = 1;
-  common.Response common_response = 9999;
+	common.Shop shop = 1;
+	common.Response common_response = 9999;
 }
 
 service Membership {
-  rpc GetShop (.google.protobuf.Empty) returns (MembershipGetShopResponse);
+	rpc GetShop (.google.protobuf.Empty) returns (.rpc.api.MembershipGetShopResponse) {
+		option (google.api.http).post = "/Membership/GetShop";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

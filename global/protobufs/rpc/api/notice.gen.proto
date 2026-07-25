@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/notice_display_type.gen.proto";
@@ -11,72 +9,99 @@ import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message NoticeTopResponse {
-  message Category {
-    string notice_category_id = 1;
-    string name = 2;
-    .enums.NoticeDisplayType display_type = 3;
-    repeated NoticeInfo notice_infos = 4;
-    bool is_has_next = 5;
-  }
-  repeated NoticeTopResponse.Category categories = 1;
-  common.Response common_response = 9999;
+	message Category {
+		string notice_category_id = 1 [(options.master.fk) = "NoticeCategory:id"];
+		string name = 2;
+		.enums.NoticeDisplayType display_type = 3;
+		repeated NoticeInfo notice_infos = 4;
+		bool is_has_next = 5;
+	}
+
+	repeated NoticeTopResponse.Category categories = 1;
+	common.Response common_response = 9999;
 }
 
 message NoticeListInCategoryRequest {
-  string notice_category_id = 1;
-  int32 offset = 2;
+	string notice_category_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 offset = 2 [(buf.validate.field).int32.gte = 0];
 }
 
 message NoticeListInCategoryResponse {
-  repeated NoticeInfo notice_infos = 1;
-  bool is_has_next = 5;
-  common.Response common_response = 9999;
+	repeated NoticeInfo notice_infos = 1;
+	bool is_has_next = 5;
+	common.Response common_response = 9999;
 }
 
 message NoticeGetRequest {
-  string notice_id = 1;
+	string notice_id = 1 [(buf.validate.field).string.min_bytes = 1];
 }
 
 message NoticeGetResponse {
-  NoticeInfo notice_info = 1;
-  common.Response common_response = 9999;
+	NoticeInfo notice_info = 1;
+	common.Response common_response = 9999;
 }
 
 message NoticeUpdateCategoryReadTimeRequest {
-  repeated string notice_category_ids = 1;
+	repeated string notice_category_ids = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message NoticeUpdateDetailReadTimeRequest {
-  repeated string notice_ids = 1;
+	repeated string notice_ids = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message NoticeInfo {
-  string id = 1;
-  string title = 2;
-  .enums.NoticeType type = 3;
-  string detail_url = 4;
-  string banner_asset_id = 5;
-  bool is_read = 6;
-  int64 start_time = 7;
-  string external_url = 8;
+	string id = 1;
+	string title = 2;
+	.enums.NoticeType type = 3;
+	string detail_url = 4;
+	string banner_asset_id = 5;
+	bool is_read = 6;
+	int64 start_time = 7;
+	string external_url = 8;
 }
 
 message NoticeUpdateCategoryReadTimeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 message NoticeUpdateDetailReadTimeResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Notice {
-  rpc Top (.google.protobuf.Empty) returns (NoticeTopResponse);
-  rpc ListInCategory (NoticeListInCategoryRequest) returns (NoticeListInCategoryResponse);
-  rpc Get (NoticeGetRequest) returns (NoticeGetResponse);
-  rpc UpdateCategoryReadTime (NoticeUpdateCategoryReadTimeRequest) returns (NoticeUpdateCategoryReadTimeResponse);
-  rpc UpdateDetailReadTime (NoticeUpdateDetailReadTimeRequest) returns (NoticeUpdateDetailReadTimeResponse);
+	rpc Top (.google.protobuf.Empty) returns (.rpc.api.NoticeTopResponse) {
+		option (google.api.http).post = "/Notice/Top";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ListInCategory (.rpc.api.NoticeListInCategoryRequest) returns (.rpc.api.NoticeListInCategoryResponse) {
+		option (google.api.http).post = "/Notice/ListInCategory";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc Get (.rpc.api.NoticeGetRequest) returns (.rpc.api.NoticeGetResponse) {
+		option (google.api.http).post = "/Notice/Get";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc UpdateCategoryReadTime (.rpc.api.NoticeUpdateCategoryReadTimeRequest) returns (.rpc.api.NoticeUpdateCategoryReadTimeResponse) {
+		option (google.api.http).post = "/Notice/UpdateCategoryReadTime";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc UpdateDetailReadTime (.rpc.api.NoticeUpdateDetailReadTimeRequest) returns (.rpc.api.NoticeUpdateDetailReadTimeResponse) {
+		option (google.api.http).post = "/Notice/UpdateDetailReadTime";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

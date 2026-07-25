@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum NoticeDisplayType {
-  NOTICE_DISPLAY_TYPE_UNKNOWN = 0;
-  NOTICE_DISPLAY_TYPE_NORMAL = 1;
-  NOTICE_DISPLAY_TYPE_BANNER = 2;
+	NOTICE_DISPLAY_TYPE_UNKNOWN = 0;
+	NOTICE_DISPLAY_TYPE_NORMAL = 1;
+	NOTICE_DISPLAY_TYPE_BANNER = 2;
 }

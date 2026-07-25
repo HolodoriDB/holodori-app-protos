@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message PlayerLevel {
-  int32 level = 1;
-  int64 exp = 2;
-  repeated .common.Reward rewards = 1000;
+	option (options.master.table) = true;
+
+	int32 level = 1 [(options.master.pk) = true];
+	int64 exp = 2 [(options.master.optional) = true];
+	repeated .common.Reward rewards = 1000 [(options.master.optional) = true];
 }

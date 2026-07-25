@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message WorkDisplay {
-  string area_grouping_id = 1;
-  string header_asset_id = 2;
-  string background_asset_id = 3;
-  string color = 4;
+	option (options.master.table) = true;
+
+	string area_grouping_id = 1 [(options.master.fk) = "AreaGrouping:id", (options.master.pk) = true];
+	string header_asset_id = 2;
+	string background_asset_id = 3;
+	string color = 4;
 }

@@ -1,19 +1,19 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
+
+package rpc.api.common;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message Mission {
-  string mission_id = 1;
-  int32 threshold = 2;
+	string mission_id = 1 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "Mission:id"];
+	int32 threshold = 2;
 }
 
 message UpdatedMission {
-  string mission_id = 1;
-  repeated int32 cleared_thresholds = 2;
+	string mission_id = 1 [(buf.validate.field).string.min_bytes = 1, (options.master.fk) = "Mission:id"];
+	repeated int32 cleared_thresholds = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.items.int32.gte = 1];
 }

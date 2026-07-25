@@ -1,17 +1,19 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/graphics_quality_type.gen.proto";
 import "enums/os_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkNpcQuality {
-  .enums.OsType os_type = 1;
-  .enums.GraphicsQualityType graphics_quality_type = 2;
-  int32 max_npc_count = 3;
-  int32 lazy_load_max_npc_count = 4;
+	option (options.master.table) = true;
+
+	.enums.OsType os_type = 1 [(options.master.pk) = true];
+	.enums.GraphicsQualityType graphics_quality_type = 2 [(options.master.pk) = true];
+	int32 max_npc_count = 3 [(options.master.optional) = true];
+	int32 lazy_load_max_npc_count = 4 [(options.master.optional) = true];
 }

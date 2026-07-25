@@ -1,17 +1,19 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/rule_type.gen.proto";
 import "enums/store_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Rule {
-  .enums.RuleType type = 1;
-  string country_code = 3;
-  .enums.StoreType store_type = 4;
-  repeated string lang_ids = 5;
+	option (options.master.table) = true;
+
+	.enums.RuleType type = 1 [(options.master.pk) = true];
+	string country_code = 3 [(options.master.fk) = "Country:code", (options.master.optional) = true, (options.master.pk) = true];
+	.enums.StoreType store_type = 4 [(options.master.pk) = true];
+	repeated string lang_ids = 5 [(options.master.fk) = "LangRule:id"];
 }

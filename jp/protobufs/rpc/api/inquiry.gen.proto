@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "buf/validate/validate.proto";
 import "enums/graphics_quality_type.gen.proto";
 import "google/api/annotations.proto";
@@ -10,39 +8,52 @@ import "options/zap.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/storage_url.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message InquirySendRequest {
-  string public_user_id = 1;
-  string mail_address = 2;
-  string app_version = 3;
-  string os_version = 4;
-  string device_name = 5;
-  string inquiry_content = 6;
-  string device_log_upload_url = 7;
-  string device_purchase_log_upload_url = 8;
-  int32 frame_rate = 9;
-  int32 live_frame_rate = 10;
-  .enums.GraphicsQualityType basic_graphics_quality_type = 11;
-  string inquiry_category = 12;
+	string public_user_id = 1 [(options.zap.hidden) = true];
+	string mail_address = 2 [(buf.validate.field).string.email = true, (options.zap.hidden) = true];
+	string app_version = 3 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 50];
+	string os_version = 4 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 100];
+	string device_name = 5 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 50];
+	string inquiry_content = 6 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 3000];
+	string device_log_upload_url = 7 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 1000, (options.zap.hidden) = true];
+	string device_purchase_log_upload_url = 8 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 1000, (options.zap.hidden) = true];
+	int32 frame_rate = 9 [(buf.validate.field).int32.gte = 0];
+	int32 live_frame_rate = 10 [(buf.validate.field).int32.gte = 0];
+	.enums.GraphicsQualityType basic_graphics_quality_type = 11;
+	string inquiry_category = 12 [(buf.validate.field).string.max_len = 200];
 }
 
 message InquiryGetUploadUrlRequest {
-  string public_user_id = 1;
+	string public_user_id = 1 [(options.zap.hidden) = true];
 }
 
 message InquiryGetUploadUrlResponse {
-  common.StorageUrlInfo device_log_upload_storage_url_info = 1;
-  common.StorageUrlInfo device_purchase_log_upload_storage_url_info = 2;
-  common.Response common_response = 9999;
+	common.StorageUrlInfo device_log_upload_storage_url_info = 1 [(options.zap.hidden) = true];
+	common.StorageUrlInfo device_purchase_log_upload_storage_url_info = 2 [(options.zap.hidden) = true];
+	common.Response common_response = 9999;
 }
 
 message InquirySendResponse {
-  common.Response common_response = 9999;
+	common.Response common_response = 9999;
 }
 
 service Inquiry {
-  rpc Send (InquirySendRequest) returns (InquirySendResponse);
-  rpc GetUploadUrl (InquiryGetUploadUrlRequest) returns (InquiryGetUploadUrlResponse);
+	rpc Send (.rpc.api.InquirySendRequest) returns (.rpc.api.InquirySendResponse) {
+		option (google.api.http).post = "/Inquiry/Send";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc GetUploadUrl (.rpc.api.InquiryGetUploadUrlRequest) returns (.rpc.api.InquiryGetUploadUrlResponse) {
+		option (google.api.http).post = "/Inquiry/GetUploadUrl";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

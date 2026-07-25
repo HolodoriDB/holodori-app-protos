@@ -1,24 +1,26 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/resource_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message AreaGrouping {
-  string id = 1;
-  string world_id = 2;
-  string name_lang_id = 3;
-  string description_lang_id = 4;
-  string view_condition_group_id = 5;
-  string unlock_condition_group_id = 6;
-  string default_area_selector_id = 7;
-  string asset_id = 8;
-  string color = 9;
-  .enums.ResourceType fixed_display_resource_type = 10;
-  string fixed_display_resource_id = 11;
-  int32 order = 999;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string world_id = 2 [(options.master.fk) = "World:id"];
+	string name_lang_id = 3 [(options.master.fk) = "LangAreaGrouping:id"];
+	string description_lang_id = 4 [(options.master.fk) = "LangAreaGrouping:id"];
+	string view_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string default_area_selector_id = 7 [(options.master.fk) = "AreaSelector:id"];
+	string asset_id = 8;
+	string color = 9;
+	.enums.ResourceType fixed_display_resource_type = 10 [(options.master.optional) = true];
+	string fixed_display_resource_id = 11 [(options.master.optional) = true];
+	int32 order = 999;
 }

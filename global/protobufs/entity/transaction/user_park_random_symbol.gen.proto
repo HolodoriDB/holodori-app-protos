@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserParkRandomSymbol {
-  string area_id = 2;
-  repeated string collected_park_target_mapping_ids = 3;
-  repeated string picked_park_target_mapping_ids = 4;
-  int64 last_refreshed_time = 5;
+	string area_id = 2 [(options.master.fk) = "Area:id", (options.transaction.pk) = true];
+	repeated string collected_park_target_mapping_ids = 3 [(options.master.fk) = "ParkTargetMapping:id"];
+	repeated string picked_park_target_mapping_ids = 4 [(options.master.fk) = "ParkTargetMapping:id"];
+	int64 last_refreshed_time = 5;
 }

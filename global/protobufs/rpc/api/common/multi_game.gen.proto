@@ -1,64 +1,65 @@
 syntax = "proto3";
 
-package rpc.api.common;
-
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/friend_status_type.gen.proto";
 import "enums/multi_game_private_room_creation_type.gen.proto";
 
+package rpc.api.common;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
 option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message MultiGamePingInfo {
-  string region = 1;
-  int64 rtt_milliseconds = 2;
+	string region = 1 [(buf.validate.field).string.min_bytes = 1];
+	int64 rtt_milliseconds = 2 [(buf.validate.field).int64.gte = 1];
 }
 
 message MultiGamePenaltyInfo {
-  int64 unplayable_end_time = 1;
+	int64 unplayable_end_time = 1;
 }
 
 message MultiGameMatchRandomInfo {
-  repeated MultiGamePingInfo ping_infos = 2;
+	repeated MultiGamePingInfo ping_infos = 2 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message MultiGameCreatePrivateRoomInfo {
-  string private_room_id = 1;
-  repeated MultiGamePingInfo ping_infos = 2;
-  .enums.MultiGamePrivateRoomCreationType creation_type = 3;
-  string multi_game_result_id = 4;
+	string private_room_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated MultiGamePingInfo ping_infos = 2 [(buf.validate.field).repeated.min_items = 1];
+	.enums.MultiGamePrivateRoomCreationType creation_type = 3 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string multi_game_result_id = 4;
 }
 
 message MultiGameEnterPrivateRoomInfo {
-  string private_room_id = 1;
-  repeated MultiGamePingInfo ping_infos = 2;
+	string private_room_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated MultiGamePingInfo ping_infos = 2 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message MultiGameMatchInfo {
-  string ticket_id = 1;
-  MultiGamePenaltyInfo penalty_info = 2;
+	string ticket_id = 1;
+	MultiGamePenaltyInfo penalty_info = 2;
 }
 
 message MultiGameResultPrivateRoomInfo {
-  message PrivateRoomMemberUserInfo {
-    string public_user_id = 1;
-    string user_name = 2;
-    string park_character_id = 3;
-    .enums.FriendStatusType friend_status_type = 4;
-  }
-  bool is_private_room = 1;
-  bool is_private_room_host_user = 2;
-  string private_room_host_public_user_id = 3;
-  repeated MultiGameResultPrivateRoomInfo.PrivateRoomMemberUserInfo private_room_member_user_infos = 4;
+	message PrivateRoomMemberUserInfo {
+		string public_user_id = 1;
+		string user_name = 2;
+		string park_character_id = 3 [(options.master.fk) = "Character:id"];
+		.enums.FriendStatusType friend_status_type = 4;
+	}
+
+	bool is_private_room = 1;
+	bool is_private_room_host_user = 2;
+	string private_room_host_public_user_id = 3;
+	repeated MultiGameResultPrivateRoomInfo.PrivateRoomMemberUserInfo private_room_member_user_infos = 4;
 }
 
 message MultiGameStampSendInfo {
-  string stamp_id = 1;
-  int32 send_count = 2;
+	string stamp_id = 1 [(options.master.fk) = "Stamp:id"];
+	int32 send_count = 2 [(buf.validate.field).int32.gt = 0];
 }
 
 message MultiGameParkEmotionSendInfo {
-  string park_emotion_id = 1;
-  int32 send_count = 2;
+	string park_emotion_id = 1 [(options.master.fk) = "ParkEmotion:id"];
+	int32 send_count = 2 [(buf.validate.field).int32.gt = 0];
 }

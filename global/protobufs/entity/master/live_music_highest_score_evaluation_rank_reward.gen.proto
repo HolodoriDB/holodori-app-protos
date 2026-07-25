@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/live_evaluation_rank_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveMusicHighestScoreEvaluationRankReward {
-  .enums.LiveEvaluationRankType evaluation_rank_type = 1;
-  repeated .common.Reward rewards = 1000;
+	option (options.master.table) = true;
+
+	.enums.LiveEvaluationRankType evaluation_rank_type = 1 [(options.master.pk) = true];
+	repeated .common.Reward rewards = 1000 [(options.master.optional) = true];
 }

@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum CheatSeverityType {
-  CHEAT_SEVERITY_TYPE_UNKNOWN = 0;
-  CHEAT_SEVERITY_TYPE_YELLOW = 1;
-  CHEAT_SEVERITY_TYPE_RED = 2;
+	CHEAT_SEVERITY_TYPE_UNKNOWN = 0;
+	CHEAT_SEVERITY_TYPE_YELLOW = 1;
+	CHEAT_SEVERITY_TYPE_RED = 2;
 }

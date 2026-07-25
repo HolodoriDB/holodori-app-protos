@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/mission_type.gen.proto";
 import "enums/transition_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MissionTypeDefaultNavigation {
-  .enums.MissionType mission_type = 1;
-  .enums.TransitionType transition_type = 2;
-  string transition_id = 3;
+	option (options.master.table) = true;
+
+	.enums.MissionType mission_type = 1 [(options.master.pk) = true];
+	.enums.TransitionType transition_type = 2 [(options.master.optional) = true];
+	string transition_id = 3 [(options.master.optional) = true];
 }

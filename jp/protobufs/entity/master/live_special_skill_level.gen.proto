@@ -1,18 +1,20 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveSpecialSkillLevel {
-  string live_special_skill_id = 1;
-  int32 level = 2;
-  string live_active_skill_effect_group_id = 3;
-  string additional_live_skill_trigger_group_id = 4;
-  string additional_live_active_skill_effect_group_id = 5;
-  int32 effect_duration_millisecond = 6;
-  string description_lang_id = 1000;
+	option (options.master.table) = true;
+
+	string live_special_skill_id = 1 [(options.master.fk) = "LiveSpecialSkill:id", (options.master.pk) = true];
+	int32 level = 2 [(options.master.pk) = true];
+	string live_active_skill_effect_group_id = 3 [(options.master.fk) = "LiveActiveSkillEffect:group_id"];
+	string additional_live_skill_trigger_group_id = 4 [(options.master.fk) = "LiveSkillTrigger:group_id", (options.master.optional) = true];
+	string additional_live_active_skill_effect_group_id = 5 [(options.master.fk) = "LiveActiveSkillEffect:group_id", (options.master.optional) = true];
+	int32 effect_duration_millisecond = 6 [(options.master.optional) = true];
+	string description_lang_id = 1000 [(options.master.fk) = "LangGeneratedLiveSpecialSkillLevel:id"];
 }

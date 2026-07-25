@@ -1,23 +1,25 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/work_character_icon_position_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Work {
-  string id = 1;
-  string name_lang_id = 3;
-  int32 difficulty = 4;
-  int32 required_minutes = 5;
-  repeated string bonus_character_ids = 6;
-  int32 character_bonus_coefficient_permil_up = 7;
-  string work_evaluation_rank_group_id = 8;
-  string asset_id = 11;
-  .enums.WorkCharacterIconPositionType character_icon_position_type = 12;
-  repeated .common.Reward obtainable_rewards = 1000;
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string name_lang_id = 3 [(options.master.fk) = "LangWork:id"];
+	int32 difficulty = 4;
+	int32 required_minutes = 5;
+	repeated string bonus_character_ids = 6 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	int32 character_bonus_coefficient_permil_up = 7 [(options.master.optional) = true];
+	string work_evaluation_rank_group_id = 8 [(options.master.fk) = "WorkEvaluationRank:group_id", (options.master.optional) = true];
+	string asset_id = 11;
+	.enums.WorkCharacterIconPositionType character_icon_position_type = 12;
+	repeated .common.Reward obtainable_rewards = 1000 [(options.master.optional) = true];
 }

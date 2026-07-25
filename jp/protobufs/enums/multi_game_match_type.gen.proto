@@ -6,7 +6,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/domain/enum";
 option csharp_namespace = "Vision.Common.Proto.Enums";
 
 enum MultiGameMatchType {
-  MULTI_GAME_MATCH_TYPE_UNKNOWN = 0;
-  MULTI_GAME_MATCH_TYPE_RANDOM = 1;
-  MULTI_GAME_MATCH_TYPE_PRIVATE_ROOM = 2;
+	MULTI_GAME_MATCH_TYPE_UNKNOWN = 0;
+	MULTI_GAME_MATCH_TYPE_RANDOM = 1;
+	MULTI_GAME_MATCH_TYPE_PRIVATE_ROOM = 2;
 }

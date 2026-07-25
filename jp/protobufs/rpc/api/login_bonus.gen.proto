@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package rpc.api;
-
 import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/login_bonus_type.gen.proto";
@@ -10,32 +8,40 @@ import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "rpc/api/common/response.gen.proto";
 
+package rpc.api;
+
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message LoginBonusCheckResponse {
-  message LoginBonus {
-    message DailyReward {
-      int32 login_count = 1;
-      int32 display_row = 2;
-      string thumbnail_asset_id = 3;
-      bool is_special = 4;
-      repeated .common.Reward rewards = 5;
-    }
-    int32 current_login_count = 1;
-    .enums.LoginBonusType type = 2;
-    int64 start_time = 3;
-    int64 end_time = 4;
-    string background_asset_id = 5;
-    string logo_asset_id = 6;
-    int32 priority = 7;
-    string character_voice_id = 8;
-    repeated LoginBonusCheckResponse.LoginBonus.DailyReward daily_rewards = 9;
-  }
-  repeated LoginBonusCheckResponse.LoginBonus login_bonuses = 1;
-  common.Response common_response = 9999;
+	message LoginBonus {
+		message DailyReward {
+			int32 login_count = 1;
+			int32 display_row = 2;
+			string thumbnail_asset_id = 3;
+			bool is_special = 4;
+			repeated .common.Reward rewards = 5;
+		}
+
+		int32 current_login_count = 1;
+		.enums.LoginBonusType type = 2;
+		int64 start_time = 3;
+		int64 end_time = 4;
+		string background_asset_id = 5;
+		string logo_asset_id = 6;
+		int32 priority = 7;
+		string character_voice_id = 8 [(options.master.fk) = "CharacterVoice:id", (options.master.optional) = true];
+		repeated LoginBonusCheckResponse.LoginBonus.DailyReward daily_rewards = 9;
+	}
+
+	repeated LoginBonusCheckResponse.LoginBonus login_bonuses = 1;
+	common.Response common_response = 9999;
 }
 
 service LoginBonus {
-  rpc Check (.google.protobuf.Empty) returns (LoginBonusCheckResponse);
+	rpc Check (.google.protobuf.Empty) returns (.rpc.api.LoginBonusCheckResponse) {
+		option (google.api.http).post = "/LoginBonus/Check";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
 }

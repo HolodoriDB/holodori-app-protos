@@ -1,21 +1,21 @@
 syntax = "proto3";
 
-package entity.transaction;
-
 import "entity/master/options/master.proto";
 import "enums/active_user_type.gen.proto";
 import "enums/region.gen.proto";
+
+package entity.transaction;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message User {
-  string public_user_id = 2;
-  .enums.Region region = 3;
-  string country_code = 4;
-  int32 birth_year_for_payment = 5;
-  int32 birth_month_for_payment = 6;
-  .enums.ActiveUserType active_user_type = 7;
-  int64 tutorial_cleared_time = 8;
-  int64 deleted_time = 9;
+	string public_user_id = 2;
+	.enums.Region region = 3;
+	string country_code = 4 [(options.master.fk) = "Country:code"];
+	int32 birth_year_for_payment = 5;
+	int32 birth_month_for_payment = 6;
+	.enums.ActiveUserType active_user_type = 7;
+	int64 tutorial_cleared_time = 8;
+	int64 deleted_time = 9;
 }

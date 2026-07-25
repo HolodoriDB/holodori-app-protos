@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-package entity.master;
-
 import "entity/master/options/master.proto";
 import "enums/park_fishing_fish_icon_type.gen.proto";
+
+package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkFishingFishIcon {
-  string group_id = 1;
-  .enums.ParkFishingFishIconType icon_type = 2;
-  int32 ratio = 3;
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	.enums.ParkFishingFishIconType icon_type = 2 [(options.master.pk) = true];
+	int32 ratio = 3;
 }
