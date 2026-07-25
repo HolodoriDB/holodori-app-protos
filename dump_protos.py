@@ -665,34 +665,18 @@ def render_merged(descriptors: dict[str, tuple]) -> str:
 
 
 def render_merged_flat(descriptors: dict[str, tuple]) -> str:
-    """one proto2 file: packages nested as message blocks (recreating fully-qualified names),
-    services hoisted to the top level with flat names, enum values prefixed to avoid collisions,
-    google/protobuf well-known types imported rather than nested"""
+    """one self-contained proto2 file, no imports: every package (google.* included) is nested as
+    message blocks so the nested type names recreate the original fully-qualified names, services
+    are hoisted to the top level with flat names, and enum values are prefixed to avoid collisions
+    """
     from collections import defaultdict
 
     global _no_options
-    gp = {n for n in descriptors if n.startswith("google/protobuf/")}
-    skip = {
-        n for n in descriptors if n.startswith("google/")
-    }  # google.* is imported or referenced, never nested
-    # import only the google/protobuf files the nested descriptors transitively depend on, so the
-    # imports stay within protobuf's well-known set instead of pulling in unreferenced extras
-    imports: set[str] = set()
-    stack = [d for n in descriptors for d in descriptors[n][0].dependency if d in gp]
-    while stack:
-        d = stack.pop()
-        if d in imports:
-            continue
-        imports.add(d)
-        stack += [x for x in descriptors[d][0].dependency if x in gp]
-    imported = sorted(imports)
     msgs: dict[str, list] = defaultdict(list)
     enums: dict[str, list] = defaultdict(list)
     exts: dict[str, list] = defaultdict(list)
     services: list[tuple[str, object]] = []
     for name in sorted(descriptors):
-        if name in skip:
-            continue
         fdp = descriptors[name][0]
         p = fdp.package
         msgs[p] += list(fdp.message_type)
@@ -738,12 +722,7 @@ def render_merged_flat(descriptors: dict[str, tuple]) -> str:
 
     _no_options = True  # the merged view is a structure map, option usage is dropped
     try:
-        top: list[list[str]] = [['syntax = "proto2";']]
-        if imported:
-            top.append([f'import "{n}";' for n in imported])
-        body = render(tree, "")
-        if body:
-            top.append(body)
+        top: list[list[str]] = [['syntax = "proto2";'], render(tree, "")]
         for flat, svc in sorted(services, key=lambda t: t[0]):
             top.append(_render_service(svc, name=flat))
         return "\n".join(_join_blocks(top)) + "\n"
