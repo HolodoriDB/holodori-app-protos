@@ -285,9 +285,7 @@ def process(region: str, package: str, work: Path) -> bool:
     count = dump_protos.dump(
         so_path, dump_out / "dump.cs", dump_out / "stringliteral.json", protobufs
     )
-    octo_key, app_octo_key, octo_db_key = dump_protos.extract_octo_keys(
-        dump_out / "dump.cs"
-    )
+    octo_key, app_octo_key = dump_protos.extract_octo_keys(dump_out / "dump.cs")
 
     (region_dir / "appver.json").write_text(
         json.dumps(
@@ -298,7 +296,6 @@ def process(region: str, package: str, work: Path) -> bool:
                 "source": archive.parent.name,
                 "android_octo_key": octo_key,
                 "android_app_octo_key": app_octo_key,
-                "android_octo_db_key": octo_db_key,
             },
             indent=2,
         )
