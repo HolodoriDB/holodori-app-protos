@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "enums/chase_team_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/chase.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ChaseMatchRandomRequest {
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ChaseMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ChaseCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message ChaseCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ChaseStartRequest {
+  string chase_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ChaseFinishRequest {
+  string multi_game_result_id = 1;
+}
+
+message ChaseFinishResponse {
+  common.ChaseResultInfo chase_result_info = 1;
+  int64 past_highest_score = 2;
+  bool is_highest_score_updated = 3;
+  repeated common.RewardResult results = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+  int64 benefit_license_reward_quantity_up_permil_up = 7;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message ChaseGetRankingInfoRequest {
+  enums.ChaseTeamType chase_team_type = 1;
+}
+
+message ChaseGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message ChaseStartResponse {
+  common.Response common_response = 9999;
+}
+
+service Chase {
+  rpc MatchRandom (ChaseMatchRandomRequest) returns (ChaseMatchRandomResponse);
+  rpc CreatePrivateRoom (ChaseCreatePrivateRoomRequest) returns (ChaseCreatePrivateRoomResponse);
+  rpc Start (ChaseStartRequest) returns (ChaseStartResponse);
+  rpc Finish (ChaseFinishRequest) returns (ChaseFinishResponse);
+  rpc GetRankingInfo (ChaseGetRankingInfoRequest) returns (ChaseGetRankingInfoResponse);
+}

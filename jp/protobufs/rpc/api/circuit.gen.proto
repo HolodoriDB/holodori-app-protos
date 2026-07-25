@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/circuit.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CircuitMatchRandomRequest {
+  int64 bet_coin_quantity = 1;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message CircuitMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message CircuitCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message CircuitCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message CircuitStartRequest {
+  int64 bet_coin_quantity = 1;
+  string character_id = 2;
+  bool is_private_room = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message CircuitFinishRequest {
+  string multi_game_result_id = 1;
+}
+
+message CircuitFinishResponse {
+  common.CircuitResultInfo circuit_result_info = 1;
+  int64 past_best_clear_time_milliseconds = 2;
+  bool is_best_clear_time_updated = 3;
+  int64 bet_coin_consumption_quantity = 4;
+  int64 bet_coin_reward_quantity = 5;
+  int32 bet_coin_reward_quantity_up_permil_up_by_benefit_license = 6;
+  int32 bet_coin_reward_quantity_up_permil_up_by_skill_tree = 7;
+  int32 rank_bet_coin_rate_permil_multiply = 8;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 9;
+  common.StorageUrlInfo play_log_upload_url = 10;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message CircuitGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message CircuitStartResponse {
+  common.Response common_response = 9999;
+}
+
+service Circuit {
+  rpc MatchRandom (CircuitMatchRandomRequest) returns (CircuitMatchRandomResponse);
+  rpc CreatePrivateRoom (CircuitCreatePrivateRoomRequest) returns (CircuitCreatePrivateRoomResponse);
+  rpc Start (CircuitStartRequest) returns (CircuitStartResponse);
+  rpc Finish (CircuitFinishRequest) returns (CircuitFinishResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (CircuitGetRankingInfoResponse);
+}

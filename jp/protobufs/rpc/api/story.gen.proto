@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message StoryReadMainRequest {
+  string main_story_chapter_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadMainResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadAreaRequest {
+  string area_story_chapter_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadAreaResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadCharacterRequest {
+  string character_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadCharacterResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadCharacterGroupResponse {
+  repeated common.RewardResult reward_results = 1;
+}
+
+message StoryReadEventRequest {
+  string event_story_chapter_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadEventResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadSpecialRequest {
+  string special_story_id = 1;
+  bool is_skipped = 2;
+}
+
+message StoryReadSpecialResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadHolograRequest {
+  string hologra_story_id = 1;
+  bool is_skipped = 2;
+}
+
+message StoryReadHolograResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+service Story {
+  rpc ReadMain (StoryReadMainRequest) returns (StoryReadMainResponse);
+  rpc ReadArea (StoryReadAreaRequest) returns (StoryReadAreaResponse);
+  rpc ReadCharacter (StoryReadCharacterRequest) returns (StoryReadCharacterResponse);
+  rpc ReadEvent (StoryReadEventRequest) returns (StoryReadEventResponse);
+  rpc ReadSpecial (StoryReadSpecialRequest) returns (StoryReadSpecialResponse);
+  rpc ReadHologra (StoryReadHolograRequest) returns (StoryReadHolograResponse);
+}

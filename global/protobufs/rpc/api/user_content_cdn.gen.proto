@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/user_content_cdn.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message UserContentCdnGetSignedCookieResponse {
+  common.UserContentCdnSignedCookie signed_cookie = 1;
+}
+
+service UserContentCdn {
+  rpc GetSignedCookie (google.protobuf.Empty) returns (UserContentCdnGetSignedCookieResponse);
+}

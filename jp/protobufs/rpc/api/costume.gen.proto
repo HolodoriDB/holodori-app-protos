@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CostumeSetCostumeRequest {
+  string character_id = 1;
+  string costume_id = 2;
+}
+
+message CostumeSetSdCostumeRequest {
+  string character_id = 1;
+  string sd_costume_id = 2;
+  string sd_costume_hair_accessory_id = 3;
+}
+
+message CostumeReadCostumeRequest {
+  string character_id = 1;
+}
+
+message CostumeReadSdCostumeRequest {
+  string character_id = 1;
+}
+
+message CostumeReadSdCostumeHairAccessoryRequest {
+  string character_id = 1;
+}
+
+message CostumeSetCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeSetSdCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeReadCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeReadSdCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeReadSdCostumeHairAccessoryResponse {
+  common.Response common_response = 9999;
+}
+
+service Costume {
+  rpc SetCostume (CostumeSetCostumeRequest) returns (CostumeSetCostumeResponse);
+  rpc SetSdCostume (CostumeSetSdCostumeRequest) returns (CostumeSetSdCostumeResponse);
+  rpc ReadCostume (CostumeReadCostumeRequest) returns (CostumeReadCostumeResponse);
+  rpc ReadSdCostume (CostumeReadSdCostumeRequest) returns (CostumeReadSdCostumeResponse);
+  rpc ReadSdCostumeHairAccessory (CostumeReadSdCostumeHairAccessoryRequest) returns (CostumeReadSdCostumeHairAccessoryResponse);
+}

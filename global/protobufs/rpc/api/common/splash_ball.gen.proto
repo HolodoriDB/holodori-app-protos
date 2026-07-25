@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "enums/splash_ball_team_color.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message SplashBallResultInfo {
+  repeated SplashBallTeamInfo team_infos = 1;
+  enums.SplashBallTeamColor self_team_color = 2;
+  int64 self_score = 3;
+}
+
+message SplashBallTeamInfo {
+  enums.SplashBallTeamColor team_color = 1;
+  int64 score = 2;
+  int32 rank = 3;
+  repeated SplashBallUserInfo user_infos = 4;
+}
+
+message SplashBallUserInfo {
+  BasicUserInfo user_info = 1;
+  bool is_npc = 2;
+  int64 score = 3;
+  bool is_mvp = 4;
+  bool is_disconnected = 5;
+}

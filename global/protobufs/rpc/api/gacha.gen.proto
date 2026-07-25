@@ -1,0 +1,209 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/consumption.gen.proto";
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/card_rarity.gen.proto";
+import "enums/gacha_card_duplicate_reward_type.gen.proto";
+import "enums/gacha_type.gen.proto";
+import "enums/reset_interval_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message GachaListResponse {
+  repeated GachaListResponseGachaGroup gacha_groups = 1;
+  common.Response common_response = 9999;
+}
+
+message GachaListResponseGachaGroup {
+  string gacha_group_id = 1;
+  string icon_asset_id = 2;
+  repeated GachaListResponseGacha gachas = 3;
+}
+
+message GachaListResponseGacha {
+  string gacha_id = 1;
+  enums.GachaType type = 2;
+  string name = 3;
+  bool is_locked = 4;
+  string unlock_condition_group_id = 5;
+  int64 start_time = 6;
+  int64 end_time = 7;
+  string detail_notice_id = 8;
+  string precaution = 9;
+  string icon_asset_id = 10;
+  repeated string pickup_card_ids = 11;
+  repeated string promotion_pickup_card_ids = 12;
+  string promotion_movie_asset_id = 13;
+  string promotion_image_asset_id = 14;
+  bool is_display_promotion_pickup_card_random = 15;
+  repeated GachaListResponseGachaButton gacha_buttons = 16;
+  GachaListResponseGachaPoint gacha_point = 17;
+  repeated GachaListResponseCardBonus card_bonuses = 18;
+  GachaListResponseCardSelect card_select = 19;
+  bool is_end_time_hidden = 20;
+  string gacha_animation_grouping_id = 21;
+  string gacha_animation_movie_group_id = 22;
+  string gacha_animation_asset_id = 23;
+  int64 read_time = 24;
+  string bgm_asset_id = 25;
+  bool is_promotion_pickup_card_movie = 26;
+  string fixed_slot_name = 27;
+  string promotion_text = 28;
+  string promotion_sub_text = 29;
+  int32 term_limited_hours = 30;
+}
+
+message GachaListResponseCardSelect {
+  repeated string selectable_card_ids = 1;
+  int32 selectable_card_quantity = 2;
+  repeated string selected_card_ids = 3;
+}
+
+message GachaListResponseCardBonus {
+  string card_id = 1;
+  repeated common.Reward rewards = 2;
+}
+
+message GachaListResponseGachaButton {
+  string gacha_button_id = 1;
+  string name = 2;
+  string description = 3;
+  bool is_disabled = 4;
+  repeated common.Consumption consumptions = 5;
+  repeated common.Reward bonus_rewards = 6;
+  int32 limit_count = 7;
+  enums.ResetIntervalType reset_interval_type = 8;
+  int32 total_reward_pick_count = 9;
+  int32 fixed_reward_pick_count = 10;
+  int32 drawn_count = 11;
+  int32 priority = 12;
+}
+
+message GachaListResponseGachaPoint {
+  string gacha_point_id = 1;
+  int32 quantity = 2;
+}
+
+message GachaListHistoryResponse {
+  message History {
+    string gacha_name = 1;
+    string card_id = 2;
+    int64 draw_time = 3;
+  }
+  repeated GachaListHistoryResponse.History histories = 1;
+  common.Response common_response = 9999;
+}
+
+message GachaReadRequest {
+  string gacha_id = 1;
+}
+
+message GachaDrawNormalRequest {
+  string gacha_button_id = 1;
+  int32 draw_count = 2;
+  repeated common.Consumption display_consumptions = 10;
+  int32 display_free_balance = 11;
+  int32 display_paid_balance = 12;
+}
+
+message GachaDrawNormalResponse {
+  repeated GachaDrawResponseCardResult card_results = 1;
+  repeated common.RewardResult bonus_reward_results = 2;
+  GachaDrawResponseGachaButton gacha_button = 3;
+  common.Response common_response = 9999;
+}
+
+message GachaDrawCardSelectRequest {
+  string gacha_button_id = 1;
+  int32 draw_count = 2;
+  repeated common.Consumption display_consumptions = 10;
+  int32 display_free_balance = 11;
+  int32 display_paid_balance = 12;
+}
+
+message GachaDrawCardSelectResponse {
+  repeated GachaDrawResponseCardResult card_results = 1;
+  repeated common.RewardResult bonus_reward_results = 2;
+  GachaDrawResponseGachaButton gacha_button = 3;
+  common.Response common_response = 9999;
+}
+
+message GachaDrawResponseCardResult {
+  string card_id = 1;
+  repeated common.Reward bonus_reward = 2;
+  repeated common.RewardResult card_reward_results = 3;
+  enums.GachaCardDuplicateRewardType duplicate_reward_type = 4;
+  int32 provided_potential_upgrade_point_quantity = 5;
+}
+
+message GachaDrawResponseGachaButton {
+  string gacha_button_id = 1;
+  bool is_disabled = 2;
+  int32 drawn_count = 3;
+}
+
+message GachaListNormalProbabilityRequest {
+  string gacha_id = 1;
+}
+
+message GachaListNormalProbabilityResponse {
+  repeated GachaRarityProbability normal_rarity_probabilities = 1;
+  repeated GachaRarityProbability fixed_rarity_probabilities = 2;
+  common.Response common_response = 9999;
+}
+
+message GachaListCardSelectProbabilityRequest {
+  string gacha_id = 1;
+}
+
+message GachaListCardSelectProbabilityResponse {
+  repeated GachaRarityProbability normal_rarity_probabilities = 1;
+  repeated GachaRarityProbability fixed_rarity_probabilities = 2;
+  common.Response common_response = 9999;
+}
+
+message GachaRarityProbability {
+  enums.CardRarity rarity = 1;
+  int32 parts_per_ten_million_probability = 2;
+  repeated GachaCardProbability card_probabilities = 3;
+}
+
+message GachaCardProbability {
+  string card_id = 1;
+  int32 parts_per_ten_million_probability = 2;
+  bool is_rate_up = 3;
+}
+
+message GachaSetSelectedCardRequest {
+  string gacha_id = 1;
+  repeated string card_ids = 2;
+}
+
+message GachaReadResponse {
+  common.Response common_response = 9999;
+}
+
+message GachaSetSelectedCardResponse {
+  common.Response common_response = 9999;
+}
+
+service Gacha {
+  rpc List (google.protobuf.Empty) returns (GachaListResponse);
+  rpc ListHistory (google.protobuf.Empty) returns (GachaListHistoryResponse);
+  rpc Read (GachaReadRequest) returns (GachaReadResponse);
+  rpc DrawNormal (GachaDrawNormalRequest) returns (GachaDrawNormalResponse);
+  rpc ListNormalProbability (GachaListNormalProbabilityRequest) returns (GachaListNormalProbabilityResponse);
+  rpc DrawCardSelect (GachaDrawCardSelectRequest) returns (GachaDrawCardSelectResponse);
+  rpc ListCardSelectProbability (GachaListCardSelectProbabilityRequest) returns (GachaListCardSelectProbabilityResponse);
+  rpc SetSelectedCard (GachaSetSelectedCardRequest) returns (GachaSetSelectedCardResponse);
+}

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ItemSelectRewardBoxRequest {
+  string item_id = 1;
+  int32 number = 2;
+  int32 consumption_quantity = 3;
+}
+
+message ItemSelectRewardBoxResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+service Item {
+  rpc SelectRewardBox (ItemSelectRewardBoxRequest) returns (ItemSelectRewardBoxResponse);
+}

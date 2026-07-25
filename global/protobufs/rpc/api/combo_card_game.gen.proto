@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/combo_card_game.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ComboCardGameMatchRandomRequest {
+  int64 bet_coin_quantity = 1;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ComboCardGameMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message ComboCardGameCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameStartRequest {
+  int32 bet_coin_quantity = 1;
+  string character_id = 2;
+  bool is_private_room = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ComboCardGameFinishRequest {
+  string multi_game_result_id = 1;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+}
+
+message ComboCardGameFinishResponse {
+  common.ComboCardGameResultInfo combo_card_game_result_info = 1;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 2;
+  int64 rank_reward_coefficient_permil_multiply = 3;
+  int64 bet_coin_reward_up_effect_permil_multiply = 4;
+  int64 bet_coin_reward_quantity = 5;
+  int32 bet_coin_reward_quantity_up_permil_up_by_benefit_license = 6;
+  int32 bet_coin_reward_quantity_up_permil_up_by_skill_tree = 7;
+  int64 bet_coin_consumption_quantity = 8;
+  int64 before_chip_diff_total_quantity = 9;
+  bool is_highest_score_updated = 10;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameListUserInfoRequest {
+  repeated string public_user_ids = 1;
+  string private_room_id = 2;
+}
+
+message ComboCardGameListUserInfoResponse {
+  message ComboCardGameUserInfo {
+    common.BasicUserInfo basic_user_info = 1;
+    int32 combo_card_game_average_rank_percent = 2;
+    int64 combo_card_game_chip_diff_total_quantity = 3;
+  }
+  repeated ComboCardGameListUserInfoResponse.ComboCardGameUserInfo combo_card_game_user_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameStartResponse {
+  common.Response common_response = 9999;
+}
+
+service ComboCardGame {
+  rpc MatchRandom (ComboCardGameMatchRandomRequest) returns (ComboCardGameMatchRandomResponse);
+  rpc CreatePrivateRoom (ComboCardGameCreatePrivateRoomRequest) returns (ComboCardGameCreatePrivateRoomResponse);
+  rpc Start (ComboCardGameStartRequest) returns (ComboCardGameStartResponse);
+  rpc Finish (ComboCardGameFinishRequest) returns (ComboCardGameFinishResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (ComboCardGameGetRankingInfoResponse);
+  rpc ListUserInfo (ComboCardGameListUserInfoRequest) returns (ComboCardGameListUserInfoResponse);
+}

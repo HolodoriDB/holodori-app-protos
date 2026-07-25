@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/mission.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MissionReceiveRewardRequest {
+  string mission_pass_id = 1;
+  repeated common.Mission missions = 2;
+}
+
+message MissionReceiveRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message MissionReceivePassRewardRequest {
+  string mission_pass_id = 1;
+  repeated int32 normal_levels = 2;
+  repeated int32 premium_levels = 3;
+}
+
+message MissionReceivePassRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message MissionPurchasePassLevelRequest {
+  string mission_pass_id = 1;
+  int32 level = 2;
+}
+
+message MissionPurchasePassLevelResponse {
+  common.Response common_response = 9999;
+}
+
+service Mission {
+  rpc ReceiveReward (MissionReceiveRewardRequest) returns (MissionReceiveRewardResponse);
+  rpc ReceivePassReward (MissionReceivePassRewardRequest) returns (MissionReceivePassRewardResponse);
+  rpc PurchasePassLevel (MissionPurchasePassLevelRequest) returns (MissionPurchasePassLevelResponse);
+}

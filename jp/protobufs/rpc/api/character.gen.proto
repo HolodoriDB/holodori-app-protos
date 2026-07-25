@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CharacterReadRequest {
+  string character_id = 1;
+}
+
+message CharacterReadParkRequest {
+  string character_id = 1;
+}
+
+message CharacterReadResponse {
+  common.Response common_response = 9999;
+}
+
+message CharacterReadParkResponse {
+  common.Response common_response = 9999;
+}
+
+service Character {
+  rpc Read (CharacterReadRequest) returns (CharacterReadResponse);
+  rpc ReadPark (CharacterReadParkRequest) returns (CharacterReadParkResponse);
+}

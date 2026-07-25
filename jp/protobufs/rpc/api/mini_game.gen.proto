@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/consumption.gen.proto";
+import "enums/mini_game_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MiniGameRecoverRewardUpStaminaRequest {
+  repeated common.Consumption consumptions = 1;
+}
+
+message MiniGameConvertRewardUpStaminaToRewardRequest {
+  string mini_game_reward_up_stamina_conversion_id = 1;
+  int32 conversion_count = 2;
+}
+
+message MiniGameConvertRewardUpStaminaToRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message MiniGameReadNotificationRequest {
+  repeated enums.MiniGameType read_mini_game_types = 1;
+}
+
+message MiniGameSetConsumptionSettingRequest {
+  enums.MiniGameType mini_game_type = 1;
+  int64 quantity = 2;
+}
+
+message MiniGameRecoverRewardUpStaminaResponse {
+  common.Response common_response = 9999;
+}
+
+message MiniGameReadNotificationResponse {
+  common.Response common_response = 9999;
+}
+
+message MiniGameSetConsumptionSettingResponse {
+  common.Response common_response = 9999;
+}
+
+service MiniGame {
+  rpc RecoverRewardUpStamina (MiniGameRecoverRewardUpStaminaRequest) returns (MiniGameRecoverRewardUpStaminaResponse);
+  rpc ConvertRewardUpStaminaToReward (MiniGameConvertRewardUpStaminaToRewardRequest) returns (MiniGameConvertRewardUpStaminaToRewardResponse);
+  rpc ReadNotification (MiniGameReadNotificationRequest) returns (MiniGameReadNotificationResponse);
+  rpc SetConsumptionSetting (MiniGameSetConsumptionSettingRequest) returns (MiniGameSetConsumptionSettingResponse);
+}

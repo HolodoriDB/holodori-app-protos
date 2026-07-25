@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CheatCheckPlayIntegrityRequest {
+  string play_integrity_token = 1;
+}
+
+message CheatCheckPlayIntegrityResponse {
+  common.Response common_response = 9999;
+}
+
+service Cheat {
+  rpc CheckPlayIntegrity (CheatCheckPlayIntegrityRequest) returns (CheatCheckPlayIntegrityResponse);
+}

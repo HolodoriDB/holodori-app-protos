@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/splash_ball.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message SplashBallMatchRandomRequest {
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message SplashBallMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message SplashBallCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message SplashBallCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message SplashBallStartRequest {
+  string splash_ball_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message SplashBallFinishRequest {
+  string multi_game_result_id = 1;
+}
+
+message SplashBallFinishResponse {
+  common.SplashBallResultInfo splash_ball_result_info = 1;
+  int64 past_highest_score = 2;
+  bool is_highest_score_updated = 3;
+  repeated common.RewardResult reward_results = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+  int64 benefit_license_reward_quantity_up_permil_up = 7;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message SplashBallGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message SplashBallStartResponse {
+  common.Response common_response = 9999;
+}
+
+service SplashBall {
+  rpc MatchRandom (SplashBallMatchRandomRequest) returns (SplashBallMatchRandomResponse);
+  rpc CreatePrivateRoom (SplashBallCreatePrivateRoomRequest) returns (SplashBallCreatePrivateRoomResponse);
+  rpc Start (SplashBallStartRequest) returns (SplashBallStartResponse);
+  rpc Finish (SplashBallFinishRequest) returns (SplashBallFinishResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (SplashBallGetRankingInfoResponse);
+}

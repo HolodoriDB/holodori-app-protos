@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message CircuitResultInfo {
+  int32 self_rank = 1;
+  int64 self_clear_time_milliseconds = 2;
+  repeated CircuitRankResult rank_results = 3;
+}
+
+message CircuitRankResult {
+  int32 rank = 1;
+  int64 clear_time_milliseconds = 2;
+  BasicUserInfo user_info = 3;
+  bool is_npc = 4;
+  bool is_disconnected = 5;
+}

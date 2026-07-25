@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/work_evaluation_rank_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message WorkListWorkSlotPowerRequest {
+  repeated WorkSlot slots = 1;
+}
+
+message WorkListWorkSlotPowerResponse {
+  message WorkSlotPower {
+    int32 slot_number = 1;
+    int64 work_slot_power = 2;
+  }
+  repeated WorkListWorkSlotPowerResponse.WorkSlotPower work_slot_powers = 1;
+  common.Response common_response = 9999;
+}
+
+message WorkStartRequest {
+  repeated WorkSlot slots = 1;
+}
+
+message WorkSlot {
+  int32 slot_number = 1;
+  repeated string card_ids = 2;
+}
+
+message WorkFinishRequest {
+  int32 slot_number = 1;
+}
+
+message WorkFinishResponse {
+  WorkResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message WorkFinishAllResponse {
+  repeated WorkResult results = 1;
+  common.Response common_response = 9999;
+}
+
+message WorkCancelRequest {
+  int32 slot_number = 1;
+}
+
+message WorkResult {
+  int32 slot_number = 1;
+  string work_id = 2;
+  repeated common.RewardResult reward_results = 3;
+  enums.WorkEvaluationRankType evaluation_rank_type = 4;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
+}
+
+message WorkRefreshResponse {
+  common.Response common_response = 9999;
+}
+
+message WorkStartResponse {
+  common.Response common_response = 9999;
+}
+
+message WorkCancelResponse {
+  common.Response common_response = 9999;
+}
+
+service Work {
+  rpc ListWorkSlotPower (WorkListWorkSlotPowerRequest) returns (WorkListWorkSlotPowerResponse);
+  rpc Refresh (google.protobuf.Empty) returns (WorkRefreshResponse);
+  rpc Start (WorkStartRequest) returns (WorkStartResponse);
+  rpc Finish (WorkFinishRequest) returns (WorkFinishResponse);
+  rpc FinishAll (google.protobuf.Empty) returns (WorkFinishAllResponse);
+  rpc Cancel (WorkCancelRequest) returns (WorkCancelResponse);
+}

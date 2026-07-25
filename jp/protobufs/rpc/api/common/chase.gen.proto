@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "enums/chase_patrol_skill_type.gen.proto";
+import "enums/chase_team_type.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message ChaseResultInfo {
+  repeated ChaseUserInfo mischief_team_user_infos = 1;
+  repeated ChaseUserInfo patrol_team_user_infos = 2;
+  enums.ChaseTeamType win_team_type = 3;
+  int64 self_score = 4;
+  ChaseMischiefTeamUserResult self_mischief_team_user_result = 5;
+  ChasePatrolTeamUserResult self_patrol_team_user_result = 6;
+}
+
+message ChaseUserInfo {
+  BasicUserInfo user_info = 1;
+  int64 score = 2;
+  bool is_npc = 3;
+  bool is_mvp = 4;
+  bool is_disconnected = 5;
+  enums.ChasePatrolSkillType skill_type = 100;
+}
+
+message ChaseMischiefTeamUserResult {
+  int32 collect_key_count = 1;
+  int32 use_key_count = 2;
+  int32 released_facility_count = 3;
+  int32 rescue_count = 4;
+  int32 survival_time_seconds = 5;
+}
+
+message ChasePatrolTeamUserResult {
+  int32 restraint_count = 1;
+  int32 confiscate_key_count = 2;
+  int32 skill_assist_count = 3;
+}

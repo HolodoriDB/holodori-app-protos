@@ -448,6 +448,43 @@ message EmblemPosition {
   string emblem_id = 2;
 }
 
+// common/live.gen.proto
+syntax = "proto3";
+
+package common;
+
+import "buf/validate/validate.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
+option csharp_namespace = "Vision.Common.Proto.Common";
+
+message LiveBaseResult {
+  int64 score = 1;
+  int32 miss_count = 2;
+  int32 bad_count = 3;
+  int32 good_count = 4;
+  int32 great_count = 5;
+  int32 perfect_count = 6;
+  int32 auto_count = 7;
+  int32 max_combo_count = 8;
+  int32 remaining_life = 9;
+  int32 tap_count = 10;
+  int32 damage_count = 11;
+  bool is_all_skill_activated = 12;
+  int32 perfect_plus_count = 13;
+  int32 plain_miss_count = 100;
+  int32 plain_bad_count = 101;
+  int32 plain_good_count = 102;
+  int32 plain_great_count = 103;
+  int32 plain_perfect_count = 104;
+  int32 plain_perfect_plus_count = 105;
+}
+
+message LiveMultiUserSelectedMusic {
+  string user_id = 1;
+  string music_id = 2;
+}
+
 // common/master_tag_pack.gen.proto
 syntax = "proto3";
 
@@ -462,6 +499,27 @@ message MasterTagPack {
   int32 file_size = 3;
   string crypto_key = 4;
   string download_url = 5;
+}
+
+// common/reward.gen.proto
+syntax = "proto3";
+
+package common;
+
+import "enums/resource_type.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
+option csharp_namespace = "Vision.Common.Proto.Common";
+
+message Reward {
+  enums.ResourceType resource_type = 1;
+  string resource_id = 2;
+  int64 quantity = 3;
+}
+
+message SimplifiedReward {
+  enums.ResourceType resource_type = 1;
+  string resource_id = 2;
 }
 
 // dto/multi_game_result/common.gen.proto
@@ -5863,6 +5921,29 @@ import "google/protobuf/descriptor.proto";
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction/options";
 option csharp_namespace = "Vision.Common.Proto.Transaction.Options";
+
+// entity/transaction/user.gen.proto
+syntax = "proto3";
+
+package entity.transaction;
+
+import "entity/master/options/master.proto";
+import "enums/active_user_type.gen.proto";
+import "enums/region.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message User {
+  string public_user_id = 2;
+  enums.Region region = 3;
+  string country_code = 4;
+  int32 birth_year_for_payment = 5;
+  int32 birth_month_for_payment = 6;
+  enums.ActiveUserType active_user_type = 7;
+  int64 tutorial_cleared_time = 8;
+  int64 deleted_time = 9;
+}
 
 // entity/transaction/user_app_review.gen.proto
 syntax = "proto3";
@@ -12083,6 +12164,588 @@ service Auth {
   rpc Login (AuthLoginRequest) returns (AuthLoginResponse);
 }
 
+// rpc/api/card.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CardGetParameterRequest {
+  string card_id = 1;
+}
+
+message CardGetParameterResponse {
+  message SkillTreeEffect {
+    int32 performance_up = 1;
+    float performance_up_permil_up = 2;
+    int32 technique_up = 3;
+    float technique_up_permil_up = 4;
+    int32 sense_up = 5;
+    float sense_up_permil_up = 6;
+  }
+  int64 parameter = 1;
+  int64 performance = 2;
+  int64 technique = 3;
+  int64 sense = 4;
+  CardGetParameterResponse.SkillTreeEffect skill_tree_effect = 5;
+  common.Response common_response = 9999;
+}
+
+message CardGetParametersResponse {
+  message ParameterInfo {
+    string card_id = 1;
+    int64 parameter = 2;
+    int64 performance = 3;
+    int64 technique = 4;
+    int64 sense = 5;
+  }
+  repeated CardGetParametersResponse.ParameterInfo parameter_infos = 1;
+  int32 live_deck_power_permyriad_up_by_card_level_up = 2;
+  common.Response common_response = 9999;
+}
+
+message CardLevelUpRequest {
+  string card_id = 1;
+  int32 after_level = 2;
+}
+
+message CardLevelLimitBreakRequest {
+  string card_id = 1;
+  int32 after_level_limit_break_count = 2;
+}
+
+message CardUpgradePotentialRequest {
+  string card_id = 1;
+  int32 after_potential_upgrade_count = 2;
+}
+
+message CardLevelUpResponse {
+  common.Response common_response = 9999;
+}
+
+message CardLevelLimitBreakResponse {
+  common.Response common_response = 9999;
+}
+
+message CardUpgradePotentialResponse {
+  common.Response common_response = 9999;
+}
+
+service Card {
+  rpc GetParameter (CardGetParameterRequest) returns (CardGetParameterResponse);
+  rpc GetParameters (google.protobuf.Empty) returns (CardGetParametersResponse);
+  rpc LevelUp (CardLevelUpRequest) returns (CardLevelUpResponse);
+  rpc LevelLimitBreak (CardLevelLimitBreakRequest) returns (CardLevelLimitBreakResponse);
+  rpc UpgradePotential (CardUpgradePotentialRequest) returns (CardUpgradePotentialResponse);
+}
+
+// rpc/api/character.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CharacterReadRequest {
+  string character_id = 1;
+}
+
+message CharacterReadParkRequest {
+  string character_id = 1;
+}
+
+message CharacterReadResponse {
+  common.Response common_response = 9999;
+}
+
+message CharacterReadParkResponse {
+  common.Response common_response = 9999;
+}
+
+service Character {
+  rpc Read (CharacterReadRequest) returns (CharacterReadResponse);
+  rpc ReadPark (CharacterReadParkRequest) returns (CharacterReadParkResponse);
+}
+
+// rpc/api/character_history.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "enums/character_history_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CharacterHistoryListRequest {
+  string character_id = 1;
+  int32 offset = 2;
+}
+
+message CharacterHistoryListResponse {
+  message History {
+    enums.CharacterHistoryType character_history_type = 1;
+    int32 order = 2;
+    int64 occurred_time = 3;
+    string target_id = 4;
+    int64 threshold = 5;
+  }
+  repeated CharacterHistoryListResponse.History histories = 1;
+  bool is_next = 2;
+  common.Response common_response = 9999;
+}
+
+service CharacterHistory {
+  rpc List (CharacterHistoryListRequest) returns (CharacterHistoryListResponse);
+}
+
+// rpc/api/chase.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "enums/chase_team_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/chase.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ChaseMatchRandomRequest {
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ChaseMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ChaseCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message ChaseCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ChaseStartRequest {
+  string chase_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ChaseFinishRequest {
+  string multi_game_result_id = 1;
+}
+
+message ChaseFinishResponse {
+  common.ChaseResultInfo chase_result_info = 1;
+  int64 past_highest_score = 2;
+  bool is_highest_score_updated = 3;
+  repeated common.RewardResult results = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+  int64 benefit_license_reward_quantity_up_permil_up = 7;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message ChaseGetRankingInfoRequest {
+  enums.ChaseTeamType chase_team_type = 1;
+}
+
+message ChaseGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message ChaseStartResponse {
+  common.Response common_response = 9999;
+}
+
+service Chase {
+  rpc MatchRandom (ChaseMatchRandomRequest) returns (ChaseMatchRandomResponse);
+  rpc CreatePrivateRoom (ChaseCreatePrivateRoomRequest) returns (ChaseCreatePrivateRoomResponse);
+  rpc Start (ChaseStartRequest) returns (ChaseStartResponse);
+  rpc Finish (ChaseFinishRequest) returns (ChaseFinishResponse);
+  rpc GetRankingInfo (ChaseGetRankingInfoRequest) returns (ChaseGetRankingInfoResponse);
+}
+
+// rpc/api/cheat.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CheatCheckPlayIntegrityRequest {
+  string play_integrity_token = 1;
+}
+
+message CheatCheckPlayIntegrityResponse {
+  common.Response common_response = 9999;
+}
+
+service Cheat {
+  rpc CheckPlayIntegrity (CheatCheckPlayIntegrityRequest) returns (CheatCheckPlayIntegrityResponse);
+}
+
+// rpc/api/circuit.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/circuit.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CircuitMatchRandomRequest {
+  int64 bet_coin_quantity = 1;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message CircuitMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message CircuitCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message CircuitCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message CircuitStartRequest {
+  int64 bet_coin_quantity = 1;
+  string character_id = 2;
+  bool is_private_room = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message CircuitFinishRequest {
+  string multi_game_result_id = 1;
+}
+
+message CircuitFinishResponse {
+  common.CircuitResultInfo circuit_result_info = 1;
+  int64 past_best_clear_time_milliseconds = 2;
+  bool is_best_clear_time_updated = 3;
+  int64 bet_coin_consumption_quantity = 4;
+  int64 bet_coin_reward_quantity = 5;
+  int32 bet_coin_reward_quantity_up_permil_up_by_benefit_license = 6;
+  int32 bet_coin_reward_quantity_up_permil_up_by_skill_tree = 7;
+  int32 rank_bet_coin_rate_permil_multiply = 8;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 9;
+  common.StorageUrlInfo play_log_upload_url = 10;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message CircuitGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message CircuitStartResponse {
+  common.Response common_response = 9999;
+}
+
+service Circuit {
+  rpc MatchRandom (CircuitMatchRandomRequest) returns (CircuitMatchRandomResponse);
+  rpc CreatePrivateRoom (CircuitCreatePrivateRoomRequest) returns (CircuitCreatePrivateRoomResponse);
+  rpc Start (CircuitStartRequest) returns (CircuitStartResponse);
+  rpc Finish (CircuitFinishRequest) returns (CircuitFinishResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (CircuitGetRankingInfoResponse);
+}
+
+// rpc/api/combo_card_game.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/combo_card_game.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ComboCardGameMatchRandomRequest {
+  int64 bet_coin_quantity = 1;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ComboCardGameMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message ComboCardGameCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameStartRequest {
+  int32 bet_coin_quantity = 1;
+  string character_id = 2;
+  bool is_private_room = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ComboCardGameFinishRequest {
+  string multi_game_result_id = 1;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+}
+
+message ComboCardGameFinishResponse {
+  common.ComboCardGameResultInfo combo_card_game_result_info = 1;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 2;
+  int64 rank_reward_coefficient_permil_multiply = 3;
+  int64 bet_coin_reward_up_effect_permil_multiply = 4;
+  int64 bet_coin_reward_quantity = 5;
+  int32 bet_coin_reward_quantity_up_permil_up_by_benefit_license = 6;
+  int32 bet_coin_reward_quantity_up_permil_up_by_skill_tree = 7;
+  int64 bet_coin_consumption_quantity = 8;
+  int64 before_chip_diff_total_quantity = 9;
+  bool is_highest_score_updated = 10;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameListUserInfoRequest {
+  repeated string public_user_ids = 1;
+  string private_room_id = 2;
+}
+
+message ComboCardGameListUserInfoResponse {
+  message ComboCardGameUserInfo {
+    common.BasicUserInfo basic_user_info = 1;
+    int32 combo_card_game_average_rank_percent = 2;
+    int64 combo_card_game_chip_diff_total_quantity = 3;
+  }
+  repeated ComboCardGameListUserInfoResponse.ComboCardGameUserInfo combo_card_game_user_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message ComboCardGameStartResponse {
+  common.Response common_response = 9999;
+}
+
+service ComboCardGame {
+  rpc MatchRandom (ComboCardGameMatchRandomRequest) returns (ComboCardGameMatchRandomResponse);
+  rpc CreatePrivateRoom (ComboCardGameCreatePrivateRoomRequest) returns (ComboCardGameCreatePrivateRoomResponse);
+  rpc Start (ComboCardGameStartRequest) returns (ComboCardGameStartResponse);
+  rpc Finish (ComboCardGameFinishRequest) returns (ComboCardGameFinishResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (ComboCardGameGetRankingInfoResponse);
+  rpc ListUserInfo (ComboCardGameListUserInfoRequest) returns (ComboCardGameListUserInfoResponse);
+}
+
+// rpc/api/common/chase.gen.proto
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "enums/chase_patrol_skill_type.gen.proto";
+import "enums/chase_team_type.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message ChaseResultInfo {
+  repeated ChaseUserInfo mischief_team_user_infos = 1;
+  repeated ChaseUserInfo patrol_team_user_infos = 2;
+  enums.ChaseTeamType win_team_type = 3;
+  int64 self_score = 4;
+  ChaseMischiefTeamUserResult self_mischief_team_user_result = 5;
+  ChasePatrolTeamUserResult self_patrol_team_user_result = 6;
+}
+
+message ChaseUserInfo {
+  BasicUserInfo user_info = 1;
+  int64 score = 2;
+  bool is_npc = 3;
+  bool is_mvp = 4;
+  bool is_disconnected = 5;
+  enums.ChasePatrolSkillType skill_type = 100;
+}
+
+message ChaseMischiefTeamUserResult {
+  int32 collect_key_count = 1;
+  int32 use_key_count = 2;
+  int32 released_facility_count = 3;
+  int32 rescue_count = 4;
+  int32 survival_time_seconds = 5;
+}
+
+message ChasePatrolTeamUserResult {
+  int32 restraint_count = 1;
+  int32 confiscate_key_count = 2;
+  int32 skill_assist_count = 3;
+}
+
+// rpc/api/common/circuit.gen.proto
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message CircuitResultInfo {
+  int32 self_rank = 1;
+  int64 self_clear_time_milliseconds = 2;
+  repeated CircuitRankResult rank_results = 3;
+}
+
+message CircuitRankResult {
+  int32 rank = 1;
+  int64 clear_time_milliseconds = 2;
+  BasicUserInfo user_info = 3;
+  bool is_npc = 4;
+  bool is_disconnected = 5;
+}
+
+// rpc/api/common/combo_card_game.gen.proto
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message ComboCardGameResultInfo {
+  repeated ComboCardGameRankResult rank_results = 1;
+  int64 self_end_chip_quantity = 2;
+}
+
+message ComboCardGameRankResult {
+  int32 rank = 1;
+  int64 end_chip_quantity = 2;
+  BasicUserInfo user_info = 3;
+  bool is_npc = 4;
+  bool is_disconnected = 5;
+}
+
+// rpc/api/common/cooking_puzzle.gen.proto
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message CookingPuzzleRecipeInfo {
+  string cooking_puzzle_recipe_id = 1;
+  int64 elapsed_time_millisecond = 2;
+  int64 score = 3;
+  int32 stage_number = 4;
+}
+
+// rpc/api/common/jump_rope.gen.proto
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message JumpRopeResultInfo {
+  int32 total_jump_count = 1;
+  int32 self_continuous_jump_count = 2;
+  repeated JumpRopeUserInfo user_infos = 3;
+}
+
+message JumpRopeUserInfo {
+  BasicUserInfo user_info = 1;
+  bool is_npc = 2;
+  int32 continuous_jump_count = 3;
+  bool is_disconnected = 4;
+}
+
 // rpc/api/common/live.gen.proto
 syntax = "proto3";
 
@@ -12214,6 +12877,27 @@ message MarathonLiveResult {
   int64 event_self_live_score = 10;
   int64 event_multi_live_score = 11;
   int64 event_self_live_highest_score = 12;
+}
+
+// rpc/api/common/mission.gen.proto
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message Mission {
+  string mission_id = 1;
+  int32 threshold = 2;
+}
+
+message UpdatedMission {
+  string mission_id = 1;
+  repeated int32 cleared_thresholds = 2;
 }
 
 // rpc/api/common/multi_game.gen.proto
@@ -12664,6 +13348,38 @@ message Shop {
   repeated string display_possession_resource_ids = 12;
 }
 
+// rpc/api/common/splash_ball.gen.proto
+syntax = "proto3";
+
+package rpc.api.common;
+
+import "enums/splash_ball_team_color.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message SplashBallResultInfo {
+  repeated SplashBallTeamInfo team_infos = 1;
+  enums.SplashBallTeamColor self_team_color = 2;
+  int64 self_score = 3;
+}
+
+message SplashBallTeamInfo {
+  enums.SplashBallTeamColor team_color = 1;
+  int64 score = 2;
+  int32 rank = 3;
+  repeated SplashBallUserInfo user_infos = 4;
+}
+
+message SplashBallUserInfo {
+  BasicUserInfo user_info = 1;
+  bool is_npc = 2;
+  int64 score = 3;
+  bool is_mvp = 4;
+  bool is_disconnected = 5;
+}
+
 // rpc/api/common/startup_notification.gen.proto
 syntax = "proto3";
 
@@ -12876,6 +13592,164 @@ message UserData {
   repeated entity.transaction.UserTutorial user_tutorial_list = 201375606;
   repeated entity.transaction.UserWallpaper user_wallpaper_list = 407810191;
   repeated entity.transaction.UserWorkSlot user_work_slot_list = 190125018;
+}
+
+// rpc/api/cooking_puzzle.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/cooking_puzzle.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CookingPuzzleStartRequest {
+  string cooking_puzzle_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+}
+
+message CookingPuzzleFinishRequest {
+  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
+  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+  int64 score = 3;
+  int32 stock_space_overflow_count = 4;
+  int32 foodstuff_collecting_count = 5;
+  int32 max_combo_count = 6;
+}
+
+message CookingPuzzleFinishResponse {
+  int64 past_highest_score = 1;
+  bool is_highest_score_updated = 2;
+  repeated common.RewardResult results = 3;
+  bool is_cleared = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  int64 benefit_license_reward_quantity_up_permil_up = 6;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 7;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message CookingPuzzleRetireRequest {
+  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
+  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+  int64 score = 3;
+  int32 stock_space_overflow_count = 4;
+  int32 foodstuff_collecting_count = 5;
+  int32 max_combo_count = 6;
+}
+
+message CookingPuzzleGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message CookingPuzzleReportRecipeProgressRequest {
+  string cooking_puzzle_recipe_id = 1;
+}
+
+message CookingPuzzleReadNotificationRequest {
+  repeated string cooking_puzzle_ids = 1;
+}
+
+message CookingPuzzleStartResponse {
+  common.Response common_response = 9999;
+}
+
+message CookingPuzzleRetireResponse {
+  common.Response common_response = 9999;
+}
+
+message CookingPuzzleReportRecipeProgressResponse {
+  common.Response common_response = 9999;
+}
+
+message CookingPuzzleReadNotificationResponse {
+  common.Response common_response = 9999;
+}
+
+service CookingPuzzle {
+  rpc Start (CookingPuzzleStartRequest) returns (CookingPuzzleStartResponse);
+  rpc Finish (CookingPuzzleFinishRequest) returns (CookingPuzzleFinishResponse);
+  rpc Retire (CookingPuzzleRetireRequest) returns (CookingPuzzleRetireResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (CookingPuzzleGetRankingInfoResponse);
+  rpc ReportRecipeProgress (CookingPuzzleReportRecipeProgressRequest) returns (CookingPuzzleReportRecipeProgressResponse);
+  rpc ReadNotification (CookingPuzzleReadNotificationRequest) returns (CookingPuzzleReadNotificationResponse);
+}
+
+// rpc/api/costume.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message CostumeSetCostumeRequest {
+  string character_id = 1;
+  string costume_id = 2;
+}
+
+message CostumeSetSdCostumeRequest {
+  string character_id = 1;
+  string sd_costume_id = 2;
+  string sd_costume_hair_accessory_id = 3;
+}
+
+message CostumeReadCostumeRequest {
+  string character_id = 1;
+}
+
+message CostumeReadSdCostumeRequest {
+  string character_id = 1;
+}
+
+message CostumeReadSdCostumeHairAccessoryRequest {
+  string character_id = 1;
+}
+
+message CostumeSetCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeSetSdCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeReadCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeReadSdCostumeResponse {
+  common.Response common_response = 9999;
+}
+
+message CostumeReadSdCostumeHairAccessoryResponse {
+  common.Response common_response = 9999;
+}
+
+service Costume {
+  rpc SetCostume (CostumeSetCostumeRequest) returns (CostumeSetCostumeResponse);
+  rpc SetSdCostume (CostumeSetSdCostumeRequest) returns (CostumeSetSdCostumeResponse);
+  rpc ReadCostume (CostumeReadCostumeRequest) returns (CostumeReadCostumeResponse);
+  rpc ReadSdCostume (CostumeReadSdCostumeRequest) returns (CostumeReadSdCostumeResponse);
+  rpc ReadSdCostumeHairAccessory (CostumeReadSdCostumeHairAccessoryRequest) returns (CostumeReadSdCostumeHairAccessoryResponse);
 }
 
 // rpc/api/event.gen.proto
@@ -13273,6 +14147,217 @@ service Friend {
   rpc RejectOffer (FriendRejectOfferRequest) returns (FriendRejectOfferResponse);
 }
 
+// rpc/api/gacha.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/consumption.gen.proto";
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/card_rarity.gen.proto";
+import "enums/gacha_card_duplicate_reward_type.gen.proto";
+import "enums/gacha_type.gen.proto";
+import "enums/reset_interval_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message GachaListResponse {
+  repeated GachaListResponseGachaGroup gacha_groups = 1;
+  common.Response common_response = 9999;
+}
+
+message GachaListResponseGachaGroup {
+  string gacha_group_id = 1;
+  string icon_asset_id = 2;
+  repeated GachaListResponseGacha gachas = 3;
+}
+
+message GachaListResponseGacha {
+  string gacha_id = 1;
+  enums.GachaType type = 2;
+  string name = 3;
+  bool is_locked = 4;
+  string unlock_condition_group_id = 5;
+  int64 start_time = 6;
+  int64 end_time = 7;
+  string detail_notice_id = 8;
+  string precaution = 9;
+  string icon_asset_id = 10;
+  repeated string pickup_card_ids = 11;
+  repeated string promotion_pickup_card_ids = 12;
+  string promotion_movie_asset_id = 13;
+  string promotion_image_asset_id = 14;
+  bool is_display_promotion_pickup_card_random = 15;
+  repeated GachaListResponseGachaButton gacha_buttons = 16;
+  GachaListResponseGachaPoint gacha_point = 17;
+  repeated GachaListResponseCardBonus card_bonuses = 18;
+  GachaListResponseCardSelect card_select = 19;
+  bool is_end_time_hidden = 20;
+  string gacha_animation_grouping_id = 21;
+  string gacha_animation_movie_group_id = 22;
+  string gacha_animation_asset_id = 23;
+  int64 read_time = 24;
+  string bgm_asset_id = 25;
+  bool is_promotion_pickup_card_movie = 26;
+  string fixed_slot_name = 27;
+  string promotion_text = 28;
+  string promotion_sub_text = 29;
+  int32 term_limited_hours = 30;
+}
+
+message GachaListResponseCardSelect {
+  repeated string selectable_card_ids = 1;
+  int32 selectable_card_quantity = 2;
+  repeated string selected_card_ids = 3;
+}
+
+message GachaListResponseCardBonus {
+  string card_id = 1;
+  repeated common.Reward rewards = 2;
+}
+
+message GachaListResponseGachaButton {
+  string gacha_button_id = 1;
+  string name = 2;
+  string description = 3;
+  bool is_disabled = 4;
+  repeated common.Consumption consumptions = 5;
+  repeated common.Reward bonus_rewards = 6;
+  int32 limit_count = 7;
+  enums.ResetIntervalType reset_interval_type = 8;
+  int32 total_reward_pick_count = 9;
+  int32 fixed_reward_pick_count = 10;
+  int32 drawn_count = 11;
+  int32 priority = 12;
+}
+
+message GachaListResponseGachaPoint {
+  string gacha_point_id = 1;
+  int32 quantity = 2;
+}
+
+message GachaListHistoryResponse {
+  message History {
+    string gacha_name = 1;
+    string card_id = 2;
+    int64 draw_time = 3;
+  }
+  repeated GachaListHistoryResponse.History histories = 1;
+  common.Response common_response = 9999;
+}
+
+message GachaReadRequest {
+  string gacha_id = 1;
+}
+
+message GachaDrawNormalRequest {
+  string gacha_button_id = 1;
+  int32 draw_count = 2;
+  repeated common.Consumption display_consumptions = 10;
+  int32 display_free_balance = 11;
+  int32 display_paid_balance = 12;
+}
+
+message GachaDrawNormalResponse {
+  repeated GachaDrawResponseCardResult card_results = 1;
+  repeated common.RewardResult bonus_reward_results = 2;
+  GachaDrawResponseGachaButton gacha_button = 3;
+  common.Response common_response = 9999;
+}
+
+message GachaDrawCardSelectRequest {
+  string gacha_button_id = 1;
+  int32 draw_count = 2;
+  repeated common.Consumption display_consumptions = 10;
+  int32 display_free_balance = 11;
+  int32 display_paid_balance = 12;
+}
+
+message GachaDrawCardSelectResponse {
+  repeated GachaDrawResponseCardResult card_results = 1;
+  repeated common.RewardResult bonus_reward_results = 2;
+  GachaDrawResponseGachaButton gacha_button = 3;
+  common.Response common_response = 9999;
+}
+
+message GachaDrawResponseCardResult {
+  string card_id = 1;
+  repeated common.Reward bonus_reward = 2;
+  repeated common.RewardResult card_reward_results = 3;
+  enums.GachaCardDuplicateRewardType duplicate_reward_type = 4;
+  int32 provided_potential_upgrade_point_quantity = 5;
+}
+
+message GachaDrawResponseGachaButton {
+  string gacha_button_id = 1;
+  bool is_disabled = 2;
+  int32 drawn_count = 3;
+}
+
+message GachaListNormalProbabilityRequest {
+  string gacha_id = 1;
+}
+
+message GachaListNormalProbabilityResponse {
+  repeated GachaRarityProbability normal_rarity_probabilities = 1;
+  repeated GachaRarityProbability fixed_rarity_probabilities = 2;
+  common.Response common_response = 9999;
+}
+
+message GachaListCardSelectProbabilityRequest {
+  string gacha_id = 1;
+}
+
+message GachaListCardSelectProbabilityResponse {
+  repeated GachaRarityProbability normal_rarity_probabilities = 1;
+  repeated GachaRarityProbability fixed_rarity_probabilities = 2;
+  common.Response common_response = 9999;
+}
+
+message GachaRarityProbability {
+  enums.CardRarity rarity = 1;
+  int32 parts_per_ten_million_probability = 2;
+  repeated GachaCardProbability card_probabilities = 3;
+}
+
+message GachaCardProbability {
+  string card_id = 1;
+  int32 parts_per_ten_million_probability = 2;
+  bool is_rate_up = 3;
+}
+
+message GachaSetSelectedCardRequest {
+  string gacha_id = 1;
+  repeated string card_ids = 2;
+}
+
+message GachaReadResponse {
+  common.Response common_response = 9999;
+}
+
+message GachaSetSelectedCardResponse {
+  common.Response common_response = 9999;
+}
+
+service Gacha {
+  rpc List (google.protobuf.Empty) returns (GachaListResponse);
+  rpc ListHistory (google.protobuf.Empty) returns (GachaListHistoryResponse);
+  rpc Read (GachaReadRequest) returns (GachaReadResponse);
+  rpc DrawNormal (GachaDrawNormalRequest) returns (GachaDrawNormalResponse);
+  rpc ListNormalProbability (GachaListNormalProbabilityRequest) returns (GachaListNormalProbabilityResponse);
+  rpc DrawCardSelect (GachaDrawCardSelectRequest) returns (GachaDrawCardSelectResponse);
+  rpc ListCardSelectProbability (GachaListCardSelectProbabilityRequest) returns (GachaListCardSelectProbabilityResponse);
+  rpc SetSelectedCard (GachaSetSelectedCardRequest) returns (GachaSetSelectedCardResponse);
+}
+
 // rpc/api/gift.gen.proto
 syntax = "proto3";
 
@@ -13490,6 +14575,493 @@ service Inquiry {
   rpc GetUploadUrl (InquiryGetUploadUrlRequest) returns (InquiryGetUploadUrlResponse);
 }
 
+// rpc/api/item.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ItemSelectRewardBoxRequest {
+  string item_id = 1;
+  int32 number = 2;
+  int32 consumption_quantity = 3;
+}
+
+message ItemSelectRewardBoxResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+service Item {
+  rpc SelectRewardBox (ItemSelectRewardBoxRequest) returns (ItemSelectRewardBoxResponse);
+}
+
+// rpc/api/jump_rope.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/jump_rope.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message JumpRopeMatchRandomRequest {
+  string jump_rope_id = 1;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message JumpRopeMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeCreatePrivateRoomRequest {
+  string jump_rope_id = 1;
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message JumpRopeCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeStartSingleRequest {
+  string jump_rope_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+}
+
+message JumpRopeStartSingleResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeStartMultiRequest {
+  string jump_rope_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+  bool is_private_room = 4;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message JumpRopeFinishSingleRequest {
+  int32 jump_count = 1;
+  int32 success_jump_count = 2;
+  int32 failure_jump_count = 3;
+  int32 continuous_jump_count = 4;
+  int64 gimmick_random_seed = 50;
+}
+
+message JumpRopeFinishSingleResponse {
+  int32 past_best_jump_count = 1;
+  bool is_best_jump_count_updated = 2;
+  repeated common.RewardResult results = 3;
+  bool is_cleared = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  int64 benefit_license_reward_quantity_up_permil_up = 6;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 7;
+  common.StorageUrlInfo play_log_upload_url = 50;
+  int64 gimmick_random_seed = 51;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeFinishMultiRequest {
+  string multi_game_result_id = 1;
+}
+
+message JumpRopeFinishMultiResponse {
+  common.JumpRopeResultInfo jump_rope_result_info = 1;
+  int32 self_past_best_jump_count = 2;
+  bool is_self_best_jump_count_updated = 3;
+  repeated common.RewardResult results = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+  int64 benefit_license_reward_quantity_up_permil_up = 7;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+  common.StorageUrlInfo play_log_upload_url = 9;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeReadNotificationRequest {
+  repeated string jump_rope_ids = 1;
+}
+
+message JumpRopeStartMultiResponse {
+  common.Response common_response = 9999;
+}
+
+message JumpRopeReadNotificationResponse {
+  common.Response common_response = 9999;
+}
+
+service JumpRope {
+  rpc MatchRandom (JumpRopeMatchRandomRequest) returns (JumpRopeMatchRandomResponse);
+  rpc CreatePrivateRoom (JumpRopeCreatePrivateRoomRequest) returns (JumpRopeCreatePrivateRoomResponse);
+  rpc StartSingle (JumpRopeStartSingleRequest) returns (JumpRopeStartSingleResponse);
+  rpc StartMulti (JumpRopeStartMultiRequest) returns (JumpRopeStartMultiResponse);
+  rpc FinishSingle (JumpRopeFinishSingleRequest) returns (JumpRopeFinishSingleResponse);
+  rpc FinishMulti (JumpRopeFinishMultiRequest) returns (JumpRopeFinishMultiResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (JumpRopeGetRankingInfoResponse);
+  rpc ReadNotification (JumpRopeReadNotificationRequest) returns (JumpRopeReadNotificationResponse);
+}
+
+// rpc/api/live.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/consumption.gen.proto";
+import "common/live.gen.proto";
+import "common/reward.gen.proto";
+import "dto/multi_game_result/live_cooperation_result.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/friend_status_type.gen.proto";
+import "enums/live_evaluation_rank_type.gen.proto";
+import "enums/live_play_type.gen.proto";
+import "enums/live_result_type.gen.proto";
+import "enums/music_difficulty_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/live.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message LiveGetDeckCandidateCardParametersRequest {
+  string character_id = 1;
+  string costume_id = 2;
+  string music_id = 3;
+}
+
+message LiveGetDeckCandidateCardParametersResponse {
+  message ParameterInfo {
+    string card_id = 1;
+    int64 parameter = 2;
+    int64 performance = 3;
+    int64 technique = 4;
+    int64 sense = 5;
+  }
+  repeated LiveGetDeckCandidateCardParametersResponse.ParameterInfo parameter_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveGetDraftDeckInfoRequest {
+  string character_id = 1;
+  string costume_id = 2;
+  repeated LiveDeckPosition deck_positions = 3;
+  string music_id = 4;
+}
+
+message LiveGetDraftDeckInfoResponse {
+  int64 live_deck_power = 1;
+  repeated common.LiveDeckPosition deck_positions = 2;
+  common.Response common_response = 9999;
+}
+
+message LiveGetDeckRequest {
+  string character_id = 1;
+  int32 number = 2;
+  string music_id = 3;
+}
+
+message LiveGetDeckResponse {
+  repeated common.LiveDeckPosition deck_positions = 1;
+  common.LiveDeckEvaluation live_deck_evaluation = 2;
+  common.LiveDeckInGameEffect live_deck_in_game_effect = 3;
+  common.Response common_response = 9999;
+}
+
+message LiveSaveDeckRequest {
+  string character_id = 1;
+  string costume_id = 2;
+  int32 number = 3;
+  string name = 4;
+  repeated LiveDeckPosition deck_positions = 5;
+  string music_id = 6;
+}
+
+message LiveSaveDeckResponse {
+  common.LiveDeckEvaluation live_deck_evaluation = 1;
+  common.LiveDeckInGameEffect live_deck_in_game_effect = 2;
+  repeated common.LiveDeckPosition deck_positions = 3;
+  common.Response common_response = 9999;
+}
+
+message LiveSetSkinLogRequest {
+  repeated common.LiveSkinInfo skin_infos = 1;
+}
+
+message LiveSetRewardUpStaminaConsumptionSettingRequest {
+  int64 quantity = 1;
+}
+
+message LiveRecoverRewardUpStaminaRequest {
+  repeated common.Consumption consumptions = 1;
+}
+
+message LiveMatchRandomRequest {
+  enums.LivePlayType play_type = 1;
+  bool is_auto_play_allowed = 2;
+  string deck_character_id = 3;
+  int32 deck_number = 4;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message LiveMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveCreatePrivateRoomRequest {
+  bool is_auto_play_allowed = 1;
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message LiveCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveStartSingleRequest {
+  string music_id = 1;
+  enums.MusicDifficultyType music_difficulty_type = 2;
+  string character_id = 3;
+  int32 deck_number = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  bool is_auto_play = 6;
+  common.LiveSkinInfo skin_info = 7;
+  string music_mv_category_id = 8;
+}
+
+message LiveStartSingleResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveStartMultiRequest {
+  enums.LivePlayType play_type = 1;
+  string self_selected_music_id = 2;
+  string picked_music_id = 3;
+  enums.MusicDifficultyType music_difficulty_type = 4;
+  string character_id = 5;
+  int32 deck_number = 6;
+  int32 reward_up_stamina_consumption_quantity = 7;
+  bool is_auto_play = 8;
+  common.LiveSkinInfo skin_info = 9;
+  string music_mv_category_id = 10;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message LiveStartMultiResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveFinishSingleRequest {
+  common.LiveBaseResult result = 1;
+}
+
+message LiveFinishSingleResponse {
+  enums.LiveResultType result_type = 1;
+  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  int32 evaluation_rank_plus = 3;
+  int64 past_character_highest_score = 4;
+  int64 reward_card_exp_quantity = 5;
+  repeated common.Reward card_exp_overflow_rewards = 6;
+  repeated common.Reward score_evaluation_rank_rewards = 7;
+  repeated common.Reward music_clear_count_rewards = 8;
+  repeated common.Reward music_full_combo_rewards = 9;
+  repeated common.Reward music_highest_score_rank_rewards = 10;
+  repeated common.Reward music_max_combo_count_phase_rewards = 11;
+  common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 12;
+  int32 music_length_bonus_reward_quantity_up_permil_multiply = 13;
+  int32 reward_quantity_up_permil_up_by_benefit_license = 14;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 15;
+  repeated common.RewardQuantityUp reward_ups_by_passive_skill = 16;
+  int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 17;
+  common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 19;
+  int64 technical_score = 20;
+  common.MarathonLiveResult marathon_live_result = 100;
+  common.Response common_response = 9999;
+}
+
+message LiveFinishMultiLiveCooperationRequest {
+  string multi_game_result_id = 1;
+}
+
+message LiveFinishMultiLiveCooperationResponse {
+  LiveFinishMultiLiveCooperationResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveFinishDisconnectedMultiLiveCooperationRequest {
+  string multi_game_result_id = 1;
+  dto.multi_game_result.LiveCooperationResult result = 2;
+}
+
+message LiveFinishDisconnectedMultiLiveCooperationResponse {
+  LiveFinishMultiLiveCooperationResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveFinishMultiLiveCooperationResult {
+  message UserResult {
+    common.BasicUserInfo user_info = 1;
+    bool is_blocked_user = 2;
+    enums.FriendStatusType friend_status_type = 3;
+    enums.MusicDifficultyType music_difficulty_type = 4;
+    common.LiveBaseResult result = 5;
+    int64 bonus_score = 6;
+    enums.LiveResultType result_type = 7;
+    bool is_disconnected = 8;
+  }
+  string music_id = 1;
+  enums.LiveEvaluationRankType multi_evaluation_rank_type = 2;
+  int32 multi_evaluation_rank_plus = 3;
+  enums.LiveEvaluationRankType self_evaluation_rank_type = 4;
+  int32 self_evaluation_rank_plus = 5;
+  repeated LiveFinishMultiLiveCooperationResult.UserResult user_results = 6;
+  int64 past_character_highest_score = 7;
+  int64 reward_card_exp_quantity = 8;
+  repeated common.Reward card_exp_overflow_rewards = 9;
+  repeated common.Reward score_evaluation_rank_rewards = 10;
+  repeated common.Reward music_clear_count_rewards = 11;
+  repeated common.Reward music_full_combo_rewards = 12;
+  repeated common.Reward music_highest_score_rank_rewards = 13;
+  repeated common.Reward music_max_combo_count_phase_rewards = 14;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 15;
+  common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 16;
+  int32 music_length_bonus_reward_quantity_up_permil_multiply = 17;
+  int32 reward_quantity_up_permil_up_by_benefit_license = 18;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 19;
+  repeated common.RewardQuantityUp reward_ups_by_passive_skill = 20;
+  int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 21;
+  common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 23;
+  int64 technical_score = 24;
+  common.MarathonLiveResult marathon_live_result = 100;
+}
+
+message LiveContinueRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message LiveRetryRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message LiveRetryResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message LiveRetireRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message LiveDeckPosition {
+  int32 position = 1;
+  string card_id = 2;
+}
+
+message LiveListRecommendCharacterDeckRequest {
+  string music_id = 1;
+  string current_character_id = 2;
+  int32 current_deck_number = 3;
+}
+
+message LiveListRecommendCharacterDeckResponse {
+  message LiveDeck {
+    string character_id = 1;
+    int32 number = 2;
+    repeated common.LiveDeckPosition deck_positions = 3;
+    common.LiveDeckEvaluation live_deck_evaluation = 4;
+    common.LiveDeckInGameEffect live_deck_in_game_effect = 5;
+  }
+  repeated LiveListRecommendCharacterDeckResponse.LiveDeck strong_live_decks = 1;
+  repeated LiveListRecommendCharacterDeckResponse.LiveDeck high_score_rating_target_live_decks = 2;
+  common.Response common_response = 9999;
+}
+
+message LiveSetSkinLogResponse {
+  common.Response common_response = 9999;
+}
+
+message LiveSetRewardUpStaminaConsumptionSettingResponse {
+  common.Response common_response = 9999;
+}
+
+message LiveRecoverRewardUpStaminaResponse {
+  common.Response common_response = 9999;
+}
+
+message LiveContinueResponse {
+  common.Response common_response = 9999;
+}
+
+message LiveRetireResponse {
+  common.Response common_response = 9999;
+}
+
+service Live {
+  rpc GetDeckCandidateCardParameters (LiveGetDeckCandidateCardParametersRequest) returns (LiveGetDeckCandidateCardParametersResponse);
+  rpc GetDraftDeckInfo (LiveGetDraftDeckInfoRequest) returns (LiveGetDraftDeckInfoResponse);
+  rpc GetDeck (LiveGetDeckRequest) returns (LiveGetDeckResponse);
+  rpc SaveDeck (LiveSaveDeckRequest) returns (LiveSaveDeckResponse);
+  rpc SetSkinLog (LiveSetSkinLogRequest) returns (LiveSetSkinLogResponse);
+  rpc SetRewardUpStaminaConsumptionSetting (LiveSetRewardUpStaminaConsumptionSettingRequest) returns (LiveSetRewardUpStaminaConsumptionSettingResponse);
+  rpc RecoverRewardUpStamina (LiveRecoverRewardUpStaminaRequest) returns (LiveRecoverRewardUpStaminaResponse);
+  rpc MatchRandom (LiveMatchRandomRequest) returns (LiveMatchRandomResponse);
+  rpc CreatePrivateRoom (LiveCreatePrivateRoomRequest) returns (LiveCreatePrivateRoomResponse);
+  rpc StartSingle (LiveStartSingleRequest) returns (LiveStartSingleResponse);
+  rpc StartMulti (LiveStartMultiRequest) returns (LiveStartMultiResponse);
+  rpc FinishSingle (LiveFinishSingleRequest) returns (LiveFinishSingleResponse);
+  rpc FinishMultiLiveCooperation (LiveFinishMultiLiveCooperationRequest) returns (LiveFinishMultiLiveCooperationResponse);
+  rpc FinishDisconnectedMultiLiveCooperation (LiveFinishDisconnectedMultiLiveCooperationRequest) returns (LiveFinishDisconnectedMultiLiveCooperationResponse);
+  rpc Continue (LiveContinueRequest) returns (LiveContinueResponse);
+  rpc Retry (LiveRetryRequest) returns (LiveRetryResponse);
+  rpc Retire (LiveRetireRequest) returns (LiveRetireResponse);
+  rpc ListRecommendCharacterDeck (LiveListRecommendCharacterDeckRequest) returns (LiveListRecommendCharacterDeckResponse);
+}
+
 // rpc/api/login_bonus.gen.proto
 syntax = "proto3";
 
@@ -13533,6 +15105,285 @@ service LoginBonus {
   rpc Check (google.protobuf.Empty) returns (LoginBonusCheckResponse);
 }
 
+// rpc/api/marathon.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/card_attribute_type.gen.proto";
+import "enums/card_rarity.gen.proto";
+import "enums/mini_game_type.gen.proto";
+import "enums/tips_hint_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MarathonTopRequest {
+  string marathon_id = 1;
+}
+
+message MarathonReadTopRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonTopResponse {
+  message Marathon {
+    message MarathonChapter {
+      message MarathonScoreReward {
+        int64 score = 1;
+        repeated common.Reward rewards = 2;
+      }
+      string id = 1;
+      int32 chapter_number = 2;
+      string character_id = 3;
+      int64 end_time = 4;
+      string score_name = 5;
+      string score_icon_asset_id = 6;
+      string marathon_event_badge_item_id = 7;
+      string marathon_score_ranking_rank_reward_group_id = 8;
+      string marathon_music_highest_score_ranking_rank_reward_group_id = 9;
+      string marathon_total_music_highest_score_ranking_reward_group_id = 10;
+      string marathon_music_score_bonus_group_id = 11;
+      string marathon_mini_game_marathon_score_bonus_group_id = 12;
+      string marathon_live_marathon_score_bonus_group_id = 13;
+      string marathon_mini_game_marathon_score_rate_group_id = 14;
+      string mission_group_id = 15;
+      repeated MarathonTopResponse.Marathon.MarathonChapter.MarathonScoreReward marathon_score_rewards = 16;
+      int64 score = 17;
+      string event_story_chapter_id = 18;
+      string auto_play_story_id = 19;
+      string background_asset_id = 20;
+      string bgm_asset_id = 21;
+      int64 ranking_reveal_start_time = 22;
+    }
+    message MarathonMiniGameMarathonScoreBonus {
+      string group_id = 1;
+      int32 number = 2;
+      string card_id = 3;
+      enums.CardRarity card_rarity = 4;
+      int64 card_potential_upgrade_count = 5;
+      int32 marathon_score_quantity_up_permil_up = 6;
+    }
+    message MarathonLiveMarathonScoreBonus {
+      string group_id = 1;
+      int32 number = 2;
+      string character_id = 3;
+      string card_id = 4;
+      enums.CardAttributeType card_attribute_type = 5;
+      enums.CardRarity card_rarity = 6;
+      int64 card_potential_upgrade_count = 7;
+      int32 marathon_score_quantity_up_permil_up = 8;
+    }
+    message MarathonMusicScoreBonus {
+      string group_id = 1;
+      string music_id = 2;
+      int32 number = 3;
+      string character_id = 4;
+      string card_id = 5;
+      enums.CardAttributeType card_attribute_type = 6;
+      enums.CardRarity card_rarity = 7;
+      int64 card_potential_upgrade_count = 8;
+      int32 score_up_permil_up = 9;
+    }
+    message MarathonMiniGameMarathonScoreRate {
+      string group_id = 1;
+      enums.MiniGameType mini_game_type = 2;
+      int32 marathon_score_permil_multiply = 3;
+      int32 bonus_permil_up = 4;
+    }
+    message MarathonScoreRankingRankReward {
+      string group_id = 1;
+      int64 end_rank = 2;
+      repeated common.Reward rewards = 3;
+      string marathon_ranking_grade_id = 4;
+    }
+    message MarathonMusicHighestScoreRankingRankReward {
+      string group_id = 1;
+      string music_id = 2;
+      int64 end_rank = 3;
+      repeated common.Reward rewards = 4;
+      string marathon_ranking_grade_id = 5;
+    }
+    message MarathonTotalMusicHighestScoreRankingReward {
+      string group_id = 1;
+      int64 end_rank = 2;
+      repeated common.Reward rewards = 3;
+      string marathon_ranking_grade_id = 4;
+    }
+    string id = 1;
+    int64 start_time = 2;
+    int64 end_time = 3;
+    int64 exchange_end_time = 4;
+    string name = 5;
+    string logo_asset_id = 6;
+    string condition_group_id = 7;
+    string exchange_booth_group_id = 8;
+    string mission_group_id = 9;
+    int64 aggregation_start_time = 10;
+    int64 aggregated_ranking_reveal_start_time = 11;
+    repeated MarathonTopResponse.Marathon.MarathonChapter marathon_chapters = 12;
+    repeated MarathonTopResponse.Marathon.MarathonMiniGameMarathonScoreBonus marathon_mini_game_marathon_score_bonuses = 13;
+    repeated MarathonTopResponse.Marathon.MarathonLiveMarathonScoreBonus marathon_live_marathon_score_bonuses = 14;
+    repeated MarathonTopResponse.Marathon.MarathonMusicScoreBonus marathon_music_score_bonuses = 15;
+    repeated MarathonTopResponse.Marathon.MarathonMiniGameMarathonScoreRate marathon_mini_game_marathon_score_rates = 16;
+    repeated MarathonTopResponse.Marathon.MarathonScoreRankingRankReward marathon_score_ranking_rank_rewards = 17;
+    repeated MarathonTopResponse.Marathon.MarathonMusicHighestScoreRankingRankReward marathon_music_highest_score_ranking_rank_rewards = 18;
+    repeated MarathonTopResponse.Marathon.MarathonTotalMusicHighestScoreRankingReward marathon_total_music_highest_score_ranking_rewards = 19;
+    bool is_marathon_score_ranking_disable = 20;
+    enums.TipsHintType tips_hint_type = 21;
+  }
+  message RankingResult {
+    message MarathonChapter {
+      message MusicHighestScoreRankingRankResult {
+        string music_id = 1;
+        int64 rank = 2;
+        repeated common.Reward rewards = 3;
+      }
+      string marathon_chapter_id = 1;
+      int64 marathon_score_rank = 2;
+      repeated common.Reward marathon_score_ranking_rewards = 3;
+      repeated MarathonTopResponse.RankingResult.MarathonChapter.MusicHighestScoreRankingRankResult music_highest_score_ranking_rank_results = 4;
+      int64 total_music_highest_score_rank = 5;
+      repeated common.Reward total_music_highest_score_ranking_rewards = 6;
+    }
+    repeated MarathonTopResponse.RankingResult.MarathonChapter marathon_chapters = 1;
+  }
+  MarathonTopResponse.Marathon marathon = 1;
+  MarathonTopResponse.RankingResult ranking_result = 2;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMusicHighestScoreRankingTopRequest {
+  string marathon_chapter_id = 1;
+  string music_id = 2;
+}
+
+message MarathonListMusicHighestScoreRankingTopResponse {
+  MarathonMusicScoreRankingResult ranking_result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMusicHighestScoreRankingGradeRequest {
+  string marathon_chapter_id = 1;
+  string music_id = 2;
+}
+
+message MarathonListMusicHighestScoreRankingGradeResponse {
+  MarathonMusicScoreRankingResult ranking_result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMusicHighestScoreRankingAroundSelfRequest {
+  string marathon_chapter_id = 1;
+  string music_id = 2;
+}
+
+message MarathonListMusicHighestScoreRankingAroundSelfResponse {
+  MarathonMusicScoreRankingResult ranking_result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMarathonScoreRankingTopRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListMarathonScoreRankingTopResponse {
+  MarathonScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMarathonScoreRankingGradeRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListMarathonScoreRankingGradeResponse {
+  MarathonScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMarathonScoreRankingAroundSelfRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListMarathonScoreRankingAroundSelfResponse {
+  MarathonScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListTotalMusicHighestScoreRankingTopRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListTotalMusicHighestScoreRankingTopResponse {
+  MarathonTotalMusicScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListTotalMusicHighestScoreRankingGradeRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListTotalMusicHighestScoreRankingGradeResponse {
+  MarathonTotalMusicScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListTotalMusicHighestScoreRankingAroundSelfRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListTotalMusicHighestScoreRankingAroundSelfResponse {
+  MarathonTotalMusicScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonTotalMusicScoreRankingResult {
+  int32 self_rank = 1;
+  int64 self_score = 2;
+  bool is_self_rank_out_of_range = 3;
+  repeated common.BasicRankingRankInfo rank_infos = 4;
+}
+
+message MarathonMusicScoreRankingResult {
+  int32 self_rank = 1;
+  int64 self_score = 2;
+  bool is_self_rank_out_of_range = 3;
+  repeated common.BasicRankingRankInfo rank_infos = 4;
+}
+
+message MarathonScoreRankingResult {
+  int32 self_rank = 1;
+  int64 self_score = 2;
+  bool is_self_rank_out_of_range = 3;
+  repeated common.BasicRankingRankInfo rank_infos = 4;
+}
+
+message MarathonReadTopResponse {
+  common.Response common_response = 9999;
+}
+
+service Marathon {
+  rpc Top (MarathonTopRequest) returns (MarathonTopResponse);
+  rpc ReadTop (MarathonReadTopRequest) returns (MarathonReadTopResponse);
+  rpc ListMusicHighestScoreRankingGrade (MarathonListMusicHighestScoreRankingGradeRequest) returns (MarathonListMusicHighestScoreRankingGradeResponse);
+  rpc ListMusicHighestScoreRankingTop (MarathonListMusicHighestScoreRankingTopRequest) returns (MarathonListMusicHighestScoreRankingTopResponse);
+  rpc ListMusicHighestScoreRankingAroundSelf (MarathonListMusicHighestScoreRankingAroundSelfRequest) returns (MarathonListMusicHighestScoreRankingAroundSelfResponse);
+  rpc ListMarathonScoreRankingGrade (MarathonListMarathonScoreRankingGradeRequest) returns (MarathonListMarathonScoreRankingGradeResponse);
+  rpc ListMarathonScoreRankingTop (MarathonListMarathonScoreRankingTopRequest) returns (MarathonListMarathonScoreRankingTopResponse);
+  rpc ListMarathonScoreRankingAroundSelf (MarathonListMarathonScoreRankingAroundSelfRequest) returns (MarathonListMarathonScoreRankingAroundSelfResponse);
+  rpc ListTotalMusicHighestScoreRankingGrade (MarathonListTotalMusicHighestScoreRankingGradeRequest) returns (MarathonListTotalMusicHighestScoreRankingGradeResponse);
+  rpc ListTotalMusicHighestScoreRankingTop (MarathonListTotalMusicHighestScoreRankingTopRequest) returns (MarathonListTotalMusicHighestScoreRankingTopResponse);
+  rpc ListTotalMusicHighestScoreRankingAroundSelf (MarathonListTotalMusicHighestScoreRankingAroundSelfRequest) returns (MarathonListTotalMusicHighestScoreRankingAroundSelfResponse);
+}
+
 // rpc/api/master.gen.proto
 syntax = "proto3";
 
@@ -13554,6 +15405,793 @@ message MasterGetResponse {
 
 service Master {
   rpc Get (google.protobuf.Empty) returns (MasterGetResponse);
+}
+
+// rpc/api/membership.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/shop.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MembershipGetShopResponse {
+  common.Shop shop = 1;
+  common.Response common_response = 9999;
+}
+
+service Membership {
+  rpc GetShop (google.protobuf.Empty) returns (MembershipGetShopResponse);
+}
+
+// rpc/api/mini_game.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/consumption.gen.proto";
+import "enums/mini_game_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MiniGameRecoverRewardUpStaminaRequest {
+  repeated common.Consumption consumptions = 1;
+}
+
+message MiniGameConvertRewardUpStaminaToRewardRequest {
+  string mini_game_reward_up_stamina_conversion_id = 1;
+  int32 conversion_count = 2;
+}
+
+message MiniGameConvertRewardUpStaminaToRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message MiniGameReadNotificationRequest {
+  repeated enums.MiniGameType read_mini_game_types = 1;
+}
+
+message MiniGameSetConsumptionSettingRequest {
+  enums.MiniGameType mini_game_type = 1;
+  int64 quantity = 2;
+}
+
+message MiniGameRecoverRewardUpStaminaResponse {
+  common.Response common_response = 9999;
+}
+
+message MiniGameReadNotificationResponse {
+  common.Response common_response = 9999;
+}
+
+message MiniGameSetConsumptionSettingResponse {
+  common.Response common_response = 9999;
+}
+
+service MiniGame {
+  rpc RecoverRewardUpStamina (MiniGameRecoverRewardUpStaminaRequest) returns (MiniGameRecoverRewardUpStaminaResponse);
+  rpc ConvertRewardUpStaminaToReward (MiniGameConvertRewardUpStaminaToRewardRequest) returns (MiniGameConvertRewardUpStaminaToRewardResponse);
+  rpc ReadNotification (MiniGameReadNotificationRequest) returns (MiniGameReadNotificationResponse);
+  rpc SetConsumptionSetting (MiniGameSetConsumptionSettingRequest) returns (MiniGameSetConsumptionSettingResponse);
+}
+
+// rpc/api/mission.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/mission.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MissionReceiveRewardRequest {
+  string mission_pass_id = 1;
+  repeated common.Mission missions = 2;
+}
+
+message MissionReceiveRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message MissionReceivePassRewardRequest {
+  string mission_pass_id = 1;
+  repeated int32 normal_levels = 2;
+  repeated int32 premium_levels = 3;
+}
+
+message MissionReceivePassRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message MissionPurchasePassLevelRequest {
+  string mission_pass_id = 1;
+  int32 level = 2;
+}
+
+message MissionPurchasePassLevelResponse {
+  common.Response common_response = 9999;
+}
+
+service Mission {
+  rpc ReceiveReward (MissionReceiveRewardRequest) returns (MissionReceiveRewardResponse);
+  rpc ReceivePassReward (MissionReceivePassRewardRequest) returns (MissionReceivePassRewardResponse);
+  rpc PurchasePassLevel (MissionPurchasePassLevelRequest) returns (MissionPurchasePassLevelResponse);
+}
+
+// rpc/api/multi_game.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "enums/multi_game_rematch_status_type.gen.proto";
+import "enums/multi_game_rematch_type.gen.proto";
+import "enums/multi_game_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MultiGameListPingServerResponse {
+  message PingServer {
+    string region = 1;
+    string endpoint = 2;
+  }
+  repeated MultiGameListPingServerResponse.PingServer servers = 1;
+  common.Response common_response = 9999;
+}
+
+message MultiGameGeneratePrivateRoomIdResponse {
+  string private_room_id = 1;
+  common.Response common_response = 9999;
+}
+
+message MultiGameGetPrivateRoomInfoRequest {
+  string private_room_id = 1;
+}
+
+message MultiGameGetPrivateRoomInfoResponse {
+  enums.MultiGameType multi_game_type = 1;
+  string multi_game_id = 2;
+  common.Response common_response = 9999;
+}
+
+message MultiGameEnterPrivateRoomRequest {
+  string private_room_id = 1;
+}
+
+message MultiGameEnterPrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message MultiGameInviteFriendToPrivateRoomRequest {
+  string private_room_id = 1;
+  repeated string public_user_ids = 2;
+}
+
+message MultiGameInviteAllFriendToPrivateRoomRequest {
+  string private_room_id = 1;
+}
+
+message MultiGameListPrivateRoomFriendUserRequest {
+  string private_room_id = 1;
+}
+
+message MultiGameListPrivateRoomFriendUserResponse {
+  message FriendUser {
+    common.BasicUserInfo user_info = 1;
+    bool is_latest_played_user = 2;
+    bool is_private_room_invited = 3;
+  }
+  bool is_all_friend_invited = 1;
+  repeated MultiGameListPrivateRoomFriendUserResponse.FriendUser friend_users = 2;
+  common.Response common_response = 9999;
+}
+
+message MultiGameCheckInvitedPrivateRoomResponse {
+  string last_invited_private_room_id = 1;
+  common.Response common_response = 9999;
+}
+
+message MultiGameListInvitedPrivateRoomResponse {
+  message InvitedPrivateRoom {
+    string private_room_id = 1;
+    enums.MultiGameType multi_game_type = 2;
+    common.BasicUserInfo host_user_info = 3;
+  }
+  repeated MultiGameListInvitedPrivateRoomResponse.InvitedPrivateRoom invited_private_rooms = 1;
+  common.Response common_response = 9999;
+}
+
+message MultiGameCheckMatchStatusRequest {
+  string ticket_id = 1;
+}
+
+message MultiGameCheckMatchStatusResponse {
+  bool is_matched = 1;
+  string ip = 2;
+  uint32 port = 3;
+  string token = 4;
+  string private_room_id = 5;
+  enums.MultiGameType multi_game_type = 6;
+  string tls_server_common_name = 7;
+  string tls_client_cert = 8;
+  string dgs_name = 9;
+  string dgs_log_id = 10;
+  common.Response common_response = 9999;
+}
+
+message MultiGameCancelMatchRequest {
+  string ticket_id = 1;
+}
+
+message MultiGameSetPrivateRoomRematchStatusRequest {
+  string multi_game_result_id = 1;
+  enums.MultiGameRematchType rematch_type = 2;
+  string private_room_id = 3;
+  repeated string invitation_public_user_ids = 100;
+  enums.MultiGameType multi_game_type = 101;
+  string multi_game_id = 102;
+}
+
+message MultiGameCheckPrivateRoomRematchStatusRequest {
+  string multi_game_result_id = 1;
+}
+
+message MultiGameCheckPrivateRoomRematchStatusResponse {
+  enums.MultiGameRematchStatusType rematch_status_type = 1;
+  string private_room_id = 2;
+  enums.MultiGameType multi_game_type = 3;
+  string multi_game_id = 4;
+  common.Response common_response = 9999;
+}
+
+message MultiGameListBasicUserInfoRequest {
+  repeated string public_user_ids = 1;
+  string private_room_id = 2;
+}
+
+message MultiGameListBasicUserInfoResponse {
+  repeated common.BasicUserInfo user_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MultiGameSaveReactionSendInfoRequest {
+  string multi_game_result_id = 1;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 2;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 3;
+}
+
+message MultiGameInviteFriendToPrivateRoomResponse {
+  common.Response common_response = 9999;
+}
+
+message MultiGameInviteAllFriendToPrivateRoomResponse {
+  common.Response common_response = 9999;
+}
+
+message MultiGameCancelMatchResponse {
+  common.Response common_response = 9999;
+}
+
+message MultiGameSetPrivateRoomRematchStatusResponse {
+  common.Response common_response = 9999;
+}
+
+message MultiGameSaveReactionSendInfoResponse {
+  common.Response common_response = 9999;
+}
+
+service MultiGame {
+  rpc ListPingServer (google.protobuf.Empty) returns (MultiGameListPingServerResponse);
+  rpc GeneratePrivateRoomId (google.protobuf.Empty) returns (MultiGameGeneratePrivateRoomIdResponse);
+  rpc GetPrivateRoomInfo (MultiGameGetPrivateRoomInfoRequest) returns (MultiGameGetPrivateRoomInfoResponse);
+  rpc EnterPrivateRoom (MultiGameEnterPrivateRoomRequest) returns (MultiGameEnterPrivateRoomResponse);
+  rpc InviteFriendToPrivateRoom (MultiGameInviteFriendToPrivateRoomRequest) returns (MultiGameInviteFriendToPrivateRoomResponse);
+  rpc InviteAllFriendToPrivateRoom (MultiGameInviteAllFriendToPrivateRoomRequest) returns (MultiGameInviteAllFriendToPrivateRoomResponse);
+  rpc ListPrivateRoomFriendUser (MultiGameListPrivateRoomFriendUserRequest) returns (MultiGameListPrivateRoomFriendUserResponse);
+  rpc CheckInvitedPrivateRoom (google.protobuf.Empty) returns (MultiGameCheckInvitedPrivateRoomResponse);
+  rpc ListInvitedPrivateRoom (google.protobuf.Empty) returns (MultiGameListInvitedPrivateRoomResponse);
+  rpc CheckMatchStatus (MultiGameCheckMatchStatusRequest) returns (MultiGameCheckMatchStatusResponse);
+  rpc CancelMatch (MultiGameCancelMatchRequest) returns (MultiGameCancelMatchResponse);
+  rpc SetPrivateRoomRematchStatus (MultiGameSetPrivateRoomRematchStatusRequest) returns (MultiGameSetPrivateRoomRematchStatusResponse);
+  rpc CheckPrivateRoomRematchStatus (MultiGameCheckPrivateRoomRematchStatusRequest) returns (MultiGameCheckPrivateRoomRematchStatusResponse);
+  rpc ListBasicUserInfo (MultiGameListBasicUserInfoRequest) returns (MultiGameListBasicUserInfoResponse);
+  rpc SaveReactionSendInfo (MultiGameSaveReactionSendInfoRequest) returns (MultiGameSaveReactionSendInfoResponse);
+}
+
+// rpc/api/music.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/music_difficulty_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MusicSwitchFavoriteRequest {
+  string music_id = 1;
+  bool is_favorite = 2;
+}
+
+message MusicGetHighestScoreLiveDeckRequest {
+  string public_user_id = 1;
+  string music_id = 2;
+}
+
+message MusicGetHighestScoreLiveDeckResponse {
+  common.RankingLiveDeckInfo ranking_live_deck_info = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicGetHighestScoreRankingInfoRequest {
+  string music_id = 1;
+}
+
+message MusicGetHighestScoreRankingInfoResponse {
+  message MusicDifficultyScoreInfo {
+    enums.MusicDifficultyType music_difficulty_type = 1;
+    int64 score = 2;
+  }
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  repeated MusicGetHighestScoreRankingInfoResponse.MusicDifficultyScoreInfo self_music_difficulty_score_infos = 3;
+  common.Response common_response = 9999;
+}
+
+message MusicListHighestScoreRatingRankingRankRequest {
+  repeated string character_ids = 1;
+}
+
+message MusicListHighestScoreRatingRankingRankResponse {
+  message RankInfo {
+    string character_id = 2;
+    int32 rank = 1;
+  }
+  repeated MusicListHighestScoreRatingRankingRankResponse.RankInfo rank_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicGetHighestScoreRatingRankingInfoRequest {
+  string character_id = 1;
+}
+
+message MusicGetHighestScoreRatingRankingInfoResponse {
+  repeated common.BasicRankingRankInfo rank_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicReleaseMusicRequest {
+  string music_id = 1;
+}
+
+message MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoRequest {
+  string character_id = 1;
+}
+
+message MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoResponse {
+  message ThresholdRankingRankInfo {
+    int32 rank = 1;
+    int64 score = 2;
+  }
+  repeated MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoResponse.ThresholdRankingRankInfo threshold_rank_infos = 1;
+  int64 updated_ranking_time = 2;
+  common.Response common_response = 9999;
+}
+
+message MusicSwitchFavoriteResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicReleaseMusicResponse {
+  common.Response common_response = 9999;
+}
+
+service Music {
+  rpc SwitchFavorite (MusicSwitchFavoriteRequest) returns (MusicSwitchFavoriteResponse);
+  rpc GetHighestScoreLiveDeck (MusicGetHighestScoreLiveDeckRequest) returns (MusicGetHighestScoreLiveDeckResponse);
+  rpc GetHighestScoreRankingInfo (MusicGetHighestScoreRankingInfoRequest) returns (MusicGetHighestScoreRankingInfoResponse);
+  rpc ListHighestScoreRatingRankingRank (MusicListHighestScoreRatingRankingRankRequest) returns (MusicListHighestScoreRatingRankingRankResponse);
+  rpc GetHighestScoreRatingRankingInfo (MusicGetHighestScoreRatingRankingInfoRequest) returns (MusicGetHighestScoreRatingRankingInfoResponse);
+  rpc ReleaseMusic (MusicReleaseMusicRequest) returns (MusicReleaseMusicResponse);
+  rpc ListHighestScoreRatingRankingRewardThresholdRankingRankInfo (MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoRequest) returns (MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoResponse);
+}
+
+// rpc/api/music_creative_chart.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/live.gen.proto";
+import "enums/live_result_type.gen.proto";
+import "enums/music_creative_chart_complain_category_type.gen.proto";
+import "enums/music_creative_chart_file_type.gen.proto";
+import "enums/music_creative_chart_publish_type.gen.proto";
+import "enums/music_creative_chart_quote_allow_type.gen.proto";
+import "enums/music_creative_chart_quote_type.gen.proto";
+import "enums/music_creative_chart_type.gen.proto";
+import "enums/music_difficulty_type.gen.proto";
+import "enums/reset_interval_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/live.gen.proto";
+import "rpc/api/common/music_creative_chart.gen.proto";
+import "rpc/api/common/profile.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MusicCreativeChartGetUploadUrlForCreateRequest {
+  string music_id = 1;
+}
+
+message MusicCreativeChartGetUploadUrlForCreateResponse {
+  string upload_token = 1;
+  common.StorageUrlInfo chart_upload_storage_url_info = 2;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartGetUploadUrlForUpdateRequest {
+  string music_creative_chart_id = 1;
+  enums.MusicCreativeChartFileType file_type = 2;
+}
+
+message MusicCreativeChartGetUploadUrlForUpdateResponse {
+  string upload_token = 1;
+  common.StorageUrlInfo upload_storage_url_info = 2;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartUpdateFileUploadTimeRequest {
+  string music_creative_chart_id = 1;
+  string upload_token = 2;
+  enums.MusicCreativeChartFileType file_type = 3;
+}
+
+message MusicCreativeChartGetQuoteTargetChartRequest {
+  string music_creative_chart_id = 1;
+}
+
+message MusicCreativeChartGetQuoteTargetChartResponse {
+  string chart_file_url = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartCreateRequest {
+  string upload_token = 1;
+  string title = 2;
+  string music_id = 3;
+  enums.MusicCreativeChartQuoteType quote_type = 4;
+  enums.MusicDifficultyType quote_music_difficulty_type = 5;
+  string quote_music_creative_chart_id = 6;
+}
+
+message MusicCreativeChartCreateResponse {
+  string music_creative_chart_id = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartUpdateRequest {
+  string music_creative_chart_id = 1;
+  string title = 2;
+  int32 difficulty_value = 3;
+  repeated enums.MusicCreativeChartType chart_types = 4;
+  repeated string music_creative_chart_tag_ids = 5;
+  enums.MusicCreativeChartPublishType publish_type = 6;
+  enums.MusicCreativeChartQuoteAllowType quote_allow_type = 7;
+  bool is_publish = 100;
+}
+
+message MusicCreativeChartEditSettingRequest {
+  string music_creative_chart_id = 1;
+  enums.MusicCreativeChartPublishType publish_type = 2;
+  enums.MusicCreativeChartQuoteAllowType quote_allow_type = 3;
+}
+
+message MusicCreativeChartDeleteRequest {
+  string music_creative_chart_id = 1;
+}
+
+message MusicCreativeChartLikeRequest {
+  string music_creative_chart_id = 1;
+}
+
+message MusicCreativeChartSwitchFavoriteRequest {
+  string music_creative_chart_id = 1;
+  bool is_favorite = 2;
+}
+
+message MusicCreativeChartComplainRequest {
+  string music_creative_chart_id = 1;
+  repeated enums.MusicCreativeChartComplainCategoryType category_types = 2;
+  string message = 3;
+}
+
+message MusicCreativeChartListOwnResponse {
+  message OwnChartInfo {
+    common.MusicCreativeChartInfo chart_info = 1;
+    string chart_file_url = 2;
+    bool is_thumbnail_image_enabled = 3;
+    enums.MusicCreativeChartQuoteAllowType quote_allow_type = 4;
+    enums.MusicCreativeChartQuoteType quote_type = 5;
+    string quoted_chart_file_url = 6;
+  }
+  repeated MusicCreativeChartListOwnResponse.OwnChartInfo creating_chart_infos = 1;
+  repeated MusicCreativeChartListOwnResponse.OwnChartInfo published_chart_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListNewerRequest {
+  common.MusicCreativeChartSearchParameter search_parameter = 1;
+}
+
+message MusicCreativeChartListNewerResponse {
+  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListFavoriteRequest {
+  common.MusicCreativeChartSearchParameter search_parameter = 1;
+}
+
+message MusicCreativeChartListFavoriteResponse {
+  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListPlayHistoryRequest {
+  common.MusicCreativeChartSearchParameter search_parameter = 1;
+}
+
+message MusicCreativeChartListPlayHistoryResponse {
+  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListByCreatorRequest {
+  string public_user_id = 1;
+  common.MusicCreativeChartSearchParameter search_parameter = 2;
+}
+
+message MusicCreativeChartListByFriendRequest {
+  common.MusicCreativeChartSearchParameter search_parameter = 1;
+}
+
+message MusicCreativeChartListByFriendResponse {
+  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListByCreatorResponse {
+  repeated common.MusicCreativeChartInfo chart_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartGetByMusicCreativeChartIdRequest {
+  string music_creative_chart_id = 1;
+  bool is_quote_allowed_only = 2;
+}
+
+message MusicCreativeChartGetByMusicCreativeChartIdResponse {
+  common.MusicCreativeChartInfo chart_info = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListPopularRequest {
+  common.MusicCreativeChartSearchParameter search_parameter = 1;
+}
+
+message MusicCreativeChartListPopularResponse {
+  repeated common.MusicCreativeChartInfoMusicGrouping chart_info_music_groupings = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListPopularCreatorRequest {
+  enums.ResetIntervalType reset_interval_type = 1;
+}
+
+message MusicCreativeChartListPopularCreatorResponse {
+  repeated common.MusicCreativeChartCreatorInfo creator_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartListFriendCreatorResponse {
+  repeated common.MusicCreativeChartCreatorInfo creator_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdRequest {
+  string music_creative_chart_id = 1;
+}
+
+message MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdResponse {
+  common.BasicUserInfo creator_user_info = 1;
+  repeated string related_creator_public_user_ids = 2;
+  repeated common.BasicUserInfo related_creator_user_infos = 3;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartGetUserStatusResponse {
+  bool is_chart_creation_banned = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartStartLiveSingleRequest {
+  string music_creative_chart_id = 1;
+  string character_id = 2;
+  int32 deck_number = 3;
+  common.LiveSkinInfo skin_info = 4;
+  string music_mv_category_id = 5;
+}
+
+message MusicCreativeChartStartLiveSingleResponse {
+  string chart_file_url = 1;
+  int32 seed = 2;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartFinishLiveSingleRequest {
+  common.LiveBaseResult result = 1;
+}
+
+message MusicCreativeChartRetryLiveSingleRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message MusicCreativeChartRetryLiveSingleResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartRetireLiveSingleRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message MusicCreativeChartStartPreviewRequest {
+  string music_id = 1;
+}
+
+message MusicCreativeChartFinishLiveSingleResponse {
+  enums.LiveResultType result_type = 1;
+  bool is_liked = 2;
+  bool is_favorite = 3;
+  int64 technical_score = 4;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartGetEarlyClearRankingInfoRequest {
+  string music_creative_chart_id = 1;
+  enums.LiveResultType live_result_type = 2;
+}
+
+message MusicCreativeChartGetEarlyClearRankingInfoResponse {
+  repeated common.BasicRankingRankInfo rank_infos = 1;
+  int32 self_ranking_rank = 2;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartGetEarlyClearLiveDeckRequest {
+  string public_user_id = 1;
+  string music_creative_chart_id = 2;
+  enums.LiveResultType live_result_type = 3;
+}
+
+message MusicCreativeChartGetEarlyClearLiveDeckResponse {
+  common.RankingLiveDeckInfo ranking_live_deck_info = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartUpdateFileUploadTimeResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartUpdateResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartEditSettingResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartDeleteResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartLikeResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartSwitchFavoriteResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartComplainResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartRetireLiveSingleResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicCreativeChartStartPreviewResponse {
+  common.Response common_response = 9999;
+}
+
+service MusicCreativeChart {
+  rpc GetUploadUrlForCreate (MusicCreativeChartGetUploadUrlForCreateRequest) returns (MusicCreativeChartGetUploadUrlForCreateResponse);
+  rpc GetUploadUrlForUpdate (MusicCreativeChartGetUploadUrlForUpdateRequest) returns (MusicCreativeChartGetUploadUrlForUpdateResponse);
+  rpc UpdateFileUploadTime (MusicCreativeChartUpdateFileUploadTimeRequest) returns (MusicCreativeChartUpdateFileUploadTimeResponse);
+  rpc GetQuoteTargetChart (MusicCreativeChartGetQuoteTargetChartRequest) returns (MusicCreativeChartGetQuoteTargetChartResponse);
+  rpc Create (MusicCreativeChartCreateRequest) returns (MusicCreativeChartCreateResponse);
+  rpc Update (MusicCreativeChartUpdateRequest) returns (MusicCreativeChartUpdateResponse);
+  rpc EditSetting (MusicCreativeChartEditSettingRequest) returns (MusicCreativeChartEditSettingResponse);
+  rpc Delete (MusicCreativeChartDeleteRequest) returns (MusicCreativeChartDeleteResponse);
+  rpc Like (MusicCreativeChartLikeRequest) returns (MusicCreativeChartLikeResponse);
+  rpc SwitchFavorite (MusicCreativeChartSwitchFavoriteRequest) returns (MusicCreativeChartSwitchFavoriteResponse);
+  rpc Complain (MusicCreativeChartComplainRequest) returns (MusicCreativeChartComplainResponse);
+  rpc ListOwn (google.protobuf.Empty) returns (MusicCreativeChartListOwnResponse);
+  rpc ListNewer (MusicCreativeChartListNewerRequest) returns (MusicCreativeChartListNewerResponse);
+  rpc ListFavorite (MusicCreativeChartListFavoriteRequest) returns (MusicCreativeChartListFavoriteResponse);
+  rpc ListPlayHistory (MusicCreativeChartListPlayHistoryRequest) returns (MusicCreativeChartListPlayHistoryResponse);
+  rpc ListByCreator (MusicCreativeChartListByCreatorRequest) returns (MusicCreativeChartListByCreatorResponse);
+  rpc ListByFriend (MusicCreativeChartListByFriendRequest) returns (MusicCreativeChartListByFriendResponse);
+  rpc GetByMusicCreativeChartId (MusicCreativeChartGetByMusicCreativeChartIdRequest) returns (MusicCreativeChartGetByMusicCreativeChartIdResponse);
+  rpc ListPopular (MusicCreativeChartListPopularRequest) returns (MusicCreativeChartListPopularResponse);
+  rpc ListPopularCreator (MusicCreativeChartListPopularCreatorRequest) returns (MusicCreativeChartListPopularCreatorResponse);
+  rpc ListFriendCreator (google.protobuf.Empty) returns (MusicCreativeChartListFriendCreatorResponse);
+  rpc GetCreatorInfoByMusicCreativeChartId (MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdRequest) returns (MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdResponse);
+  rpc GetUserStatus (google.protobuf.Empty) returns (MusicCreativeChartGetUserStatusResponse);
+  rpc StartLiveSingle (MusicCreativeChartStartLiveSingleRequest) returns (MusicCreativeChartStartLiveSingleResponse);
+  rpc FinishLiveSingle (MusicCreativeChartFinishLiveSingleRequest) returns (MusicCreativeChartFinishLiveSingleResponse);
+  rpc RetryLiveSingle (MusicCreativeChartRetryLiveSingleRequest) returns (MusicCreativeChartRetryLiveSingleResponse);
+  rpc RetireLiveSingle (MusicCreativeChartRetireLiveSingleRequest) returns (MusicCreativeChartRetireLiveSingleResponse);
+  rpc StartPreview (MusicCreativeChartStartPreviewRequest) returns (MusicCreativeChartStartPreviewResponse);
+  rpc GetEarlyClearRankingInfo (MusicCreativeChartGetEarlyClearRankingInfoRequest) returns (MusicCreativeChartGetEarlyClearRankingInfoResponse);
+  rpc GetEarlyClearLiveDeck (MusicCreativeChartGetEarlyClearLiveDeckRequest) returns (MusicCreativeChartGetEarlyClearLiveDeckResponse);
 }
 
 // rpc/api/notice.gen.proto
@@ -13686,6 +16324,951 @@ service Notification {
   rpc List (google.protobuf.Empty) returns (NotificationListResponse);
 }
 
+// rpc/api/park.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/cheat_feature_type.gen.proto";
+import "enums/music_startup_notification_type.gen.proto";
+import "enums/park_banner_type.gen.proto";
+import "enums/park_mission_action_type.gen.proto";
+import "enums/transition_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/startup_notification.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ParkRefreshRequest {
+  string area_id = 1;
+}
+
+message ParkEnterResponse {
+  message HomeBanner {
+    string home_banner_id = 1;
+    string asset_id = 2;
+    enums.TransitionType transition_type = 3;
+    string transition_id = 4;
+    int64 end_time = 5;
+    int64 priority = 6;
+    string condition_group_id = 7;
+    string title = 8;
+    int64 start_time = 9;
+    string external_url = 100;
+  }
+  message ParkBanner {
+    string park_banner_id = 1;
+    enums.ParkBannerType type = 2;
+    string asset_id = 3;
+    enums.TransitionType transition_type = 5;
+    string transition_id = 6;
+    int64 end_time = 7;
+    int64 priority = 8;
+    string condition_group_id = 9;
+    repeated ParkEnterResponse.ParkBannerFacility park_banner_facilities = 10;
+    int64 start_time = 11;
+    string external_url = 100;
+  }
+  message ParkBannerFacility {
+    string facility_id = 1;
+    string view_condition_group_id = 2;
+  }
+  message MusicStartupNotification {
+    string id = 1;
+    enums.MusicStartupNotificationType type = 2;
+    string music_id = 3;
+    repeated int32 music_mv_numbers = 4;
+  }
+  message MaintenanceNoticeInfo {
+    int64 start_time = 1;
+    int64 end_time = 2;
+  }
+  repeated ParkEnterResponse.HomeBanner home_banners = 1;
+  repeated ParkEnterResponse.ParkBanner park_banners = 2;
+  repeated common.StartupNotification startup_notifications = 3;
+  repeated ParkEnterResponse.MusicStartupNotification music_startup_notifications = 4;
+  ParkEnterResponse.MaintenanceNoticeInfo maintenance_notice_info = 5;
+  repeated enums.CheatFeatureType cheat_feature_restriction_types = 6;
+  common.Response common_response = 9999;
+}
+
+message ParkSetCharacterRequest {
+  string character_id = 1;
+}
+
+message ParkSetAccessoryRequest {
+  string park_accessory_id = 1;
+}
+
+message ParkUpdateTimePeriodRequest {
+  int32 time_point = 1;
+}
+
+message ParkReceivePlayerLevelRewardRequest {
+  repeated int32 player_levels = 1;
+}
+
+message ParkReceivePlayerLevelRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkOpenTreasureRequest {
+  string area_id = 1;
+  string park_treasure_id = 2;
+}
+
+message ParkOpenTreasureResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkCollectFixedSymbolRequest {
+  string park_fixed_symbol_id = 1;
+}
+
+message ParkCollectFixedSymbolResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkCollectRandomSymbolRequest {
+  string area_id = 1;
+  string park_target_mapping_id = 2;
+}
+
+message ParkCollectRandomSymbolResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkListenCallRequest {
+  string area_id = 1;
+  string park_call_id = 2;
+}
+
+message ParkReportActionRequest {
+  enums.ParkMissionActionType action_type = 1;
+  int32 count = 2;
+}
+
+message ParkReadTalkFreeRequest {
+  string park_talk_free_id = 1;
+  repeated string character_ids = 2;
+}
+
+message ParkReadTalkFreeResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkSelectAreaRequest {
+  string area_selector_id = 1;
+  string area_id = 2;
+}
+
+message ParkRefreshResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkSetCharacterResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkSetAccessoryResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkUpdateTimePeriodResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkListenCallResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkReportActionResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkSelectAreaResponse {
+  common.Response common_response = 9999;
+}
+
+service Park {
+  rpc Enter (google.protobuf.Empty) returns (ParkEnterResponse);
+  rpc Refresh (ParkRefreshRequest) returns (ParkRefreshResponse);
+  rpc SetCharacter (ParkSetCharacterRequest) returns (ParkSetCharacterResponse);
+  rpc SetAccessory (ParkSetAccessoryRequest) returns (ParkSetAccessoryResponse);
+  rpc UpdateTimePeriod (ParkUpdateTimePeriodRequest) returns (ParkUpdateTimePeriodResponse);
+  rpc ReceivePlayerLevelReward (ParkReceivePlayerLevelRewardRequest) returns (ParkReceivePlayerLevelRewardResponse);
+  rpc OpenTreasure (ParkOpenTreasureRequest) returns (ParkOpenTreasureResponse);
+  rpc CollectFixedSymbol (ParkCollectFixedSymbolRequest) returns (ParkCollectFixedSymbolResponse);
+  rpc CollectRandomSymbol (ParkCollectRandomSymbolRequest) returns (ParkCollectRandomSymbolResponse);
+  rpc ListenCall (ParkListenCallRequest) returns (ParkListenCallResponse);
+  rpc ReportAction (ParkReportActionRequest) returns (ParkReportActionResponse);
+  rpc ReadTalkFree (ParkReadTalkFreeRequest) returns (ParkReadTalkFreeResponse);
+  rpc SelectArea (ParkSelectAreaRequest) returns (ParkSelectAreaResponse);
+}
+
+// rpc/api/park_permanence.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/consumption.gen.proto";
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/park_fishing_fish_weight_type.gen.proto";
+import "enums/park_high_low_hand_type.gen.proto";
+import "enums/park_lottery_reward_rarity_type.gen.proto";
+import "enums/park_time_period_type.gen.proto";
+import "enums/poster_booth_resource_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/park.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ParkPermanenceSetPosterBoothRequest {
+  message PosterBoothResource {
+    enums.PosterBoothResourceType resource_type = 1;
+    string resource_id = 2;
+  }
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+  repeated ParkPermanenceSetPosterBoothRequest.PosterBoothResource resources = 2;
+}
+
+message ParkPermanenceLevelUpFacilityRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+}
+
+message ParkPermanenceReceivePresentRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+  string character_id = 2;
+}
+
+message ParkPermanenceReceivePresentResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceCharacterShopItem {
+  string park_character_shop_item_id = 1;
+  repeated common.Reward rewards = 2;
+  string sd_costume_id = 3;
+  string asset_id = 4;
+}
+
+message ParkPermanenceCharacterShopItemWithCollectedInfo {
+  ParkPermanenceCharacterShopItem item = 1;
+  bool is_collected = 2;
+}
+
+message ParkPermanenceListCharacterShopItemRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+}
+
+message ParkPermanenceListCharacterShopItemResponse {
+  string shop_name = 1;
+  common.Consumption consumption = 2;
+  repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 3;
+  repeated ParkPermanenceCharacterShopItem picked_items = 4;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanencePurchaseCharacterShopItemRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+}
+
+message ParkPermanencePurchaseCharacterShopItemResponse {
+  repeated ParkPermanenceCharacterShopItem picked_items = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceSelectCharacterShopItemRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+  string park_character_shop_item_id = 2;
+}
+
+message ParkPermanenceSelectCharacterShopItemResponse {
+  repeated common.RewardResult reward_results = 1;
+  repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceDrawLotteryRequest {
+  string park_lottery_id = 1;
+}
+
+message ParkPermanenceDrawLotteryResponse {
+  repeated common.RewardResult reward_results = 1;
+  enums.ParkLotteryRewardRarityType reward_rarity_type = 2;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceStartHighLowRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+}
+
+message ParkPermanenceFinishHighLowRequest {
+  enums.ParkHighLowHandType hand_type = 1;
+  bool is_reward_get = 2;
+  int32 double_up_success_count = 3;
+}
+
+message ParkPermanenceFinishHighLowResponse {
+  repeated common.RewardResult reward_results = 1;
+  bool is_first_achieved_hand_type = 2;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanencePrepareFishingRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+  enums.ParkTimePeriodType park_time_period_type = 2;
+  string park_fishing_bait_id = 3;
+}
+
+message ParkPermanencePrepareFishingResponse {
+  string park_fishing_fish_id = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceStartFishingRequest {
+  string park_fishing_fish_id = 1;
+}
+
+message ParkPermanenceMissFishingRequest {
+  string park_fishing_fish_id = 1;
+}
+
+message ParkPermanenceFinishFishingRequest {
+  string park_fishing_fish_id = 1;
+  bool is_success = 2;
+}
+
+message ParkPermanenceFinishFishingResponse {
+  int32 fish_weight = 1;
+  enums.ParkFishingFishWeightType fish_weight_type = 2;
+  repeated common.RewardResult reward_results = 3;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceReceiveFishingTotalCaughtRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceLevelUpFishingRodRequest {
+  common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
+}
+
+message ParkPermanenceSetPosterBoothResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceLevelUpFacilityResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceStartHighLowResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceStartFishingResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceMissFishingResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkPermanenceLevelUpFishingRodResponse {
+  common.Response common_response = 9999;
+}
+
+service ParkPermanence {
+  rpc SetPosterBooth (ParkPermanenceSetPosterBoothRequest) returns (ParkPermanenceSetPosterBoothResponse);
+  rpc LevelUpFacility (ParkPermanenceLevelUpFacilityRequest) returns (ParkPermanenceLevelUpFacilityResponse);
+  rpc ReceivePresent (ParkPermanenceReceivePresentRequest) returns (ParkPermanenceReceivePresentResponse);
+  rpc ListCharacterShopItem (ParkPermanenceListCharacterShopItemRequest) returns (ParkPermanenceListCharacterShopItemResponse);
+  rpc PurchaseCharacterShopItem (ParkPermanencePurchaseCharacterShopItemRequest) returns (ParkPermanencePurchaseCharacterShopItemResponse);
+  rpc SelectCharacterShopItem (ParkPermanenceSelectCharacterShopItemRequest) returns (ParkPermanenceSelectCharacterShopItemResponse);
+  rpc DrawLottery (ParkPermanenceDrawLotteryRequest) returns (ParkPermanenceDrawLotteryResponse);
+  rpc StartHighLow (ParkPermanenceStartHighLowRequest) returns (ParkPermanenceStartHighLowResponse);
+  rpc FinishHighLow (ParkPermanenceFinishHighLowRequest) returns (ParkPermanenceFinishHighLowResponse);
+  rpc PrepareFishing (ParkPermanencePrepareFishingRequest) returns (ParkPermanencePrepareFishingResponse);
+  rpc StartFishing (ParkPermanenceStartFishingRequest) returns (ParkPermanenceStartFishingResponse);
+  rpc MissFishing (ParkPermanenceMissFishingRequest) returns (ParkPermanenceMissFishingResponse);
+  rpc FinishFishing (ParkPermanenceFinishFishingRequest) returns (ParkPermanenceFinishFishingResponse);
+  rpc ReceiveFishingTotalCaughtReward (google.protobuf.Empty) returns (ParkPermanenceReceiveFishingTotalCaughtRewardResponse);
+  rpc LevelUpFishingRod (ParkPermanenceLevelUpFishingRodRequest) returns (ParkPermanenceLevelUpFishingRodResponse);
+}
+
+// rpc/api/park_quest.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/live.gen.proto";
+import "common/reward.gen.proto";
+import "enums/live_evaluation_rank_type.gen.proto";
+import "enums/live_result_type.gen.proto";
+import "enums/music_difficulty_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/chase.gen.proto";
+import "rpc/api/common/circuit.gen.proto";
+import "rpc/api/common/combo_card_game.gen.proto";
+import "rpc/api/common/cooking_puzzle.gen.proto";
+import "rpc/api/common/jump_rope.gen.proto";
+import "rpc/api/common/live.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/park.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/splash_ball.gen.proto";
+import "rpc/api/common/startup_notification.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ParkQuestStartCharacterRequest {
+  string park_permanence_id = 1;
+  int32 action_number = 2;
+}
+
+message ParkQuestClearStepRequest {
+  common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+}
+
+message ParkQuestClearStepResponse {
+  repeated common.RewardResult reward_results = 1;
+  repeated common.StartupNotification startup_notifications = 2;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestGetLiveFixedDeckRequest {
+  common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+  enums.MusicDifficultyType difficulty_type = 2;
+}
+
+message ParkQuestGetLiveFixedDeckResponse {
+  repeated common.LiveDeckPosition deck_positions = 1;
+  common.LiveDeckEvaluation live_deck_evaluation = 2;
+  common.LiveDeckInGameEffect live_deck_in_game_effect = 3;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestGetLiveFixedCharacterDeckRequest {
+  message LiveDeckPosition {
+    int32 position = 1;
+    string card_id = 2;
+  }
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  enums.MusicDifficultyType difficulty_type = 6;
+  string costume_id = 7;
+  repeated ParkQuestGetLiveFixedCharacterDeckRequest.LiveDeckPosition deck_positions = 8;
+}
+
+message ParkQuestGetLiveFixedCharacterDeckResponse {
+  repeated common.LiveDeckPosition deck_positions = 1;
+  common.LiveDeckEvaluation live_deck_evaluation = 2;
+  common.LiveDeckInGameEffect live_deck_in_game_effect = 3;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartLiveRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  enums.MusicDifficultyType difficulty_type = 6;
+  string character_id = 7;
+  string costume_id = 8;
+  repeated string card_ids = 9;
+  bool is_auto_play = 10;
+  common.LiveSkinInfo skin_info = 11;
+  string music_mv_category_id = 12;
+}
+
+message ParkQuestStartLiveResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestFinishLiveRequest {
+  common.LiveBaseResult result = 1;
+}
+
+message ParkQuestFinishLiveResponse {
+  enums.LiveResultType result_type = 1;
+  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  int32 evaluation_rank_plus = 3;
+  repeated common.Reward quest_step_clear_rewards = 4;
+  repeated common.Reward music_clear_count_rewards = 5;
+  repeated common.Reward music_full_combo_rewards = 6;
+  repeated common.Reward music_highest_score_rank_rewards = 7;
+  repeated common.Reward music_max_combo_count_phase_rewards = 8;
+  int64 past_character_highest_score = 9;
+  common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 10;
+  bool is_cleared_quest = 12;
+  common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 13;
+  int64 technical_score = 14;
+  repeated common.StartupNotification startup_notifications = 15;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartTutorialLiveRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  enums.MusicDifficultyType difficulty_type = 6;
+  string character_id = 7;
+  string costume_id = 8;
+  repeated string card_ids = 9;
+  string music_mv_category_id = 10;
+}
+
+message ParkQuestFinishTutorialLiveRequest {
+  common.LiveBaseResult result = 1;
+}
+
+message ParkQuestFinishTutorialLiveResponse {
+  enums.LiveResultType result_type = 1;
+  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  int32 evaluation_rank_plus = 3;
+  repeated common.RewardResult reward_results = 4;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetryLiveRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message ParkQuestRetryLiveResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartTutorialLiveResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireLiveRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message ParkQuestMatchRandomJumpRopeRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomJumpRopeResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartJumpRopeSingleRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestStartJumpRopeSingleResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartJumpRopeMultiRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishJumpRopeSingleRequest {
+  int32 jump_count = 1;
+  int32 success_jump_count = 2;
+  int32 failure_jump_count = 3;
+  int32 continuous_jump_count = 4;
+}
+
+message ParkQuestFinishJumpRopeSingleResponse {
+  bool is_cleared = 1;
+  repeated common.RewardResult reward_results = 2;
+  repeated common.StartupNotification startup_notifications = 3;
+  common.StorageUrlInfo play_log_upload_url = 50;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestFinishJumpRopeMultiRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishJumpRopeMultiResponse {
+  bool is_cleared = 1;
+  common.JumpRopeResultInfo jump_rope_result_info = 2;
+  int32 self_past_best_jump_count = 3;
+  bool is_self_best_jump_count_updated = 4;
+  repeated common.RewardResult reward_results = 5;
+  repeated common.StartupNotification startup_notifications = 6;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMatchRandomCircuitRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomCircuitResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCircuitRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishCircuitRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishCircuitResponse {
+  bool is_cleared = 1;
+  common.CircuitResultInfo circuit_result_info = 2;
+  repeated common.RewardResult reward_results = 3;
+  repeated common.StartupNotification startup_notifications = 4;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCookingPuzzleRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestFinishCookingPuzzleRequest {
+  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
+  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+  int64 score = 3;
+  int32 stock_space_overflow_count = 4;
+  int32 foodstuff_collecting_count = 5;
+  int32 max_combo_count = 6;
+}
+
+message ParkQuestFinishCookingPuzzleResponse {
+  bool is_cleared = 1;
+  repeated common.RewardResult reward_results = 2;
+  repeated common.StartupNotification startup_notifications = 3;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireCookingPuzzleRequest {
+  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
+  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+  int64 score = 3;
+  int32 stock_space_overflow_count = 4;
+  int32 foodstuff_collecting_count = 5;
+  int32 max_combo_count = 6;
+}
+
+message ParkQuestReportCookingPuzzleRecipeProgressRequest {
+  string cooking_puzzle_recipe_id = 1;
+}
+
+message ParkQuestMatchRandomComboCardGameRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomComboCardGameResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartComboCardGameRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishComboCardGameRequest {
+  string multi_game_result_id = 1;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+}
+
+message ParkQuestFinishComboCardGameResponse {
+  bool is_cleared = 1;
+  common.ComboCardGameResultInfo combo_card_game_result_info = 2;
+  repeated common.RewardResult reward_results = 3;
+  int64 before_chip_diff_total_quantity = 4;
+  repeated common.StartupNotification startup_notifications = 5;
+  bool is_highest_score_updated = 6;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMatchRandomChaseRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomChaseResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartChaseRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishChaseRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishChaseResponse {
+  bool is_cleared = 1;
+  common.ChaseResultInfo chase_result_info = 2;
+  int64 past_highest_score = 3;
+  bool is_highest_score_updated = 4;
+  repeated common.RewardResult reward_results = 5;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMatchRandomSplashBallRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomSplashBallResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartSplashBallRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishSplashBallRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishSplashBallResponse {
+  bool is_cleared = 1;
+  common.SplashBallResultInfo splash_ball_result_info = 2;
+  int64 past_highest_score = 3;
+  bool is_highest_score_updated = 4;
+  repeated common.RewardResult reward_results = 5;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestDeliverItemRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestDeliverItemResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestLevelUpFacilityRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestLevelUpFacilityResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestUseCharacterQuestItemRequest {
+  string character_id = 1;
+}
+
+message ParkQuestSelectAreaRequest {
+  repeated common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+  string area_id = 2;
+}
+
+message ParkQuestSelectAreaResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMoveAreaRequest {
+  repeated common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+  string area_id = 2;
+}
+
+message ParkQuestStartCharacterResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireLiveResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartJumpRopeMultiResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCircuitResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCookingPuzzleResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireCookingPuzzleResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestReportCookingPuzzleRecipeProgressResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartComboCardGameResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartChaseResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartSplashBallResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestUseCharacterQuestItemResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMoveAreaResponse {
+  common.Response common_response = 9999;
+}
+
+service ParkQuest {
+  rpc StartCharacter (ParkQuestStartCharacterRequest) returns (ParkQuestStartCharacterResponse);
+  rpc ClearStep (ParkQuestClearStepRequest) returns (ParkQuestClearStepResponse);
+  rpc GetLiveFixedDeck (ParkQuestGetLiveFixedDeckRequest) returns (ParkQuestGetLiveFixedDeckResponse);
+  rpc GetLiveFixedCharacterDeck (ParkQuestGetLiveFixedCharacterDeckRequest) returns (ParkQuestGetLiveFixedCharacterDeckResponse);
+  rpc StartLive (ParkQuestStartLiveRequest) returns (ParkQuestStartLiveResponse);
+  rpc FinishLive (ParkQuestFinishLiveRequest) returns (ParkQuestFinishLiveResponse);
+  rpc RetryLive (ParkQuestRetryLiveRequest) returns (ParkQuestRetryLiveResponse);
+  rpc RetireLive (ParkQuestRetireLiveRequest) returns (ParkQuestRetireLiveResponse);
+  rpc StartTutorialLive (ParkQuestStartTutorialLiveRequest) returns (ParkQuestStartTutorialLiveResponse);
+  rpc FinishTutorialLive (ParkQuestFinishTutorialLiveRequest) returns (ParkQuestFinishTutorialLiveResponse);
+  rpc MatchRandomJumpRope (ParkQuestMatchRandomJumpRopeRequest) returns (ParkQuestMatchRandomJumpRopeResponse);
+  rpc StartJumpRopeSingle (ParkQuestStartJumpRopeSingleRequest) returns (ParkQuestStartJumpRopeSingleResponse);
+  rpc StartJumpRopeMulti (ParkQuestStartJumpRopeMultiRequest) returns (ParkQuestStartJumpRopeMultiResponse);
+  rpc FinishJumpRopeSingle (ParkQuestFinishJumpRopeSingleRequest) returns (ParkQuestFinishJumpRopeSingleResponse);
+  rpc FinishJumpRopeMulti (ParkQuestFinishJumpRopeMultiRequest) returns (ParkQuestFinishJumpRopeMultiResponse);
+  rpc MatchRandomCircuit (ParkQuestMatchRandomCircuitRequest) returns (ParkQuestMatchRandomCircuitResponse);
+  rpc StartCircuit (ParkQuestStartCircuitRequest) returns (ParkQuestStartCircuitResponse);
+  rpc FinishCircuit (ParkQuestFinishCircuitRequest) returns (ParkQuestFinishCircuitResponse);
+  rpc StartCookingPuzzle (ParkQuestStartCookingPuzzleRequest) returns (ParkQuestStartCookingPuzzleResponse);
+  rpc FinishCookingPuzzle (ParkQuestFinishCookingPuzzleRequest) returns (ParkQuestFinishCookingPuzzleResponse);
+  rpc RetireCookingPuzzle (ParkQuestRetireCookingPuzzleRequest) returns (ParkQuestRetireCookingPuzzleResponse);
+  rpc ReportCookingPuzzleRecipeProgress (ParkQuestReportCookingPuzzleRecipeProgressRequest) returns (ParkQuestReportCookingPuzzleRecipeProgressResponse);
+  rpc MatchRandomComboCardGame (ParkQuestMatchRandomComboCardGameRequest) returns (ParkQuestMatchRandomComboCardGameResponse);
+  rpc StartComboCardGame (ParkQuestStartComboCardGameRequest) returns (ParkQuestStartComboCardGameResponse);
+  rpc FinishComboCardGame (ParkQuestFinishComboCardGameRequest) returns (ParkQuestFinishComboCardGameResponse);
+  rpc MatchRandomChase (ParkQuestMatchRandomChaseRequest) returns (ParkQuestMatchRandomChaseResponse);
+  rpc StartChase (ParkQuestStartChaseRequest) returns (ParkQuestStartChaseResponse);
+  rpc FinishChase (ParkQuestFinishChaseRequest) returns (ParkQuestFinishChaseResponse);
+  rpc MatchRandomSplashBall (ParkQuestMatchRandomSplashBallRequest) returns (ParkQuestMatchRandomSplashBallResponse);
+  rpc StartSplashBall (ParkQuestStartSplashBallRequest) returns (ParkQuestStartSplashBallResponse);
+  rpc FinishSplashBall (ParkQuestFinishSplashBallRequest) returns (ParkQuestFinishSplashBallResponse);
+  rpc DeliverItem (ParkQuestDeliverItemRequest) returns (ParkQuestDeliverItemResponse);
+  rpc LevelUpFacility (ParkQuestLevelUpFacilityRequest) returns (ParkQuestLevelUpFacilityResponse);
+  rpc UseCharacterQuestItem (ParkQuestUseCharacterQuestItemRequest) returns (ParkQuestUseCharacterQuestItemResponse);
+  rpc SelectArea (ParkQuestSelectAreaRequest) returns (ParkQuestSelectAreaResponse);
+  rpc MoveArea (ParkQuestMoveAreaRequest) returns (ParkQuestMoveAreaResponse);
+}
+
 // rpc/api/payment.gen.proto
 syntax = "proto3";
 
@@ -13797,6 +17380,222 @@ service Payment {
   rpc FulfillOrder (PaymentFulfillOrderRequest) returns (PaymentFulfillOrderResponse);
 }
 
+// rpc/api/profile.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/emblem_position.gen.proto";
+import "enums/complain_category_type.gen.proto";
+import "enums/profile_publish_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/profile.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ProfileSetNameRequest {
+  string name = 1;
+}
+
+message ProfileSetMessageRequest {
+  string message = 1;
+}
+
+message ProfileSetFanMarkRequest {
+  string fan_mark_id = 1;
+}
+
+message ProfileSwitchPublishSettingRequest {
+  enums.ProfilePublishType profile_publish_type = 1;
+  bool is_publish = 2;
+}
+
+message ProfileSetEmblemRequest {
+  repeated common.EmblemPosition emblem_positions = 1;
+}
+
+message ProfileGetUserProfileDetailRequest {
+  string public_user_id = 1;
+}
+
+message ProfileGetUserProfileDetailResponse {
+  common.UserProfileDetailInfo user_profile_detail_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileBlockUserRequest {
+  string public_user_id = 1;
+}
+
+message ProfileUnblockUserRequest {
+  string public_user_id = 1;
+}
+
+message ProfileListBlockedUserResponse {
+  repeated common.BasicUserInfo user_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileComplainUserRequest {
+  string public_user_id = 1;
+  repeated enums.ComplainCategoryType category_types = 2;
+  string message = 3;
+}
+
+message ProfileListCustomPaletteResponse {
+  repeated common.CustomPalette custom_palettes = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileGetCustomPaletteImageUploadUrlRequest {
+  int32 number = 1;
+}
+
+message ProfileGetCustomPaletteImageUploadUrlResponse {
+  string upload_token = 1;
+  common.StorageUrlInfo storage_url_info = 2;
+  common.Response common_response = 9999;
+}
+
+message ProfileEditCustomPaletteRequest {
+  string upload_token = 1;
+  int32 number = 2;
+  string custom_palette_preset_layout_group_id = 3;
+  common.CustomPaletteBackground background = 4;
+  repeated common.CustomPalettePart parts = 5;
+}
+
+message ProfileEditCustomPaletteResponse {
+  int32 number = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileSetCustomPaletteRequest {
+  int32 number = 1;
+}
+
+message ProfileDeleteCustomPaletteRequest {
+  int32 number = 1;
+}
+
+message ProfileSetNameResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetMessageResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetFanMarkResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSwitchPublishSettingResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetEmblemResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileBlockUserResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileUnblockUserResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileComplainUserResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetCustomPaletteResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileDeleteCustomPaletteResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetDefaultCustomPaletteResponse {
+  common.Response common_response = 9999;
+}
+
+service Profile {
+  rpc SetName (ProfileSetNameRequest) returns (ProfileSetNameResponse);
+  rpc SetMessage (ProfileSetMessageRequest) returns (ProfileSetMessageResponse);
+  rpc SetFanMark (ProfileSetFanMarkRequest) returns (ProfileSetFanMarkResponse);
+  rpc SwitchPublishSetting (ProfileSwitchPublishSettingRequest) returns (ProfileSwitchPublishSettingResponse);
+  rpc SetEmblem (ProfileSetEmblemRequest) returns (ProfileSetEmblemResponse);
+  rpc GetUserProfileDetail (ProfileGetUserProfileDetailRequest) returns (ProfileGetUserProfileDetailResponse);
+  rpc BlockUser (ProfileBlockUserRequest) returns (ProfileBlockUserResponse);
+  rpc UnblockUser (ProfileUnblockUserRequest) returns (ProfileUnblockUserResponse);
+  rpc ListBlockedUser (google.protobuf.Empty) returns (ProfileListBlockedUserResponse);
+  rpc ComplainUser (ProfileComplainUserRequest) returns (ProfileComplainUserResponse);
+  rpc ListCustomPalette (google.protobuf.Empty) returns (ProfileListCustomPaletteResponse);
+  rpc GetCustomPaletteImageUploadUrl (ProfileGetCustomPaletteImageUploadUrlRequest) returns (ProfileGetCustomPaletteImageUploadUrlResponse);
+  rpc EditCustomPalette (ProfileEditCustomPaletteRequest) returns (ProfileEditCustomPaletteResponse);
+  rpc SetCustomPalette (ProfileSetCustomPaletteRequest) returns (ProfileSetCustomPaletteResponse);
+  rpc DeleteCustomPalette (ProfileDeleteCustomPaletteRequest) returns (ProfileDeleteCustomPaletteResponse);
+  rpc SetDefaultCustomPalette (google.protobuf.Empty) returns (ProfileSetDefaultCustomPaletteResponse);
+}
+
+// rpc/api/shop.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/shop.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ShopListResponse {
+  repeated common.Shop shops = 1;
+  common.Response common_response = 9999;
+}
+
+message ShopPurchaseConsumptionItemRequest {
+  string shop_consumption_item_id = 1;
+  int32 quantity = 2;
+}
+
+message ShopPurchaseConsumptionItemResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Shop shop = 2;
+  common.Response common_response = 9999;
+}
+
+message ShopReadRequest {
+  string shop_id = 1;
+  repeated string shop_charge_item_consumable_shop_charge_item_ids = 2;
+  repeated string shop_consumption_item_ids = 3;
+}
+
+message ShopReadResponse {
+  common.Response common_response = 9999;
+}
+
+service Shop {
+  rpc List (google.protobuf.Empty) returns (ShopListResponse);
+  rpc PurchaseConsumptionItem (ShopPurchaseConsumptionItemRequest) returns (ShopPurchaseConsumptionItemResponse);
+  rpc Read (ShopReadRequest) returns (ShopReadResponse);
+}
+
 // rpc/api/skill_tree.gen.proto
 syntax = "proto3";
 
@@ -13844,6 +17643,212 @@ service SkillTree {
   rpc ReleaseNode (SkillTreeReleaseNodeRequest) returns (SkillTreeReleaseNodeResponse);
   rpc ConnectNode (SkillTreeConnectNodeRequest) returns (SkillTreeConnectNodeResponse);
   rpc ResetNode (SkillTreeResetNodeRequest) returns (SkillTreeResetNodeResponse);
+}
+
+// rpc/api/splash_ball.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/splash_ball.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message SplashBallMatchRandomRequest {
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message SplashBallMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message SplashBallCreatePrivateRoomRequest {
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message SplashBallCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message SplashBallStartRequest {
+  string splash_ball_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message SplashBallFinishRequest {
+  string multi_game_result_id = 1;
+}
+
+message SplashBallFinishResponse {
+  common.SplashBallResultInfo splash_ball_result_info = 1;
+  int64 past_highest_score = 2;
+  bool is_highest_score_updated = 3;
+  repeated common.RewardResult reward_results = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+  int64 benefit_license_reward_quantity_up_permil_up = 7;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message SplashBallGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message SplashBallStartResponse {
+  common.Response common_response = 9999;
+}
+
+service SplashBall {
+  rpc MatchRandom (SplashBallMatchRandomRequest) returns (SplashBallMatchRandomResponse);
+  rpc CreatePrivateRoom (SplashBallCreatePrivateRoomRequest) returns (SplashBallCreatePrivateRoomResponse);
+  rpc Start (SplashBallStartRequest) returns (SplashBallStartResponse);
+  rpc Finish (SplashBallFinishRequest) returns (SplashBallFinishResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (SplashBallGetRankingInfoResponse);
+}
+
+// rpc/api/startup_notification.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message StartupNotificationReadRequest {
+  repeated string startup_notification_ids = 1;
+}
+
+message StartupNotificationReadMusicRequest {
+  repeated string music_startup_notification_ids = 1;
+}
+
+message StartupNotificationReadResponse {
+  common.Response common_response = 9999;
+}
+
+message StartupNotificationReadMusicResponse {
+  common.Response common_response = 9999;
+}
+
+service StartupNotification {
+  rpc Read (StartupNotificationReadRequest) returns (StartupNotificationReadResponse);
+  rpc ReadMusic (StartupNotificationReadMusicRequest) returns (StartupNotificationReadMusicResponse);
+}
+
+// rpc/api/story.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message StoryReadMainRequest {
+  string main_story_chapter_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadMainResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadAreaRequest {
+  string area_story_chapter_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadAreaResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadCharacterRequest {
+  string character_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadCharacterResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadCharacterGroupResponse {
+  repeated common.RewardResult reward_results = 1;
+}
+
+message StoryReadEventRequest {
+  string event_story_chapter_id = 1;
+  int32 number = 2;
+  bool is_skipped = 3;
+}
+
+message StoryReadEventResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadSpecialRequest {
+  string special_story_id = 1;
+  bool is_skipped = 2;
+}
+
+message StoryReadSpecialResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message StoryReadHolograRequest {
+  string hologra_story_id = 1;
+  bool is_skipped = 2;
+}
+
+message StoryReadHolograResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+service Story {
+  rpc ReadMain (StoryReadMainRequest) returns (StoryReadMainResponse);
+  rpc ReadArea (StoryReadAreaRequest) returns (StoryReadAreaResponse);
+  rpc ReadCharacter (StoryReadCharacterRequest) returns (StoryReadCharacterResponse);
+  rpc ReadEvent (StoryReadEventRequest) returns (StoryReadEventResponse);
+  rpc ReadSpecial (StoryReadSpecialRequest) returns (StoryReadSpecialResponse);
+  rpc ReadHologra (StoryReadHolograRequest) returns (StoryReadHolograResponse);
 }
 
 // rpc/api/system.gen.proto
@@ -13909,6 +17914,100 @@ service System {
   rpc GetSystemInfo (SystemGetSystemInfoRequest) returns (SystemGetSystemInfoResponse);
 }
 
+// rpc/api/tutorial.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/tutorial_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message TutorialProgressRequest {
+  enums.TutorialType tutorial_type = 1;
+  int32 progress = 2;
+}
+
+message TutorialRegisterCountryRequest {
+  string country_code = 1;
+}
+
+message TutorialRegisterBirthdayRequest {
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
+}
+
+message TutorialSetNameRequest {
+  string name = 1;
+}
+
+message TutorialRegisterInitialUserInfoRequest {
+  string country_code = 1;
+  int32 birth_year = 2;
+  int32 birth_month = 3;
+  string user_name = 4;
+}
+
+message TutorialChooseCharacterRequest {
+  string character_id = 1;
+}
+
+message TutorialChooseCharacterResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message TutorialDrawGachaResponse {
+  repeated string card_ids = 1;
+  string gacha_animation_grouping_id = 2;
+  common.Response common_response = 9999;
+}
+
+message TutorialConfirmGachaResponse {
+  repeated common.RewardResult card_reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message TutorialListGachaCardResponse {
+  repeated string card_ids = 1;
+  common.Response common_response = 9999;
+}
+
+message TutorialReadInstantTipsRequest {
+  string instant_tips_id = 1;
+}
+
+message TutorialProgressResponse {
+  common.Response common_response = 9999;
+}
+
+message TutorialRegisterInitialUserInfoResponse {
+  common.Response common_response = 9999;
+}
+
+message TutorialReadInstantTipsResponse {
+  common.Response common_response = 9999;
+}
+
+service Tutorial {
+  rpc Progress (TutorialProgressRequest) returns (TutorialProgressResponse);
+  rpc RegisterInitialUserInfo (TutorialRegisterInitialUserInfoRequest) returns (TutorialRegisterInitialUserInfoResponse);
+  rpc ChooseCharacter (TutorialChooseCharacterRequest) returns (TutorialChooseCharacterResponse);
+  rpc DrawGacha (google.protobuf.Empty) returns (TutorialDrawGachaResponse);
+  rpc ConfirmGacha (google.protobuf.Empty) returns (TutorialConfirmGachaResponse);
+  rpc ListGachaCard (google.protobuf.Empty) returns (TutorialListGachaCardResponse);
+  rpc ReadInstantTips (TutorialReadInstantTipsRequest) returns (TutorialReadInstantTipsResponse);
+}
+
 // rpc/api/user.gen.proto
 syntax = "proto3";
 
@@ -13935,6 +18034,114 @@ message UserDeleteResponse {
 service User {
   rpc Get (google.protobuf.Empty) returns (UserGetResponse);
   rpc Delete (google.protobuf.Empty) returns (UserDeleteResponse);
+}
+
+// rpc/api/user_content_cdn.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/user_content_cdn.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message UserContentCdnGetSignedCookieResponse {
+  common.UserContentCdnSignedCookie signed_cookie = 1;
+}
+
+service UserContentCdn {
+  rpc GetSignedCookie (google.protobuf.Empty) returns (UserContentCdnGetSignedCookieResponse);
+}
+
+// rpc/api/work.gen.proto
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/work_evaluation_rank_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message WorkListWorkSlotPowerRequest {
+  repeated WorkSlot slots = 1;
+}
+
+message WorkListWorkSlotPowerResponse {
+  message WorkSlotPower {
+    int32 slot_number = 1;
+    int64 work_slot_power = 2;
+  }
+  repeated WorkListWorkSlotPowerResponse.WorkSlotPower work_slot_powers = 1;
+  common.Response common_response = 9999;
+}
+
+message WorkStartRequest {
+  repeated WorkSlot slots = 1;
+}
+
+message WorkSlot {
+  int32 slot_number = 1;
+  repeated string card_ids = 2;
+}
+
+message WorkFinishRequest {
+  int32 slot_number = 1;
+}
+
+message WorkFinishResponse {
+  WorkResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message WorkFinishAllResponse {
+  repeated WorkResult results = 1;
+  common.Response common_response = 9999;
+}
+
+message WorkCancelRequest {
+  int32 slot_number = 1;
+}
+
+message WorkResult {
+  int32 slot_number = 1;
+  string work_id = 2;
+  repeated common.RewardResult reward_results = 3;
+  enums.WorkEvaluationRankType evaluation_rank_type = 4;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
+}
+
+message WorkRefreshResponse {
+  common.Response common_response = 9999;
+}
+
+message WorkStartResponse {
+  common.Response common_response = 9999;
+}
+
+message WorkCancelResponse {
+  common.Response common_response = 9999;
+}
+
+service Work {
+  rpc ListWorkSlotPower (WorkListWorkSlotPowerRequest) returns (WorkListWorkSlotPowerResponse);
+  rpc Refresh (google.protobuf.Empty) returns (WorkRefreshResponse);
+  rpc Start (WorkStartRequest) returns (WorkStartResponse);
+  rpc Finish (WorkFinishRequest) returns (WorkFinishResponse);
+  rpc FinishAll (google.protobuf.Empty) returns (WorkFinishAllResponse);
+  rpc Cancel (WorkCancelRequest) returns (WorkCancelResponse);
 }
 
 // rpc/multi_game_server_manager/multi_game_circuit.gen.proto

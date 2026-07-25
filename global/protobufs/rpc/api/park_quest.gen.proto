@@ -1,0 +1,549 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/live.gen.proto";
+import "common/reward.gen.proto";
+import "enums/live_evaluation_rank_type.gen.proto";
+import "enums/live_result_type.gen.proto";
+import "enums/music_difficulty_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/chase.gen.proto";
+import "rpc/api/common/circuit.gen.proto";
+import "rpc/api/common/combo_card_game.gen.proto";
+import "rpc/api/common/cooking_puzzle.gen.proto";
+import "rpc/api/common/jump_rope.gen.proto";
+import "rpc/api/common/live.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/park.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/splash_ball.gen.proto";
+import "rpc/api/common/startup_notification.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ParkQuestStartCharacterRequest {
+  string park_permanence_id = 1;
+  int32 action_number = 2;
+}
+
+message ParkQuestClearStepRequest {
+  common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+}
+
+message ParkQuestClearStepResponse {
+  repeated common.RewardResult reward_results = 1;
+  repeated common.StartupNotification startup_notifications = 2;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestGetLiveFixedDeckRequest {
+  common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+  enums.MusicDifficultyType difficulty_type = 2;
+}
+
+message ParkQuestGetLiveFixedDeckResponse {
+  repeated common.LiveDeckPosition deck_positions = 1;
+  common.LiveDeckEvaluation live_deck_evaluation = 2;
+  common.LiveDeckInGameEffect live_deck_in_game_effect = 3;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestGetLiveFixedCharacterDeckRequest {
+  message LiveDeckPosition {
+    int32 position = 1;
+    string card_id = 2;
+  }
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  enums.MusicDifficultyType difficulty_type = 6;
+  string costume_id = 7;
+  repeated ParkQuestGetLiveFixedCharacterDeckRequest.LiveDeckPosition deck_positions = 8;
+}
+
+message ParkQuestGetLiveFixedCharacterDeckResponse {
+  repeated common.LiveDeckPosition deck_positions = 1;
+  common.LiveDeckEvaluation live_deck_evaluation = 2;
+  common.LiveDeckInGameEffect live_deck_in_game_effect = 3;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartLiveRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  enums.MusicDifficultyType difficulty_type = 6;
+  string character_id = 7;
+  string costume_id = 8;
+  repeated string card_ids = 9;
+  bool is_auto_play = 10;
+  common.LiveSkinInfo skin_info = 11;
+  string music_mv_category_id = 12;
+}
+
+message ParkQuestStartLiveResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestFinishLiveRequest {
+  common.LiveBaseResult result = 1;
+}
+
+message ParkQuestFinishLiveResponse {
+  enums.LiveResultType result_type = 1;
+  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  int32 evaluation_rank_plus = 3;
+  repeated common.Reward quest_step_clear_rewards = 4;
+  repeated common.Reward music_clear_count_rewards = 5;
+  repeated common.Reward music_full_combo_rewards = 6;
+  repeated common.Reward music_highest_score_rank_rewards = 7;
+  repeated common.Reward music_max_combo_count_phase_rewards = 8;
+  int64 past_character_highest_score = 9;
+  common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 10;
+  bool is_cleared_quest = 12;
+  common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 13;
+  int64 technical_score = 14;
+  repeated common.StartupNotification startup_notifications = 15;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartTutorialLiveRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  enums.MusicDifficultyType difficulty_type = 6;
+  string character_id = 7;
+  string costume_id = 8;
+  repeated string card_ids = 9;
+  string music_mv_category_id = 10;
+}
+
+message ParkQuestFinishTutorialLiveRequest {
+  common.LiveBaseResult result = 1;
+}
+
+message ParkQuestFinishTutorialLiveResponse {
+  enums.LiveResultType result_type = 1;
+  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  int32 evaluation_rank_plus = 3;
+  repeated common.RewardResult reward_results = 4;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetryLiveRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message ParkQuestRetryLiveResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartTutorialLiveResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireLiveRequest {
+  common.LiveBaseResult result = 1;
+  int64 progress_millisecond = 2;
+}
+
+message ParkQuestMatchRandomJumpRopeRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomJumpRopeResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartJumpRopeSingleRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestStartJumpRopeSingleResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartJumpRopeMultiRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishJumpRopeSingleRequest {
+  int32 jump_count = 1;
+  int32 success_jump_count = 2;
+  int32 failure_jump_count = 3;
+  int32 continuous_jump_count = 4;
+}
+
+message ParkQuestFinishJumpRopeSingleResponse {
+  bool is_cleared = 1;
+  repeated common.RewardResult reward_results = 2;
+  repeated common.StartupNotification startup_notifications = 3;
+  common.StorageUrlInfo play_log_upload_url = 50;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestFinishJumpRopeMultiRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishJumpRopeMultiResponse {
+  bool is_cleared = 1;
+  common.JumpRopeResultInfo jump_rope_result_info = 2;
+  int32 self_past_best_jump_count = 3;
+  bool is_self_best_jump_count_updated = 4;
+  repeated common.RewardResult reward_results = 5;
+  repeated common.StartupNotification startup_notifications = 6;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMatchRandomCircuitRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomCircuitResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCircuitRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishCircuitRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishCircuitResponse {
+  bool is_cleared = 1;
+  common.CircuitResultInfo circuit_result_info = 2;
+  repeated common.RewardResult reward_results = 3;
+  repeated common.StartupNotification startup_notifications = 4;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCookingPuzzleRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestFinishCookingPuzzleRequest {
+  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
+  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+  int64 score = 3;
+  int32 stock_space_overflow_count = 4;
+  int32 foodstuff_collecting_count = 5;
+  int32 max_combo_count = 6;
+}
+
+message ParkQuestFinishCookingPuzzleResponse {
+  bool is_cleared = 1;
+  repeated common.RewardResult reward_results = 2;
+  repeated common.StartupNotification startup_notifications = 3;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireCookingPuzzleRequest {
+  repeated common.CookingPuzzleRecipeInfo completion_recipe_infos = 1;
+  common.CookingPuzzleRecipeInfo last_uncompletion_recipe_info = 2;
+  int64 score = 3;
+  int32 stock_space_overflow_count = 4;
+  int32 foodstuff_collecting_count = 5;
+  int32 max_combo_count = 6;
+}
+
+message ParkQuestReportCookingPuzzleRecipeProgressRequest {
+  string cooking_puzzle_recipe_id = 1;
+}
+
+message ParkQuestMatchRandomComboCardGameRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomComboCardGameResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartComboCardGameRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishComboCardGameRequest {
+  string multi_game_result_id = 1;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+}
+
+message ParkQuestFinishComboCardGameResponse {
+  bool is_cleared = 1;
+  common.ComboCardGameResultInfo combo_card_game_result_info = 2;
+  repeated common.RewardResult reward_results = 3;
+  int64 before_chip_diff_total_quantity = 4;
+  repeated common.StartupNotification startup_notifications = 5;
+  bool is_highest_score_updated = 6;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMatchRandomChaseRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomChaseResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartChaseRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishChaseRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishChaseResponse {
+  bool is_cleared = 1;
+  common.ChaseResultInfo chase_result_info = 2;
+  int64 past_highest_score = 3;
+  bool is_highest_score_updated = 4;
+  repeated common.RewardResult reward_results = 5;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMatchRandomSplashBallRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomSplashBallResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartSplashBallRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ParkQuestFinishSplashBallRequest {
+  string multi_game_result_id = 1;
+}
+
+message ParkQuestFinishSplashBallResponse {
+  bool is_cleared = 1;
+  common.SplashBallResultInfo splash_ball_result_info = 2;
+  int64 past_highest_score = 3;
+  bool is_highest_score_updated = 4;
+  repeated common.RewardResult reward_results = 5;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestDeliverItemRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestDeliverItemResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestLevelUpFacilityRequest {
+  string park_quest_id = 1;
+  int32 step_group_number = 2;
+  int32 step = 3;
+  string park_target_mapping_id = 4;
+  int32 action_number = 5;
+}
+
+message ParkQuestLevelUpFacilityResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestUseCharacterQuestItemRequest {
+  string character_id = 1;
+}
+
+message ParkQuestSelectAreaRequest {
+  repeated common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+  string area_id = 2;
+}
+
+message ParkQuestSelectAreaResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMoveAreaRequest {
+  repeated common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
+  string area_id = 2;
+}
+
+message ParkQuestStartCharacterResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireLiveResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartJumpRopeMultiResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCircuitResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartCookingPuzzleResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestRetireCookingPuzzleResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestReportCookingPuzzleRecipeProgressResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartComboCardGameResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartChaseResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestStartSplashBallResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestUseCharacterQuestItemResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkQuestMoveAreaResponse {
+  common.Response common_response = 9999;
+}
+
+service ParkQuest {
+  rpc StartCharacter (ParkQuestStartCharacterRequest) returns (ParkQuestStartCharacterResponse);
+  rpc ClearStep (ParkQuestClearStepRequest) returns (ParkQuestClearStepResponse);
+  rpc GetLiveFixedDeck (ParkQuestGetLiveFixedDeckRequest) returns (ParkQuestGetLiveFixedDeckResponse);
+  rpc GetLiveFixedCharacterDeck (ParkQuestGetLiveFixedCharacterDeckRequest) returns (ParkQuestGetLiveFixedCharacterDeckResponse);
+  rpc StartLive (ParkQuestStartLiveRequest) returns (ParkQuestStartLiveResponse);
+  rpc FinishLive (ParkQuestFinishLiveRequest) returns (ParkQuestFinishLiveResponse);
+  rpc RetryLive (ParkQuestRetryLiveRequest) returns (ParkQuestRetryLiveResponse);
+  rpc RetireLive (ParkQuestRetireLiveRequest) returns (ParkQuestRetireLiveResponse);
+  rpc StartTutorialLive (ParkQuestStartTutorialLiveRequest) returns (ParkQuestStartTutorialLiveResponse);
+  rpc FinishTutorialLive (ParkQuestFinishTutorialLiveRequest) returns (ParkQuestFinishTutorialLiveResponse);
+  rpc MatchRandomJumpRope (ParkQuestMatchRandomJumpRopeRequest) returns (ParkQuestMatchRandomJumpRopeResponse);
+  rpc StartJumpRopeSingle (ParkQuestStartJumpRopeSingleRequest) returns (ParkQuestStartJumpRopeSingleResponse);
+  rpc StartJumpRopeMulti (ParkQuestStartJumpRopeMultiRequest) returns (ParkQuestStartJumpRopeMultiResponse);
+  rpc FinishJumpRopeSingle (ParkQuestFinishJumpRopeSingleRequest) returns (ParkQuestFinishJumpRopeSingleResponse);
+  rpc FinishJumpRopeMulti (ParkQuestFinishJumpRopeMultiRequest) returns (ParkQuestFinishJumpRopeMultiResponse);
+  rpc MatchRandomCircuit (ParkQuestMatchRandomCircuitRequest) returns (ParkQuestMatchRandomCircuitResponse);
+  rpc StartCircuit (ParkQuestStartCircuitRequest) returns (ParkQuestStartCircuitResponse);
+  rpc FinishCircuit (ParkQuestFinishCircuitRequest) returns (ParkQuestFinishCircuitResponse);
+  rpc StartCookingPuzzle (ParkQuestStartCookingPuzzleRequest) returns (ParkQuestStartCookingPuzzleResponse);
+  rpc FinishCookingPuzzle (ParkQuestFinishCookingPuzzleRequest) returns (ParkQuestFinishCookingPuzzleResponse);
+  rpc RetireCookingPuzzle (ParkQuestRetireCookingPuzzleRequest) returns (ParkQuestRetireCookingPuzzleResponse);
+  rpc ReportCookingPuzzleRecipeProgress (ParkQuestReportCookingPuzzleRecipeProgressRequest) returns (ParkQuestReportCookingPuzzleRecipeProgressResponse);
+  rpc MatchRandomComboCardGame (ParkQuestMatchRandomComboCardGameRequest) returns (ParkQuestMatchRandomComboCardGameResponse);
+  rpc StartComboCardGame (ParkQuestStartComboCardGameRequest) returns (ParkQuestStartComboCardGameResponse);
+  rpc FinishComboCardGame (ParkQuestFinishComboCardGameRequest) returns (ParkQuestFinishComboCardGameResponse);
+  rpc MatchRandomChase (ParkQuestMatchRandomChaseRequest) returns (ParkQuestMatchRandomChaseResponse);
+  rpc StartChase (ParkQuestStartChaseRequest) returns (ParkQuestStartChaseResponse);
+  rpc FinishChase (ParkQuestFinishChaseRequest) returns (ParkQuestFinishChaseResponse);
+  rpc MatchRandomSplashBall (ParkQuestMatchRandomSplashBallRequest) returns (ParkQuestMatchRandomSplashBallResponse);
+  rpc StartSplashBall (ParkQuestStartSplashBallRequest) returns (ParkQuestStartSplashBallResponse);
+  rpc FinishSplashBall (ParkQuestFinishSplashBallRequest) returns (ParkQuestFinishSplashBallResponse);
+  rpc DeliverItem (ParkQuestDeliverItemRequest) returns (ParkQuestDeliverItemResponse);
+  rpc LevelUpFacility (ParkQuestLevelUpFacilityRequest) returns (ParkQuestLevelUpFacilityResponse);
+  rpc UseCharacterQuestItem (ParkQuestUseCharacterQuestItemRequest) returns (ParkQuestUseCharacterQuestItemResponse);
+  rpc SelectArea (ParkQuestSelectAreaRequest) returns (ParkQuestSelectAreaResponse);
+  rpc MoveArea (ParkQuestMoveAreaRequest) returns (ParkQuestMoveAreaResponse);
+}

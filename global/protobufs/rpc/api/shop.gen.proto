@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/shop.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ShopListResponse {
+  repeated common.Shop shops = 1;
+  common.Response common_response = 9999;
+}
+
+message ShopPurchaseConsumptionItemRequest {
+  string shop_consumption_item_id = 1;
+  int32 quantity = 2;
+}
+
+message ShopPurchaseConsumptionItemResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Shop shop = 2;
+  common.Response common_response = 9999;
+}
+
+message ShopReadRequest {
+  string shop_id = 1;
+  repeated string shop_charge_item_consumable_shop_charge_item_ids = 2;
+  repeated string shop_consumption_item_ids = 3;
+}
+
+message ShopReadResponse {
+  common.Response common_response = 9999;
+}
+
+service Shop {
+  rpc List (google.protobuf.Empty) returns (ShopListResponse);
+  rpc PurchaseConsumptionItem (ShopPurchaseConsumptionItemRequest) returns (ShopPurchaseConsumptionItemResponse);
+  rpc Read (ShopReadRequest) returns (ShopReadResponse);
+}

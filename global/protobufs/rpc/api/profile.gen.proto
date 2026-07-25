@@ -1,0 +1,166 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/emblem_position.gen.proto";
+import "enums/complain_category_type.gen.proto";
+import "enums/profile_publish_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/profile.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ProfileSetNameRequest {
+  string name = 1;
+}
+
+message ProfileSetMessageRequest {
+  string message = 1;
+}
+
+message ProfileSetFanMarkRequest {
+  string fan_mark_id = 1;
+}
+
+message ProfileSwitchPublishSettingRequest {
+  enums.ProfilePublishType profile_publish_type = 1;
+  bool is_publish = 2;
+}
+
+message ProfileSetEmblemRequest {
+  repeated common.EmblemPosition emblem_positions = 1;
+}
+
+message ProfileGetUserProfileDetailRequest {
+  string public_user_id = 1;
+}
+
+message ProfileGetUserProfileDetailResponse {
+  common.UserProfileDetailInfo user_profile_detail_info = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileBlockUserRequest {
+  string public_user_id = 1;
+}
+
+message ProfileUnblockUserRequest {
+  string public_user_id = 1;
+}
+
+message ProfileListBlockedUserResponse {
+  repeated common.BasicUserInfo user_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileComplainUserRequest {
+  string public_user_id = 1;
+  repeated enums.ComplainCategoryType category_types = 2;
+  string message = 3;
+}
+
+message ProfileListCustomPaletteResponse {
+  repeated common.CustomPalette custom_palettes = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileGetCustomPaletteImageUploadUrlRequest {
+  int32 number = 1;
+}
+
+message ProfileGetCustomPaletteImageUploadUrlResponse {
+  string upload_token = 1;
+  common.StorageUrlInfo storage_url_info = 2;
+  common.Response common_response = 9999;
+}
+
+message ProfileEditCustomPaletteRequest {
+  string upload_token = 1;
+  int32 number = 2;
+  string custom_palette_preset_layout_group_id = 3;
+  common.CustomPaletteBackground background = 4;
+  repeated common.CustomPalettePart parts = 5;
+}
+
+message ProfileEditCustomPaletteResponse {
+  int32 number = 1;
+  common.Response common_response = 9999;
+}
+
+message ProfileSetCustomPaletteRequest {
+  int32 number = 1;
+}
+
+message ProfileDeleteCustomPaletteRequest {
+  int32 number = 1;
+}
+
+message ProfileSetNameResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetMessageResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetFanMarkResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSwitchPublishSettingResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetEmblemResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileBlockUserResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileUnblockUserResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileComplainUserResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetCustomPaletteResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileDeleteCustomPaletteResponse {
+  common.Response common_response = 9999;
+}
+
+message ProfileSetDefaultCustomPaletteResponse {
+  common.Response common_response = 9999;
+}
+
+service Profile {
+  rpc SetName (ProfileSetNameRequest) returns (ProfileSetNameResponse);
+  rpc SetMessage (ProfileSetMessageRequest) returns (ProfileSetMessageResponse);
+  rpc SetFanMark (ProfileSetFanMarkRequest) returns (ProfileSetFanMarkResponse);
+  rpc SwitchPublishSetting (ProfileSwitchPublishSettingRequest) returns (ProfileSwitchPublishSettingResponse);
+  rpc SetEmblem (ProfileSetEmblemRequest) returns (ProfileSetEmblemResponse);
+  rpc GetUserProfileDetail (ProfileGetUserProfileDetailRequest) returns (ProfileGetUserProfileDetailResponse);
+  rpc BlockUser (ProfileBlockUserRequest) returns (ProfileBlockUserResponse);
+  rpc UnblockUser (ProfileUnblockUserRequest) returns (ProfileUnblockUserResponse);
+  rpc ListBlockedUser (google.protobuf.Empty) returns (ProfileListBlockedUserResponse);
+  rpc ComplainUser (ProfileComplainUserRequest) returns (ProfileComplainUserResponse);
+  rpc ListCustomPalette (google.protobuf.Empty) returns (ProfileListCustomPaletteResponse);
+  rpc GetCustomPaletteImageUploadUrl (ProfileGetCustomPaletteImageUploadUrlRequest) returns (ProfileGetCustomPaletteImageUploadUrlResponse);
+  rpc EditCustomPalette (ProfileEditCustomPaletteRequest) returns (ProfileEditCustomPaletteResponse);
+  rpc SetCustomPalette (ProfileSetCustomPaletteRequest) returns (ProfileSetCustomPaletteResponse);
+  rpc DeleteCustomPalette (ProfileDeleteCustomPaletteRequest) returns (ProfileDeleteCustomPaletteResponse);
+  rpc SetDefaultCustomPalette (google.protobuf.Empty) returns (ProfileSetDefaultCustomPaletteResponse);
+}

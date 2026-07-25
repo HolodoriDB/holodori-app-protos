@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/jump_rope.gen.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message JumpRopeMatchRandomRequest {
+  string jump_rope_id = 1;
+  common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message JumpRopeMatchRandomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeCreatePrivateRoomRequest {
+  string jump_rope_id = 1;
+  common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message JumpRopeCreatePrivateRoomResponse {
+  common.MultiGameMatchInfo match_info = 1;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeStartSingleRequest {
+  string jump_rope_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+}
+
+message JumpRopeStartSingleResponse {
+  int32 seed = 1;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeStartMultiRequest {
+  string jump_rope_id = 1;
+  int32 reward_up_stamina_consumption_quantity = 2;
+  string character_id = 3;
+  bool is_private_room = 4;
+  repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+  repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message JumpRopeFinishSingleRequest {
+  int32 jump_count = 1;
+  int32 success_jump_count = 2;
+  int32 failure_jump_count = 3;
+  int32 continuous_jump_count = 4;
+  int64 gimmick_random_seed = 50;
+}
+
+message JumpRopeFinishSingleResponse {
+  int32 past_best_jump_count = 1;
+  bool is_best_jump_count_updated = 2;
+  repeated common.RewardResult results = 3;
+  bool is_cleared = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  int64 benefit_license_reward_quantity_up_permil_up = 6;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 7;
+  common.StorageUrlInfo play_log_upload_url = 50;
+  int64 gimmick_random_seed = 51;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeFinishMultiRequest {
+  string multi_game_result_id = 1;
+}
+
+message JumpRopeFinishMultiResponse {
+  common.JumpRopeResultInfo jump_rope_result_info = 1;
+  int32 self_past_best_jump_count = 2;
+  bool is_self_best_jump_count_updated = 3;
+  repeated common.RewardResult results = 4;
+  int32 reward_up_stamina_consumption_quantity = 5;
+  common.MultiGameResultPrivateRoomInfo private_room_info = 6;
+  int64 benefit_license_reward_quantity_up_permil_up = 7;
+  repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+  common.StorageUrlInfo play_log_upload_url = 9;
+  common.MarathonMiniGameResult marathon_mini_game_result = 100;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeGetRankingInfoResponse {
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  common.Response common_response = 9999;
+}
+
+message JumpRopeReadNotificationRequest {
+  repeated string jump_rope_ids = 1;
+}
+
+message JumpRopeStartMultiResponse {
+  common.Response common_response = 9999;
+}
+
+message JumpRopeReadNotificationResponse {
+  common.Response common_response = 9999;
+}
+
+service JumpRope {
+  rpc MatchRandom (JumpRopeMatchRandomRequest) returns (JumpRopeMatchRandomResponse);
+  rpc CreatePrivateRoom (JumpRopeCreatePrivateRoomRequest) returns (JumpRopeCreatePrivateRoomResponse);
+  rpc StartSingle (JumpRopeStartSingleRequest) returns (JumpRopeStartSingleResponse);
+  rpc StartMulti (JumpRopeStartMultiRequest) returns (JumpRopeStartMultiResponse);
+  rpc FinishSingle (JumpRopeFinishSingleRequest) returns (JumpRopeFinishSingleResponse);
+  rpc FinishMulti (JumpRopeFinishMultiRequest) returns (JumpRopeFinishMultiResponse);
+  rpc GetRankingInfo (google.protobuf.Empty) returns (JumpRopeGetRankingInfoResponse);
+  rpc ReadNotification (JumpRopeReadNotificationRequest) returns (JumpRopeReadNotificationResponse);
+}

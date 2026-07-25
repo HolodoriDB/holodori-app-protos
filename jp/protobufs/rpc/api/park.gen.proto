@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/cheat_feature_type.gen.proto";
+import "enums/music_startup_notification_type.gen.proto";
+import "enums/park_banner_type.gen.proto";
+import "enums/park_mission_action_type.gen.proto";
+import "enums/transition_type.gen.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/startup_notification.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ParkRefreshRequest {
+  string area_id = 1;
+}
+
+message ParkEnterResponse {
+  message HomeBanner {
+    string home_banner_id = 1;
+    string asset_id = 2;
+    enums.TransitionType transition_type = 3;
+    string transition_id = 4;
+    int64 end_time = 5;
+    int64 priority = 6;
+    string condition_group_id = 7;
+    string title = 8;
+    int64 start_time = 9;
+    string external_url = 100;
+  }
+  message ParkBanner {
+    string park_banner_id = 1;
+    enums.ParkBannerType type = 2;
+    string asset_id = 3;
+    enums.TransitionType transition_type = 5;
+    string transition_id = 6;
+    int64 end_time = 7;
+    int64 priority = 8;
+    string condition_group_id = 9;
+    repeated ParkEnterResponse.ParkBannerFacility park_banner_facilities = 10;
+    int64 start_time = 11;
+    string external_url = 100;
+  }
+  message ParkBannerFacility {
+    string facility_id = 1;
+    string view_condition_group_id = 2;
+  }
+  message MusicStartupNotification {
+    string id = 1;
+    enums.MusicStartupNotificationType type = 2;
+    string music_id = 3;
+    repeated int32 music_mv_numbers = 4;
+  }
+  message MaintenanceNoticeInfo {
+    int64 start_time = 1;
+    int64 end_time = 2;
+  }
+  repeated ParkEnterResponse.HomeBanner home_banners = 1;
+  repeated ParkEnterResponse.ParkBanner park_banners = 2;
+  repeated common.StartupNotification startup_notifications = 3;
+  repeated ParkEnterResponse.MusicStartupNotification music_startup_notifications = 4;
+  ParkEnterResponse.MaintenanceNoticeInfo maintenance_notice_info = 5;
+  repeated enums.CheatFeatureType cheat_feature_restriction_types = 6;
+  common.Response common_response = 9999;
+}
+
+message ParkSetCharacterRequest {
+  string character_id = 1;
+}
+
+message ParkSetAccessoryRequest {
+  string park_accessory_id = 1;
+}
+
+message ParkUpdateTimePeriodRequest {
+  int32 time_point = 1;
+}
+
+message ParkReceivePlayerLevelRewardRequest {
+  repeated int32 player_levels = 1;
+}
+
+message ParkReceivePlayerLevelRewardResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkOpenTreasureRequest {
+  string area_id = 1;
+  string park_treasure_id = 2;
+}
+
+message ParkOpenTreasureResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkCollectFixedSymbolRequest {
+  string park_fixed_symbol_id = 1;
+}
+
+message ParkCollectFixedSymbolResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkCollectRandomSymbolRequest {
+  string area_id = 1;
+  string park_target_mapping_id = 2;
+}
+
+message ParkCollectRandomSymbolResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkListenCallRequest {
+  string area_id = 1;
+  string park_call_id = 2;
+}
+
+message ParkReportActionRequest {
+  enums.ParkMissionActionType action_type = 1;
+  int32 count = 2;
+}
+
+message ParkReadTalkFreeRequest {
+  string park_talk_free_id = 1;
+  repeated string character_ids = 2;
+}
+
+message ParkReadTalkFreeResponse {
+  repeated common.RewardResult reward_results = 1;
+  common.Response common_response = 9999;
+}
+
+message ParkSelectAreaRequest {
+  string area_selector_id = 1;
+  string area_id = 2;
+}
+
+message ParkRefreshResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkSetCharacterResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkSetAccessoryResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkUpdateTimePeriodResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkListenCallResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkReportActionResponse {
+  common.Response common_response = 9999;
+}
+
+message ParkSelectAreaResponse {
+  common.Response common_response = 9999;
+}
+
+service Park {
+  rpc Enter (google.protobuf.Empty) returns (ParkEnterResponse);
+  rpc Refresh (ParkRefreshRequest) returns (ParkRefreshResponse);
+  rpc SetCharacter (ParkSetCharacterRequest) returns (ParkSetCharacterResponse);
+  rpc SetAccessory (ParkSetAccessoryRequest) returns (ParkSetAccessoryResponse);
+  rpc UpdateTimePeriod (ParkUpdateTimePeriodRequest) returns (ParkUpdateTimePeriodResponse);
+  rpc ReceivePlayerLevelReward (ParkReceivePlayerLevelRewardRequest) returns (ParkReceivePlayerLevelRewardResponse);
+  rpc OpenTreasure (ParkOpenTreasureRequest) returns (ParkOpenTreasureResponse);
+  rpc CollectFixedSymbol (ParkCollectFixedSymbolRequest) returns (ParkCollectFixedSymbolResponse);
+  rpc CollectRandomSymbol (ParkCollectRandomSymbolRequest) returns (ParkCollectRandomSymbolResponse);
+  rpc ListenCall (ParkListenCallRequest) returns (ParkListenCallResponse);
+  rpc ReportAction (ParkReportActionRequest) returns (ParkReportActionResponse);
+  rpc ReadTalkFree (ParkReadTalkFreeRequest) returns (ParkReadTalkFreeResponse);
+  rpc SelectArea (ParkSelectAreaRequest) returns (ParkSelectAreaResponse);
+}

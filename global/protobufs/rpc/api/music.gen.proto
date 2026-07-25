@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/music_difficulty_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MusicSwitchFavoriteRequest {
+  string music_id = 1;
+  bool is_favorite = 2;
+}
+
+message MusicGetHighestScoreLiveDeckRequest {
+  string public_user_id = 1;
+  string music_id = 2;
+}
+
+message MusicGetHighestScoreLiveDeckResponse {
+  common.RankingLiveDeckInfo ranking_live_deck_info = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicGetHighestScoreRankingInfoRequest {
+  string music_id = 1;
+}
+
+message MusicGetHighestScoreRankingInfoResponse {
+  message MusicDifficultyScoreInfo {
+    enums.MusicDifficultyType music_difficulty_type = 1;
+    int64 score = 2;
+  }
+  int32 self_rank = 1;
+  repeated common.BasicRankingRankInfo rank_infos = 2;
+  repeated MusicGetHighestScoreRankingInfoResponse.MusicDifficultyScoreInfo self_music_difficulty_score_infos = 3;
+  common.Response common_response = 9999;
+}
+
+message MusicListHighestScoreRatingRankingRankRequest {
+  repeated string character_ids = 1;
+}
+
+message MusicListHighestScoreRatingRankingRankResponse {
+  message RankInfo {
+    string character_id = 2;
+    int32 rank = 1;
+  }
+  repeated MusicListHighestScoreRatingRankingRankResponse.RankInfo rank_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicGetHighestScoreRatingRankingInfoRequest {
+  string character_id = 1;
+}
+
+message MusicGetHighestScoreRatingRankingInfoResponse {
+  repeated common.BasicRankingRankInfo rank_infos = 1;
+  common.Response common_response = 9999;
+}
+
+message MusicReleaseMusicRequest {
+  string music_id = 1;
+}
+
+message MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoRequest {
+  string character_id = 1;
+}
+
+message MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoResponse {
+  message ThresholdRankingRankInfo {
+    int32 rank = 1;
+    int64 score = 2;
+  }
+  repeated MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoResponse.ThresholdRankingRankInfo threshold_rank_infos = 1;
+  int64 updated_ranking_time = 2;
+  common.Response common_response = 9999;
+}
+
+message MusicSwitchFavoriteResponse {
+  common.Response common_response = 9999;
+}
+
+message MusicReleaseMusicResponse {
+  common.Response common_response = 9999;
+}
+
+service Music {
+  rpc SwitchFavorite (MusicSwitchFavoriteRequest) returns (MusicSwitchFavoriteResponse);
+  rpc GetHighestScoreLiveDeck (MusicGetHighestScoreLiveDeckRequest) returns (MusicGetHighestScoreLiveDeckResponse);
+  rpc GetHighestScoreRankingInfo (MusicGetHighestScoreRankingInfoRequest) returns (MusicGetHighestScoreRankingInfoResponse);
+  rpc ListHighestScoreRatingRankingRank (MusicListHighestScoreRatingRankingRankRequest) returns (MusicListHighestScoreRatingRankingRankResponse);
+  rpc GetHighestScoreRatingRankingInfo (MusicGetHighestScoreRatingRankingInfoRequest) returns (MusicGetHighestScoreRatingRankingInfoResponse);
+  rpc ReleaseMusic (MusicReleaseMusicRequest) returns (MusicReleaseMusicResponse);
+  rpc ListHighestScoreRatingRankingRewardThresholdRankingRankInfo (MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoRequest) returns (MusicListHighestScoreRatingRankingRewardThresholdRankingRankInfoResponse);
+}

@@ -1,0 +1,277 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/card_attribute_type.gen.proto";
+import "enums/card_rarity.gen.proto";
+import "enums/mini_game_type.gen.proto";
+import "enums/tips_hint_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/ranking.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message MarathonTopRequest {
+  string marathon_id = 1;
+}
+
+message MarathonReadTopRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonTopResponse {
+  message Marathon {
+    message MarathonChapter {
+      message MarathonScoreReward {
+        int64 score = 1;
+        repeated common.Reward rewards = 2;
+      }
+      string id = 1;
+      int32 chapter_number = 2;
+      string character_id = 3;
+      int64 end_time = 4;
+      string score_name = 5;
+      string score_icon_asset_id = 6;
+      string marathon_event_badge_item_id = 7;
+      string marathon_score_ranking_rank_reward_group_id = 8;
+      string marathon_music_highest_score_ranking_rank_reward_group_id = 9;
+      string marathon_total_music_highest_score_ranking_reward_group_id = 10;
+      string marathon_music_score_bonus_group_id = 11;
+      string marathon_mini_game_marathon_score_bonus_group_id = 12;
+      string marathon_live_marathon_score_bonus_group_id = 13;
+      string marathon_mini_game_marathon_score_rate_group_id = 14;
+      string mission_group_id = 15;
+      repeated MarathonTopResponse.Marathon.MarathonChapter.MarathonScoreReward marathon_score_rewards = 16;
+      int64 score = 17;
+      string event_story_chapter_id = 18;
+      string auto_play_story_id = 19;
+      string background_asset_id = 20;
+      string bgm_asset_id = 21;
+      int64 ranking_reveal_start_time = 22;
+    }
+    message MarathonMiniGameMarathonScoreBonus {
+      string group_id = 1;
+      int32 number = 2;
+      string card_id = 3;
+      enums.CardRarity card_rarity = 4;
+      int64 card_potential_upgrade_count = 5;
+      int32 marathon_score_quantity_up_permil_up = 6;
+    }
+    message MarathonLiveMarathonScoreBonus {
+      string group_id = 1;
+      int32 number = 2;
+      string character_id = 3;
+      string card_id = 4;
+      enums.CardAttributeType card_attribute_type = 5;
+      enums.CardRarity card_rarity = 6;
+      int64 card_potential_upgrade_count = 7;
+      int32 marathon_score_quantity_up_permil_up = 8;
+    }
+    message MarathonMusicScoreBonus {
+      string group_id = 1;
+      string music_id = 2;
+      int32 number = 3;
+      string character_id = 4;
+      string card_id = 5;
+      enums.CardAttributeType card_attribute_type = 6;
+      enums.CardRarity card_rarity = 7;
+      int64 card_potential_upgrade_count = 8;
+      int32 score_up_permil_up = 9;
+    }
+    message MarathonMiniGameMarathonScoreRate {
+      string group_id = 1;
+      enums.MiniGameType mini_game_type = 2;
+      int32 marathon_score_permil_multiply = 3;
+      int32 bonus_permil_up = 4;
+    }
+    message MarathonScoreRankingRankReward {
+      string group_id = 1;
+      int64 end_rank = 2;
+      repeated common.Reward rewards = 3;
+      string marathon_ranking_grade_id = 4;
+    }
+    message MarathonMusicHighestScoreRankingRankReward {
+      string group_id = 1;
+      string music_id = 2;
+      int64 end_rank = 3;
+      repeated common.Reward rewards = 4;
+      string marathon_ranking_grade_id = 5;
+    }
+    message MarathonTotalMusicHighestScoreRankingReward {
+      string group_id = 1;
+      int64 end_rank = 2;
+      repeated common.Reward rewards = 3;
+      string marathon_ranking_grade_id = 4;
+    }
+    string id = 1;
+    int64 start_time = 2;
+    int64 end_time = 3;
+    int64 exchange_end_time = 4;
+    string name = 5;
+    string logo_asset_id = 6;
+    string condition_group_id = 7;
+    string exchange_booth_group_id = 8;
+    string mission_group_id = 9;
+    int64 aggregation_start_time = 10;
+    int64 aggregated_ranking_reveal_start_time = 11;
+    repeated MarathonTopResponse.Marathon.MarathonChapter marathon_chapters = 12;
+    repeated MarathonTopResponse.Marathon.MarathonMiniGameMarathonScoreBonus marathon_mini_game_marathon_score_bonuses = 13;
+    repeated MarathonTopResponse.Marathon.MarathonLiveMarathonScoreBonus marathon_live_marathon_score_bonuses = 14;
+    repeated MarathonTopResponse.Marathon.MarathonMusicScoreBonus marathon_music_score_bonuses = 15;
+    repeated MarathonTopResponse.Marathon.MarathonMiniGameMarathonScoreRate marathon_mini_game_marathon_score_rates = 16;
+    repeated MarathonTopResponse.Marathon.MarathonScoreRankingRankReward marathon_score_ranking_rank_rewards = 17;
+    repeated MarathonTopResponse.Marathon.MarathonMusicHighestScoreRankingRankReward marathon_music_highest_score_ranking_rank_rewards = 18;
+    repeated MarathonTopResponse.Marathon.MarathonTotalMusicHighestScoreRankingReward marathon_total_music_highest_score_ranking_rewards = 19;
+    bool is_marathon_score_ranking_disable = 20;
+    enums.TipsHintType tips_hint_type = 21;
+  }
+  message RankingResult {
+    message MarathonChapter {
+      message MusicHighestScoreRankingRankResult {
+        string music_id = 1;
+        int64 rank = 2;
+        repeated common.Reward rewards = 3;
+      }
+      string marathon_chapter_id = 1;
+      int64 marathon_score_rank = 2;
+      repeated common.Reward marathon_score_ranking_rewards = 3;
+      repeated MarathonTopResponse.RankingResult.MarathonChapter.MusicHighestScoreRankingRankResult music_highest_score_ranking_rank_results = 4;
+      int64 total_music_highest_score_rank = 5;
+      repeated common.Reward total_music_highest_score_ranking_rewards = 6;
+    }
+    repeated MarathonTopResponse.RankingResult.MarathonChapter marathon_chapters = 1;
+  }
+  MarathonTopResponse.Marathon marathon = 1;
+  MarathonTopResponse.RankingResult ranking_result = 2;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMusicHighestScoreRankingTopRequest {
+  string marathon_chapter_id = 1;
+  string music_id = 2;
+}
+
+message MarathonListMusicHighestScoreRankingTopResponse {
+  MarathonMusicScoreRankingResult ranking_result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMusicHighestScoreRankingGradeRequest {
+  string marathon_chapter_id = 1;
+  string music_id = 2;
+}
+
+message MarathonListMusicHighestScoreRankingGradeResponse {
+  MarathonMusicScoreRankingResult ranking_result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMusicHighestScoreRankingAroundSelfRequest {
+  string marathon_chapter_id = 1;
+  string music_id = 2;
+}
+
+message MarathonListMusicHighestScoreRankingAroundSelfResponse {
+  MarathonMusicScoreRankingResult ranking_result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMarathonScoreRankingTopRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListMarathonScoreRankingTopResponse {
+  MarathonScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMarathonScoreRankingGradeRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListMarathonScoreRankingGradeResponse {
+  MarathonScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListMarathonScoreRankingAroundSelfRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListMarathonScoreRankingAroundSelfResponse {
+  MarathonScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListTotalMusicHighestScoreRankingTopRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListTotalMusicHighestScoreRankingTopResponse {
+  MarathonTotalMusicScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListTotalMusicHighestScoreRankingGradeRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListTotalMusicHighestScoreRankingGradeResponse {
+  MarathonTotalMusicScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonListTotalMusicHighestScoreRankingAroundSelfRequest {
+  string marathon_chapter_id = 1;
+}
+
+message MarathonListTotalMusicHighestScoreRankingAroundSelfResponse {
+  MarathonTotalMusicScoreRankingResult result = 1;
+  common.Response common_response = 9999;
+}
+
+message MarathonTotalMusicScoreRankingResult {
+  int32 self_rank = 1;
+  int64 self_score = 2;
+  bool is_self_rank_out_of_range = 3;
+  repeated common.BasicRankingRankInfo rank_infos = 4;
+}
+
+message MarathonMusicScoreRankingResult {
+  int32 self_rank = 1;
+  int64 self_score = 2;
+  bool is_self_rank_out_of_range = 3;
+  repeated common.BasicRankingRankInfo rank_infos = 4;
+}
+
+message MarathonScoreRankingResult {
+  int32 self_rank = 1;
+  int64 self_score = 2;
+  bool is_self_rank_out_of_range = 3;
+  repeated common.BasicRankingRankInfo rank_infos = 4;
+}
+
+message MarathonReadTopResponse {
+  common.Response common_response = 9999;
+}
+
+service Marathon {
+  rpc Top (MarathonTopRequest) returns (MarathonTopResponse);
+  rpc ReadTop (MarathonReadTopRequest) returns (MarathonReadTopResponse);
+  rpc ListMusicHighestScoreRankingGrade (MarathonListMusicHighestScoreRankingGradeRequest) returns (MarathonListMusicHighestScoreRankingGradeResponse);
+  rpc ListMusicHighestScoreRankingTop (MarathonListMusicHighestScoreRankingTopRequest) returns (MarathonListMusicHighestScoreRankingTopResponse);
+  rpc ListMusicHighestScoreRankingAroundSelf (MarathonListMusicHighestScoreRankingAroundSelfRequest) returns (MarathonListMusicHighestScoreRankingAroundSelfResponse);
+  rpc ListMarathonScoreRankingGrade (MarathonListMarathonScoreRankingGradeRequest) returns (MarathonListMarathonScoreRankingGradeResponse);
+  rpc ListMarathonScoreRankingTop (MarathonListMarathonScoreRankingTopRequest) returns (MarathonListMarathonScoreRankingTopResponse);
+  rpc ListMarathonScoreRankingAroundSelf (MarathonListMarathonScoreRankingAroundSelfRequest) returns (MarathonListMarathonScoreRankingAroundSelfResponse);
+  rpc ListTotalMusicHighestScoreRankingGrade (MarathonListTotalMusicHighestScoreRankingGradeRequest) returns (MarathonListTotalMusicHighestScoreRankingGradeResponse);
+  rpc ListTotalMusicHighestScoreRankingTop (MarathonListTotalMusicHighestScoreRankingTopRequest) returns (MarathonListTotalMusicHighestScoreRankingTopResponse);
+  rpc ListTotalMusicHighestScoreRankingAroundSelf (MarathonListTotalMusicHighestScoreRankingAroundSelfRequest) returns (MarathonListTotalMusicHighestScoreRankingAroundSelfResponse);
+}

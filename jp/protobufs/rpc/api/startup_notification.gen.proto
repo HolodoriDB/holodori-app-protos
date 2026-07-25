@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package rpc.api;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/response.gen.proto";
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message StartupNotificationReadRequest {
+  repeated string startup_notification_ids = 1;
+}
+
+message StartupNotificationReadMusicRequest {
+  repeated string music_startup_notification_ids = 1;
+}
+
+message StartupNotificationReadResponse {
+  common.Response common_response = 9999;
+}
+
+message StartupNotificationReadMusicResponse {
+  common.Response common_response = 9999;
+}
+
+service StartupNotification {
+  rpc Read (StartupNotificationReadRequest) returns (StartupNotificationReadResponse);
+  rpc ReadMusic (StartupNotificationReadMusicRequest) returns (StartupNotificationReadMusicResponse);
+}
