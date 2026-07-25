@@ -201,7 +201,7 @@ def process(region: str, package: str, auth: dict, work: Path) -> bool:
 
 
 def main() -> None:
-    auth = ensure_auth()
+    auth = ensure_auth(force_refresh=True)
     if not auth:
         raise RuntimeError("google play anonymous authentication failed")
     work = ROOT / ".temp"
