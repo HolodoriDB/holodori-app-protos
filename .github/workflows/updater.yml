@@ -25,7 +25,7 @@ jobs:
       - name: install deps
         run: >
           python -m pip install --upgrade pip
-          justapk==0.1.1 gplaydl==2.1.5 capstone==5.0.7 pyelftools==0.31 protobuf==3.20.3
+          justapk==0.1.1 requests capstone==5.0.7 pyelftools==0.31 protobuf==3.20.3
 
       - name: run updater
         run: python updater.py
