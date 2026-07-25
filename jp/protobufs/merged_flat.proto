@@ -1,13 +1,5 @@
 syntax = "proto2";
 
-import "google/protobuf/any.proto";
-import "google/protobuf/descriptor.proto";
-import "google/protobuf/duration.proto";
-import "google/protobuf/empty.proto";
-import "google/protobuf/source_context.proto";
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/type.proto";
-
 message buf {
 	message validate {
 		extend google.protobuf.MessageOptions {
@@ -6161,6 +6153,678 @@ message enums {
 		WorkEvaluationRankType_WORK_EVALUATION_RANK_TYPE_B = 3;
 		WorkEvaluationRankType_WORK_EVALUATION_RANK_TYPE_A = 4;
 		WorkEvaluationRankType_WORK_EVALUATION_RANK_TYPE_S = 5;
+	}
+}
+
+message google {
+	message api {
+		extend google.protobuf.MethodOptions {
+			optional .google.api.HttpRule http = 72295728;
+		}
+
+		message Http {
+			repeated .google.api.HttpRule rules = 1;
+			optional bool fully_decode_reserved_expansion = 2;
+		}
+
+		message HttpRule {
+			optional string selector = 1;
+			optional string body = 7;
+			optional string response_body = 12;
+			repeated .google.api.HttpRule additional_bindings = 11;
+
+			oneof pattern {
+				string get = 2;
+				string put = 3;
+				string post = 4;
+				string delete = 5;
+				string patch = 6;
+				.google.api.CustomHttpPattern custom = 8;
+			}
+		}
+
+		message CustomHttpPattern {
+			optional string kind = 1;
+			optional string path = 2;
+		}
+	}
+
+	message protobuf {
+		enum Edition {
+			Edition_EDITION_UNKNOWN = 0;
+			Edition_EDITION_PROTO2 = 998;
+			Edition_EDITION_PROTO3 = 999;
+			Edition_EDITION_2023 = 1000;
+			Edition_EDITION_1_TEST_ONLY = 1;
+			Edition_EDITION_2_TEST_ONLY = 2;
+			Edition_EDITION_99997_TEST_ONLY = 99997;
+			Edition_EDITION_99998_TEST_ONLY = 99998;
+			Edition_EDITION_99999_TEST_ONLY = 99999;
+		}
+
+		enum NullValue {
+			NullValue_NULL_VALUE = 0;
+		}
+
+		enum Syntax {
+			Syntax_SYNTAX_PROTO2 = 0;
+			Syntax_SYNTAX_PROTO3 = 1;
+			Syntax_SYNTAX_EDITIONS = 2;
+		}
+
+		message Any {
+			optional string type_url = 1;
+			optional bytes value = 2;
+		}
+
+		message Api {
+			optional string name = 1;
+			repeated .google.protobuf.Method methods = 2;
+			repeated .google.protobuf.Option options = 3;
+			optional string version = 4;
+			optional .google.protobuf.SourceContext source_context = 5;
+			repeated .google.protobuf.Mixin mixins = 6;
+			optional .google.protobuf.Syntax syntax = 7;
+		}
+
+		message Method {
+			optional string name = 1;
+			optional string request_type_url = 2;
+			optional bool request_streaming = 3;
+			optional string response_type_url = 4;
+			optional bool response_streaming = 5;
+			repeated .google.protobuf.Option options = 6;
+			optional .google.protobuf.Syntax syntax = 7;
+		}
+
+		message Mixin {
+			optional string name = 1;
+			optional string root = 2;
+		}
+
+		message FileDescriptorSet {
+			repeated .google.protobuf.FileDescriptorProto file = 1;
+		}
+
+		message FileDescriptorProto {
+			optional string name = 1;
+			optional string package = 2;
+			repeated string dependency = 3;
+			repeated int32 public_dependency = 10;
+			repeated int32 weak_dependency = 11;
+			repeated .google.protobuf.DescriptorProto message_type = 4;
+			repeated .google.protobuf.EnumDescriptorProto enum_type = 5;
+			repeated .google.protobuf.ServiceDescriptorProto service = 6;
+			repeated .google.protobuf.FieldDescriptorProto extension = 7;
+			optional .google.protobuf.FileOptions options = 8;
+			optional .google.protobuf.SourceCodeInfo source_code_info = 9;
+			optional string syntax = 12;
+			optional .google.protobuf.Edition edition = 14;
+		}
+
+		message DescriptorProto {
+			message ExtensionRange {
+				optional int32 start = 1;
+				optional int32 end = 2;
+				optional .google.protobuf.ExtensionRangeOptions options = 3;
+			}
+
+			message ReservedRange {
+				optional int32 start = 1;
+				optional int32 end = 2;
+			}
+
+			optional string name = 1;
+			repeated .google.protobuf.FieldDescriptorProto field = 2;
+			repeated .google.protobuf.FieldDescriptorProto extension = 6;
+			repeated .google.protobuf.DescriptorProto nested_type = 3;
+			repeated .google.protobuf.EnumDescriptorProto enum_type = 4;
+			repeated .google.protobuf.DescriptorProto.ExtensionRange extension_range = 5;
+			repeated .google.protobuf.OneofDescriptorProto oneof_decl = 8;
+			optional .google.protobuf.MessageOptions options = 7;
+			repeated .google.protobuf.DescriptorProto.ReservedRange reserved_range = 9;
+			repeated string reserved_name = 10;
+		}
+
+		message ExtensionRangeOptions {
+			message Declaration {
+				optional int32 number = 1;
+				optional string full_name = 2;
+				optional string type = 3;
+				optional bool reserved = 5;
+				optional bool repeated = 6;
+			}
+
+			enum VerificationState {
+				VerificationState_DECLARATION = 0;
+				VerificationState_UNVERIFIED = 1;
+			}
+
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+			repeated .google.protobuf.ExtensionRangeOptions.Declaration declaration = 2;
+			optional .google.protobuf.FeatureSet features = 50;
+			optional .google.protobuf.ExtensionRangeOptions.VerificationState verification = 3;
+
+			extensions 1000 to max;
+		}
+
+		message FieldDescriptorProto {
+			enum Type {
+				Type_TYPE_DOUBLE = 1;
+				Type_TYPE_FLOAT = 2;
+				Type_TYPE_INT64 = 3;
+				Type_TYPE_UINT64 = 4;
+				Type_TYPE_INT32 = 5;
+				Type_TYPE_FIXED64 = 6;
+				Type_TYPE_FIXED32 = 7;
+				Type_TYPE_BOOL = 8;
+				Type_TYPE_STRING = 9;
+				Type_TYPE_GROUP = 10;
+				Type_TYPE_MESSAGE = 11;
+				Type_TYPE_BYTES = 12;
+				Type_TYPE_UINT32 = 13;
+				Type_TYPE_ENUM = 14;
+				Type_TYPE_SFIXED32 = 15;
+				Type_TYPE_SFIXED64 = 16;
+				Type_TYPE_SINT32 = 17;
+				Type_TYPE_SINT64 = 18;
+			}
+
+			enum Label {
+				Label_LABEL_OPTIONAL = 1;
+				Label_LABEL_REPEATED = 3;
+				Label_LABEL_REQUIRED = 2;
+			}
+
+			optional string name = 1;
+			optional int32 number = 3;
+			optional .google.protobuf.FieldDescriptorProto.Label label = 4;
+			optional .google.protobuf.FieldDescriptorProto.Type type = 5;
+			optional string type_name = 6;
+			optional string extendee = 2;
+			optional string default_value = 7;
+			optional int32 oneof_index = 9;
+			optional string json_name = 10;
+			optional .google.protobuf.FieldOptions options = 8;
+			optional bool proto3_optional = 17;
+		}
+
+		message OneofDescriptorProto {
+			optional string name = 1;
+			optional .google.protobuf.OneofOptions options = 2;
+		}
+
+		message EnumDescriptorProto {
+			message EnumReservedRange {
+				optional int32 start = 1;
+				optional int32 end = 2;
+			}
+
+			optional string name = 1;
+			repeated .google.protobuf.EnumValueDescriptorProto value = 2;
+			optional .google.protobuf.EnumOptions options = 3;
+			repeated .google.protobuf.EnumDescriptorProto.EnumReservedRange reserved_range = 4;
+			repeated string reserved_name = 5;
+		}
+
+		message EnumValueDescriptorProto {
+			optional string name = 1;
+			optional int32 number = 2;
+			optional .google.protobuf.EnumValueOptions options = 3;
+		}
+
+		message ServiceDescriptorProto {
+			optional string name = 1;
+			repeated .google.protobuf.MethodDescriptorProto method = 2;
+			optional .google.protobuf.ServiceOptions options = 3;
+		}
+
+		message MethodDescriptorProto {
+			optional string name = 1;
+			optional string input_type = 2;
+			optional string output_type = 3;
+			optional .google.protobuf.MethodOptions options = 4;
+			optional bool client_streaming = 5;
+			optional bool server_streaming = 6;
+		}
+
+		message FileOptions {
+			enum OptimizeMode {
+				OptimizeMode_SPEED = 1;
+				OptimizeMode_CODE_SIZE = 2;
+				OptimizeMode_LITE_RUNTIME = 3;
+			}
+
+			optional string java_package = 1;
+			optional string java_outer_classname = 8;
+			optional bool java_multiple_files = 10;
+			optional bool java_generate_equals_and_hash = 20;
+			optional bool java_string_check_utf8 = 27;
+			optional .google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
+			optional string go_package = 11;
+			optional bool cc_generic_services = 16;
+			optional bool java_generic_services = 17;
+			optional bool py_generic_services = 18;
+			optional bool php_generic_services = 42;
+			optional bool deprecated = 23;
+			optional bool cc_enable_arenas = 31;
+			optional string objc_class_prefix = 36;
+			optional string csharp_namespace = 37;
+			optional string swift_prefix = 39;
+			optional string php_class_prefix = 40;
+			optional string php_namespace = 41;
+			optional string php_metadata_namespace = 44;
+			optional string ruby_package = 45;
+			optional .google.protobuf.FeatureSet features = 50;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message MessageOptions {
+			optional bool message_set_wire_format = 1;
+			optional bool no_standard_descriptor_accessor = 2;
+			optional bool deprecated = 3;
+			optional bool map_entry = 7;
+			optional bool deprecated_legacy_json_field_conflicts = 11;
+			optional .google.protobuf.FeatureSet features = 12;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message FieldOptions {
+			message EditionDefault {
+				optional .google.protobuf.Edition edition = 3;
+				optional string value = 2;
+			}
+
+			enum CType {
+				CType_STRING = 0;
+				CType_CORD = 1;
+				CType_STRING_PIECE = 2;
+			}
+
+			enum JSType {
+				JSType_JS_NORMAL = 0;
+				JSType_JS_STRING = 1;
+				JSType_JS_NUMBER = 2;
+			}
+
+			enum OptionRetention {
+				OptionRetention_RETENTION_UNKNOWN = 0;
+				OptionRetention_RETENTION_RUNTIME = 1;
+				OptionRetention_RETENTION_SOURCE = 2;
+			}
+
+			enum OptionTargetType {
+				OptionTargetType_TARGET_TYPE_UNKNOWN = 0;
+				OptionTargetType_TARGET_TYPE_FILE = 1;
+				OptionTargetType_TARGET_TYPE_EXTENSION_RANGE = 2;
+				OptionTargetType_TARGET_TYPE_MESSAGE = 3;
+				OptionTargetType_TARGET_TYPE_FIELD = 4;
+				OptionTargetType_TARGET_TYPE_ONEOF = 5;
+				OptionTargetType_TARGET_TYPE_ENUM = 6;
+				OptionTargetType_TARGET_TYPE_ENUM_ENTRY = 7;
+				OptionTargetType_TARGET_TYPE_SERVICE = 8;
+				OptionTargetType_TARGET_TYPE_METHOD = 9;
+			}
+
+			optional .google.protobuf.FieldOptions.CType ctype = 1;
+			optional bool packed = 2;
+			optional .google.protobuf.FieldOptions.JSType jstype = 6;
+			optional bool lazy = 5;
+			optional bool unverified_lazy = 15;
+			optional bool deprecated = 3;
+			optional bool weak = 10;
+			optional bool debug_redact = 16;
+			optional .google.protobuf.FieldOptions.OptionRetention retention = 17;
+			repeated .google.protobuf.FieldOptions.OptionTargetType targets = 19;
+			repeated .google.protobuf.FieldOptions.EditionDefault edition_defaults = 20;
+			optional .google.protobuf.FeatureSet features = 21;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message OneofOptions {
+			optional .google.protobuf.FeatureSet features = 1;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message EnumOptions {
+			optional bool allow_alias = 2;
+			optional bool deprecated = 3;
+			optional bool deprecated_legacy_json_field_conflicts = 6;
+			optional .google.protobuf.FeatureSet features = 7;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message EnumValueOptions {
+			optional bool deprecated = 1;
+			optional .google.protobuf.FeatureSet features = 2;
+			optional bool debug_redact = 3;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message ServiceOptions {
+			optional .google.protobuf.FeatureSet features = 34;
+			optional bool deprecated = 33;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message MethodOptions {
+			enum IdempotencyLevel {
+				IdempotencyLevel_IDEMPOTENCY_UNKNOWN = 0;
+				IdempotencyLevel_NO_SIDE_EFFECTS = 1;
+				IdempotencyLevel_IDEMPOTENT = 2;
+			}
+
+			optional bool deprecated = 33;
+			optional .google.protobuf.MethodOptions.IdempotencyLevel idempotency_level = 34;
+			optional .google.protobuf.FeatureSet features = 35;
+			repeated .google.protobuf.UninterpretedOption uninterpreted_option = 999;
+
+			extensions 1000 to max;
+		}
+
+		message UninterpretedOption {
+			message NamePart {
+				required string name_part = 1;
+				required bool is_extension = 2;
+			}
+
+			repeated .google.protobuf.UninterpretedOption.NamePart name = 2;
+			optional string identifier_value = 3;
+			optional uint64 positive_int_value = 4;
+			optional int64 negative_int_value = 5;
+			optional double double_value = 6;
+			optional bytes string_value = 7;
+			optional string aggregate_value = 8;
+		}
+
+		message FeatureSet {
+			enum FieldPresence {
+				FieldPresence_FIELD_PRESENCE_UNKNOWN = 0;
+				FieldPresence_EXPLICIT = 1;
+				FieldPresence_IMPLICIT = 2;
+				FieldPresence_LEGACY_REQUIRED = 3;
+			}
+
+			enum EnumType {
+				EnumType_ENUM_TYPE_UNKNOWN = 0;
+				EnumType_OPEN = 1;
+				EnumType_CLOSED = 2;
+			}
+
+			enum RepeatedFieldEncoding {
+				RepeatedFieldEncoding_REPEATED_FIELD_ENCODING_UNKNOWN = 0;
+				RepeatedFieldEncoding_PACKED = 1;
+				RepeatedFieldEncoding_EXPANDED = 2;
+			}
+
+			enum Utf8Validation {
+				Utf8Validation_UTF8_VALIDATION_UNKNOWN = 0;
+				Utf8Validation_NONE = 1;
+				Utf8Validation_VERIFY = 2;
+			}
+
+			enum MessageEncoding {
+				MessageEncoding_MESSAGE_ENCODING_UNKNOWN = 0;
+				MessageEncoding_LENGTH_PREFIXED = 1;
+				MessageEncoding_DELIMITED = 2;
+			}
+
+			enum JsonFormat {
+				JsonFormat_JSON_FORMAT_UNKNOWN = 0;
+				JsonFormat_ALLOW = 1;
+				JsonFormat_LEGACY_BEST_EFFORT = 2;
+			}
+
+			optional .google.protobuf.FeatureSet.FieldPresence field_presence = 1;
+			optional .google.protobuf.FeatureSet.EnumType enum_type = 2;
+			optional .google.protobuf.FeatureSet.RepeatedFieldEncoding repeated_field_encoding = 3;
+			optional .google.protobuf.FeatureSet.Utf8Validation utf8_validation = 4;
+			optional .google.protobuf.FeatureSet.MessageEncoding message_encoding = 5;
+			optional .google.protobuf.FeatureSet.JsonFormat json_format = 6;
+
+			extensions 1000 to 1000;
+			extensions 1001 to 1001;
+			extensions 9995 to 9999;
+		}
+
+		message FeatureSetDefaults {
+			message FeatureSetEditionDefault {
+				optional .google.protobuf.Edition edition = 3;
+				optional .google.protobuf.FeatureSet features = 2;
+			}
+
+			repeated .google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault defaults = 1;
+			optional .google.protobuf.Edition minimum_edition = 4;
+			optional .google.protobuf.Edition maximum_edition = 5;
+		}
+
+		message SourceCodeInfo {
+			message Location {
+				repeated int32 path = 1;
+				repeated int32 span = 2;
+				optional string leading_comments = 3;
+				optional string trailing_comments = 4;
+				repeated string leading_detached_comments = 6;
+			}
+
+			repeated .google.protobuf.SourceCodeInfo.Location location = 1;
+		}
+
+		message GeneratedCodeInfo {
+			message Annotation {
+				enum Semantic {
+					Semantic_NONE = 0;
+					Semantic_SET = 1;
+					Semantic_ALIAS = 2;
+				}
+
+				repeated int32 path = 1;
+				optional string source_file = 2;
+				optional int32 begin = 3;
+				optional int32 end = 4;
+				optional .google.protobuf.GeneratedCodeInfo.Annotation.Semantic semantic = 5;
+			}
+
+			repeated .google.protobuf.GeneratedCodeInfo.Annotation annotation = 1;
+		}
+
+		message Duration {
+			optional int64 seconds = 1;
+			optional int32 nanos = 2;
+		}
+
+		message Empty {
+		}
+
+		message FieldMask {
+			repeated string paths = 1;
+		}
+
+		message SourceContext {
+			optional string file_name = 1;
+		}
+
+		message Struct {
+			map<string, .google.protobuf.Value> fields = 1;
+		}
+
+		message Value {
+			oneof kind {
+				.google.protobuf.NullValue null_value = 1;
+				double number_value = 2;
+				string string_value = 3;
+				bool bool_value = 4;
+				.google.protobuf.Struct struct_value = 5;
+				.google.protobuf.ListValue list_value = 6;
+			}
+		}
+
+		message ListValue {
+			repeated .google.protobuf.Value values = 1;
+		}
+
+		message Timestamp {
+			optional int64 seconds = 1;
+			optional int32 nanos = 2;
+		}
+
+		message Type {
+			optional string name = 1;
+			repeated .google.protobuf.Field fields = 2;
+			repeated string oneofs = 3;
+			repeated .google.protobuf.Option options = 4;
+			optional .google.protobuf.SourceContext source_context = 5;
+			optional .google.protobuf.Syntax syntax = 6;
+			optional string edition = 7;
+		}
+
+		message Field {
+			enum Kind {
+				Kind_TYPE_UNKNOWN = 0;
+				Kind_TYPE_DOUBLE = 1;
+				Kind_TYPE_FLOAT = 2;
+				Kind_TYPE_INT64 = 3;
+				Kind_TYPE_UINT64 = 4;
+				Kind_TYPE_INT32 = 5;
+				Kind_TYPE_FIXED64 = 6;
+				Kind_TYPE_FIXED32 = 7;
+				Kind_TYPE_BOOL = 8;
+				Kind_TYPE_STRING = 9;
+				Kind_TYPE_GROUP = 10;
+				Kind_TYPE_MESSAGE = 11;
+				Kind_TYPE_BYTES = 12;
+				Kind_TYPE_UINT32 = 13;
+				Kind_TYPE_ENUM = 14;
+				Kind_TYPE_SFIXED32 = 15;
+				Kind_TYPE_SFIXED64 = 16;
+				Kind_TYPE_SINT32 = 17;
+				Kind_TYPE_SINT64 = 18;
+			}
+
+			enum Cardinality {
+				Cardinality_CARDINALITY_UNKNOWN = 0;
+				Cardinality_CARDINALITY_OPTIONAL = 1;
+				Cardinality_CARDINALITY_REQUIRED = 2;
+				Cardinality_CARDINALITY_REPEATED = 3;
+			}
+
+			optional .google.protobuf.Field.Kind kind = 1;
+			optional .google.protobuf.Field.Cardinality cardinality = 2;
+			optional int32 number = 3;
+			optional string name = 4;
+			optional string type_url = 6;
+			optional int32 oneof_index = 7;
+			optional bool packed = 8;
+			repeated .google.protobuf.Option options = 9;
+			optional string json_name = 10;
+			optional string default_value = 11;
+		}
+
+		message Enum {
+			optional string name = 1;
+			repeated .google.protobuf.EnumValue enumvalue = 2;
+			repeated .google.protobuf.Option options = 3;
+			optional .google.protobuf.SourceContext source_context = 4;
+			optional .google.protobuf.Syntax syntax = 5;
+			optional string edition = 6;
+		}
+
+		message EnumValue {
+			optional string name = 1;
+			optional int32 number = 2;
+			repeated .google.protobuf.Option options = 3;
+		}
+
+		message Option {
+			optional string name = 1;
+			optional .google.protobuf.Any value = 2;
+		}
+
+		message DoubleValue {
+			optional double value = 1;
+		}
+
+		message FloatValue {
+			optional float value = 1;
+		}
+
+		message Int64Value {
+			optional int64 value = 1;
+		}
+
+		message UInt64Value {
+			optional uint64 value = 1;
+		}
+
+		message Int32Value {
+			optional int32 value = 1;
+		}
+
+		message UInt32Value {
+			optional uint32 value = 1;
+		}
+
+		message BoolValue {
+			optional bool value = 1;
+		}
+
+		message StringValue {
+			optional string value = 1;
+		}
+
+		message BytesValue {
+			optional bytes value = 1;
+		}
+
+		message compiler {
+			message Version {
+				optional int32 major = 1;
+				optional int32 minor = 2;
+				optional int32 patch = 3;
+				optional string suffix = 4;
+			}
+
+			message CodeGeneratorRequest {
+				repeated string file_to_generate = 1;
+				optional string parameter = 2;
+				repeated .google.protobuf.FileDescriptorProto proto_file = 15;
+				repeated .google.protobuf.FileDescriptorProto source_file_descriptors = 17;
+				optional .google.protobuf.compiler.Version compiler_version = 3;
+			}
+
+			message CodeGeneratorResponse {
+				message File {
+					optional string name = 1;
+					optional string insertion_point = 2;
+					optional string content = 15;
+					optional .google.protobuf.GeneratedCodeInfo generated_code_info = 16;
+				}
+
+				enum Feature {
+					Feature_FEATURE_NONE = 0;
+					Feature_FEATURE_PROTO3_OPTIONAL = 1;
+					Feature_FEATURE_SUPPORTS_EDITIONS = 2;
+				}
+
+				optional string error = 1;
+				optional uint64 supported_features = 2;
+				repeated .google.protobuf.compiler.CodeGeneratorResponse.File file = 15;
+			}
+		}
 	}
 }
 
