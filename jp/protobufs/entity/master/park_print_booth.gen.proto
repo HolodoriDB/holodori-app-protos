@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkPrintBooth {
-  enums.ParkPrintBoothType type = 1;
+  .enums.ParkPrintBoothType type = 1;
   int32 number = 2;
   string park_print_booth_composition_id = 3;
   int32 ratio = 4;

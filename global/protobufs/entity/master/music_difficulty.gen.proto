@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MusicDifficulty {
   string music_id = 1;
-  enums.MusicDifficultyType difficulty_type = 2;
+  .enums.MusicDifficultyType difficulty_type = 2;
   int32 difficulty_level = 3;
   string chart_asset_id = 4;
   string view_condition_group_id = 5;

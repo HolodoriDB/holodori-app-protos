@@ -17,8 +17,8 @@ message Card {
   string id = 1;
   string character_id = 2;
   string name_lang_id = 3;
-  enums.CardRarity rarity = 4;
-  enums.CardAttributeType attribute_type = 5;
+  .enums.CardRarity rarity = 4;
+  .enums.CardAttributeType attribute_type = 5;
   string card_level_group_id = 6;
   int32 performance_permil_multiply = 7;
   int32 technique_permil_multiply = 8;
@@ -34,9 +34,9 @@ message Card {
   string skill_tree_connect_effect_id = 22;
   string reward_costume_id = 23;
   string reward_sd_costume_id = 24;
-  enums.CardAssetType asset_type = 25;
-  enums.CardVerticalAnchorType vertical_anchor_type = 26;
-  enums.CardHorizontalAnchorType horizontal_anchor_type = 27;
+  .enums.CardAssetType asset_type = 25;
+  .enums.CardVerticalAnchorType vertical_anchor_type = 26;
+  .enums.CardHorizontalAnchorType horizontal_anchor_type = 27;
   string gacha_animation_character_voice_id = 28;
   string card_detail_character_voice_id = 29;
   bool is_no_signed_card_message = 33;
@@ -46,6 +46,6 @@ message Card {
   string potential_upgrade4_character_voice_id = 37;
   string potential_upgrade5_character_voice_id = 38;
   int32 order = 999;
-  common.Reward potential_alternative_reward = 1000;
-  common.Reward acquire_reward = 1001;
+  .common.Reward potential_alternative_reward = 1000;
+  .common.Reward acquire_reward = 1001;
 }

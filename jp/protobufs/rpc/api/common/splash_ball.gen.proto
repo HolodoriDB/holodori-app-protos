@@ -10,12 +10,12 @@ option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message SplashBallResultInfo {
   repeated SplashBallTeamInfo team_infos = 1;
-  enums.SplashBallTeamColor self_team_color = 2;
+  .enums.SplashBallTeamColor self_team_color = 2;
   int64 self_score = 3;
 }
 
 message SplashBallTeamInfo {
-  enums.SplashBallTeamColor team_color = 1;
+  .enums.SplashBallTeamColor team_color = 1;
   int64 score = 2;
   int32 rank = 3;
   repeated SplashBallUserInfo user_infos = 4;

@@ -15,7 +15,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message TutorialProgressRequest {
-  enums.TutorialType tutorial_type = 1;
+  .enums.TutorialType tutorial_type = 1;
   int32 progress = 2;
 }
 
@@ -85,8 +85,8 @@ service Tutorial {
   rpc Progress (TutorialProgressRequest) returns (TutorialProgressResponse);
   rpc RegisterInitialUserInfo (TutorialRegisterInitialUserInfoRequest) returns (TutorialRegisterInitialUserInfoResponse);
   rpc ChooseCharacter (TutorialChooseCharacterRequest) returns (TutorialChooseCharacterResponse);
-  rpc DrawGacha (google.protobuf.Empty) returns (TutorialDrawGachaResponse);
-  rpc ConfirmGacha (google.protobuf.Empty) returns (TutorialConfirmGachaResponse);
-  rpc ListGachaCard (google.protobuf.Empty) returns (TutorialListGachaCardResponse);
+  rpc DrawGacha (.google.protobuf.Empty) returns (TutorialDrawGachaResponse);
+  rpc ConfirmGacha (.google.protobuf.Empty) returns (TutorialConfirmGachaResponse);
+  rpc ListGachaCard (.google.protobuf.Empty) returns (TutorialListGachaCardResponse);
   rpc ReadInstantTips (TutorialReadInstantTipsRequest) returns (TutorialReadInstantTipsResponse);
 }

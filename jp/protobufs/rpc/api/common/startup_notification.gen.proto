@@ -10,9 +10,9 @@ option csharp_namespace = "Vision.Common.Proto.Api.Common";
 
 message StartupNotification {
   string id = 1;
-  enums.StartupNotificationType type = 2;
+  .enums.StartupNotificationType type = 2;
   int32 priority = 3;
   string asset_id = 4;
-  enums.TransitionType content_startup_notification_transition_type = 100;
+  .enums.TransitionType content_startup_notification_transition_type = 100;
   string content_startup_notification_transition_id = 101;
 }

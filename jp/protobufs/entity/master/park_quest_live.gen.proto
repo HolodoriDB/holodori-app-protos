@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message ParkQuestLive {
   string id = 1;
   string music_id = 2;
-  enums.ParkQuestLiveDeckType deck_type = 3;
+  .enums.ParkQuestLiveDeckType deck_type = 3;
   string fixed_character_id = 4;
   string fixed_costume_id = 5;
   int64 clear_score = 6;

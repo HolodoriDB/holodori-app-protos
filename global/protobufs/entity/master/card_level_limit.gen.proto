@@ -12,5 +12,5 @@ message CardLevelLimit {
   string group_id = 1;
   int32 limit_break_count = 2;
   int32 level_limit = 3;
-  repeated common.Consumption consumptions = 7;
+  repeated .common.Consumption consumptions = 7;
 }

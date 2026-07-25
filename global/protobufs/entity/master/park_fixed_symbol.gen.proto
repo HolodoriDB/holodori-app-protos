@@ -12,5 +12,5 @@ message ParkFixedSymbol {
   string id = 1;
   string park_target_mapping_id = 2;
   string condition_group_id = 6;
-  common.Reward reward = 1000;
+  .common.Reward reward = 1000;
 }

@@ -11,6 +11,6 @@ message UserTime {
   int64 game_start_time = 2;
   int64 last_login_time = 3;
   int64 force_relogin_flag_set_time = 4;
-  enums.OsType last_login_os = 5;
+  .enums.OsType last_login_os = 5;
   int64 comebacked_time = 6;
 }

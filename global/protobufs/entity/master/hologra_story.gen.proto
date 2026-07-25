@@ -13,7 +13,7 @@ message HolograStory {
   string title_lang_id = 2;
   string story_id = 3;
   string asset_id = 4;
-  enums.StoryAssetType asset_type = 5;
+  .enums.StoryAssetType asset_type = 5;
   int64 start_time = 6;
   int32 order = 999;
 }

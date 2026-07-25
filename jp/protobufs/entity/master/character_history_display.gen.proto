@@ -9,6 +9,6 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CharacterHistoryDisplay {
-  enums.CharacterHistoryType type = 1;
+  .enums.CharacterHistoryType type = 1;
   int32 order = 999;
 }

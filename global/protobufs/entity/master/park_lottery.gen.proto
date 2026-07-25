@@ -11,9 +11,9 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkLottery {
   string id = 1;
-  enums.ParkLotteryType type = 2;
+  .enums.ParkLotteryType type = 2;
   int32 daily_limit_count = 3;
   string limit_reached_park_talk_group_id = 4;
   string condition_group_id = 8;
-  common.Consumption consumption = 1000;
+  .common.Consumption consumption = 1000;
 }

@@ -10,5 +10,5 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ExchangeBooth {
   string id = 1;
-  enums.ResetIntervalType reset_interval_type = 7;
+  .enums.ResetIntervalType reset_interval_type = 7;
 }

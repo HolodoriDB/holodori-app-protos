@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message ParkHighLow {
   string id = 1;
   string name_lang_id = 2;
-  enums.ResourceType consumption_resource_type = 3;
+  .enums.ResourceType consumption_resource_type = 3;
   string consumption_resource_id = 4;
   int64 consumption_quantity = 5;
   int64 max_reward_quantity = 6;

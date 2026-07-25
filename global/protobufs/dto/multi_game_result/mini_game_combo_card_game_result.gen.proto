@@ -22,7 +22,7 @@ message MiniGameComboCardGameResult {
     MultiGameCommonUserResult common_user_result = 100;
   }
   message CompletionRole {
-    enums.ComboCardGameCardRoleType role_type = 1;
+    .enums.ComboCardGameCardRoleType role_type = 1;
     string character_grouping_id = 2;
     string character_id = 3;
     bool is_same_category = 4;

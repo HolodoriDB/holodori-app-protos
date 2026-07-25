@@ -12,5 +12,5 @@ message ParkTimePeriod {
   string id = 1;
   int32 time_point_from = 2;
   int32 time_point_to = 3;
-  enums.ParkTimePeriodType type = 4;
+  .enums.ParkTimePeriodType type = 4;
 }

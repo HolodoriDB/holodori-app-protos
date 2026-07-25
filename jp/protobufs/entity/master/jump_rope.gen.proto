@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message JumpRope {
   string id = 1;
-  enums.JumpRopePlayType play_type = 2;
+  .enums.JumpRopePlayType play_type = 2;
   string view_condition_group_id = 3;
   string unlock_condition_group_id = 4;
   string jump_rope_phase_gimmick_group_id = 5;
@@ -21,6 +21,6 @@ message JumpRope {
   string game_playing_display_clear_condition_lang_id = 12;
   string mode_select_display_clear_condition_lang_id = 13;
   int32 order = 999;
-  repeated common.SimplifiedReward play_rewards = 1000;
-  repeated common.SimplifiedReward multi_mvp_rewards = 1001;
+  repeated .common.SimplifiedReward play_rewards = 1000;
+  repeated .common.SimplifiedReward multi_mvp_rewards = 1001;
 }

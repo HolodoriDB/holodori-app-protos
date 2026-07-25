@@ -13,12 +13,12 @@ message SkillTreeNode {
   string group_id = 1;
   int32 number = 2;
   repeated string character_ids = 3;
-  enums.SkillTreeNodeType type = 4;
+  .enums.SkillTreeNodeType type = 4;
   int32 grade = 5;
   string skill_tree_effect_id = 6;
   string view_condition_group_id = 7;
   string unlock_condition_group_id = 8;
   int32 consumption_skill_tree_point_quantity = 9;
   int32 auto_selection_priority = 13;
-  repeated common.Consumption consumptions = 1000;
+  repeated .common.Consumption consumptions = 1000;
 }

@@ -9,6 +9,6 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CommonBgm {
-  enums.CommonBgmType common_bgm_type = 1;
+  .enums.CommonBgmType common_bgm_type = 1;
   string asset_id = 2;
 }

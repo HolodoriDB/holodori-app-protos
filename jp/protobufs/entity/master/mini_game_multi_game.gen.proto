@@ -10,8 +10,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MiniGameMultiGame {
-  enums.MiniGameType mini_game_type = 1;
-  enums.MultiGameMatchType multi_game_match_type = 2;
+  .enums.MiniGameType mini_game_type = 1;
+  .enums.MultiGameMatchType multi_game_match_type = 2;
   string list_asset_id = 3;
   string view_condition_group_id = 4;
   int32 order = 999;

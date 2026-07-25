@@ -10,8 +10,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Rule {
-  enums.RuleType type = 1;
+  .enums.RuleType type = 1;
   string country_code = 3;
-  enums.StoreType store_type = 4;
+  .enums.StoreType store_type = 4;
   repeated string lang_ids = 5;
 }

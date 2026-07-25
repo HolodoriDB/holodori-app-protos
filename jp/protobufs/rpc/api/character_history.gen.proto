@@ -18,7 +18,7 @@ message CharacterHistoryListRequest {
 
 message CharacterHistoryListResponse {
   message History {
-    enums.CharacterHistoryType character_history_type = 1;
+    .enums.CharacterHistoryType character_history_type = 1;
     int32 order = 2;
     int64 occurred_time = 3;
     string target_id = 4;

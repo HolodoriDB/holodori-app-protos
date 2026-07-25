@@ -16,7 +16,7 @@ option csharp_namespace = "Vision.Common.Proto.Api";
 
 message AccountMigrationListResponse {
   message ProviderLinkInfo {
-    enums.ProviderType provider_type = 1;
+    .enums.ProviderType provider_type = 1;
     bool is_linked = 2;
   }
   repeated AccountMigrationListResponse.ProviderLinkInfo provider_link_infos = 1;
@@ -26,7 +26,7 @@ message AccountMigrationListResponse {
 
 message AccountMigrationPrepareMigrationProviderWithoutAuthRequest {
   string id_token = 1;
-  enums.ProviderType provider_type = 2;
+  .enums.ProviderType provider_type = 2;
 }
 
 message AccountMigrationPrepareMigrationProviderWithoutAuthResponse {
@@ -38,7 +38,7 @@ message AccountMigrationMigrateRequest {
   string previous_public_user_id = 1;
   string target_public_user_id = 2;
   string one_time_token = 3;
-  enums.Region region = 4;
+  .enums.Region region = 4;
 }
 
 message AccountMigrationMigrateResponse {
@@ -88,14 +88,14 @@ message AccountMigrationLinkResult {
     string user_name = 2;
     int32 player_level = 3;
     string one_time_token = 4;
-    enums.Region region = 5;
+    .enums.Region region = 5;
   }
   bool is_already_linked = 1;
   AccountMigrationLinkResult.LinkedUserInfo linked_user_info = 2;
 }
 
 message AccountMigrationUnlinkRequest {
-  enums.ProviderType provider_type = 1;
+  .enums.ProviderType provider_type = 1;
 }
 
 message AccountMigrationUnlinkResponse {
@@ -103,7 +103,7 @@ message AccountMigrationUnlinkResponse {
 }
 
 service AccountMigration {
-  rpc List (google.protobuf.Empty) returns (AccountMigrationListResponse);
+  rpc List (.google.protobuf.Empty) returns (AccountMigrationListResponse);
   rpc SetPassword (AccountMigrationSetPasswordRequest) returns (AccountMigrationSetPasswordResponse);
   rpc PrepareMigrationPassword (AccountMigrationPrepareMigrationPasswordRequest) returns (AccountMigrationPrepareMigrationPasswordResponse);
   rpc LinkApple (AccountMigrationLinkAppleRequest) returns (AccountMigrationLinkAppleResponse);

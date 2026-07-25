@@ -9,6 +9,6 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SkillTreeEffectValueLimit {
-  enums.SkillTreeEffectType skill_tree_effect_type = 1;
+  .enums.SkillTreeEffectType skill_tree_effect_type = 1;
   int64 limit = 2;
 }

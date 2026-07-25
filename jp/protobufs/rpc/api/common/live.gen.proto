@@ -18,7 +18,7 @@ message LiveDeckPosition {
 message LiveDeckEvaluation {
   message LiveDeckPower {
     int64 live_deck_power = 1;
-    enums.LiveDeckRankType live_deck_power_rank_type = 2;
+    .enums.LiveDeckRankType live_deck_power_rank_type = 2;
     int32 live_deck_power_rank_plus_value = 3;
     int64 card_potential_parameter_evaluation_value = 4;
     int64 card_parameter_up_by_live_leader_skill = 5;
@@ -29,7 +29,7 @@ message LiveDeckEvaluation {
   }
   message LiveDeckEvaluationScoreUpPermilUp {
     int64 score_up_permil_up = 1;
-    enums.LiveDeckRankType score_up_permil_up_rank_type = 2;
+    .enums.LiveDeckRankType score_up_permil_up_rank_type = 2;
     int32 score_up_permil_up_rank_plus_value = 3;
     int64 score_up_permil_up_by_live_active_skill = 4;
     int64 score_up_permil_up_by_live_leader_skill = 5;
@@ -38,7 +38,7 @@ message LiveDeckEvaluation {
     int64 score_up_permil_up_by_live_special_skill = 8;
   }
   int64 live_deck_evaluation_value = 1;
-  enums.LiveDeckRankType live_deck_evaluation_rank_type = 2;
+  .enums.LiveDeckRankType live_deck_evaluation_rank_type = 2;
   int32 live_deck_evaluation_rank_plus_value = 3;
   LiveDeckEvaluation.LiveDeckPower live_deck_power = 4;
   LiveDeckEvaluation.LiveDeckEvaluationScoreUpPermilUp live_deck_evaluation_score_up_permil_up = 5;

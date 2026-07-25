@@ -11,8 +11,8 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message GachaAnimationMovie {
   string group_id = 1;
-  enums.GachaAnimationRarityType animation_rarity = 2;
-  enums.GachaAnimationType animation_type = 3;
+  .enums.GachaAnimationRarityType animation_rarity = 2;
+  .enums.GachaAnimationType animation_type = 3;
   int32 animation_number = 4;
   string asset_id = 5;
   int32 ratio = 6;

@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.MultiGameServerManager";
 
 message MultiGameCircuitPickAreaResponse {
   message PickedArea {
-    enums.CircuitAreaType type = 1;
+    .enums.CircuitAreaType type = 1;
     int32 variation_number = 2;
   }
   MultiGameCircuitPickAreaResponse.PickedArea area1 = 1;
@@ -19,5 +19,5 @@ message MultiGameCircuitPickAreaResponse {
 }
 
 service MultiGameCircuit {
-  rpc PickArea (google.protobuf.Empty) returns (MultiGameCircuitPickAreaResponse);
+  rpc PickArea (.google.protobuf.Empty) returns (MultiGameCircuitPickAreaResponse);
 }

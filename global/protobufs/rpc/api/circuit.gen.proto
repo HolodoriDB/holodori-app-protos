@@ -78,5 +78,5 @@ service Circuit {
   rpc CreatePrivateRoom (CircuitCreatePrivateRoomRequest) returns (CircuitCreatePrivateRoomResponse);
   rpc Start (CircuitStartRequest) returns (CircuitStartResponse);
   rpc Finish (CircuitFinishRequest) returns (CircuitFinishResponse);
-  rpc GetRankingInfo (google.protobuf.Empty) returns (CircuitGetRankingInfoResponse);
+  rpc GetRankingInfo (.google.protobuf.Empty) returns (CircuitGetRankingInfoResponse);
 }

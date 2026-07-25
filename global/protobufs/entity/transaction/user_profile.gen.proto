@@ -32,5 +32,5 @@ message UserProfile {
   int64 login_status_last_updated_time = 23;
   string multi_game_unpublished_user_name = 24;
   int64 message_last_updated_time = 25;
-  repeated common.EmblemPosition emblem_positions = 1001;
+  repeated .common.EmblemPosition emblem_positions = 1001;
 }

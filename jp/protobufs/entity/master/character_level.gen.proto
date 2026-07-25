@@ -13,5 +13,5 @@ message CharacterLevel {
   int32 level = 2;
   int64 exp = 3;
   int32 skill_tree_point_quantity = 11;
-  repeated common.Reward rewards = 1000;
+  repeated .common.Reward rewards = 1000;
 }

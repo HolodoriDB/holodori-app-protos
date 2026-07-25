@@ -8,12 +8,12 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
 option csharp_namespace = "Vision.Common.Proto.Common";
 
 message Reward {
-  enums.ResourceType resource_type = 1;
+  .enums.ResourceType resource_type = 1;
   string resource_id = 2;
   int64 quantity = 3;
 }
 
 message SimplifiedReward {
-  enums.ResourceType resource_type = 1;
+  .enums.ResourceType resource_type = 1;
   string resource_id = 2;
 }

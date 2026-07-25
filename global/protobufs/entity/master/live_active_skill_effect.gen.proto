@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message LiveActiveSkillEffect {
   string group_id = 1;
   int32 number = 2;
-  enums.LiveActiveSkillEffectType type = 3;
+  .enums.LiveActiveSkillEffectType type = 3;
   int64 value = 4;
   int32 score_up_based_on_parameter_permil_multiply = 5;
   string description_lang_id = 1000;

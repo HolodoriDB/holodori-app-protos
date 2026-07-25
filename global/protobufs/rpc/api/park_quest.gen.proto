@@ -45,7 +45,7 @@ message ParkQuestClearStepResponse {
 
 message ParkQuestGetLiveFixedDeckRequest {
   common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
-  enums.MusicDifficultyType difficulty_type = 2;
+  .enums.MusicDifficultyType difficulty_type = 2;
 }
 
 message ParkQuestGetLiveFixedDeckResponse {
@@ -65,7 +65,7 @@ message ParkQuestGetLiveFixedCharacterDeckRequest {
   int32 step = 3;
   string park_target_mapping_id = 4;
   int32 action_number = 5;
-  enums.MusicDifficultyType difficulty_type = 6;
+  .enums.MusicDifficultyType difficulty_type = 6;
   string costume_id = 7;
   repeated ParkQuestGetLiveFixedCharacterDeckRequest.LiveDeckPosition deck_positions = 8;
 }
@@ -83,7 +83,7 @@ message ParkQuestStartLiveRequest {
   int32 step = 3;
   string park_target_mapping_id = 4;
   int32 action_number = 5;
-  enums.MusicDifficultyType difficulty_type = 6;
+  .enums.MusicDifficultyType difficulty_type = 6;
   string character_id = 7;
   string costume_id = 8;
   repeated string card_ids = 9;
@@ -98,18 +98,18 @@ message ParkQuestStartLiveResponse {
 }
 
 message ParkQuestFinishLiveRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
 }
 
 message ParkQuestFinishLiveResponse {
-  enums.LiveResultType result_type = 1;
-  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  .enums.LiveResultType result_type = 1;
+  .enums.LiveEvaluationRankType evaluation_rank_type = 2;
   int32 evaluation_rank_plus = 3;
-  repeated common.Reward quest_step_clear_rewards = 4;
-  repeated common.Reward music_clear_count_rewards = 5;
-  repeated common.Reward music_full_combo_rewards = 6;
-  repeated common.Reward music_highest_score_rank_rewards = 7;
-  repeated common.Reward music_max_combo_count_phase_rewards = 8;
+  repeated .common.Reward quest_step_clear_rewards = 4;
+  repeated .common.Reward music_clear_count_rewards = 5;
+  repeated .common.Reward music_full_combo_rewards = 6;
+  repeated .common.Reward music_highest_score_rank_rewards = 7;
+  repeated .common.Reward music_max_combo_count_phase_rewards = 8;
   int64 past_character_highest_score = 9;
   common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 10;
   bool is_cleared_quest = 12;
@@ -125,7 +125,7 @@ message ParkQuestStartTutorialLiveRequest {
   int32 step = 3;
   string park_target_mapping_id = 4;
   int32 action_number = 5;
-  enums.MusicDifficultyType difficulty_type = 6;
+  .enums.MusicDifficultyType difficulty_type = 6;
   string character_id = 7;
   string costume_id = 8;
   repeated string card_ids = 9;
@@ -133,19 +133,19 @@ message ParkQuestStartTutorialLiveRequest {
 }
 
 message ParkQuestFinishTutorialLiveRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
 }
 
 message ParkQuestFinishTutorialLiveResponse {
-  enums.LiveResultType result_type = 1;
-  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  .enums.LiveResultType result_type = 1;
+  .enums.LiveEvaluationRankType evaluation_rank_type = 2;
   int32 evaluation_rank_plus = 3;
   repeated common.RewardResult reward_results = 4;
   common.Response common_response = 9999;
 }
 
 message ParkQuestRetryLiveRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
   int64 progress_millisecond = 2;
 }
 
@@ -160,7 +160,7 @@ message ParkQuestStartTutorialLiveResponse {
 }
 
 message ParkQuestRetireLiveRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
   int64 progress_millisecond = 2;
 }
 

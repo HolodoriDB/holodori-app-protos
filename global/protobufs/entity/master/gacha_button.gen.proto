@@ -11,5 +11,5 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message GachaButton {
   string id = 1;
   string gacha_id = 2;
-  enums.ResetIntervalType reset_interval_type = 14;
+  .enums.ResetIntervalType reset_interval_type = 14;
 }

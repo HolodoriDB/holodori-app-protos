@@ -58,7 +58,7 @@ message WorkResult {
   int32 slot_number = 1;
   string work_id = 2;
   repeated common.RewardResult reward_results = 3;
-  enums.WorkEvaluationRankType evaluation_rank_type = 4;
+  .enums.WorkEvaluationRankType evaluation_rank_type = 4;
   repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
 }
 
@@ -76,9 +76,9 @@ message WorkCancelResponse {
 
 service Work {
   rpc ListWorkSlotPower (WorkListWorkSlotPowerRequest) returns (WorkListWorkSlotPowerResponse);
-  rpc Refresh (google.protobuf.Empty) returns (WorkRefreshResponse);
+  rpc Refresh (.google.protobuf.Empty) returns (WorkRefreshResponse);
   rpc Start (WorkStartRequest) returns (WorkStartResponse);
   rpc Finish (WorkFinishRequest) returns (WorkFinishResponse);
-  rpc FinishAll (google.protobuf.Empty) returns (WorkFinishAllResponse);
+  rpc FinishAll (.google.protobuf.Empty) returns (WorkFinishAllResponse);
   rpc Cancel (WorkCancelRequest) returns (WorkCancelResponse);
 }

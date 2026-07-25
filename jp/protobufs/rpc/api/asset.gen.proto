@@ -56,5 +56,5 @@ message AssetListExpiredAssetIdResponse {
 }
 
 service Asset {
-  rpc ListExpiredAssetId (google.protobuf.Empty) returns (AssetListExpiredAssetIdResponse);
+  rpc ListExpiredAssetId (.google.protobuf.Empty) returns (AssetListExpiredAssetIdResponse);
 }

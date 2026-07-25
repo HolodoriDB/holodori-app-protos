@@ -123,6 +123,6 @@ service JumpRope {
   rpc StartMulti (JumpRopeStartMultiRequest) returns (JumpRopeStartMultiResponse);
   rpc FinishSingle (JumpRopeFinishSingleRequest) returns (JumpRopeFinishSingleResponse);
   rpc FinishMulti (JumpRopeFinishMultiRequest) returns (JumpRopeFinishMultiResponse);
-  rpc GetRankingInfo (google.protobuf.Empty) returns (JumpRopeGetRankingInfoResponse);
+  rpc GetRankingInfo (.google.protobuf.Empty) returns (JumpRopeGetRankingInfoResponse);
   rpc ReadNotification (JumpRopeReadNotificationRequest) returns (JumpRopeReadNotificationResponse);
 }

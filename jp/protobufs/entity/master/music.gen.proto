@@ -25,12 +25,12 @@ message Music {
   string jacket_asset_id = 13;
   int64 start_time = 14;
   int32 playing_seconds = 15;
-  enums.MusicCategoryType category_type = 16;
+  .enums.MusicCategoryType category_type = 16;
   int32 live_score_coefficient_permil = 17;
   string single_live_score_evaluation_rank_group_id = 18;
   string multi_live_score_evaluation_rank_group_id = 19;
   string live_combo_group_id = 23;
-  enums.MusicReleaseType release_type = 24;
+  .enums.MusicReleaseType release_type = 24;
   int32 required_release_item_quantity = 25;
   string lock_description_lang_id = 26;
   bool is_highest_score_rating_target = 27;
@@ -38,7 +38,7 @@ message Music {
   string mv_url = 29;
   string mv_thumbnail_asset_id = 30;
   string copyright = 31;
-  enums.MusicSingerType music_singer_type = 100;
+  .enums.MusicSingerType music_singer_type = 100;
   repeated string character_ids = 101;
   string character_group_display_name_lang_id = 102;
   string character_group_display_name_ruby_lang_id = 103;

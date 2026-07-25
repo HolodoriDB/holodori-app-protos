@@ -11,8 +11,8 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message InstantTips {
   string id = 1;
-  enums.InstantTipsType type = 2;
-  enums.InstantTipsDisplaySceneType display_scene_type = 3;
+  .enums.InstantTipsType type = 2;
+  .enums.InstantTipsDisplaySceneType display_scene_type = 3;
   string tips_id = 4;
   string text_lang_id = 5;
   string condition_group_id = 6;

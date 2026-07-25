@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CustomPaletteDecoration {
   string id = 1;
-  enums.CustomPaletteDecorationType custom_palette_decoration_type = 2;
+  .enums.CustomPaletteDecorationType custom_palette_decoration_type = 2;
   string name_lang_id = 3;
   string asset_id = 4;
   bool is_preset = 5;

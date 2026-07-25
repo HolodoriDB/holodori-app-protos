@@ -14,7 +14,7 @@ message ParkQuest {
   int32 number = 3;
   string title_lang_id = 4;
   string description_lang_id = 5;
-  enums.ParkQuestType type = 6;
+  .enums.ParkQuestType type = 6;
   string play_character_id = 7;
   int32 priority = 8;
   string area_grouping_id = 9;

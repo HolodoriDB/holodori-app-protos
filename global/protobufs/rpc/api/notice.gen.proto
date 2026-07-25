@@ -18,7 +18,7 @@ message NoticeTopResponse {
   message Category {
     string notice_category_id = 1;
     string name = 2;
-    enums.NoticeDisplayType display_type = 3;
+    .enums.NoticeDisplayType display_type = 3;
     repeated NoticeInfo notice_infos = 4;
     bool is_has_next = 5;
   }
@@ -57,7 +57,7 @@ message NoticeUpdateDetailReadTimeRequest {
 message NoticeInfo {
   string id = 1;
   string title = 2;
-  enums.NoticeType type = 3;
+  .enums.NoticeType type = 3;
   string detail_url = 4;
   string banner_asset_id = 5;
   bool is_read = 6;
@@ -74,7 +74,7 @@ message NoticeUpdateDetailReadTimeResponse {
 }
 
 service Notice {
-  rpc Top (google.protobuf.Empty) returns (NoticeTopResponse);
+  rpc Top (.google.protobuf.Empty) returns (NoticeTopResponse);
   rpc ListInCategory (NoticeListInCategoryRequest) returns (NoticeListInCategoryResponse);
   rpc Get (NoticeGetRequest) returns (NoticeGetResponse);
   rpc UpdateCategoryReadTime (NoticeUpdateCategoryReadTimeRequest) returns (NoticeUpdateCategoryReadTimeResponse);

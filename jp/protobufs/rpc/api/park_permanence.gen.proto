@@ -23,7 +23,7 @@ option csharp_namespace = "Vision.Common.Proto.Api";
 
 message ParkPermanenceSetPosterBoothRequest {
   message PosterBoothResource {
-    enums.PosterBoothResourceType resource_type = 1;
+    .enums.PosterBoothResourceType resource_type = 1;
     string resource_id = 2;
   }
   common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
@@ -46,7 +46,7 @@ message ParkPermanenceReceivePresentResponse {
 
 message ParkPermanenceCharacterShopItem {
   string park_character_shop_item_id = 1;
-  repeated common.Reward rewards = 2;
+  repeated .common.Reward rewards = 2;
   string sd_costume_id = 3;
   string asset_id = 4;
 }
@@ -62,7 +62,7 @@ message ParkPermanenceListCharacterShopItemRequest {
 
 message ParkPermanenceListCharacterShopItemResponse {
   string shop_name = 1;
-  common.Consumption consumption = 2;
+  .common.Consumption consumption = 2;
   repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 3;
   repeated ParkPermanenceCharacterShopItem picked_items = 4;
   common.Response common_response = 9999;
@@ -94,7 +94,7 @@ message ParkPermanenceDrawLotteryRequest {
 
 message ParkPermanenceDrawLotteryResponse {
   repeated common.RewardResult reward_results = 1;
-  enums.ParkLotteryRewardRarityType reward_rarity_type = 2;
+  .enums.ParkLotteryRewardRarityType reward_rarity_type = 2;
   common.Response common_response = 9999;
 }
 
@@ -103,7 +103,7 @@ message ParkPermanenceStartHighLowRequest {
 }
 
 message ParkPermanenceFinishHighLowRequest {
-  enums.ParkHighLowHandType hand_type = 1;
+  .enums.ParkHighLowHandType hand_type = 1;
   bool is_reward_get = 2;
   int32 double_up_success_count = 3;
 }
@@ -116,7 +116,7 @@ message ParkPermanenceFinishHighLowResponse {
 
 message ParkPermanencePrepareFishingRequest {
   common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-  enums.ParkTimePeriodType park_time_period_type = 2;
+  .enums.ParkTimePeriodType park_time_period_type = 2;
   string park_fishing_bait_id = 3;
 }
 
@@ -140,7 +140,7 @@ message ParkPermanenceFinishFishingRequest {
 
 message ParkPermanenceFinishFishingResponse {
   int32 fish_weight = 1;
-  enums.ParkFishingFishWeightType fish_weight_type = 2;
+  .enums.ParkFishingFishWeightType fish_weight_type = 2;
   repeated common.RewardResult reward_results = 3;
   common.Response common_response = 9999;
 }
@@ -192,6 +192,6 @@ service ParkPermanence {
   rpc StartFishing (ParkPermanenceStartFishingRequest) returns (ParkPermanenceStartFishingResponse);
   rpc MissFishing (ParkPermanenceMissFishingRequest) returns (ParkPermanenceMissFishingResponse);
   rpc FinishFishing (ParkPermanenceFinishFishingRequest) returns (ParkPermanenceFinishFishingResponse);
-  rpc ReceiveFishingTotalCaughtReward (google.protobuf.Empty) returns (ParkPermanenceReceiveFishingTotalCaughtRewardResponse);
+  rpc ReceiveFishingTotalCaughtReward (.google.protobuf.Empty) returns (ParkPermanenceReceiveFishingTotalCaughtRewardResponse);
   rpc LevelUpFishingRod (ParkPermanenceLevelUpFishingRodRequest) returns (ParkPermanenceLevelUpFishingRodResponse);
 }

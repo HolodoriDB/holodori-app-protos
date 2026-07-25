@@ -21,6 +21,6 @@ message UserDeleteResponse {
 }
 
 service User {
-  rpc Get (google.protobuf.Empty) returns (UserGetResponse);
-  rpc Delete (google.protobuf.Empty) returns (UserDeleteResponse);
+  rpc Get (.google.protobuf.Empty) returns (UserGetResponse);
+  rpc Delete (.google.protobuf.Empty) returns (UserDeleteResponse);
 }

@@ -86,7 +86,7 @@ service CookingPuzzle {
   rpc Start (CookingPuzzleStartRequest) returns (CookingPuzzleStartResponse);
   rpc Finish (CookingPuzzleFinishRequest) returns (CookingPuzzleFinishResponse);
   rpc Retire (CookingPuzzleRetireRequest) returns (CookingPuzzleRetireResponse);
-  rpc GetRankingInfo (google.protobuf.Empty) returns (CookingPuzzleGetRankingInfoResponse);
+  rpc GetRankingInfo (.google.protobuf.Empty) returns (CookingPuzzleGetRankingInfoResponse);
   rpc ReportRecipeProgress (CookingPuzzleReportRecipeProgressRequest) returns (CookingPuzzleReportRecipeProgressResponse);
   rpc ReadNotification (CookingPuzzleReadNotificationRequest) returns (CookingPuzzleReadNotificationResponse);
 }

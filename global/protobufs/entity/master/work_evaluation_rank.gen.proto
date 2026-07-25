@@ -10,6 +10,6 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message WorkEvaluationRank {
   string group_id = 1;
-  enums.WorkEvaluationRankType type = 2;
+  .enums.WorkEvaluationRankType type = 2;
   int64 threshold = 3;
 }

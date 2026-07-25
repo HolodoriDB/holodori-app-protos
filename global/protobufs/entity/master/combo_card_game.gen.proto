@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ComboCardGame {
   string id = 1;
-  enums.ComboCardGamePlayType play_type = 2;
+  .enums.ComboCardGamePlayType play_type = 2;
   int64 start_time = 3;
   int64 end_time = 4;
   string combo_card_game_card_group_id = 5;

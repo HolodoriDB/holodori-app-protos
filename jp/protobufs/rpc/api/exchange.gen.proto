@@ -23,26 +23,26 @@ message ExchangeListRequest {
 
 message ExchangeItem {
   message Consumption {
-    enums.ResourceType resource_type = 1;
+    .enums.ResourceType resource_type = 1;
     string resource_id = 2;
     int64 quantity = 3;
     int64 original_quantity = 4;
     int32 discount_ratio_permil = 5;
   }
-  enums.ExchangeBoothItemType booth_item_type = 1;
+  .enums.ExchangeBoothItemType booth_item_type = 1;
   string booth_item_id = 2;
   string name = 3;
   string thumbnail_asset_id = 4;
   int32 limit_quantity = 5;
   int32 purchased_quantity = 6;
   repeated ExchangeItem.Consumption consumptions = 7;
-  repeated common.Reward rewards = 8;
+  repeated .common.Reward rewards = 8;
   int64 next_reset_time = 9;
   int64 end_time = 10;
   bool is_locked = 11;
   string unlock_condition_group_id = 12;
   string description = 13;
-  enums.ResetIntervalType reset_interval_type = 14;
+  .enums.ResetIntervalType reset_interval_type = 14;
   int64 release_time = 15;
 }
 
@@ -50,7 +50,7 @@ message ExchangeListResponse {
   message Booth {
     string id = 1;
     string name = 2;
-    enums.ExchangeBoothType booth_type = 3;
+    .enums.ExchangeBoothType booth_type = 3;
     repeated ExchangeItem items = 4;
     int64 next_reset_time = 5;
     int64 end_time = 6;
@@ -74,7 +74,7 @@ message ExchangeListResponse {
 }
 
 message ExchangePurchaseRequest {
-  enums.ExchangeBoothItemType booth_item_type = 1;
+  .enums.ExchangeBoothItemType booth_item_type = 1;
   string booth_item_id = 2;
   int32 quantity = 3;
 }

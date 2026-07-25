@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveScoreEvaluationRank {
   string group_id = 1;
-  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  .enums.LiveEvaluationRankType evaluation_rank_type = 2;
   int32 plus = 3;
   int64 score = 4;
 }

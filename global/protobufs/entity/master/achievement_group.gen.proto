@@ -11,10 +11,10 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message AchievementGroup {
   string id = 1;
-  enums.AchievementCategoryType achievement_category_type = 2;
+  .enums.AchievementCategoryType achievement_category_type = 2;
   string name_lang_id = 3;
   string view_condition_group_id = 4;
   string asset_id = 5;
-  enums.MiniGameType mini_game_type = 6;
+  .enums.MiniGameType mini_game_type = 6;
   int32 order = 999;
 }

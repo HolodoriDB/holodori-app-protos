@@ -12,7 +12,7 @@ option csharp_namespace = "Vision.Common.Proto.Api.Common";
 message ChaseResultInfo {
   repeated ChaseUserInfo mischief_team_user_infos = 1;
   repeated ChaseUserInfo patrol_team_user_infos = 2;
-  enums.ChaseTeamType win_team_type = 3;
+  .enums.ChaseTeamType win_team_type = 3;
   int64 self_score = 4;
   ChaseMischiefTeamUserResult self_mischief_team_user_result = 5;
   ChasePatrolTeamUserResult self_patrol_team_user_result = 6;
@@ -24,7 +24,7 @@ message ChaseUserInfo {
   bool is_npc = 3;
   bool is_mvp = 4;
   bool is_disconnected = 5;
-  enums.ChasePatrolSkillType skill_type = 100;
+  .enums.ChasePatrolSkillType skill_type = 100;
 }
 
 message ChaseMischiefTeamUserResult {

@@ -14,8 +14,8 @@ option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
 
 message LiveCooperationResult {
   message UserResult {
-    enums.MusicDifficultyType music_difficulty_type = 1;
-    common.LiveBaseResult result = 2;
+    .enums.MusicDifficultyType music_difficulty_type = 1;
+    .common.LiveBaseResult result = 2;
     int64 bonus_score = 3;
     int32 fever_point = 4;
     bool is_fever_succeeded = 5;

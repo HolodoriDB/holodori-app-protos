@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Circuit {
   string id = 1;
-  enums.CircuitPlayType play_type = 2;
+  .enums.CircuitPlayType play_type = 2;
   string game_start_display_clear_condition_lang_id = 3;
   string game_playing_display_clear_condition_lang_id = 4;
 }

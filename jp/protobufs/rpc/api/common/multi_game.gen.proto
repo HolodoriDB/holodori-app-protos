@@ -26,7 +26,7 @@ message MultiGameMatchRandomInfo {
 message MultiGameCreatePrivateRoomInfo {
   string private_room_id = 1;
   repeated MultiGamePingInfo ping_infos = 2;
-  enums.MultiGamePrivateRoomCreationType creation_type = 3;
+  .enums.MultiGamePrivateRoomCreationType creation_type = 3;
   string multi_game_result_id = 4;
 }
 
@@ -45,7 +45,7 @@ message MultiGameResultPrivateRoomInfo {
     string public_user_id = 1;
     string user_name = 2;
     string park_character_id = 3;
-    enums.FriendStatusType friend_status_type = 4;
+    .enums.FriendStatusType friend_status_type = 4;
   }
   bool is_private_room = 1;
   bool is_private_room_host_user = 2;

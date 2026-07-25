@@ -15,6 +15,6 @@ message SpecialStory {
   string archive_view_condition_group_id = 4;
   string unlock_condition_group_id = 5;
   string asset_id = 6;
-  enums.StoryAssetType asset_type = 7;
+  .enums.StoryAssetType asset_type = 7;
   int32 order = 999;
 }

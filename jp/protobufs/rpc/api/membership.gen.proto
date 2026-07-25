@@ -17,5 +17,5 @@ message MembershipGetShopResponse {
 }
 
 service Membership {
-  rpc GetShop (google.protobuf.Empty) returns (MembershipGetShopResponse);
+  rpc GetShop (.google.protobuf.Empty) returns (MembershipGetShopResponse);
 }

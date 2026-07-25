@@ -11,5 +11,5 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message PlayerLevel {
   int32 level = 1;
   int64 exp = 2;
-  repeated common.Reward rewards = 1000;
+  repeated .common.Reward rewards = 1000;
 }

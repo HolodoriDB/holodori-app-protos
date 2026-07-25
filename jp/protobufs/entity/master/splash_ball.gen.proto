@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SplashBall {
   string id = 1;
-  enums.SplashBallPlayType play_type = 2;
+  .enums.SplashBallPlayType play_type = 2;
   string unlock_condition_group_id = 3;
   string splash_ball_ball_group_id = 6;
   string start_splash_ball_player_position_group_id = 7;

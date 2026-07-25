@@ -12,12 +12,12 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message SkillTreeConnectEffect {
   string id = 1;
   int32 level = 2;
-  enums.SkillTreeConnectEffectType connect_effect_type = 3;
+  .enums.SkillTreeConnectEffectType connect_effect_type = 3;
   string skill_tree_connect_effect_extent_group_id = 4;
   int64 effect_permil_up = 5;
   string additional_skill_tree_effect_id = 6;
   string target_skill_tree_effect_id = 7;
-  enums.SkillTreeNodeType target_node_type = 8;
+  .enums.SkillTreeNodeType target_node_type = 8;
   int32 target_node_grade = 9;
   string description_lang_id = 1000;
 }

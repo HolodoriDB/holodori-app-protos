@@ -12,9 +12,9 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Tips {
   string id = 1;
-  enums.TipsType type = 2;
+  .enums.TipsType type = 2;
   string title_lang_id = 3;
-  enums.GameScreenType game_screen_type = 4;
-  enums.TipsHintType hint_type = 5;
+  .enums.GameScreenType game_screen_type = 4;
+  .enums.TipsHintType hint_type = 5;
   int32 order = 999;
 }

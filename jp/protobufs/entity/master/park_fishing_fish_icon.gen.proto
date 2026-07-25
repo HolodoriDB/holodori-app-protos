@@ -10,6 +10,6 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkFishingFishIcon {
   string group_id = 1;
-  enums.ParkFishingFishIconType icon_type = 2;
+  .enums.ParkFishingFishIconType icon_type = 2;
   int32 ratio = 3;
 }

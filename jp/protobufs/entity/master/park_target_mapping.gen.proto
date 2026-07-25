@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message ParkTargetMapping {
   string id = 1;
   string name_lang_id = 2;
-  enums.ParkTargetType target_type = 3;
+  .enums.ParkTargetType target_type = 3;
   string park_npc_group_id = 4;
   string park_npc_id = 5;
   string facility_id = 6;

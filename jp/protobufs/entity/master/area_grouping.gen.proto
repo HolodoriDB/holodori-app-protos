@@ -18,7 +18,7 @@ message AreaGrouping {
   string default_area_selector_id = 7;
   string asset_id = 8;
   string color = 9;
-  enums.ResourceType fixed_display_resource_type = 10;
+  .enums.ResourceType fixed_display_resource_type = 10;
   string fixed_display_resource_id = 11;
   int32 order = 999;
 }

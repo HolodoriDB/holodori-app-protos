@@ -11,5 +11,5 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message CookingPuzzleCompletionCountReward {
   string group_id = 1;
   int32 completion_count = 2;
-  repeated common.SimplifiedReward rewards = 1000;
+  repeated .common.SimplifiedReward rewards = 1000;
 }

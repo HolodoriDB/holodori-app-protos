@@ -8,5 +8,5 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserParkQuestLive {
-  enums.MusicDifficultyType last_played_music_difficulty_type = 2;
+  .enums.MusicDifficultyType last_played_music_difficulty_type = 2;
 }

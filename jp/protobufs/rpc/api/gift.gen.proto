@@ -17,7 +17,7 @@ option csharp_namespace = "Vision.Common.Proto.Api";
 
 message GiftItem {
   string gift_id = 1;
-  enums.ResourceType resource_type = 2;
+  .enums.ResourceType resource_type = 2;
   string resource_id = 3;
   int64 quantity = 4;
   string description = 5;
@@ -35,7 +35,7 @@ message GiftTopResponse {
 
 message GiftListRequest {
   int32 offset = 1;
-  enums.GiftSortType sort_type = 2;
+  .enums.GiftSortType sort_type = 2;
   bool is_desc = 3;
 }
 
@@ -59,7 +59,7 @@ message GiftOpenResponse {
 
 message GiftListHistoryResponse {
   message GiftHistoryItem {
-    enums.ResourceType resource_type = 1;
+    .enums.ResourceType resource_type = 1;
     string resource_id = 2;
     int64 quantity = 3;
     string description = 4;
@@ -75,9 +75,9 @@ message GiftCountResponse {
 }
 
 service Gift {
-  rpc Top (google.protobuf.Empty) returns (GiftTopResponse);
+  rpc Top (.google.protobuf.Empty) returns (GiftTopResponse);
   rpc List (GiftListRequest) returns (GiftListResponse);
   rpc Open (GiftOpenRequest) returns (GiftOpenResponse);
-  rpc ListHistory (google.protobuf.Empty) returns (GiftListHistoryResponse);
-  rpc Count (google.protobuf.Empty) returns (GiftCountResponse);
+  rpc ListHistory (.google.protobuf.Empty) returns (GiftListHistoryResponse);
+  rpc Count (.google.protobuf.Empty) returns (GiftCountResponse);
 }

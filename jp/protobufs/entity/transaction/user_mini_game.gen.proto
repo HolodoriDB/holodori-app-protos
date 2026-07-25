@@ -10,5 +10,5 @@ option csharp_namespace = "Vision.Common.Proto.Transaction";
 message UserMiniGame {
   int32 reward_up_stamina = 2;
   int64 last_reward_up_stamina_auto_recovery_time = 3;
-  repeated enums.MiniGameType read_mini_game_types = 4;
+  repeated .enums.MiniGameType read_mini_game_types = 4;
 }

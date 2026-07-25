@@ -12,7 +12,7 @@ message ParkPermanenceAction {
   string park_permanence_id = 1;
   int32 action_number = 2;
   string description_lang_id = 3;
-  enums.ParkActionType type = 4;
+  .enums.ParkActionType type = 4;
   string condition_group_id = 5;
   string before_park_talk_group_id = 6;
   string after_park_talk_group_id = 7;

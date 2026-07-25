@@ -10,6 +10,6 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveMusicDifficultyMaxComboCountReward {
-  enums.MusicDifficultyType difficulty_type = 1;
-  repeated common.Reward rewards = 1000;
+  .enums.MusicDifficultyType difficulty_type = 1;
+  repeated .common.Reward rewards = 1000;
 }

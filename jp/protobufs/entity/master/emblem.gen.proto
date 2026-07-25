@@ -12,7 +12,7 @@ message Emblem {
   string id = 1;
   string name_lang_id = 2;
   string asset_id = 3;
-  enums.EmblemSize size = 4;
+  .enums.EmblemSize size = 4;
   bool is_preset = 5;
   int32 order = 999;
 }

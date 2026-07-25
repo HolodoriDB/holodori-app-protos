@@ -94,11 +94,11 @@ message LiveSetRewardUpStaminaConsumptionSettingRequest {
 }
 
 message LiveRecoverRewardUpStaminaRequest {
-  repeated common.Consumption consumptions = 1;
+  repeated .common.Consumption consumptions = 1;
 }
 
 message LiveMatchRandomRequest {
-  enums.LivePlayType play_type = 1;
+  .enums.LivePlayType play_type = 1;
   bool is_auto_play_allowed = 2;
   string deck_character_id = 3;
   int32 deck_number = 4;
@@ -122,7 +122,7 @@ message LiveCreatePrivateRoomResponse {
 
 message LiveStartSingleRequest {
   string music_id = 1;
-  enums.MusicDifficultyType music_difficulty_type = 2;
+  .enums.MusicDifficultyType music_difficulty_type = 2;
   string character_id = 3;
   int32 deck_number = 4;
   int32 reward_up_stamina_consumption_quantity = 5;
@@ -137,10 +137,10 @@ message LiveStartSingleResponse {
 }
 
 message LiveStartMultiRequest {
-  enums.LivePlayType play_type = 1;
+  .enums.LivePlayType play_type = 1;
   string self_selected_music_id = 2;
   string picked_music_id = 3;
-  enums.MusicDifficultyType music_difficulty_type = 4;
+  .enums.MusicDifficultyType music_difficulty_type = 4;
   string character_id = 5;
   int32 deck_number = 6;
   int32 reward_up_stamina_consumption_quantity = 7;
@@ -157,21 +157,21 @@ message LiveStartMultiResponse {
 }
 
 message LiveFinishSingleRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
 }
 
 message LiveFinishSingleResponse {
-  enums.LiveResultType result_type = 1;
-  enums.LiveEvaluationRankType evaluation_rank_type = 2;
+  .enums.LiveResultType result_type = 1;
+  .enums.LiveEvaluationRankType evaluation_rank_type = 2;
   int32 evaluation_rank_plus = 3;
   int64 past_character_highest_score = 4;
   int64 reward_card_exp_quantity = 5;
-  repeated common.Reward card_exp_overflow_rewards = 6;
-  repeated common.Reward score_evaluation_rank_rewards = 7;
-  repeated common.Reward music_clear_count_rewards = 8;
-  repeated common.Reward music_full_combo_rewards = 9;
-  repeated common.Reward music_highest_score_rank_rewards = 10;
-  repeated common.Reward music_max_combo_count_phase_rewards = 11;
+  repeated .common.Reward card_exp_overflow_rewards = 6;
+  repeated .common.Reward score_evaluation_rank_rewards = 7;
+  repeated .common.Reward music_clear_count_rewards = 8;
+  repeated .common.Reward music_full_combo_rewards = 9;
+  repeated .common.Reward music_highest_score_rank_rewards = 10;
+  repeated .common.Reward music_max_combo_count_phase_rewards = 11;
   common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 12;
   int32 music_length_bonus_reward_quantity_up_permil_multiply = 13;
   int32 reward_quantity_up_permil_up_by_benefit_license = 14;
@@ -195,7 +195,7 @@ message LiveFinishMultiLiveCooperationResponse {
 
 message LiveFinishDisconnectedMultiLiveCooperationRequest {
   string multi_game_result_id = 1;
-  dto.multi_game_result.LiveCooperationResult result = 2;
+  .dto.multi_game_result.LiveCooperationResult result = 2;
 }
 
 message LiveFinishDisconnectedMultiLiveCooperationResponse {
@@ -207,27 +207,27 @@ message LiveFinishMultiLiveCooperationResult {
   message UserResult {
     common.BasicUserInfo user_info = 1;
     bool is_blocked_user = 2;
-    enums.FriendStatusType friend_status_type = 3;
-    enums.MusicDifficultyType music_difficulty_type = 4;
-    common.LiveBaseResult result = 5;
+    .enums.FriendStatusType friend_status_type = 3;
+    .enums.MusicDifficultyType music_difficulty_type = 4;
+    .common.LiveBaseResult result = 5;
     int64 bonus_score = 6;
-    enums.LiveResultType result_type = 7;
+    .enums.LiveResultType result_type = 7;
     bool is_disconnected = 8;
   }
   string music_id = 1;
-  enums.LiveEvaluationRankType multi_evaluation_rank_type = 2;
+  .enums.LiveEvaluationRankType multi_evaluation_rank_type = 2;
   int32 multi_evaluation_rank_plus = 3;
-  enums.LiveEvaluationRankType self_evaluation_rank_type = 4;
+  .enums.LiveEvaluationRankType self_evaluation_rank_type = 4;
   int32 self_evaluation_rank_plus = 5;
   repeated LiveFinishMultiLiveCooperationResult.UserResult user_results = 6;
   int64 past_character_highest_score = 7;
   int64 reward_card_exp_quantity = 8;
-  repeated common.Reward card_exp_overflow_rewards = 9;
-  repeated common.Reward score_evaluation_rank_rewards = 10;
-  repeated common.Reward music_clear_count_rewards = 11;
-  repeated common.Reward music_full_combo_rewards = 12;
-  repeated common.Reward music_highest_score_rank_rewards = 13;
-  repeated common.Reward music_max_combo_count_phase_rewards = 14;
+  repeated .common.Reward card_exp_overflow_rewards = 9;
+  repeated .common.Reward score_evaluation_rank_rewards = 10;
+  repeated .common.Reward music_clear_count_rewards = 11;
+  repeated .common.Reward music_full_combo_rewards = 12;
+  repeated .common.Reward music_highest_score_rank_rewards = 13;
+  repeated .common.Reward music_max_combo_count_phase_rewards = 14;
   common.MultiGameResultPrivateRoomInfo private_room_info = 15;
   common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 16;
   int32 music_length_bonus_reward_quantity_up_permil_multiply = 17;
@@ -241,12 +241,12 @@ message LiveFinishMultiLiveCooperationResult {
 }
 
 message LiveContinueRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
   int64 progress_millisecond = 2;
 }
 
 message LiveRetryRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
   int64 progress_millisecond = 2;
 }
 
@@ -256,7 +256,7 @@ message LiveRetryResponse {
 }
 
 message LiveRetireRequest {
-  common.LiveBaseResult result = 1;
+  .common.LiveBaseResult result = 1;
   int64 progress_millisecond = 2;
 }
 

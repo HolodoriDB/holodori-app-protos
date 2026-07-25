@@ -13,15 +13,15 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SkillTreeEffect {
   string id = 1;
-  enums.SkillTreeEffectType effect_type = 2;
+  .enums.SkillTreeEffectType effect_type = 2;
   int64 value = 3;
   string skill_tree_effect_target_id = 4;
   string skill_tree_effect_passive_trigger_group_id = 5;
-  enums.SkillTreeEffectCharacterTriggerType character_trigger_type = 6;
+  .enums.SkillTreeEffectCharacterTriggerType character_trigger_type = 6;
   string live_active_skill_id = 7;
-  enums.ResourceType resource_type = 8;
+  .enums.ResourceType resource_type = 8;
   repeated string resource_ids = 9;
-  repeated enums.MiniGameType mini_game_types = 10;
+  repeated .enums.MiniGameType mini_game_types = 10;
   string name_lang_id = 11;
   string icon_asset_id_suffix = 13;
   string description_lang_id = 1000;

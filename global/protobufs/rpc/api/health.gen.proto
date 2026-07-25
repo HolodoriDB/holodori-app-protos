@@ -14,7 +14,7 @@ message HealthCheckRequest {
 }
 
 message HealthCheckResponse {
-  enums.HealthCheckServingStatus status = 1;
+  .enums.HealthCheckServingStatus status = 1;
 }
 
 service Health {

@@ -18,6 +18,6 @@ message Work {
   int32 character_bonus_coefficient_permil_up = 7;
   string work_evaluation_rank_group_id = 8;
   string asset_id = 11;
-  enums.WorkCharacterIconPositionType character_icon_position_type = 12;
-  repeated common.Reward obtainable_rewards = 1000;
+  .enums.WorkCharacterIconPositionType character_icon_position_type = 12;
+  repeated .common.Reward obtainable_rewards = 1000;
 }

@@ -15,5 +15,5 @@ message AppReviewSetDisplayedResponse {
 }
 
 service AppReview {
-  rpc SetDisplayed (google.protobuf.Empty) returns (AppReviewSetDisplayedResponse);
+  rpc SetDisplayed (.google.protobuf.Empty) returns (AppReviewSetDisplayedResponse);
 }

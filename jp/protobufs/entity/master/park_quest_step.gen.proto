@@ -16,11 +16,11 @@ message ParkQuestStep {
   string target_lang_id = 4;
   string description_lang_id = 5;
   string unlock_condition_group_id = 6;
-  enums.ParkQuestStepTransitionType transition_type = 7;
+  .enums.ParkQuestStepTransitionType transition_type = 7;
   string transition_adv_asset_id = 8;
   string after_adv_area_id = 9;
   int32 after_adv_area_player_spawn_point_index = 10;
   string after_adv_facility_id = 11;
   string asset_id = 15;
-  repeated common.Reward rewards = 1000;
+  repeated .common.Reward rewards = 1000;
 }

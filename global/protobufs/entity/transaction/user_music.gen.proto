@@ -16,7 +16,7 @@ message UserMusic {
   int64 released_time = 8;
   int64 highest_score = 100;
   int64 highest_score_last_updated_time = 101;
-  enums.MusicDifficultyType highest_score_music_difficulty_type = 102;
+  .enums.MusicDifficultyType highest_score_music_difficulty_type = 102;
   string highest_score_character_id = 103;
   string highest_score_costume_id = 104;
   repeated string highest_score_deck_card_ids = 105;
@@ -29,5 +29,5 @@ message UserMusic {
   repeated int64 highest_score_deck_card_senses_for_card_detail = 112;
   int64 highest_score_deck_power = 113;
   int64 highest_score_deck_evaluation_value = 114;
-  enums.LiveEvaluationRankType received_highest_score_evaluation_rank_reward_rank_type = 115;
+  .enums.LiveEvaluationRankType received_highest_score_evaluation_rank_reward_rank_type = 115;
 }

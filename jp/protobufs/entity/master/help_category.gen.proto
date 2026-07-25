@@ -11,8 +11,8 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message HelpCategory {
   string id = 1;
-  enums.HelpCategoryType type = 2;
+  .enums.HelpCategoryType type = 2;
   string title_lang_id = 3;
-  enums.HelpCategoryScreenType screen_type = 4;
+  .enums.HelpCategoryScreenType screen_type = 4;
   int32 order = 999;
 }

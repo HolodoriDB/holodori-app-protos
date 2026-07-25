@@ -12,5 +12,5 @@ message ExchangeBoothFixedItem {
   string id = 1;
   string exchange_booth_id = 2;
   int32 purchase_limit_quantity = 14;
-  enums.ResetIntervalType reset_interval_type = 17;
+  .enums.ResetIntervalType reset_interval_type = 17;
 }

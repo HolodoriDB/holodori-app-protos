@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkEmotion {
   string id = 1;
-  enums.ParkEmotionType type = 2;
+  .enums.ParkEmotionType type = 2;
   string character_id = 3;
   string name_lang_id = 4;
   string asset_id = 5;

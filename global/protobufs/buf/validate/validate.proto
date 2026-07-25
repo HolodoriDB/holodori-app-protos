@@ -351,32 +351,32 @@ message AnyRules {
 }
 
 message DurationRules {
-  optional google.protobuf.Duration const = 2;
-  repeated google.protobuf.Duration in = 7;
-  repeated google.protobuf.Duration not_in = 8;
-  repeated google.protobuf.Duration example = 9;
+  optional .google.protobuf.Duration const = 2;
+  repeated .google.protobuf.Duration in = 7;
+  repeated .google.protobuf.Duration not_in = 8;
+  repeated .google.protobuf.Duration example = 9;
   oneof less_than {
-    google.protobuf.Duration lt = 3;
-    google.protobuf.Duration lte = 4;
+    .google.protobuf.Duration lt = 3;
+    .google.protobuf.Duration lte = 4;
   }
   oneof greater_than {
-    google.protobuf.Duration gt = 5;
-    google.protobuf.Duration gte = 6;
+    .google.protobuf.Duration gt = 5;
+    .google.protobuf.Duration gte = 6;
   }
 }
 
 message TimestampRules {
-  optional google.protobuf.Timestamp const = 2;
-  optional google.protobuf.Duration within = 9;
-  repeated google.protobuf.Timestamp example = 10;
+  optional .google.protobuf.Timestamp const = 2;
+  optional .google.protobuf.Duration within = 9;
+  repeated .google.protobuf.Timestamp example = 10;
   oneof less_than {
-    google.protobuf.Timestamp lt = 3;
-    google.protobuf.Timestamp lte = 4;
+    .google.protobuf.Timestamp lt = 3;
+    .google.protobuf.Timestamp lte = 4;
     bool lt_now = 7;
   }
   oneof greater_than {
-    google.protobuf.Timestamp gt = 5;
-    google.protobuf.Timestamp gte = 6;
+    .google.protobuf.Timestamp gt = 5;
+    .google.protobuf.Timestamp gte = 6;
     bool gt_now = 8;
   }
 }
@@ -402,9 +402,9 @@ message FieldPath {
 message FieldPathElement {
   optional int32 field_number = 1;
   optional string field_name = 2;
-  optional google.protobuf.FieldDescriptorProto.Type field_type = 3;
-  optional google.protobuf.FieldDescriptorProto.Type key_type = 4;
-  optional google.protobuf.FieldDescriptorProto.Type value_type = 5;
+  optional .google.protobuf.FieldDescriptorProto.Type field_type = 3;
+  optional .google.protobuf.FieldDescriptorProto.Type key_type = 4;
+  optional .google.protobuf.FieldDescriptorProto.Type value_type = 5;
   oneof subscript {
     uint64 index = 6;
     bool bool_key = 7;

@@ -15,16 +15,16 @@ message Item {
   string id = 1;
   string name_lang_id = 2;
   string description_lang_id = 3;
-  enums.ItemType type = 4;
+  .enums.ItemType type = 4;
   int64 common_limit_time = 5;
   int32 personal_limit_days = 6;
   int64 effect_value = 7;
   string asset_id = 8;
   string resource_obtainment_route_group_id = 9;
-  enums.InventoryItemCategoryType inventory_item_category_type = 10;
+  .enums.InventoryItemCategoryType inventory_item_category_type = 10;
   bool is_display_owned = 11;
-  enums.ItemRarity rarity = 15;
+  .enums.ItemRarity rarity = 15;
   string thumbnail_sub_asset_id = 16;
   int32 order = 999;
-  repeated common.Reward expiration_rewards = 1000;
+  repeated .common.Reward expiration_rewards = 1000;
 }

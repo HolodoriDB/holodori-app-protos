@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message FeatureLock {
-  enums.TutorialType tutorial_type = 1;
+  .enums.TutorialType tutorial_type = 1;
   string title_lang_id = 2;
   string description_lang_id = 3;
   string view_condition_group_id = 4;

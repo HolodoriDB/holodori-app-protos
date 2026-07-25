@@ -25,7 +25,7 @@ message AnnouncementListResponse {
     string sender = 4;
     int64 posted_time = 5;
     bool is_read = 6;
-    repeated common.Reward rewards = 7;
+    repeated .common.Reward rewards = 7;
   }
   repeated AnnouncementListResponse.Announcement announcements = 1;
   int32 unread_count = 2;

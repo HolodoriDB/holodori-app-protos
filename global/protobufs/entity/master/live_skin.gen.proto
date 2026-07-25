@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveSkin {
   string id = 1;
-  enums.LiveSkinType skin_type = 2;
+  .enums.LiveSkinType skin_type = 2;
   string name_lang_id = 3;
   string description_lang_id = 4;
   string character_production_id = 5;

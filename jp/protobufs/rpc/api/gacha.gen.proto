@@ -32,7 +32,7 @@ message GachaListResponseGachaGroup {
 
 message GachaListResponseGacha {
   string gacha_id = 1;
-  enums.GachaType type = 2;
+  .enums.GachaType type = 2;
   string name = 3;
   bool is_locked = 4;
   string unlock_condition_group_id = 5;
@@ -71,7 +71,7 @@ message GachaListResponseCardSelect {
 
 message GachaListResponseCardBonus {
   string card_id = 1;
-  repeated common.Reward rewards = 2;
+  repeated .common.Reward rewards = 2;
 }
 
 message GachaListResponseGachaButton {
@@ -79,10 +79,10 @@ message GachaListResponseGachaButton {
   string name = 2;
   string description = 3;
   bool is_disabled = 4;
-  repeated common.Consumption consumptions = 5;
-  repeated common.Reward bonus_rewards = 6;
+  repeated .common.Consumption consumptions = 5;
+  repeated .common.Reward bonus_rewards = 6;
   int32 limit_count = 7;
-  enums.ResetIntervalType reset_interval_type = 8;
+  .enums.ResetIntervalType reset_interval_type = 8;
   int32 total_reward_pick_count = 9;
   int32 fixed_reward_pick_count = 10;
   int32 drawn_count = 11;
@@ -111,7 +111,7 @@ message GachaReadRequest {
 message GachaDrawNormalRequest {
   string gacha_button_id = 1;
   int32 draw_count = 2;
-  repeated common.Consumption display_consumptions = 10;
+  repeated .common.Consumption display_consumptions = 10;
   int32 display_free_balance = 11;
   int32 display_paid_balance = 12;
 }
@@ -126,7 +126,7 @@ message GachaDrawNormalResponse {
 message GachaDrawCardSelectRequest {
   string gacha_button_id = 1;
   int32 draw_count = 2;
-  repeated common.Consumption display_consumptions = 10;
+  repeated .common.Consumption display_consumptions = 10;
   int32 display_free_balance = 11;
   int32 display_paid_balance = 12;
 }
@@ -140,9 +140,9 @@ message GachaDrawCardSelectResponse {
 
 message GachaDrawResponseCardResult {
   string card_id = 1;
-  repeated common.Reward bonus_reward = 2;
+  repeated .common.Reward bonus_reward = 2;
   repeated common.RewardResult card_reward_results = 3;
-  enums.GachaCardDuplicateRewardType duplicate_reward_type = 4;
+  .enums.GachaCardDuplicateRewardType duplicate_reward_type = 4;
   int32 provided_potential_upgrade_point_quantity = 5;
 }
 
@@ -173,7 +173,7 @@ message GachaListCardSelectProbabilityResponse {
 }
 
 message GachaRarityProbability {
-  enums.CardRarity rarity = 1;
+  .enums.CardRarity rarity = 1;
   int32 parts_per_ten_million_probability = 2;
   repeated GachaCardProbability card_probabilities = 3;
 }
@@ -198,8 +198,8 @@ message GachaSetSelectedCardResponse {
 }
 
 service Gacha {
-  rpc List (google.protobuf.Empty) returns (GachaListResponse);
-  rpc ListHistory (google.protobuf.Empty) returns (GachaListHistoryResponse);
+  rpc List (.google.protobuf.Empty) returns (GachaListResponse);
+  rpc ListHistory (.google.protobuf.Empty) returns (GachaListHistoryResponse);
   rpc Read (GachaReadRequest) returns (GachaReadResponse);
   rpc DrawNormal (GachaDrawNormalRequest) returns (GachaDrawNormalResponse);
   rpc ListNormalProbability (GachaListNormalProbabilityRequest) returns (GachaListNormalProbabilityResponse);

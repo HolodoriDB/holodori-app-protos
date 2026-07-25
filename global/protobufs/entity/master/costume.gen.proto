@@ -16,6 +16,6 @@ message Costume {
   string asset_id = 5;
   string expression_asset_id = 6;
   string live_start_character_voice_id = 7;
-  enums.CostumeRarityType rarity_type = 8;
+  .enums.CostumeRarityType rarity_type = 8;
   int32 order = 999;
 }

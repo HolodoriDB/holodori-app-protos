@@ -10,11 +10,11 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SemiResourceTypeDetail {
-  enums.SemiResourceType type = 1;
+  .enums.SemiResourceType type = 1;
   string color = 2;
   string name_lang_id = 3;
   string icon_asset_id = 4;
   string description_lang_id = 5;
   string background_color = 6;
-  enums.ResourceBackgroundPatternType background_pattern_type = 7;
+  .enums.ResourceBackgroundPatternType background_pattern_type = 7;
 }

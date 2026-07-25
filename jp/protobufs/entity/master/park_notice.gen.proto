@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkNotice {
-  enums.ParkNoticeType type = 1;
+  .enums.ParkNoticeType type = 1;
   string target_id = 2;
   int32 order = 999;
 }

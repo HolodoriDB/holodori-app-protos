@@ -10,5 +10,5 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message AssetDownload {
   string asset_id = 1;
-  enums.AssetDownloadType type = 2;
+  .enums.AssetDownloadType type = 2;
 }

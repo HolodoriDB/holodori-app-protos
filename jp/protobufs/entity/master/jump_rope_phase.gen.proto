@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message JumpRopePhase {
-  enums.JumpRopePhaseType phase_type = 1;
+  .enums.JumpRopePhaseType phase_type = 1;
   string name_lang_id = 2;
   bool is_rope_emission_enabled = 3;
   bool is_spinner_change_enabled = 4;

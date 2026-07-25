@@ -13,5 +13,5 @@ message MissionProgress {
   int64 threshold = 2;
   int64 reward_mission_pass_point_quantity = 4;
   int64 reward_character_exp_quantity = 5;
-  repeated common.Reward rewards = 1000;
+  repeated .common.Reward rewards = 1000;
 }

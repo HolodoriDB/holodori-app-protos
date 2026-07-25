@@ -11,8 +11,8 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkHighLowHand {
   string group_id = 1;
-  enums.ParkHighLowHandType type = 2;
+  .enums.ParkHighLowHandType type = 2;
   string name_lang_id = 3;
   int64 reward_quantity_up_permil_multiply = 4;
-  enums.ParkHighLowHandAppealType appeal_type = 5;
+  .enums.ParkHighLowHandAppealType appeal_type = 5;
 }

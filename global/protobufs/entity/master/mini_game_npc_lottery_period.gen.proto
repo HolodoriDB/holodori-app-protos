@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MiniGameNpcLotteryPeriod {
-  enums.MiniGameType mini_game_type = 1;
+  .enums.MiniGameType mini_game_type = 1;
   int64 start_time = 2;
   repeated string mini_game_npc_ids = 5;
 }

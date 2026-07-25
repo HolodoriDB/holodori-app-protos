@@ -10,6 +10,6 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkQuestLiveMusicDifficulty {
   string park_quest_live_id = 1;
-  enums.MusicDifficultyType difficulty_type = 2;
+  .enums.MusicDifficultyType difficulty_type = 2;
   string condition_group_id = 3;
 }

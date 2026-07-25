@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message AchievementCategory {
-  enums.AchievementCategoryType type = 1;
+  .enums.AchievementCategoryType type = 1;
   string name_lang_id = 2;
   string view_condition_group_id = 3;
   string unlock_condition_group_id = 4;

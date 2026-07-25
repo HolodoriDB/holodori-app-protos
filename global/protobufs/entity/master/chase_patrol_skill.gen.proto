@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ChasePatrolSkill {
-  enums.ChasePatrolSkillType skill_type = 1;
+  .enums.ChasePatrolSkillType skill_type = 1;
   string name_lang_id = 2;
   string description_lang_id = 3;
   int32 effect_duration_millisecond = 100;

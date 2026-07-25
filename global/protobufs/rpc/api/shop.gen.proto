@@ -40,7 +40,7 @@ message ShopReadResponse {
 }
 
 service Shop {
-  rpc List (google.protobuf.Empty) returns (ShopListResponse);
+  rpc List (.google.protobuf.Empty) returns (ShopListResponse);
   rpc PurchaseConsumptionItem (ShopPurchaseConsumptionItemRequest) returns (ShopPurchaseConsumptionItemResponse);
   rpc Read (ShopReadRequest) returns (ShopReadResponse);
 }

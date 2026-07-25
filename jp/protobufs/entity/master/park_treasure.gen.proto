@@ -12,5 +12,5 @@ message ParkTreasure {
   string id = 1;
   string park_target_mapping_id = 2;
   string condition_group_id = 6;
-  repeated common.Reward rewards = 1000;
+  repeated .common.Reward rewards = 1000;
 }

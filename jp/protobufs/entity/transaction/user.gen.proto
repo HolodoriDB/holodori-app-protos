@@ -11,11 +11,11 @@ option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message User {
   string public_user_id = 2;
-  enums.Region region = 3;
+  .enums.Region region = 3;
   string country_code = 4;
   int32 birth_year_for_payment = 5;
   int32 birth_month_for_payment = 6;
-  enums.ActiveUserType active_user_type = 7;
+  .enums.ActiveUserType active_user_type = 7;
   int64 tutorial_cleared_time = 8;
   int64 deleted_time = 9;
 }

@@ -17,7 +17,7 @@ option csharp_namespace = "Vision.Common.Proto.Api";
 message FriendTopResponse {
   message LatestPlayedUserInfo {
     common.BasicUserInfo user_info = 1;
-    enums.FriendStatusType friend_status_type = 2;
+    .enums.FriendStatusType friend_status_type = 2;
   }
   repeated common.BasicUserInfo friend_user_infos = 1;
   repeated common.BasicUserInfo offer_user_infos = 2;
@@ -83,8 +83,8 @@ message FriendRejectOfferResponse {
 }
 
 service Friend {
-  rpc Top (google.protobuf.Empty) returns (FriendTopResponse);
-  rpc TopReload (google.protobuf.Empty) returns (FriendTopReloadResponse);
+  rpc Top (.google.protobuf.Empty) returns (FriendTopResponse);
+  rpc TopReload (.google.protobuf.Empty) returns (FriendTopReloadResponse);
   rpc SearchUser (FriendSearchUserRequest) returns (FriendSearchUserResponse);
   rpc DeleteFriend (FriendDeleteFriendRequest) returns (FriendDeleteFriendResponse);
   rpc Offer (FriendOfferRequest) returns (FriendOfferResponse);

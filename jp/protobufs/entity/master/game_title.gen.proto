@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message GameTitle {
   string id = 1;
-  enums.GameTitleAssetType asset_type = 2;
+  .enums.GameTitleAssetType asset_type = 2;
   string asset_id = 3;
   string bgm_asset_id = 4;
   string condition_group_id = 5;

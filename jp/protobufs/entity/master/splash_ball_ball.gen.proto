@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message SplashBallBall {
   string group_id = 1;
   int32 number = 2;
-  enums.SplashBallBallType ball_type = 3;
+  .enums.SplashBallBallType ball_type = 3;
   float size = 4;
   float mass = 5;
   int32 bounce_coefficient_permil_multiply = 6;

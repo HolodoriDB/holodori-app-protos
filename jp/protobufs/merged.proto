@@ -341,32 +341,32 @@ message buf {
     }
 
     message DurationRules {
-      optional google.protobuf.Duration const = 2;
-      repeated google.protobuf.Duration in = 7;
-      repeated google.protobuf.Duration not_in = 8;
-      repeated google.protobuf.Duration example = 9;
+      optional .google.protobuf.Duration const = 2;
+      repeated .google.protobuf.Duration in = 7;
+      repeated .google.protobuf.Duration not_in = 8;
+      repeated .google.protobuf.Duration example = 9;
       oneof less_than {
-        google.protobuf.Duration lt = 3;
-        google.protobuf.Duration lte = 4;
+        .google.protobuf.Duration lt = 3;
+        .google.protobuf.Duration lte = 4;
       }
       oneof greater_than {
-        google.protobuf.Duration gt = 5;
-        google.protobuf.Duration gte = 6;
+        .google.protobuf.Duration gt = 5;
+        .google.protobuf.Duration gte = 6;
       }
     }
 
     message TimestampRules {
-      optional google.protobuf.Timestamp const = 2;
-      optional google.protobuf.Duration within = 9;
-      repeated google.protobuf.Timestamp example = 10;
+      optional .google.protobuf.Timestamp const = 2;
+      optional .google.protobuf.Duration within = 9;
+      repeated .google.protobuf.Timestamp example = 10;
       oneof less_than {
-        google.protobuf.Timestamp lt = 3;
-        google.protobuf.Timestamp lte = 4;
+        .google.protobuf.Timestamp lt = 3;
+        .google.protobuf.Timestamp lte = 4;
         bool lt_now = 7;
       }
       oneof greater_than {
-        google.protobuf.Timestamp gt = 5;
-        google.protobuf.Timestamp gte = 6;
+        .google.protobuf.Timestamp gt = 5;
+        .google.protobuf.Timestamp gte = 6;
         bool gt_now = 8;
       }
     }
@@ -392,9 +392,9 @@ message buf {
     message FieldPathElement {
       optional int32 field_number = 1;
       optional string field_name = 2;
-      optional google.protobuf.FieldDescriptorProto.Type field_type = 3;
-      optional google.protobuf.FieldDescriptorProto.Type key_type = 4;
-      optional google.protobuf.FieldDescriptorProto.Type value_type = 5;
+      optional .google.protobuf.FieldDescriptorProto.Type field_type = 3;
+      optional .google.protobuf.FieldDescriptorProto.Type key_type = 4;
+      optional .google.protobuf.FieldDescriptorProto.Type value_type = 5;
       oneof subscript {
         uint64 index = 6;
         bool bool_key = 7;
@@ -410,7 +410,7 @@ message buf {
 
 message common {
   message Consumption {
-    enums.ResourceType resource_type = 1;
+    .enums.ResourceType resource_type = 1;
     string resource_id = 2;
     int64 quantity = 3;
   }
@@ -456,13 +456,13 @@ message common {
   }
 
   message Reward {
-    enums.ResourceType resource_type = 1;
+    .enums.ResourceType resource_type = 1;
     string resource_id = 2;
     int64 quantity = 3;
   }
 
   message SimplifiedReward {
-    enums.ResourceType resource_type = 1;
+    .enums.ResourceType resource_type = 1;
     string resource_id = 2;
   }
 
@@ -485,8 +485,8 @@ message dto {
 
     message LiveCooperationResult {
       message UserResult {
-        enums.MusicDifficultyType music_difficulty_type = 1;
-        common.LiveBaseResult result = 2;
+        .enums.MusicDifficultyType music_difficulty_type = 1;
+        .common.LiveBaseResult result = 2;
         int64 bonus_score = 3;
         int32 fever_point = 4;
         bool is_fever_succeeded = 5;
@@ -505,11 +505,11 @@ message dto {
         repeated MiniGameCircuitResult.AreaInfo area_infos = 3;
         repeated int64 area_pass_milliseconds = 50;
         repeated int32 dash_counts = 51;
-        enums.CheatSeverityType cheat_severity_type = 52;
+        .enums.CheatSeverityType cheat_severity_type = 52;
         MultiGameCommonUserResult common_user_result = 100;
       }
       message AreaInfo {
-        enums.CircuitAreaType area_type = 1;
+        .enums.CircuitAreaType area_type = 1;
         int32 fall_count = 2;
         int32 crash_count = 3;
         int32 damage_count = 4;
@@ -528,7 +528,7 @@ message dto {
         MultiGameCommonUserResult common_user_result = 100;
       }
       message CompletionRole {
-        enums.ComboCardGameCardRoleType role_type = 1;
+        .enums.ComboCardGameCardRoleType role_type = 1;
         string character_grouping_id = 2;
         string character_id = 3;
         bool is_same_category = 4;
@@ -560,7 +560,7 @@ message entity {
     }
 
     message AchievementCategory {
-      enums.AchievementCategoryType type = 1;
+      .enums.AchievementCategoryType type = 1;
       string name_lang_id = 2;
       string view_condition_group_id = 3;
       string unlock_condition_group_id = 4;
@@ -569,11 +569,11 @@ message entity {
 
     message AchievementGroup {
       string id = 1;
-      enums.AchievementCategoryType achievement_category_type = 2;
+      .enums.AchievementCategoryType achievement_category_type = 2;
       string name_lang_id = 3;
       string view_condition_group_id = 4;
       string asset_id = 5;
-      enums.MiniGameType mini_game_type = 6;
+      .enums.MiniGameType mini_game_type = 6;
       int32 order = 999;
     }
 
@@ -613,7 +613,7 @@ message entity {
       string default_area_selector_id = 7;
       string asset_id = 8;
       string color = 9;
-      enums.ResourceType fixed_display_resource_type = 10;
+      .enums.ResourceType fixed_display_resource_type = 10;
       string fixed_display_resource_id = 11;
       int32 order = 999;
     }
@@ -655,7 +655,7 @@ message entity {
 
     message AssetDownload {
       string asset_id = 1;
-      enums.AssetDownloadType type = 2;
+      .enums.AssetDownloadType type = 2;
     }
 
     message AssetEmbeddingText {
@@ -674,15 +674,15 @@ message entity {
       int32 mini_game_reward_quantity_up_permil_up = 6;
       int32 live_reward_up_stamina_max_quantity_up = 7;
       int32 mini_game_reward_up_stamina_max_quantity_up = 8;
-      repeated common.Reward rewards = 1001;
+      repeated .common.Reward rewards = 1001;
     }
 
     message Card {
       string id = 1;
       string character_id = 2;
       string name_lang_id = 3;
-      enums.CardRarity rarity = 4;
-      enums.CardAttributeType attribute_type = 5;
+      .enums.CardRarity rarity = 4;
+      .enums.CardAttributeType attribute_type = 5;
       string card_level_group_id = 6;
       int32 performance_permil_multiply = 7;
       int32 technique_permil_multiply = 8;
@@ -698,9 +698,9 @@ message entity {
       string skill_tree_connect_effect_id = 22;
       string reward_costume_id = 23;
       string reward_sd_costume_id = 24;
-      enums.CardAssetType asset_type = 25;
-      enums.CardVerticalAnchorType vertical_anchor_type = 26;
-      enums.CardHorizontalAnchorType horizontal_anchor_type = 27;
+      .enums.CardAssetType asset_type = 25;
+      .enums.CardVerticalAnchorType vertical_anchor_type = 26;
+      .enums.CardHorizontalAnchorType horizontal_anchor_type = 27;
       string gacha_animation_character_voice_id = 28;
       string card_detail_character_voice_id = 29;
       bool is_no_signed_card_message = 33;
@@ -710,8 +710,8 @@ message entity {
       string potential_upgrade4_character_voice_id = 37;
       string potential_upgrade5_character_voice_id = 38;
       int32 order = 999;
-      common.Reward potential_alternative_reward = 1000;
-      common.Reward acquire_reward = 1001;
+      .common.Reward potential_alternative_reward = 1000;
+      .common.Reward acquire_reward = 1001;
     }
 
     message CardLevel {
@@ -726,18 +726,18 @@ message entity {
       string group_id = 1;
       int32 limit_break_count = 2;
       int32 level_limit = 3;
-      repeated common.Consumption consumptions = 7;
+      repeated .common.Consumption consumptions = 7;
     }
 
     message CardPotential {
       string group_id = 1;
       int32 upgrade_count = 2;
-      enums.CardPotentialEffectType effect_type = 3;
+      .enums.CardPotentialEffectType effect_type = 3;
       int64 value = 4;
     }
 
     message CardPotentialUpgradeItem {
-      enums.CardRarity rarity = 1;
+      .enums.CardRarity rarity = 1;
       string item_id = 2;
     }
 
@@ -760,14 +760,14 @@ message entity {
       string comment_lang_id = 16;
       string youtube_url = 17;
       string x_url = 18;
-      enums.CharacterPersonalityType personality_type = 19;
-      enums.CharacterSdPersonalityType sd_personality_type = 20;
+      .enums.CharacterPersonalityType personality_type = 19;
+      .enums.CharacterSdPersonalityType sd_personality_type = 20;
       bool is_playable = 21;
       string asset_id = 22;
       string character_level_group_id = 23;
       string skill_tree_node_position_group_id = 24;
       bool is_tutorial = 25;
-      enums.CharacterHandType dominant_hand_type = 26;
+      .enums.CharacterHandType dominant_hand_type = 26;
       string skill_tree_point_id = 27;
       string bgm_asset_id = 28;
       string regular_character_grouping_name_lang_id = 29;
@@ -794,7 +794,7 @@ message entity {
     }
 
     message CharacterHistory {
-      enums.CharacterHistoryType character_history_type = 1;
+      .enums.CharacterHistoryType character_history_type = 1;
       int64 threshold = 2;
       bool is_loop = 3;
       string text_lang_id = 4;
@@ -802,7 +802,7 @@ message entity {
     }
 
     message CharacterHistoryDisplay {
-      enums.CharacterHistoryType type = 1;
+      .enums.CharacterHistoryType type = 1;
       int32 order = 999;
     }
 
@@ -811,7 +811,7 @@ message entity {
       int32 level = 2;
       int64 exp = 3;
       int32 skill_tree_point_quantity = 11;
-      repeated common.Reward rewards = 1000;
+      repeated .common.Reward rewards = 1000;
     }
 
     message CharacterLiveDialogueVoice {
@@ -822,7 +822,7 @@ message entity {
 
     message CharacterMotion {
       string character_id = 1;
-      enums.CharacterMotionType type = 2;
+      .enums.CharacterMotionType type = 2;
       string motion_asset_id = 3;
       string expression_asset_id = 4;
     }
@@ -868,17 +868,17 @@ message entity {
 
     message Chase {
       string id = 1;
-      enums.ChasePlayType play_type = 2;
+      .enums.ChasePlayType play_type = 2;
       string unlock_condition_group_id = 3;
       repeated int32 area_key_appear_location_counts = 5;
       repeated int32 area_laser_gimmick_appear_location_counts = 6;
       repeated int32 area_laser_gimmick_reappear_location_counts = 7;
       repeated int32 area_play_start_location_counts = 8;
-      repeated common.SimplifiedReward rewards = 1000;
+      repeated .common.SimplifiedReward rewards = 1000;
     }
 
     message ChasePatrolSkill {
-      enums.ChasePatrolSkillType skill_type = 1;
+      .enums.ChasePatrolSkillType skill_type = 1;
       string name_lang_id = 2;
       string description_lang_id = 3;
       int32 effect_duration_millisecond = 100;
@@ -955,21 +955,21 @@ message entity {
     }
 
     message Cheat {
-      enums.CheatType type = 1;
-      enums.CheatSeverityType severity_type = 2;
-      enums.CheatParameterType parameter_type = 3;
+      .enums.CheatType type = 1;
+      .enums.CheatSeverityType severity_type = 2;
+      .enums.CheatParameterType parameter_type = 3;
       int64 threshold = 4;
     }
 
     message Circuit {
       string id = 1;
-      enums.CircuitPlayType play_type = 2;
+      .enums.CircuitPlayType play_type = 2;
       string game_start_display_clear_condition_lang_id = 3;
       string game_playing_display_clear_condition_lang_id = 4;
     }
 
     message CircuitArea {
-      enums.CircuitAreaType type = 1;
+      .enums.CircuitAreaType type = 1;
       string crash_gimmick_name_lang_id = 2;
       string damage_gimmick_name_lang_id = 3;
     }
@@ -999,7 +999,7 @@ message entity {
 
     message ComboCardGame {
       string id = 1;
-      enums.ComboCardGamePlayType play_type = 2;
+      .enums.ComboCardGamePlayType play_type = 2;
       int64 start_time = 3;
       int64 end_time = 4;
       string combo_card_game_card_group_id = 5;
@@ -1010,7 +1010,7 @@ message entity {
     message ComboCardGameCard {
       string group_id = 1;
       string character_id = 2;
-      enums.ComboCardGameCardCategoryType category_type = 3;
+      .enums.ComboCardGameCardCategoryType category_type = 3;
       string asset_id = 4;
       string character_grouping_id = 5;
     }
@@ -1035,13 +1035,13 @@ message entity {
     message ComboCardGameRoleScore {
       string id = 1;
       string name_lang_id = 2;
-      enums.ComboCardGameCardRoleType role_type = 3;
+      .enums.ComboCardGameCardRoleType role_type = 3;
       repeated string character_grouping_ids = 4;
       int32 required_card_quantity = 5;
       int32 score = 6;
       int32 same_category_score = 7;
-      enums.ComboCardGameCardRoleEffect role_effect = 8;
-      enums.ComboCardGameCardRoleEffect same_category_role_effect = 9;
+      .enums.ComboCardGameCardRoleEffect role_effect = 8;
+      .enums.ComboCardGameCardRoleEffect same_category_role_effect = 9;
     }
 
     message ComboCardGameSetting {
@@ -1065,18 +1065,18 @@ message entity {
     }
 
     message CommonBgm {
-      enums.CommonBgmType common_bgm_type = 1;
+      .enums.CommonBgmType common_bgm_type = 1;
       string asset_id = 2;
     }
 
     message Condition {
       string group_id = 1;
       int32 number = 2;
-      enums.ConditionOperatorType operator_type = 3;
-      enums.ConditionType type = 4;
+      .enums.ConditionOperatorType operator_type = 3;
+      .enums.ConditionType type = 4;
       string resource_id1 = 5;
       string resource_id2 = 6;
-      enums.ConditionMinMaxType min_max_type = 7;
+      .enums.ConditionMinMaxType min_max_type = 7;
       int64 min = 8;
       int64 max = 9;
       int64 start_time = 10;
@@ -1087,7 +1087,7 @@ message entity {
 
     message CookingPuzzle {
       string id = 1;
-      enums.CookingPuzzlePlayType play_type = 2;
+      .enums.CookingPuzzlePlayType play_type = 2;
       string view_condition_group_id = 3;
       string unlock_condition_group_id = 4;
       int32 limit_time_seconds = 5;
@@ -1098,7 +1098,7 @@ message entity {
       string game_start_display_clear_condition_lang_id = 11;
       string mode_select_display_clear_condition_lang_id = 12;
       int32 order = 999;
-      repeated common.SimplifiedReward play_rewards = 1000;
+      repeated .common.SimplifiedReward play_rewards = 1000;
     }
 
     message CookingPuzzleCombo {
@@ -1110,7 +1110,7 @@ message entity {
     message CookingPuzzleCompletionCountReward {
       string group_id = 1;
       int32 completion_count = 2;
-      repeated common.SimplifiedReward rewards = 1000;
+      repeated .common.SimplifiedReward rewards = 1000;
     }
 
     message CookingPuzzleFoodstuff {
@@ -1176,7 +1176,7 @@ message entity {
       string asset_id = 5;
       string expression_asset_id = 6;
       string live_start_character_voice_id = 7;
-      enums.CostumeRarityType rarity_type = 8;
+      .enums.CostumeRarityType rarity_type = 8;
       int32 order = 999;
     }
 
@@ -1189,7 +1189,7 @@ message entity {
 
     message CustomPaletteDecoration {
       string id = 1;
-      enums.CustomPaletteDecorationType custom_palette_decoration_type = 2;
+      .enums.CustomPaletteDecorationType custom_palette_decoration_type = 2;
       string name_lang_id = 3;
       string asset_id = 4;
       bool is_preset = 5;
@@ -1216,7 +1216,7 @@ message entity {
       string id = 1;
       string name_lang_id = 2;
       string asset_id = 3;
-      enums.EmblemSize size = 4;
+      .enums.EmblemSize size = 4;
       bool is_preset = 5;
       int32 order = 999;
     }
@@ -1240,14 +1240,14 @@ message entity {
 
     message ExchangeBooth {
       string id = 1;
-      enums.ResetIntervalType reset_interval_type = 7;
+      .enums.ResetIntervalType reset_interval_type = 7;
     }
 
     message ExchangeBoothFixedItem {
       string id = 1;
       string exchange_booth_id = 2;
       int32 purchase_limit_quantity = 14;
-      enums.ResetIntervalType reset_interval_type = 17;
+      .enums.ResetIntervalType reset_interval_type = 17;
     }
 
     message ExchangeBoothGroup {
@@ -1286,7 +1286,7 @@ message entity {
       string view_condition_group_id = 4;
       string unlock_condition_group_id = 5;
       int32 order = 999;
-      repeated common.Consumption consumptions = 1000;
+      repeated .common.Consumption consumptions = 1000;
     }
 
     message FanMark {
@@ -1298,7 +1298,7 @@ message entity {
     }
 
     message FeatureLock {
-      enums.TutorialType tutorial_type = 1;
+      .enums.TutorialType tutorial_type = 1;
       string title_lang_id = 2;
       string description_lang_id = 3;
       string view_condition_group_id = 4;
@@ -1307,11 +1307,11 @@ message entity {
     }
 
     message FeatureMaintenance {
-      enums.FeatureMaintenanceType type = 1;
+      .enums.FeatureMaintenanceType type = 1;
       int64 start_time = 2;
       int64 end_time = 3;
-      repeated enums.Region target_regions = 4;
-      repeated enums.StoreType target_store_types = 5;
+      repeated .enums.Region target_regions = 4;
+      repeated .enums.StoreType target_store_types = 5;
     }
 
     message Gacha {
@@ -1320,8 +1320,8 @@ message entity {
 
     message GachaAnimationFake {
       string gacha_animation_grouping_id = 1;
-      enums.GachaAnimationRarityType fake_animation_rarity = 2;
-      enums.GachaAnimationRarityType actual_animation_rarity = 3;
+      .enums.GachaAnimationRarityType fake_animation_rarity = 2;
+      .enums.GachaAnimationRarityType actual_animation_rarity = 3;
       int32 ratio = 4;
     }
 
@@ -1331,8 +1331,8 @@ message entity {
 
     message GachaAnimationMovie {
       string group_id = 1;
-      enums.GachaAnimationRarityType animation_rarity = 2;
-      enums.GachaAnimationType animation_type = 3;
+      .enums.GachaAnimationRarityType animation_rarity = 2;
+      .enums.GachaAnimationType animation_type = 3;
       int32 animation_number = 4;
       string asset_id = 5;
       int32 ratio = 6;
@@ -1340,10 +1340,10 @@ message entity {
 
     message GachaAnimationTransition {
       string gacha_animation_grouping_id = 1;
-      enums.GachaAnimationRarityType animation_rarity = 2;
-      enums.GachaAnimationType animation_type_from = 3;
+      .enums.GachaAnimationRarityType animation_rarity = 2;
+      .enums.GachaAnimationType animation_type_from = 3;
       int32 animation_number_from = 4;
-      enums.GachaAnimationType animation_type_to = 5;
+      .enums.GachaAnimationType animation_type_to = 5;
       int32 animation_number_to = 6;
       int32 ratio = 7;
     }
@@ -1351,7 +1351,7 @@ message entity {
     message GachaButton {
       string id = 1;
       string gacha_id = 2;
-      enums.ResetIntervalType reset_interval_type = 14;
+      .enums.ResetIntervalType reset_interval_type = 14;
     }
 
     message GachaPoint {
@@ -1364,7 +1364,7 @@ message entity {
 
     message GameTitle {
       string id = 1;
-      enums.GameTitleAssetType asset_type = 2;
+      .enums.GameTitleAssetType asset_type = 2;
       string asset_id = 3;
       string bgm_asset_id = 4;
       string condition_group_id = 5;
@@ -1373,9 +1373,9 @@ message entity {
 
     message HelpCategory {
       string id = 1;
-      enums.HelpCategoryType type = 2;
+      .enums.HelpCategoryType type = 2;
       string title_lang_id = 3;
-      enums.HelpCategoryScreenType screen_type = 4;
+      .enums.HelpCategoryScreenType screen_type = 4;
       int32 order = 999;
     }
 
@@ -1392,15 +1392,15 @@ message entity {
       string title_lang_id = 2;
       string story_id = 3;
       string asset_id = 4;
-      enums.StoryAssetType asset_type = 5;
+      .enums.StoryAssetType asset_type = 5;
       int64 start_time = 6;
       int32 order = 999;
     }
 
     message InstantTips {
       string id = 1;
-      enums.InstantTipsType type = 2;
-      enums.InstantTipsDisplaySceneType display_scene_type = 3;
+      .enums.InstantTipsType type = 2;
+      .enums.InstantTipsDisplaySceneType display_scene_type = 3;
       string tips_id = 4;
       string text_lang_id = 5;
       string condition_group_id = 6;
@@ -1410,22 +1410,22 @@ message entity {
       string id = 1;
       string name_lang_id = 2;
       string description_lang_id = 3;
-      enums.ItemType type = 4;
+      .enums.ItemType type = 4;
       int64 common_limit_time = 5;
       int32 personal_limit_days = 6;
       int64 effect_value = 7;
       string asset_id = 8;
       string resource_obtainment_route_group_id = 9;
-      enums.InventoryItemCategoryType inventory_item_category_type = 10;
+      .enums.InventoryItemCategoryType inventory_item_category_type = 10;
       bool is_display_owned = 11;
-      enums.ItemRarity rarity = 15;
+      .enums.ItemRarity rarity = 15;
       string thumbnail_sub_asset_id = 16;
       int32 order = 999;
-      repeated common.Reward expiration_rewards = 1000;
+      repeated .common.Reward expiration_rewards = 1000;
     }
 
     message ItemLimit {
-      enums.ItemType item_type = 1;
+      .enums.ItemType item_type = 1;
       int64 limit = 2;
     }
 
@@ -1435,11 +1435,11 @@ message entity {
       string view_condition_group_id = 6;
       string unlock_condition_group_id = 7;
       int32 order = 999;
-      common.Reward reward = 1000;
+      .common.Reward reward = 1000;
     }
 
     message ItemTypeDetail {
-      enums.ItemType type = 1;
+      .enums.ItemType type = 1;
       string color = 2;
       string name_lang_id = 3;
       string icon_asset_id = 4;
@@ -1447,7 +1447,7 @@ message entity {
 
     message JumpRope {
       string id = 1;
-      enums.JumpRopePlayType play_type = 2;
+      .enums.JumpRopePlayType play_type = 2;
       string view_condition_group_id = 3;
       string unlock_condition_group_id = 4;
       string jump_rope_phase_gimmick_group_id = 5;
@@ -1457,12 +1457,12 @@ message entity {
       string game_playing_display_clear_condition_lang_id = 12;
       string mode_select_display_clear_condition_lang_id = 13;
       int32 order = 999;
-      repeated common.SimplifiedReward play_rewards = 1000;
-      repeated common.SimplifiedReward multi_mvp_rewards = 1001;
+      repeated .common.SimplifiedReward play_rewards = 1000;
+      repeated .common.SimplifiedReward multi_mvp_rewards = 1001;
     }
 
     message JumpRopeGimmick {
-      enums.JumpRopeGimmickType gimmick_type = 1;
+      .enums.JumpRopeGimmickType gimmick_type = 1;
       string character_id = 2;
       string sd_costume_id = 3;
     }
@@ -1470,11 +1470,11 @@ message entity {
     message JumpRopeJumpCountReward {
       string group_id = 1;
       int32 jump_count = 2;
-      repeated common.SimplifiedReward rewards = 1000;
+      repeated .common.SimplifiedReward rewards = 1000;
     }
 
     message JumpRopePhase {
-      enums.JumpRopePhaseType phase_type = 1;
+      .enums.JumpRopePhaseType phase_type = 1;
       string name_lang_id = 2;
       bool is_rope_emission_enabled = 3;
       bool is_spinner_change_enabled = 4;
@@ -1483,9 +1483,9 @@ message entity {
 
     message JumpRopePhaseGimmick {
       string group_id = 1;
-      enums.JumpRopePhaseType phase_type = 2;
+      .enums.JumpRopePhaseType phase_type = 2;
       int32 jump_count_from = 3;
-      repeated enums.JumpRopeGimmickType gimmick_types = 4;
+      repeated .enums.JumpRopeGimmickType gimmick_types = 4;
       int32 speed_coefficient_permil_multiply = 5;
       int32 speed_up_coefficient_permil_multiply = 6;
       int32 speed_down_coefficient_permil_multiply = 7;
@@ -1495,7 +1495,7 @@ message entity {
       int32 caution_active_jump_count_max = 11;
       int32 gimmick_active_jump_count_min = 12;
       int32 gimmick_active_jump_count_max = 13;
-      enums.JumpRopeInvisibleGimmickType invisible_gimmick_type = 14;
+      .enums.JumpRopeInvisibleGimmickType invisible_gimmick_type = 14;
       float min_steam_density = 15;
       float max_steam_density = 16;
       float min_fall_object_size = 17;
@@ -1535,7 +1535,7 @@ message entity {
     message LiveActiveSkillEffect {
       string group_id = 1;
       int32 number = 2;
-      enums.LiveActiveSkillEffectType type = 3;
+      .enums.LiveActiveSkillEffectType type = 3;
       int64 value = 4;
       int32 score_up_based_on_parameter_permil_multiply = 5;
       string description_lang_id = 1000;
@@ -1562,20 +1562,20 @@ message entity {
     }
 
     message LiveDeckEvaluationBonusRank {
-      enums.LiveDeckRankType type = 1;
+      .enums.LiveDeckRankType type = 1;
       int32 plus = 2;
       int32 threshold_permil_up = 3;
     }
 
     message LiveDeckEvaluationRank {
-      enums.LiveDeckRankType type = 1;
+      .enums.LiveDeckRankType type = 1;
       int32 plus = 2;
       int64 threshold = 3;
       int32 order = 4;
     }
 
     message LiveDeckPowerRank {
-      enums.LiveDeckRankType type = 1;
+      .enums.LiveDeckRankType type = 1;
       int32 plus = 2;
       int64 threshold = 3;
     }
@@ -1615,27 +1615,27 @@ message entity {
 
     message LiveMusicClearCountReward {
       int32 clear_count = 1;
-      repeated common.Reward rewards = 1000;
+      repeated .common.Reward rewards = 1000;
     }
 
     message LiveMusicDifficultyMaxComboCountReward {
-      enums.MusicDifficultyType difficulty_type = 1;
-      repeated common.Reward rewards = 1000;
+      .enums.MusicDifficultyType difficulty_type = 1;
+      repeated .common.Reward rewards = 1000;
     }
 
     message LiveMusicFullComboReward {
-      enums.MusicDifficultyType music_difficulty_type = 1;
-      repeated common.Reward rewards = 1000;
+      .enums.MusicDifficultyType music_difficulty_type = 1;
+      repeated .common.Reward rewards = 1000;
     }
 
     message LiveMusicHighestScoreEvaluationRankReward {
-      enums.LiveEvaluationRankType evaluation_rank_type = 1;
-      repeated common.Reward rewards = 1000;
+      .enums.LiveEvaluationRankType evaluation_rank_type = 1;
+      repeated .common.Reward rewards = 1000;
     }
 
     message LiveNote {
-      enums.LiveNoteType note_type = 1;
-      enums.LiveNoteJudgementType judgement_type = 2;
+      .enums.LiveNoteType note_type = 1;
+      .enums.LiveNoteJudgementType judgement_type = 2;
       float acceptable_before_frame_count = 3;
       float acceptable_after_frame_count = 4;
       int32 score_coefficient_permil_multiply = 5;
@@ -1646,7 +1646,7 @@ message entity {
     }
 
     message LiveNoteJudgementTechnicalScore {
-      enums.LiveNoteJudgementType live_note_judgement_type = 1;
+      .enums.LiveNoteJudgementType live_note_judgement_type = 1;
       int64 score = 2;
     }
 
@@ -1657,10 +1657,10 @@ message entity {
     message LivePassiveSkillEffect {
       string group_id = 1;
       int32 number = 2;
-      enums.LivePassiveSkillEffectType type = 3;
+      .enums.LivePassiveSkillEffectType type = 3;
       int64 value = 4;
       string live_skill_effect_target_id = 5;
-      enums.ResourceType resource_type = 6;
+      .enums.ResourceType resource_type = 6;
       repeated string resource_ids = 7;
       string description_lang_id = 1000;
     }
@@ -1683,7 +1683,7 @@ message entity {
 
     message LiveScoreEvaluationRank {
       string group_id = 1;
-      enums.LiveEvaluationRankType evaluation_rank_type = 2;
+      .enums.LiveEvaluationRankType evaluation_rank_type = 2;
       int32 plus = 3;
       int64 score = 4;
     }
@@ -1691,45 +1691,45 @@ message entity {
     message LiveSkillEffectFilterCategory {
       string id = 1;
       string name_lang_id = 2;
-      repeated enums.LiveActiveSkillEffectType live_active_skill_effect_types = 3;
-      repeated enums.LivePassiveSkillEffectType live_passive_skill_effect_types = 4;
-      repeated enums.LiveActiveSkillEffectType live_special_skill_effect_types = 5;
+      repeated .enums.LiveActiveSkillEffectType live_active_skill_effect_types = 3;
+      repeated .enums.LivePassiveSkillEffectType live_passive_skill_effect_types = 4;
+      repeated .enums.LiveActiveSkillEffectType live_special_skill_effect_types = 5;
       int32 order = 999;
     }
 
     message LiveSkillEffectTarget {
       string id = 1;
-      enums.LiveSkillEffectTargetType type = 2;
+      .enums.LiveSkillEffectTargetType type = 2;
       int32 target_count = 3;
       string character_id = 4;
       string character_grouping_id = 5;
-      enums.CardAttributeType card_attribute_type = 6;
+      .enums.CardAttributeType card_attribute_type = 6;
       string description_lang_id = 1000;
     }
 
     message LiveSkillTrigger {
       string group_id = 1;
       int32 number = 2;
-      enums.LiveSkillTriggerType type = 3;
+      .enums.LiveSkillTriggerType type = 3;
       int64 threshold = 4;
       repeated string character_ids = 5;
       string character_grouping_id = 6;
       string music_id = 7;
-      enums.CardAttributeType card_attribute_type = 8;
-      enums.LiveNoteJudgementType live_note_judgement_type = 9;
+      .enums.CardAttributeType card_attribute_type = 8;
+      .enums.LiveNoteJudgementType live_note_judgement_type = 9;
       string description_lang_id = 1000;
     }
 
     message LiveSkillTriggerFilterCategory {
       string id = 1;
       string name_lang_id = 2;
-      repeated enums.LiveSkillTriggerType live_skill_trigger_types = 3;
+      repeated .enums.LiveSkillTriggerType live_skill_trigger_types = 3;
       int32 order = 999;
     }
 
     message LiveSkin {
       string id = 1;
-      enums.LiveSkinType skin_type = 2;
+      .enums.LiveSkinType skin_type = 2;
       string name_lang_id = 3;
       string description_lang_id = 4;
       string character_production_id = 5;
@@ -1797,7 +1797,7 @@ message entity {
 
     message LoadingDisplay {
       string id = 1;
-      enums.LoadingDisplayType type = 2;
+      .enums.LoadingDisplayType type = 2;
       string title_lang_id = 3;
       string text_lang_id = 4;
       string asset_id = 6;
@@ -1830,7 +1830,7 @@ message entity {
     }
 
     message MarathonMiniGameRewardUpStaminaEffect {
-      enums.MiniGameType mini_game_type = 1;
+      .enums.MiniGameType mini_game_type = 1;
       int32 consumption_rate = 2;
       int32 marathon_score_provide_count = 3;
     }
@@ -1859,15 +1859,15 @@ message entity {
     }
 
     message MiniGame {
-      enums.MiniGameType type = 1;
+      .enums.MiniGameType type = 1;
       string name_lang_id = 2;
       string description_lang_id = 3;
       string title_asset_id = 4;
       string list_asset_id = 5;
-      enums.ParkActionType park_action_type = 6;
-      enums.MiniGameConsumptionType consumption_type = 7;
+      .enums.ParkActionType park_action_type = 6;
+      .enums.MiniGameConsumptionType consumption_type = 7;
       string mini_game_reward_up_stamina_conversion_id = 8;
-      enums.MiniGameCharacterDisplayType character_display_type = 9;
+      .enums.MiniGameCharacterDisplayType character_display_type = 9;
       bool is_multi_game = 10;
       string ranking_view_description_lang_id = 11;
       string ranking_score_type_lang_id = 12;
@@ -1885,8 +1885,8 @@ message entity {
     }
 
     message MiniGameMultiGame {
-      enums.MiniGameType mini_game_type = 1;
-      enums.MultiGameMatchType multi_game_match_type = 2;
+      .enums.MiniGameType mini_game_type = 1;
+      .enums.MultiGameMatchType multi_game_match_type = 2;
       string list_asset_id = 3;
       string view_condition_group_id = 4;
       int32 order = 999;
@@ -1900,7 +1900,7 @@ message entity {
     }
 
     message MiniGameNpcLotteryPeriod {
-      enums.MiniGameType mini_game_type = 1;
+      .enums.MiniGameType mini_game_type = 1;
       int64 start_time = 2;
       repeated string mini_game_npc_ids = 5;
     }
@@ -1908,7 +1908,7 @@ message entity {
     message MiniGameRewardUpStaminaConversion {
       string id = 1;
       int32 consumption_quantity = 2;
-      common.Reward reward = 1000;
+      .common.Reward reward = 1000;
     }
 
     message MiniGameRewardUpStaminaEffect {
@@ -1926,13 +1926,13 @@ message entity {
       string description_lang_id = 6;
       string progress_condition_group_id = 7;
       string view_condition_group_id = 8;
-      enums.MissionCategoryType category_type = 9;
-      enums.MissionType type = 10;
+      .enums.MissionCategoryType category_type = 9;
+      .enums.MissionType type = 10;
       string character_id = 11;
       repeated string target_ids1 = 12;
       repeated string target_ids2 = 13;
       repeated string target_ids3 = 14;
-      enums.TransitionType navigation_transition_type = 15;
+      .enums.TransitionType navigation_transition_type = 15;
       string navigation_transition_id = 17;
       int32 order = 999;
     }
@@ -1966,8 +1966,8 @@ message entity {
       string group_id = 1;
       int32 level = 2;
       bool is_feature = 3;
-      repeated common.Reward normal_rewards = 1000;
-      repeated common.Reward premium_rewards = 1001;
+      repeated .common.Reward normal_rewards = 1000;
+      repeated .common.Reward premium_rewards = 1001;
     }
 
     message MissionPassPoint {
@@ -1980,12 +1980,12 @@ message entity {
       int64 threshold = 2;
       int64 reward_mission_pass_point_quantity = 4;
       int64 reward_character_exp_quantity = 5;
-      repeated common.Reward rewards = 1000;
+      repeated .common.Reward rewards = 1000;
     }
 
     message MissionTypeDefaultNavigation {
-      enums.MissionType mission_type = 1;
-      enums.TransitionType transition_type = 2;
+      .enums.MissionType mission_type = 1;
+      .enums.TransitionType transition_type = 2;
       string transition_id = 3;
     }
 
@@ -2004,12 +2004,12 @@ message entity {
       string jacket_asset_id = 13;
       int64 start_time = 14;
       int32 playing_seconds = 15;
-      enums.MusicCategoryType category_type = 16;
+      .enums.MusicCategoryType category_type = 16;
       int32 live_score_coefficient_permil = 17;
       string single_live_score_evaluation_rank_group_id = 18;
       string multi_live_score_evaluation_rank_group_id = 19;
       string live_combo_group_id = 23;
-      enums.MusicReleaseType release_type = 24;
+      .enums.MusicReleaseType release_type = 24;
       int32 required_release_item_quantity = 25;
       string lock_description_lang_id = 26;
       bool is_highest_score_rating_target = 27;
@@ -2017,7 +2017,7 @@ message entity {
       string mv_url = 29;
       string mv_thumbnail_asset_id = 30;
       string copyright = 31;
-      enums.MusicSingerType music_singer_type = 100;
+      .enums.MusicSingerType music_singer_type = 100;
       repeated string character_ids = 101;
       string character_group_display_name_lang_id = 102;
       string character_group_display_name_ruby_lang_id = 103;
@@ -2036,7 +2036,7 @@ message entity {
 
     message MusicDifficulty {
       string music_id = 1;
-      enums.MusicDifficultyType difficulty_type = 2;
+      .enums.MusicDifficultyType difficulty_type = 2;
       int32 difficulty_level = 3;
       string chart_asset_id = 4;
       string view_condition_group_id = 5;
@@ -2045,7 +2045,7 @@ message entity {
 
     message MusicDifficultyChart {
       string music_id = 1;
-      enums.MusicDifficultyType difficulty_type = 2;
+      .enums.MusicDifficultyType difficulty_type = 2;
       int32 full_combo_note_count = 3;
       int32 max_combo_count_reward_threshold = 4;
       string chart_hash = 5;
@@ -2053,7 +2053,7 @@ message entity {
     }
 
     message MusicDifficultyConfiguration {
-      enums.MusicDifficultyType type = 1;
+      .enums.MusicDifficultyType type = 1;
       int32 animation_combo_interval = 2;
     }
 
@@ -2125,7 +2125,7 @@ message entity {
 
     message ParkEmotion {
       string id = 1;
-      enums.ParkEmotionType type = 2;
+      .enums.ParkEmotionType type = 2;
       string character_id = 3;
       string name_lang_id = 4;
       string asset_id = 5;
@@ -2147,14 +2147,14 @@ message entity {
 
     message ParkFishingFish {
       string id = 1;
-      enums.ParkFishingFishCategoryType category_type = 2;
+      .enums.ParkFishingFishCategoryType category_type = 2;
       string name_lang_id = 3;
       string description_lang_id = 4;
       string asset_id = 5;
       string unknown_icon_asset_id = 6;
       string known_icon_asset_id = 7;
       string park_fishing_fish_species_id = 8;
-      enums.ParkFishingFishRankType rank_type = 9;
+      .enums.ParkFishingFishRankType rank_type = 9;
       repeated string favorite_park_fishing_bait_ids = 10;
       string park_fishing_fish_icon_group_id = 11;
       int32 icon_speed_up_permil = 12;
@@ -2172,12 +2172,12 @@ message entity {
       float progress_meter_time_penalty = 27;
       int32 stamina = 28;
       int32 order = 999;
-      repeated enums.ParkTimePeriodType park_time_period_types = 1000;
+      repeated .enums.ParkTimePeriodType park_time_period_types = 1000;
     }
 
     message ParkFishingFishIcon {
       string group_id = 1;
-      enums.ParkFishingFishIconType icon_type = 2;
+      .enums.ParkFishingFishIconType icon_type = 2;
       int32 ratio = 3;
     }
 
@@ -2201,7 +2201,7 @@ message entity {
       int32 icon_speed_change_millisecond_up = 14;
       int32 progress_meter_speed_increase_up = 15;
       int32 progress_meter_speed_decrease_up = 16;
-      repeated common.Consumption consumptions = 1000;
+      repeated .common.Consumption consumptions = 1000;
     }
 
     message ParkFishingSetting {
@@ -2222,7 +2222,7 @@ message entity {
 
     message ParkFishingSpot {
       string group_id = 1;
-      enums.ParkTimePeriodType park_time_period_type = 2;
+      .enums.ParkTimePeriodType park_time_period_type = 2;
       string park_fishing_bait_id = 3;
       string park_fishing_fish_id = 4;
       int32 hit_ratio = 5;
@@ -2230,27 +2230,27 @@ message entity {
 
     message ParkFishingTotalCaughtReward {
       int32 fish_unique_count = 1;
-      repeated common.Reward rewards = 1000;
+      repeated .common.Reward rewards = 1000;
     }
 
     message ParkFixedSymbol {
       string id = 1;
       string park_target_mapping_id = 2;
       string condition_group_id = 6;
-      common.Reward reward = 1000;
+      .common.Reward reward = 1000;
     }
 
     message ParkGraph {
       string id = 1;
       string graph_id = 2;
       repeated string parameter_values = 3;
-      repeated enums.ParkScriptParameterType parameter_types = 4;
+      repeated .enums.ParkScriptParameterType parameter_types = 4;
     }
 
     message ParkHighLow {
       string id = 1;
       string name_lang_id = 2;
-      enums.ResourceType consumption_resource_type = 3;
+      .enums.ResourceType consumption_resource_type = 3;
       string consumption_resource_id = 4;
       int64 consumption_quantity = 5;
       int64 max_reward_quantity = 6;
@@ -2261,23 +2261,23 @@ message entity {
 
     message ParkHighLowHand {
       string group_id = 1;
-      enums.ParkHighLowHandType type = 2;
+      .enums.ParkHighLowHandType type = 2;
       string name_lang_id = 3;
       int64 reward_quantity_up_permil_multiply = 4;
-      enums.ParkHighLowHandAppealType appeal_type = 5;
+      .enums.ParkHighLowHandAppealType appeal_type = 5;
     }
 
     message ParkLottery {
       string id = 1;
-      enums.ParkLotteryType type = 2;
+      .enums.ParkLotteryType type = 2;
       int32 daily_limit_count = 3;
       string limit_reached_park_talk_group_id = 4;
       string condition_group_id = 8;
-      common.Consumption consumption = 1000;
+      .common.Consumption consumption = 1000;
     }
 
     message ParkNotice {
-      enums.ParkNoticeType type = 1;
+      .enums.ParkNoticeType type = 1;
       string target_id = 2;
       int32 order = 999;
     }
@@ -2297,8 +2297,8 @@ message entity {
     }
 
     message ParkNpcQuality {
-      enums.OsType os_type = 1;
-      enums.GraphicsQualityType graphics_quality_type = 2;
+      .enums.OsType os_type = 1;
+      .enums.GraphicsQualityType graphics_quality_type = 2;
       int32 max_npc_count = 3;
       int32 lazy_load_max_npc_count = 4;
     }
@@ -2314,7 +2314,7 @@ message entity {
       string park_permanence_id = 1;
       int32 action_number = 2;
       string description_lang_id = 3;
-      enums.ParkActionType type = 4;
+      .enums.ParkActionType type = 4;
       string condition_group_id = 5;
       string before_park_talk_group_id = 6;
       string after_park_talk_group_id = 7;
@@ -2343,7 +2343,7 @@ message entity {
     }
 
     message ParkPrintBooth {
-      enums.ParkPrintBoothType type = 1;
+      .enums.ParkPrintBoothType type = 1;
       int32 number = 2;
       string park_print_booth_composition_id = 3;
       int32 ratio = 4;
@@ -2374,7 +2374,7 @@ message entity {
       int32 number = 3;
       string title_lang_id = 4;
       string description_lang_id = 5;
-      enums.ParkQuestType type = 6;
+      .enums.ParkQuestType type = 6;
       string play_character_id = 7;
       int32 priority = 8;
       string area_grouping_id = 9;
@@ -2420,7 +2420,7 @@ message entity {
     message ParkQuestJumpRope {
       string id = 1;
       string jump_rope_id = 2;
-      enums.ParkQuestJumpRopeClearType clear_type = 3;
+      .enums.ParkQuestJumpRopeClearType clear_type = 3;
       int32 clear_jump_count = 4;
       repeated string mini_game_npc_ids = 5;
     }
@@ -2428,7 +2428,7 @@ message entity {
     message ParkQuestLive {
       string id = 1;
       string music_id = 2;
-      enums.ParkQuestLiveDeckType deck_type = 3;
+      .enums.ParkQuestLiveDeckType deck_type = 3;
       string fixed_character_id = 4;
       string fixed_costume_id = 5;
       int64 clear_score = 6;
@@ -2449,7 +2449,7 @@ message entity {
 
     message ParkQuestLiveMusicDifficulty {
       string park_quest_live_id = 1;
-      enums.MusicDifficultyType difficulty_type = 2;
+      .enums.MusicDifficultyType difficulty_type = 2;
       string condition_group_id = 3;
     }
 
@@ -2465,13 +2465,13 @@ message entity {
       string target_lang_id = 4;
       string description_lang_id = 5;
       string unlock_condition_group_id = 6;
-      enums.ParkQuestStepTransitionType transition_type = 7;
+      .enums.ParkQuestStepTransitionType transition_type = 7;
       string transition_adv_asset_id = 8;
       string after_adv_area_id = 9;
       int32 after_adv_area_player_spawn_point_index = 10;
       string after_adv_facility_id = 11;
       string asset_id = 15;
-      repeated common.Reward rewards = 1000;
+      repeated .common.Reward rewards = 1000;
     }
 
     message ParkQuestStepAction {
@@ -2481,13 +2481,13 @@ message entity {
       string park_target_mapping_id = 4;
       int32 action_number = 5;
       string description_lang_id = 6;
-      enums.ParkActionType type = 7;
+      .enums.ParkActionType type = 7;
       string unlock_condition_group_id = 8;
       string clear_condition_group_id = 9;
       string before_park_talk_group_id = 10;
       string after_park_talk_group_id = 11;
       string character_voice_id = 12;
-      repeated common.Consumption consumptions = 1000;
+      repeated .common.Consumption consumptions = 1000;
       string park_quest_live_id = 1001;
       string park_quest_jump_rope_id = 1002;
       string park_quest_circuit_id = 1003;
@@ -2548,7 +2548,7 @@ message entity {
     message ParkTargetMapping {
       string id = 1;
       string name_lang_id = 2;
-      enums.ParkTargetType target_type = 3;
+      .enums.ParkTargetType target_type = 3;
       string park_npc_group_id = 4;
       string park_npc_id = 5;
       string facility_id = 6;
@@ -2561,20 +2561,20 @@ message entity {
       string id = 1;
       int32 time_point_from = 2;
       int32 time_point_to = 3;
-      enums.ParkTimePeriodType type = 4;
+      .enums.ParkTimePeriodType type = 4;
     }
 
     message ParkTreasure {
       string id = 1;
       string park_target_mapping_id = 2;
       string condition_group_id = 6;
-      repeated common.Reward rewards = 1000;
+      repeated .common.Reward rewards = 1000;
     }
 
     message PlayerLevel {
       int32 level = 1;
       int64 exp = 2;
-      repeated common.Reward rewards = 1000;
+      repeated .common.Reward rewards = 1000;
     }
 
     message Poster {
@@ -2605,20 +2605,20 @@ message entity {
     }
 
     message ResourceTypeDetail {
-      enums.ResourceType type = 1;
+      .enums.ResourceType type = 1;
       string color = 2;
       string name_lang_id = 3;
       string icon_asset_id = 4;
       string description_lang_id = 5;
       string resource_obtainment_route_group_id = 6;
       string background_color = 7;
-      enums.ResourceBackgroundPatternType background_pattern_type = 8;
+      .enums.ResourceBackgroundPatternType background_pattern_type = 8;
     }
 
     message Rule {
-      enums.RuleType type = 1;
+      .enums.RuleType type = 1;
       string country_code = 3;
-      enums.StoreType store_type = 4;
+      .enums.StoreType store_type = 4;
       repeated string lang_ids = 5;
     }
 
@@ -2644,13 +2644,13 @@ message entity {
     }
 
     message SemiResourceTypeDetail {
-      enums.SemiResourceType type = 1;
+      .enums.SemiResourceType type = 1;
       string color = 2;
       string name_lang_id = 3;
       string icon_asset_id = 4;
       string description_lang_id = 5;
       string background_color = 6;
-      enums.ResourceBackgroundPatternType background_pattern_type = 7;
+      .enums.ResourceBackgroundPatternType background_pattern_type = 7;
     }
 
     message Setting {
@@ -2823,8 +2823,8 @@ message entity {
     }
 
     message ShopChargeItemProduct {
-      enums.PaymentMethod payment_method = 1;
-      enums.ShopChargeItemType shop_charge_item_type = 2;
+      .enums.PaymentMethod payment_method = 1;
+      .enums.ShopChargeItemType shop_charge_item_type = 2;
       string product_id = 3;
       string shop_charge_item_id = 4;
     }
@@ -2832,12 +2832,12 @@ message entity {
     message SkillTreeConnectEffect {
       string id = 1;
       int32 level = 2;
-      enums.SkillTreeConnectEffectType connect_effect_type = 3;
+      .enums.SkillTreeConnectEffectType connect_effect_type = 3;
       string skill_tree_connect_effect_extent_group_id = 4;
       int64 effect_permil_up = 5;
       string additional_skill_tree_effect_id = 6;
       string target_skill_tree_effect_id = 7;
-      enums.SkillTreeNodeType target_node_type = 8;
+      .enums.SkillTreeNodeType target_node_type = 8;
       int32 target_node_grade = 9;
       string description_lang_id = 1000;
     }
@@ -2850,15 +2850,15 @@ message entity {
 
     message SkillTreeEffect {
       string id = 1;
-      enums.SkillTreeEffectType effect_type = 2;
+      .enums.SkillTreeEffectType effect_type = 2;
       int64 value = 3;
       string skill_tree_effect_target_id = 4;
       string skill_tree_effect_passive_trigger_group_id = 5;
-      enums.SkillTreeEffectCharacterTriggerType character_trigger_type = 6;
+      .enums.SkillTreeEffectCharacterTriggerType character_trigger_type = 6;
       string live_active_skill_id = 7;
-      enums.ResourceType resource_type = 8;
+      .enums.ResourceType resource_type = 8;
       repeated string resource_ids = 9;
-      repeated enums.MiniGameType mini_game_types = 10;
+      repeated .enums.MiniGameType mini_game_types = 10;
       string name_lang_id = 11;
       string icon_asset_id_suffix = 13;
       string description_lang_id = 1000;
@@ -2867,28 +2867,28 @@ message entity {
     message SkillTreeEffectPassiveTrigger {
       string group_id = 1;
       int32 number = 2;
-      enums.SkillTreeEffectPassiveTriggerType type = 3;
+      .enums.SkillTreeEffectPassiveTriggerType type = 3;
       int64 threshold = 4;
       repeated string character_ids = 5;
       string character_grouping_id = 6;
       string music_id = 7;
-      enums.CardAttributeType card_attribute_type = 8;
-      enums.MusicSingerType music_singer_type = 9;
+      .enums.CardAttributeType card_attribute_type = 8;
+      .enums.MusicSingerType music_singer_type = 9;
       string description_lang_id = 1000;
     }
 
     message SkillTreeEffectTarget {
       string id = 1;
-      enums.SkillTreeEffectTargetType type = 2;
+      .enums.SkillTreeEffectTargetType type = 2;
       int32 target_count = 3;
       string character_id = 4;
       string character_grouping_id = 5;
-      enums.CardAttributeType card_attribute_type = 6;
+      .enums.CardAttributeType card_attribute_type = 6;
       string description_lang_id = 1000;
     }
 
     message SkillTreeEffectValueLimit {
-      enums.SkillTreeEffectType skill_tree_effect_type = 1;
+      .enums.SkillTreeEffectType skill_tree_effect_type = 1;
       int64 limit = 2;
     }
 
@@ -2896,19 +2896,19 @@ message entity {
       string group_id = 1;
       int32 number = 2;
       repeated string character_ids = 3;
-      enums.SkillTreeNodeType type = 4;
+      .enums.SkillTreeNodeType type = 4;
       int32 grade = 5;
       string skill_tree_effect_id = 6;
       string view_condition_group_id = 7;
       string unlock_condition_group_id = 8;
       int32 consumption_skill_tree_point_quantity = 9;
       int32 auto_selection_priority = 13;
-      repeated common.Consumption consumptions = 1000;
+      repeated .common.Consumption consumptions = 1000;
     }
 
     message SkillTreeNodeAutoSelection {
-      enums.SkillTreeAutoSelectionType auto_selection_type = 1;
-      enums.SkillTreeNodeType node_type = 2;
+      .enums.SkillTreeAutoSelectionType auto_selection_type = 1;
+      .enums.SkillTreeNodeType node_type = 2;
       int32 priority_ratio_permil = 3;
     }
 
@@ -2932,13 +2932,13 @@ message entity {
       string archive_view_condition_group_id = 4;
       string unlock_condition_group_id = 5;
       string asset_id = 6;
-      enums.StoryAssetType asset_type = 7;
+      .enums.StoryAssetType asset_type = 7;
       int32 order = 999;
     }
 
     message SplashBall {
       string id = 1;
-      enums.SplashBallPlayType play_type = 2;
+      .enums.SplashBallPlayType play_type = 2;
       string unlock_condition_group_id = 3;
       string splash_ball_ball_group_id = 6;
       string start_splash_ball_player_position_group_id = 7;
@@ -2949,7 +2949,7 @@ message entity {
     message SplashBallBall {
       string group_id = 1;
       int32 number = 2;
-      enums.SplashBallBallType ball_type = 3;
+      .enums.SplashBallBallType ball_type = 3;
       float size = 4;
       float mass = 5;
       int32 bounce_coefficient_permil_multiply = 6;
@@ -2959,7 +2959,7 @@ message entity {
 
     message SplashBallPlayerPosition {
       string group_id = 1;
-      enums.SplashBallTeamColor team_color = 2;
+      .enums.SplashBallTeamColor team_color = 2;
       int32 number = 3;
       float position_x = 4;
       float position_y = 5;
@@ -3010,17 +3010,17 @@ message entity {
     message Story {
       string id = 1;
       repeated string asset_ids = 2;
-      repeated common.Reward read_rewards = 1000;
+      repeated .common.Reward read_rewards = 1000;
     }
 
     message SystemSound {
-      enums.SystemSoundType type = 1;
+      .enums.SystemSoundType type = 1;
       string sound_asset_id = 2;
     }
 
     message SystemVoice {
-      enums.GameScreenType game_screen_type = 1;
-      enums.SystemVoiceType type = 2;
+      .enums.GameScreenType game_screen_type = 1;
+      .enums.SystemVoiceType type = 2;
       string character_voice_id = 3;
       string condition_group_id = 4;
       int32 ratio = 5;
@@ -3028,27 +3028,27 @@ message entity {
 
     message Tips {
       string id = 1;
-      enums.TipsType type = 2;
+      .enums.TipsType type = 2;
       string title_lang_id = 3;
-      enums.GameScreenType game_screen_type = 4;
-      enums.TipsHintType hint_type = 5;
+      .enums.GameScreenType game_screen_type = 4;
+      .enums.TipsHintType hint_type = 5;
       int32 order = 999;
     }
 
     message TipsDetail {
       string tips_id = 1;
       int32 number = 2;
-      enums.TipsAssetType asset_type = 3;
+      .enums.TipsAssetType asset_type = 3;
       string asset_id = 4;
       string description_lang_id = 5;
       string condition_group_id = 7;
     }
 
     message Tutorial {
-      enums.TutorialType type = 1;
+      .enums.TutorialType type = 1;
       int32 step = 2;
       string unlock_condition_group_id = 4;
-      enums.TutorialNavigationType navigation_type = 5;
+      .enums.TutorialNavigationType navigation_type = 5;
       repeated string description_lang_ids = 6;
       string tips_id = 7;
       string adv_asset_id = 8;
@@ -3071,8 +3071,8 @@ message entity {
       int32 character_bonus_coefficient_permil_up = 7;
       string work_evaluation_rank_group_id = 8;
       string asset_id = 11;
-      enums.WorkCharacterIconPositionType character_icon_position_type = 12;
-      repeated common.Reward obtainable_rewards = 1000;
+      .enums.WorkCharacterIconPositionType character_icon_position_type = 12;
+      repeated .common.Reward obtainable_rewards = 1000;
     }
 
     message WorkDisplay {
@@ -3084,7 +3084,7 @@ message entity {
 
     message WorkEvaluationRank {
       string group_id = 1;
-      enums.WorkEvaluationRankType type = 2;
+      .enums.WorkEvaluationRankType type = 2;
       int64 threshold = 3;
     }
 
@@ -3113,11 +3113,11 @@ message entity {
 
     message User {
       string public_user_id = 2;
-      enums.Region region = 3;
+      .enums.Region region = 3;
       string country_code = 4;
       int32 birth_year_for_payment = 5;
       int32 birth_month_for_payment = 6;
-      enums.ActiveUserType active_user_type = 7;
+      .enums.ActiveUserType active_user_type = 7;
       int64 tutorial_cleared_time = 8;
       int64 deleted_time = 9;
     }
@@ -3210,7 +3210,7 @@ message entity {
     }
 
     message UserCount {
-      enums.CountType count_type = 2;
+      .enums.CountType count_type = 2;
       int64 total_count = 3;
       int64 daily_count = 4;
       int64 last_updated_time = 5;
@@ -3292,9 +3292,9 @@ message entity {
       int64 last_reward_up_stamina_auto_recovery_time = 3;
       int64 reward_up_stamina_consumption_setting_quantity = 4;
       string last_single_played_music_id = 5;
-      enums.MusicDifficultyType last_single_played_music_difficulty_type = 6;
+      .enums.MusicDifficultyType last_single_played_music_difficulty_type = 6;
       string last_multi_selected_music_id = 7;
-      enums.MusicDifficultyType last_multi_selected_music_difficulty_type = 8;
+      .enums.MusicDifficultyType last_multi_selected_music_difficulty_type = 8;
       string last_watched_live_deck_character_id = 9;
       int32 last_watched_live_deck_number = 10;
       string last_played_character_id = 11;
@@ -3321,11 +3321,11 @@ message entity {
     message UserMiniGame {
       int32 reward_up_stamina = 2;
       int64 last_reward_up_stamina_auto_recovery_time = 3;
-      repeated enums.MiniGameType read_mini_game_types = 4;
+      repeated .enums.MiniGameType read_mini_game_types = 4;
     }
 
     message UserMiniGameSetting {
-      enums.MiniGameType mini_game_type = 2;
+      .enums.MiniGameType mini_game_type = 2;
       int64 consumption_setting_quantity = 3;
     }
 
@@ -3359,7 +3359,7 @@ message entity {
       int64 released_time = 8;
       int64 highest_score = 100;
       int64 highest_score_last_updated_time = 101;
-      enums.MusicDifficultyType highest_score_music_difficulty_type = 102;
+      .enums.MusicDifficultyType highest_score_music_difficulty_type = 102;
       string highest_score_character_id = 103;
       string highest_score_costume_id = 104;
       repeated string highest_score_deck_card_ids = 105;
@@ -3372,12 +3372,12 @@ message entity {
       repeated int64 highest_score_deck_card_senses_for_card_detail = 112;
       int64 highest_score_deck_power = 113;
       int64 highest_score_deck_evaluation_value = 114;
-      enums.LiveEvaluationRankType received_highest_score_evaluation_rank_reward_rank_type = 115;
+      .enums.LiveEvaluationRankType received_highest_score_evaluation_rank_reward_rank_type = 115;
     }
 
     message UserMusicCharacterHighestScore {
       message HighestScoreInfo {
-        enums.MusicDifficultyType difficulty_type = 1;
+        .enums.MusicDifficultyType difficulty_type = 1;
         int64 highest_score = 2;
         int64 highest_score_rating_value = 3;
         int64 highest_score_last_updated_time = 4;
@@ -3389,23 +3389,23 @@ message entity {
 
     message UserMusicDifficulty {
       string music_id = 2;
-      enums.MusicDifficultyType difficulty_type = 3;
+      .enums.MusicDifficultyType difficulty_type = 3;
       int64 highest_score = 4;
       int64 non_highest_score_rating_character_highest_score = 5;
       string non_highest_score_rating_character_highest_score_character_id = 6;
       int64 max_combo_count = 7;
       int64 clear_count = 8;
-      enums.LiveResultType live_result_type = 9;
+      .enums.LiveResultType live_result_type = 9;
       int64 technical_highest_score = 1000;
     }
 
     message UserNotification {
-      enums.NotificationType notification_type = 2;
+      .enums.NotificationType notification_type = 2;
       bool is_active = 3;
     }
 
     message UserNotificationReadTime {
-      enums.NotificationReadType notification_read_type = 2;
+      .enums.NotificationReadType notification_read_type = 2;
       int64 read_time = 3;
     }
 
@@ -3482,7 +3482,7 @@ message entity {
     }
 
     message UserParkQuestLive {
-      enums.MusicDifficultyType last_played_music_difficulty_type = 2;
+      .enums.MusicDifficultyType last_played_music_difficulty_type = 2;
     }
 
     message UserParkQuestStep {
@@ -3532,7 +3532,7 @@ message entity {
 
     message UserPosterBooth {
       string facility_id = 2;
-      repeated enums.PosterBoothResourceType resource_types = 3;
+      repeated .enums.PosterBoothResourceType resource_types = 3;
       repeated string resource_ids = 4;
     }
 
@@ -3560,7 +3560,7 @@ message entity {
       int64 login_status_last_updated_time = 23;
       string multi_game_unpublished_user_name = 24;
       int64 message_last_updated_time = 25;
-      repeated common.EmblemPosition emblem_positions = 1001;
+      repeated .common.EmblemPosition emblem_positions = 1001;
     }
 
     message UserSdCostume {
@@ -3581,7 +3581,7 @@ message entity {
 
     message UserShopChargeItemSubscription {
       string shop_charge_item_subscription_shop_charge_item_id = 2;
-      enums.PaymentSubscriptionStatus status = 3;
+      .enums.PaymentSubscriptionStatus status = 3;
       int64 purchased_time = 4;
       int64 expired_time = 5;
       bool is_auto_renew = 6;
@@ -3618,12 +3618,12 @@ message entity {
       int64 game_start_time = 2;
       int64 last_login_time = 3;
       int64 force_relogin_flag_set_time = 4;
-      enums.OsType last_login_os = 5;
+      .enums.OsType last_login_os = 5;
       int64 comebacked_time = 6;
     }
 
     message UserTutorial {
-      enums.TutorialType type = 2;
+      .enums.TutorialType type = 2;
       int32 step = 3;
     }
 
@@ -6128,8 +6128,8 @@ message google {
       message CodeGeneratorRequest {
         repeated string file_to_generate = 1;
         optional string parameter = 2;
-        repeated google.protobuf.FileDescriptorProto proto_file = 15;
-        repeated google.protobuf.FileDescriptorProto source_file_descriptors = 17;
+        repeated .google.protobuf.FileDescriptorProto proto_file = 15;
+        repeated .google.protobuf.FileDescriptorProto source_file_descriptors = 17;
         optional Version compiler_version = 3;
       }
 
@@ -6143,7 +6143,7 @@ message google {
           optional string name = 1;
           optional string insertion_point = 2;
           optional string content = 15;
-          optional google.protobuf.GeneratedCodeInfo generated_code_info = 16;
+          optional .google.protobuf.GeneratedCodeInfo generated_code_info = 16;
         }
         optional string error = 1;
         optional uint64 supported_features = 2;
@@ -6727,11 +6727,11 @@ message options {
   }
 
   message ErrorOption {
-    repeated enums.ErrorCode error_codes = 1;
+    repeated .enums.ErrorCode error_codes = 1;
   }
 
   message MessageOption {
-    enums.MultiGameType multi_game_type = 1;
+    .enums.MultiGameType multi_game_type = 1;
   }
 
 
@@ -6743,7 +6743,7 @@ message rpc {
       message ChaseResultInfo {
         repeated ChaseUserInfo mischief_team_user_infos = 1;
         repeated ChaseUserInfo patrol_team_user_infos = 2;
-        enums.ChaseTeamType win_team_type = 3;
+        .enums.ChaseTeamType win_team_type = 3;
         int64 self_score = 4;
         ChaseMischiefTeamUserResult self_mischief_team_user_result = 5;
         ChasePatrolTeamUserResult self_patrol_team_user_result = 6;
@@ -6755,7 +6755,7 @@ message rpc {
         bool is_npc = 3;
         bool is_mvp = 4;
         bool is_disconnected = 5;
-        enums.ChasePatrolSkillType skill_type = 100;
+        .enums.ChasePatrolSkillType skill_type = 100;
       }
 
       message ChaseMischiefTeamUserResult {
@@ -6828,7 +6828,7 @@ message rpc {
       message LiveDeckEvaluation {
         message LiveDeckPower {
           int64 live_deck_power = 1;
-          enums.LiveDeckRankType live_deck_power_rank_type = 2;
+          .enums.LiveDeckRankType live_deck_power_rank_type = 2;
           int32 live_deck_power_rank_plus_value = 3;
           int64 card_potential_parameter_evaluation_value = 4;
           int64 card_parameter_up_by_live_leader_skill = 5;
@@ -6839,7 +6839,7 @@ message rpc {
         }
         message LiveDeckEvaluationScoreUpPermilUp {
           int64 score_up_permil_up = 1;
-          enums.LiveDeckRankType score_up_permil_up_rank_type = 2;
+          .enums.LiveDeckRankType score_up_permil_up_rank_type = 2;
           int32 score_up_permil_up_rank_plus_value = 3;
           int64 score_up_permil_up_by_live_active_skill = 4;
           int64 score_up_permil_up_by_live_leader_skill = 5;
@@ -6848,7 +6848,7 @@ message rpc {
           int64 score_up_permil_up_by_live_special_skill = 8;
         }
         int64 live_deck_evaluation_value = 1;
-        enums.LiveDeckRankType live_deck_evaluation_rank_type = 2;
+        .enums.LiveDeckRankType live_deck_evaluation_rank_type = 2;
         int32 live_deck_evaluation_rank_plus_value = 3;
         LiveDeckEvaluation.LiveDeckPower live_deck_power = 4;
         LiveDeckEvaluation.LiveDeckEvaluationScoreUpPermilUp live_deck_evaluation_score_up_permil_up = 5;
@@ -6955,7 +6955,7 @@ message rpc {
       message MultiGameCreatePrivateRoomInfo {
         string private_room_id = 1;
         repeated MultiGamePingInfo ping_infos = 2;
-        enums.MultiGamePrivateRoomCreationType creation_type = 3;
+        .enums.MultiGamePrivateRoomCreationType creation_type = 3;
         string multi_game_result_id = 4;
       }
 
@@ -6974,7 +6974,7 @@ message rpc {
           string public_user_id = 1;
           string user_name = 2;
           string park_character_id = 3;
-          enums.FriendStatusType friend_status_type = 4;
+          .enums.FriendStatusType friend_status_type = 4;
         }
         bool is_private_room = 1;
         bool is_private_room_host_user = 2;
@@ -7000,7 +7000,7 @@ message rpc {
         string title = 5;
         string thumbnail_image_url = 6;
         int32 difficulty_value = 7;
-        repeated enums.MusicCreativeChartType chart_types = 8;
+        repeated .enums.MusicCreativeChartType chart_types = 8;
         repeated string music_creative_chart_tag_ids = 9;
         int32 full_combo_note_count = 10;
         int32 normal_note_count = 11;
@@ -7008,8 +7008,8 @@ message rpc {
         int32 long_note_count = 13;
         int64 like_count = 14;
         int64 play_count = 15;
-        enums.MusicCreativeChartPublishType publish_type = 16;
-        enums.LiveResultType live_result_type = 17;
+        .enums.MusicCreativeChartPublishType publish_type = 16;
+        .enums.LiveResultType live_result_type = 17;
         string preview_image_url = 18;
         bool is_own = 19;
       }
@@ -7029,12 +7029,12 @@ message rpc {
         bool is_search_all_music = 1;
         repeated string music_ids = 2;
         bool is_quote_allowed_only = 3;
-        enums.ResetIntervalType reset_interval_type = 4;
-        repeated enums.MusicCreativeChartTextSearchType text_search_types = 5;
+        .enums.ResetIntervalType reset_interval_type = 4;
+        repeated .enums.MusicCreativeChartTextSearchType text_search_types = 5;
         string search_text = 6;
         int32 difficulty_value_from = 7;
         int32 difficulty_value_to = 8;
-        repeated enums.MusicCreativeChartType chart_types = 9;
+        repeated .enums.MusicCreativeChartType chart_types = 9;
         repeated string music_creative_chart_tag_ids = 10;
       }
 
@@ -7063,7 +7063,7 @@ message rpc {
         string park_character_id = 4;
         string fan_mark_id = 5;
         string custom_palette_image_url = 6;
-        repeated common.EmblemPosition emblem_positions = 7;
+        repeated .common.EmblemPosition emblem_positions = 7;
         int64 login_status_last_updated_time = 8;
         int32 custom_palette_background_card_potential_upgrade_count = 9;
         string custom_palette_background_card_id = 10;
@@ -7090,7 +7090,7 @@ message rpc {
           string costume_id = 2;
           repeated UserProfileDetailInfo.HighestLiveDeckEvaluationLiveDeck.LiveDeckPosition live_deck_positions = 3;
           int64 live_deck_evaluation_value = 4;
-          enums.LiveDeckRankType live_deck_evaluation_rank_type = 5;
+          .enums.LiveDeckRankType live_deck_evaluation_rank_type = 5;
           int32 live_deck_evaluation_rank_plus_value = 6;
         }
         message CharacterLevel {
@@ -7098,11 +7098,11 @@ message rpc {
           int32 level = 2;
         }
         message LiveResultInfo {
-          enums.MusicDifficultyType music_difficulty_type = 1;
+          .enums.MusicDifficultyType music_difficulty_type = 1;
           int32 count = 2;
         }
         message MiniGameResultInfo {
-          enums.ProfileMiniGameResultType result_type = 1;
+          .enums.ProfileMiniGameResultType result_type = 1;
           int64 value = 2;
         }
         message MusicHighestScoreRatingInfo {
@@ -7120,7 +7120,7 @@ message rpc {
         repeated UserProfileDetailInfo.LiveResultInfo live_all_perfect_results = 9;
         repeated UserProfileDetailInfo.MiniGameResultInfo mini_game_results = 10;
         bool is_blocked_user = 11;
-        enums.FriendStatusType friend_status_type = 12;
+        .enums.FriendStatusType friend_status_type = 12;
         repeated UserProfileDetailInfo.MusicHighestScoreRatingInfo top_music_highest_score_rating_infos = 13;
         int32 combo_card_game_average_rank_percent = 14;
         int64 combo_card_game_chip_diff_total_quantity = 15;
@@ -7134,7 +7134,7 @@ message rpc {
       }
 
       message CustomPaletteBackground {
-        enums.CustomPaletteBackgroundResourceType resource_type = 1;
+        .enums.CustomPaletteBackgroundResourceType resource_type = 1;
         string resource_id = 2;
         int32 position_x_permil = 3;
         int32 position_y_permil = 4;
@@ -7142,7 +7142,7 @@ message rpc {
       }
 
       message CustomPalettePart {
-        enums.CustomPalettePartResourceType resource_type = 1;
+        .enums.CustomPalettePartResourceType resource_type = 1;
         string resource_id = 2;
         int32 position_x_permil = 3;
         int32 position_y_permil = 4;
@@ -7183,7 +7183,7 @@ message rpc {
       }
 
       message RewardResult {
-        enums.ResourceType resource_type = 1;
+        .enums.ResourceType resource_type = 1;
         string resource_id = 2;
         int64 quantity = 3;
         int64 before_quantity = 4;
@@ -7193,31 +7193,31 @@ message rpc {
       }
 
       message RewardQuantityUp {
-        enums.ResourceType resource_type = 1;
+        .enums.ResourceType resource_type = 1;
         string resource_id = 2;
         int32 quantity_permil_up = 3;
       }
 
       message Shop {
         message Item {
-          enums.ShopItemType type = 1;
+          .enums.ShopItemType type = 1;
           Shop.ConsumptionItem consumption_item = 2;
           Shop.ChargeItem charge_item = 3;
         }
         message ConsumptionItem {
           message ConsumptionItemConsumption {
-            common.Consumption consumption = 1;
+            .common.Consumption consumption = 1;
             int32 discount_permil_down = 2;
             int64 discounted_quantity = 3;
           }
           string id = 1;
           string name = 2;
           Shop.ConsumptionItem.ConsumptionItemConsumption consumption = 3;
-          repeated common.Reward rewards = 4;
+          repeated .common.Reward rewards = 4;
           bool is_unlocked = 5;
           string unlock_condition_group_id = 6;
           int64 end_time = 7;
-          enums.ResetIntervalType reset_interval_type = 8;
+          .enums.ResetIntervalType reset_interval_type = 8;
           int64 next_reset_time = 9;
           int32 limit_count = 10;
           int32 purchased_count = 11;
@@ -7230,18 +7230,18 @@ message rpc {
         }
         message ChargeItem {
           string id = 1;
-          enums.ShopChargeItemType type = 2;
+          .enums.ShopChargeItemType type = 2;
           Shop.ChargeItemConsumable consumable = 3;
           Shop.ChargeItemSubscription subscription = 4;
         }
         message ChargeItemConsumable {
           string name = 1;
           int32 provide_paid_stone_quantity = 4;
-          repeated common.Reward rewards = 5;
+          repeated .common.Reward rewards = 5;
           bool is_unlocked = 6;
           string unlock_condition_group_id = 7;
           int64 end_time = 10;
-          enums.ResetIntervalType reset_interval_type = 11;
+          .enums.ResetIntervalType reset_interval_type = 11;
           int64 next_reset_time = 12;
           int32 limit_count = 13;
           int32 purchased_count = 14;
@@ -7256,7 +7256,7 @@ message rpc {
           string steam_price = 200;
         }
         message ChargeItemSubscription {
-          enums.ShopChargeItemSubscriptionType type = 1;
+          .enums.ShopChargeItemSubscriptionType type = 1;
           bool is_unlocked = 4;
           string unlock_condition_group_id = 5;
           bool is_subscribed = 6;
@@ -7266,26 +7266,26 @@ message rpc {
         }
         string id = 1;
         repeated Shop.Item items = 2;
-        enums.ShopType type = 3;
+        .enums.ShopType type = 3;
         string name = 4;
         int64 end_time = 5;
-        enums.ResetIntervalType reset_interval_type = 6;
+        .enums.ResetIntervalType reset_interval_type = 6;
         int64 next_reset_time = 7;
         string thumbnail_asset_id = 8;
         string description_title = 9;
         string description_text = 10;
-        repeated enums.ResourceType display_possession_resource_types = 11;
+        repeated .enums.ResourceType display_possession_resource_types = 11;
         repeated string display_possession_resource_ids = 12;
       }
 
       message SplashBallResultInfo {
         repeated SplashBallTeamInfo team_infos = 1;
-        enums.SplashBallTeamColor self_team_color = 2;
+        .enums.SplashBallTeamColor self_team_color = 2;
         int64 self_score = 3;
       }
 
       message SplashBallTeamInfo {
-        enums.SplashBallTeamColor team_color = 1;
+        .enums.SplashBallTeamColor team_color = 1;
         int64 score = 2;
         int32 rank = 3;
         repeated SplashBallUserInfo user_infos = 4;
@@ -7301,10 +7301,10 @@ message rpc {
 
       message StartupNotification {
         string id = 1;
-        enums.StartupNotificationType type = 2;
+        .enums.StartupNotificationType type = 2;
         int32 priority = 3;
         string asset_id = 4;
-        enums.TransitionType content_startup_notification_transition_type = 100;
+        .enums.TransitionType content_startup_notification_transition_type = 100;
         string content_startup_notification_transition_id = 101;
       }
 
@@ -7323,89 +7323,89 @@ message rpc {
       }
 
       message UserData {
-        entity.transaction.User user = 342861366;
-        entity.transaction.UserAppReview user_app_review = 375641132;
-        entity.transaction.UserBalanceFree user_balance_free = 355179959;
-        entity.transaction.UserBalancePaid user_balance_paid = 395683994;
-        repeated entity.transaction.UserCard user_card_list = 315485766;
-        repeated entity.transaction.UserCharacter user_character_list = 370704040;
-        repeated entity.transaction.UserCharacterSkillTree user_character_skill_tree_list = 73736905;
-        entity.transaction.UserChase user_chase = 497386110;
-        entity.transaction.UserCircuit user_circuit = 112741949;
-        entity.transaction.UserComboCardGame user_combo_card_game = 314166149;
-        repeated entity.transaction.UserComboCardGameCompletionRole user_combo_card_game_completion_role_list = 487301810;
-        repeated entity.transaction.UserCookingPuzzle user_cooking_puzzle_list = 340164711;
-        repeated entity.transaction.UserCostume user_costume_list = 469968532;
-        repeated entity.transaction.UserCount user_count_list = 431111247;
-        repeated entity.transaction.UserCustomPalette user_custom_palette_list = 533517886;
-        repeated entity.transaction.UserCustomPaletteDecoration user_custom_palette_decoration_list = 395697088;
-        repeated entity.transaction.UserEmblem user_emblem_list = 176220526;
-        repeated entity.transaction.UserExchangeBooth user_exchange_booth_list = 215460631;
-        repeated entity.transaction.UserFacility user_facility_list = 324813027;
-        repeated entity.transaction.UserFanMark user_fan_mark_list = 186967479;
-        repeated entity.transaction.UserGachaButton user_gacha_button_list = 168354076;
-        repeated entity.transaction.UserInstantTips user_instant_tips_list = 30837957;
-        repeated entity.transaction.UserItem user_item_list = 208896283;
-        repeated entity.transaction.UserItemOwned user_item_owned_list = 160409203;
-        repeated entity.transaction.UserJumpRope user_jump_rope_list = 7525710;
-        entity.transaction.UserJumpRopeSummary user_jump_rope_summary = 50403019;
-        entity.transaction.UserLive user_live = 282387948;
-        repeated entity.transaction.UserLiveDeck user_live_deck_list = 470144554;
-        repeated entity.transaction.UserLiveDeckPosition user_live_deck_position_list = 152863089;
-        repeated entity.transaction.UserLiveSkin user_live_skin_list = 343431710;
-        entity.transaction.UserMiniGame user_mini_game = 340241879;
-        repeated entity.transaction.UserMiniGameSetting user_mini_game_setting_list = 530487597;
-        repeated entity.transaction.UserMission user_mission_list = 176225192;
-        repeated entity.transaction.UserMissionPass user_mission_pass_list = 143481512;
-        repeated entity.transaction.UserMissionPassPoint user_mission_pass_point_list = 358937978;
-        repeated entity.transaction.UserMusic user_music_list = 430828780;
-        repeated entity.transaction.UserMusicCharacterHighestScore user_music_character_highest_score_list = 344424884;
-        repeated entity.transaction.UserMusicDifficulty user_music_difficulty_list = 38601170;
-        repeated entity.transaction.UserNotification user_notification_list = 140263418;
-        repeated entity.transaction.UserNotificationReadTime user_notification_read_time_list = 382549891;
-        entity.transaction.UserPark user_park = 227737460;
-        repeated entity.transaction.UserParkAccessory user_park_accessory_list = 47402806;
-        repeated entity.transaction.UserParkAreaSelector user_park_area_selector_list = 155036941;
-        entity.transaction.UserParkCall user_park_call = 33030519;
-        repeated entity.transaction.UserParkEmotion user_park_emotion_list = 433099844;
-        entity.transaction.UserParkFishing user_park_fishing = 305536892;
-        repeated entity.transaction.UserParkFishingBait user_park_fishing_bait_list = 218221177;
-        repeated entity.transaction.UserParkFishingFish user_park_fishing_fish_list = 114155892;
-        entity.transaction.UserParkFixedSymbol user_park_fixed_symbol = 401110107;
-        entity.transaction.UserParkHighLow user_park_high_low = 52785939;
-        repeated entity.transaction.UserParkLottery user_park_lottery_list = 15965678;
-        repeated entity.transaction.UserParkQuest user_park_quest_list = 296076812;
-        entity.transaction.UserParkQuestLive user_park_quest_live = 36017661;
-        repeated entity.transaction.UserParkQuestStep user_park_quest_step_list = 228511112;
-        repeated entity.transaction.UserParkQuestStepAction user_park_quest_step_action_list = 439898815;
-        repeated entity.transaction.UserParkRandomSymbol user_park_random_symbol_list = 364291179;
-        repeated entity.transaction.UserParkTalkFreePickResult user_park_talk_free_pick_result_list = 103534744;
-        repeated entity.transaction.UserParkTalkFreePickResultDetail user_park_talk_free_pick_result_detail_list = 498625501;
-        entity.transaction.UserParkTreasure user_park_treasure = 327922352;
-        repeated entity.transaction.UserPaymentChargeOrder user_payment_charge_order_list = 231183601;
-        repeated entity.transaction.UserPoster user_poster_list = 451819461;
-        repeated entity.transaction.UserPosterBooth user_poster_booth_list = 323860549;
-        entity.transaction.UserProfile user_profile = 49977942;
-        repeated entity.transaction.UserSdCostume user_sd_costume_list = 111187419;
-        repeated entity.transaction.UserSdCostumeHairAccessory user_sd_costume_hair_accessory_list = 63877454;
-        repeated entity.transaction.UserShopChargeItemConsumable user_shop_charge_item_consumable_list = 453945318;
-        repeated entity.transaction.UserShopChargeItemSubscription user_shop_charge_item_subscription_list = 327967430;
-        repeated entity.transaction.UserShopConsumptionItem user_shop_consumption_item_list = 120532481;
-        repeated entity.transaction.UserSkillTreePoint user_skill_tree_point_list = 83652733;
-        entity.transaction.UserSplashBall user_splash_ball = 466811555;
-        repeated entity.transaction.UserStamp user_stamp_list = 258014175;
-        repeated entity.transaction.UserStory user_story_list = 376356693;
-        entity.transaction.UserTime user_time = 165033958;
-        repeated entity.transaction.UserTutorial user_tutorial_list = 201375606;
-        repeated entity.transaction.UserWallpaper user_wallpaper_list = 407810191;
-        repeated entity.transaction.UserWorkSlot user_work_slot_list = 190125018;
+        .entity.transaction.User user = 342861366;
+        .entity.transaction.UserAppReview user_app_review = 375641132;
+        .entity.transaction.UserBalanceFree user_balance_free = 355179959;
+        .entity.transaction.UserBalancePaid user_balance_paid = 395683994;
+        repeated .entity.transaction.UserCard user_card_list = 315485766;
+        repeated .entity.transaction.UserCharacter user_character_list = 370704040;
+        repeated .entity.transaction.UserCharacterSkillTree user_character_skill_tree_list = 73736905;
+        .entity.transaction.UserChase user_chase = 497386110;
+        .entity.transaction.UserCircuit user_circuit = 112741949;
+        .entity.transaction.UserComboCardGame user_combo_card_game = 314166149;
+        repeated .entity.transaction.UserComboCardGameCompletionRole user_combo_card_game_completion_role_list = 487301810;
+        repeated .entity.transaction.UserCookingPuzzle user_cooking_puzzle_list = 340164711;
+        repeated .entity.transaction.UserCostume user_costume_list = 469968532;
+        repeated .entity.transaction.UserCount user_count_list = 431111247;
+        repeated .entity.transaction.UserCustomPalette user_custom_palette_list = 533517886;
+        repeated .entity.transaction.UserCustomPaletteDecoration user_custom_palette_decoration_list = 395697088;
+        repeated .entity.transaction.UserEmblem user_emblem_list = 176220526;
+        repeated .entity.transaction.UserExchangeBooth user_exchange_booth_list = 215460631;
+        repeated .entity.transaction.UserFacility user_facility_list = 324813027;
+        repeated .entity.transaction.UserFanMark user_fan_mark_list = 186967479;
+        repeated .entity.transaction.UserGachaButton user_gacha_button_list = 168354076;
+        repeated .entity.transaction.UserInstantTips user_instant_tips_list = 30837957;
+        repeated .entity.transaction.UserItem user_item_list = 208896283;
+        repeated .entity.transaction.UserItemOwned user_item_owned_list = 160409203;
+        repeated .entity.transaction.UserJumpRope user_jump_rope_list = 7525710;
+        .entity.transaction.UserJumpRopeSummary user_jump_rope_summary = 50403019;
+        .entity.transaction.UserLive user_live = 282387948;
+        repeated .entity.transaction.UserLiveDeck user_live_deck_list = 470144554;
+        repeated .entity.transaction.UserLiveDeckPosition user_live_deck_position_list = 152863089;
+        repeated .entity.transaction.UserLiveSkin user_live_skin_list = 343431710;
+        .entity.transaction.UserMiniGame user_mini_game = 340241879;
+        repeated .entity.transaction.UserMiniGameSetting user_mini_game_setting_list = 530487597;
+        repeated .entity.transaction.UserMission user_mission_list = 176225192;
+        repeated .entity.transaction.UserMissionPass user_mission_pass_list = 143481512;
+        repeated .entity.transaction.UserMissionPassPoint user_mission_pass_point_list = 358937978;
+        repeated .entity.transaction.UserMusic user_music_list = 430828780;
+        repeated .entity.transaction.UserMusicCharacterHighestScore user_music_character_highest_score_list = 344424884;
+        repeated .entity.transaction.UserMusicDifficulty user_music_difficulty_list = 38601170;
+        repeated .entity.transaction.UserNotification user_notification_list = 140263418;
+        repeated .entity.transaction.UserNotificationReadTime user_notification_read_time_list = 382549891;
+        .entity.transaction.UserPark user_park = 227737460;
+        repeated .entity.transaction.UserParkAccessory user_park_accessory_list = 47402806;
+        repeated .entity.transaction.UserParkAreaSelector user_park_area_selector_list = 155036941;
+        .entity.transaction.UserParkCall user_park_call = 33030519;
+        repeated .entity.transaction.UserParkEmotion user_park_emotion_list = 433099844;
+        .entity.transaction.UserParkFishing user_park_fishing = 305536892;
+        repeated .entity.transaction.UserParkFishingBait user_park_fishing_bait_list = 218221177;
+        repeated .entity.transaction.UserParkFishingFish user_park_fishing_fish_list = 114155892;
+        .entity.transaction.UserParkFixedSymbol user_park_fixed_symbol = 401110107;
+        .entity.transaction.UserParkHighLow user_park_high_low = 52785939;
+        repeated .entity.transaction.UserParkLottery user_park_lottery_list = 15965678;
+        repeated .entity.transaction.UserParkQuest user_park_quest_list = 296076812;
+        .entity.transaction.UserParkQuestLive user_park_quest_live = 36017661;
+        repeated .entity.transaction.UserParkQuestStep user_park_quest_step_list = 228511112;
+        repeated .entity.transaction.UserParkQuestStepAction user_park_quest_step_action_list = 439898815;
+        repeated .entity.transaction.UserParkRandomSymbol user_park_random_symbol_list = 364291179;
+        repeated .entity.transaction.UserParkTalkFreePickResult user_park_talk_free_pick_result_list = 103534744;
+        repeated .entity.transaction.UserParkTalkFreePickResultDetail user_park_talk_free_pick_result_detail_list = 498625501;
+        .entity.transaction.UserParkTreasure user_park_treasure = 327922352;
+        repeated .entity.transaction.UserPaymentChargeOrder user_payment_charge_order_list = 231183601;
+        repeated .entity.transaction.UserPoster user_poster_list = 451819461;
+        repeated .entity.transaction.UserPosterBooth user_poster_booth_list = 323860549;
+        .entity.transaction.UserProfile user_profile = 49977942;
+        repeated .entity.transaction.UserSdCostume user_sd_costume_list = 111187419;
+        repeated .entity.transaction.UserSdCostumeHairAccessory user_sd_costume_hair_accessory_list = 63877454;
+        repeated .entity.transaction.UserShopChargeItemConsumable user_shop_charge_item_consumable_list = 453945318;
+        repeated .entity.transaction.UserShopChargeItemSubscription user_shop_charge_item_subscription_list = 327967430;
+        repeated .entity.transaction.UserShopConsumptionItem user_shop_consumption_item_list = 120532481;
+        repeated .entity.transaction.UserSkillTreePoint user_skill_tree_point_list = 83652733;
+        .entity.transaction.UserSplashBall user_splash_ball = 466811555;
+        repeated .entity.transaction.UserStamp user_stamp_list = 258014175;
+        repeated .entity.transaction.UserStory user_story_list = 376356693;
+        .entity.transaction.UserTime user_time = 165033958;
+        repeated .entity.transaction.UserTutorial user_tutorial_list = 201375606;
+        repeated .entity.transaction.UserWallpaper user_wallpaper_list = 407810191;
+        repeated .entity.transaction.UserWorkSlot user_work_slot_list = 190125018;
       }
 
     }
 
     message AccountMigrationListResponse {
       message ProviderLinkInfo {
-        enums.ProviderType provider_type = 1;
+        .enums.ProviderType provider_type = 1;
         bool is_linked = 2;
       }
       repeated AccountMigrationListResponse.ProviderLinkInfo provider_link_infos = 1;
@@ -7415,7 +7415,7 @@ message rpc {
 
     message AccountMigrationPrepareMigrationProviderWithoutAuthRequest {
       string id_token = 1;
-      enums.ProviderType provider_type = 2;
+      .enums.ProviderType provider_type = 2;
     }
 
     message AccountMigrationPrepareMigrationProviderWithoutAuthResponse {
@@ -7427,7 +7427,7 @@ message rpc {
       string previous_public_user_id = 1;
       string target_public_user_id = 2;
       string one_time_token = 3;
-      enums.Region region = 4;
+      .enums.Region region = 4;
     }
 
     message AccountMigrationMigrateResponse {
@@ -7477,14 +7477,14 @@ message rpc {
         string user_name = 2;
         int32 player_level = 3;
         string one_time_token = 4;
-        enums.Region region = 5;
+        .enums.Region region = 5;
       }
       bool is_already_linked = 1;
       AccountMigrationLinkResult.LinkedUserInfo linked_user_info = 2;
     }
 
     message AccountMigrationUnlinkRequest {
-      enums.ProviderType provider_type = 1;
+      .enums.ProviderType provider_type = 1;
     }
 
     message AccountMigrationUnlinkResponse {
@@ -7492,7 +7492,7 @@ message rpc {
     }
 
     service AccountMigration {
-      rpc List (google.protobuf.Empty) returns (AccountMigrationListResponse);
+      rpc List (.google.protobuf.Empty) returns (AccountMigrationListResponse);
       rpc SetPassword (AccountMigrationSetPasswordRequest) returns (AccountMigrationSetPasswordResponse);
       rpc PrepareMigrationPassword (AccountMigrationPrepareMigrationPasswordRequest) returns (AccountMigrationPrepareMigrationPasswordResponse);
       rpc LinkApple (AccountMigrationLinkAppleRequest) returns (AccountMigrationLinkAppleResponse);
@@ -7530,7 +7530,7 @@ message rpc {
         string sender = 4;
         int64 posted_time = 5;
         bool is_read = 6;
-        repeated common.Reward rewards = 7;
+        repeated .common.Reward rewards = 7;
       }
       repeated AnnouncementListResponse.Announcement announcements = 1;
       int32 unread_count = 2;
@@ -7558,7 +7558,7 @@ message rpc {
     }
 
     service AppReview {
-      rpc SetDisplayed (google.protobuf.Empty) returns (AppReviewSetDisplayedResponse);
+      rpc SetDisplayed (.google.protobuf.Empty) returns (AppReviewSetDisplayedResponse);
     }
 
     message AssetListExpiredAssetIdResponse {
@@ -7606,7 +7606,7 @@ message rpc {
     }
 
     service Asset {
-      rpc ListExpiredAssetId (google.protobuf.Empty) returns (AssetListExpiredAssetIdResponse);
+      rpc ListExpiredAssetId (.google.protobuf.Empty) returns (AssetListExpiredAssetIdResponse);
     }
 
     message AuthCreateResponse {
@@ -7624,7 +7624,7 @@ message rpc {
     }
 
     service Auth {
-      rpc Create (google.protobuf.Empty) returns (AuthCreateResponse);
+      rpc Create (.google.protobuf.Empty) returns (AuthCreateResponse);
       rpc Login (AuthLoginRequest) returns (AuthLoginResponse);
     }
 
@@ -7691,7 +7691,7 @@ message rpc {
 
     service Card {
       rpc GetParameter (CardGetParameterRequest) returns (CardGetParameterResponse);
-      rpc GetParameters (google.protobuf.Empty) returns (CardGetParametersResponse);
+      rpc GetParameters (.google.protobuf.Empty) returns (CardGetParametersResponse);
       rpc LevelUp (CardLevelUpRequest) returns (CardLevelUpResponse);
       rpc LevelLimitBreak (CardLevelLimitBreakRequest) returns (CardLevelLimitBreakResponse);
       rpc UpgradePotential (CardUpgradePotentialRequest) returns (CardUpgradePotentialResponse);
@@ -7725,7 +7725,7 @@ message rpc {
 
     message CharacterHistoryListResponse {
       message History {
-        enums.CharacterHistoryType character_history_type = 1;
+        .enums.CharacterHistoryType character_history_type = 1;
         int32 order = 2;
         int64 occurred_time = 3;
         string target_id = 4;
@@ -7784,7 +7784,7 @@ message rpc {
     }
 
     message ChaseGetRankingInfoRequest {
-      enums.ChaseTeamType chase_team_type = 1;
+      .enums.ChaseTeamType chase_team_type = 1;
     }
 
     message ChaseGetRankingInfoResponse {
@@ -7878,7 +7878,7 @@ message rpc {
       rpc CreatePrivateRoom (CircuitCreatePrivateRoomRequest) returns (CircuitCreatePrivateRoomResponse);
       rpc Start (CircuitStartRequest) returns (CircuitStartResponse);
       rpc Finish (CircuitFinishRequest) returns (CircuitFinishResponse);
-      rpc GetRankingInfo (google.protobuf.Empty) returns (CircuitGetRankingInfoResponse);
+      rpc GetRankingInfo (.google.protobuf.Empty) returns (CircuitGetRankingInfoResponse);
     }
 
     message ComboCardGameMatchRandomRequest {
@@ -7958,7 +7958,7 @@ message rpc {
       rpc CreatePrivateRoom (ComboCardGameCreatePrivateRoomRequest) returns (ComboCardGameCreatePrivateRoomResponse);
       rpc Start (ComboCardGameStartRequest) returns (ComboCardGameStartResponse);
       rpc Finish (ComboCardGameFinishRequest) returns (ComboCardGameFinishResponse);
-      rpc GetRankingInfo (google.protobuf.Empty) returns (ComboCardGameGetRankingInfoResponse);
+      rpc GetRankingInfo (.google.protobuf.Empty) returns (ComboCardGameGetRankingInfoResponse);
       rpc ListUserInfo (ComboCardGameListUserInfoRequest) returns (ComboCardGameListUserInfoResponse);
     }
 
@@ -8032,7 +8032,7 @@ message rpc {
       rpc Start (CookingPuzzleStartRequest) returns (CookingPuzzleStartResponse);
       rpc Finish (CookingPuzzleFinishRequest) returns (CookingPuzzleFinishResponse);
       rpc Retire (CookingPuzzleRetireRequest) returns (CookingPuzzleRetireResponse);
-      rpc GetRankingInfo (google.protobuf.Empty) returns (CookingPuzzleGetRankingInfoResponse);
+      rpc GetRankingInfo (.google.protobuf.Empty) returns (CookingPuzzleGetRankingInfoResponse);
       rpc ReportRecipeProgress (CookingPuzzleReportRecipeProgressRequest) returns (CookingPuzzleReportRecipeProgressResponse);
       rpc ReadNotification (CookingPuzzleReadNotificationRequest) returns (CookingPuzzleReadNotificationResponse);
     }
@@ -8094,25 +8094,25 @@ message rpc {
           message MarathonChapter {
             message MarathonScoreReward {
               int64 score = 1;
-              repeated common.Reward rewards = 2;
+              repeated .common.Reward rewards = 2;
             }
             message MarathonScoreRankingRankReward {
               string group_id = 1;
               int64 end_rank = 2;
-              repeated common.Reward rewards = 3;
+              repeated .common.Reward rewards = 3;
               string marathon_ranking_grade_id = 4;
             }
             message MarathonMusicHighestScoreRankingRankReward {
               string group_id = 1;
               string music_id = 2;
               int64 end_rank = 3;
-              repeated common.Reward rewards = 4;
+              repeated .common.Reward rewards = 4;
               string marathon_ranking_grade_id = 5;
             }
             message MarathonTotalMusicHighestScoreRankingReward {
               string group_id = 1;
               int64 end_rank = 2;
-              repeated common.Reward rewards = 3;
+              repeated .common.Reward rewards = 3;
               string marathon_ranking_grade_id = 4;
             }
             message MarathonMusicScoreBonus {
@@ -8121,8 +8121,8 @@ message rpc {
               int32 number = 3;
               string character_id = 4;
               string card_id = 5;
-              enums.CardAttributeType card_attribute_type = 6;
-              enums.CardRarity card_rarity = 7;
+              .enums.CardAttributeType card_attribute_type = 6;
+              .enums.CardRarity card_rarity = 7;
               int64 card_potential_upgrade_count = 8;
               int32 score_up_permil_up = 9;
             }
@@ -8130,7 +8130,7 @@ message rpc {
               string group_id = 1;
               int32 number = 2;
               string card_id = 3;
-              enums.CardRarity card_rarity = 4;
+              .enums.CardRarity card_rarity = 4;
               int64 card_potential_upgrade_count = 5;
               int32 marathon_score_quantity_up_permil_up = 6;
             }
@@ -8139,14 +8139,14 @@ message rpc {
               int32 number = 2;
               string character_id = 3;
               string card_id = 4;
-              enums.CardAttributeType card_attribute_type = 5;
-              enums.CardRarity card_rarity = 6;
+              .enums.CardAttributeType card_attribute_type = 5;
+              .enums.CardRarity card_rarity = 6;
               int64 card_potential_upgrade_count = 7;
               int32 marathon_score_quantity_up_permil_up = 8;
             }
             message MarathonMiniGameMarathonScoreRate {
               string group_id = 1;
-              enums.MiniGameType mini_game_type = 2;
+              .enums.MiniGameType mini_game_type = 2;
               int32 marathon_score_permil_multiply = 3;
               int32 bonus_permil_up = 4;
             }
@@ -8178,10 +8178,10 @@ message rpc {
           int64 aggregated_ranking_reveal_start_time = 3;
           repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter marathon_chapters = 4;
           bool is_marathon_score_ranking_disable = 5;
-          enums.TipsHintType tips_hint_type = 6;
+          .enums.TipsHintType tips_hint_type = 6;
         }
         string event_id = 1;
-        enums.EventType type = 2;
+        .enums.EventType type = 2;
         string name = 3;
         int64 start_time = 4;
         int64 end_time = 5;
@@ -8202,7 +8202,7 @@ message rpc {
     message EventListEventInfoForPortalResponse {
       message EventInfo {
         string event_id = 1;
-        enums.EventType type = 2;
+        .enums.EventType type = 2;
         string name = 3;
         int64 start_time = 4;
         int64 end_time = 5;
@@ -8220,8 +8220,8 @@ message rpc {
     }
 
     service Event {
-      rpc ListEventInfo (google.protobuf.Empty) returns (EventListEventInfoResponse);
-      rpc ListEventInfoForPortal (google.protobuf.Empty) returns (EventListEventInfoForPortalResponse);
+      rpc ListEventInfo (.google.protobuf.Empty) returns (EventListEventInfoResponse);
+      rpc ListEventInfoForPortal (.google.protobuf.Empty) returns (EventListEventInfoForPortalResponse);
     }
 
     message EventMissionReadEventMissionRequest {
@@ -8255,26 +8255,26 @@ message rpc {
 
     message ExchangeItem {
       message Consumption {
-        enums.ResourceType resource_type = 1;
+        .enums.ResourceType resource_type = 1;
         string resource_id = 2;
         int64 quantity = 3;
         int64 original_quantity = 4;
         int32 discount_ratio_permil = 5;
       }
-      enums.ExchangeBoothItemType booth_item_type = 1;
+      .enums.ExchangeBoothItemType booth_item_type = 1;
       string booth_item_id = 2;
       string name = 3;
       string thumbnail_asset_id = 4;
       int32 limit_quantity = 5;
       int32 purchased_quantity = 6;
       repeated ExchangeItem.Consumption consumptions = 7;
-      repeated common.Reward rewards = 8;
+      repeated .common.Reward rewards = 8;
       int64 next_reset_time = 9;
       int64 end_time = 10;
       bool is_locked = 11;
       string unlock_condition_group_id = 12;
       string description = 13;
-      enums.ResetIntervalType reset_interval_type = 14;
+      .enums.ResetIntervalType reset_interval_type = 14;
       int64 release_time = 15;
     }
 
@@ -8282,7 +8282,7 @@ message rpc {
       message Booth {
         string id = 1;
         string name = 2;
-        enums.ExchangeBoothType booth_type = 3;
+        .enums.ExchangeBoothType booth_type = 3;
         repeated ExchangeItem items = 4;
         int64 next_reset_time = 5;
         int64 end_time = 6;
@@ -8306,7 +8306,7 @@ message rpc {
     }
 
     message ExchangePurchaseRequest {
-      enums.ExchangeBoothItemType booth_item_type = 1;
+      .enums.ExchangeBoothItemType booth_item_type = 1;
       string booth_item_id = 2;
       int32 quantity = 3;
     }
@@ -8334,7 +8334,7 @@ message rpc {
     message FriendTopResponse {
       message LatestPlayedUserInfo {
         common.BasicUserInfo user_info = 1;
-        enums.FriendStatusType friend_status_type = 2;
+        .enums.FriendStatusType friend_status_type = 2;
       }
       repeated common.BasicUserInfo friend_user_infos = 1;
       repeated common.BasicUserInfo offer_user_infos = 2;
@@ -8400,8 +8400,8 @@ message rpc {
     }
 
     service Friend {
-      rpc Top (google.protobuf.Empty) returns (FriendTopResponse);
-      rpc TopReload (google.protobuf.Empty) returns (FriendTopReloadResponse);
+      rpc Top (.google.protobuf.Empty) returns (FriendTopResponse);
+      rpc TopReload (.google.protobuf.Empty) returns (FriendTopReloadResponse);
       rpc SearchUser (FriendSearchUserRequest) returns (FriendSearchUserResponse);
       rpc DeleteFriend (FriendDeleteFriendRequest) returns (FriendDeleteFriendResponse);
       rpc Offer (FriendOfferRequest) returns (FriendOfferResponse);
@@ -8423,7 +8423,7 @@ message rpc {
 
     message GachaListResponseGacha {
       string gacha_id = 1;
-      enums.GachaType type = 2;
+      .enums.GachaType type = 2;
       string name = 3;
       bool is_locked = 4;
       string unlock_condition_group_id = 5;
@@ -8462,7 +8462,7 @@ message rpc {
 
     message GachaListResponseCardBonus {
       string card_id = 1;
-      repeated common.Reward rewards = 2;
+      repeated .common.Reward rewards = 2;
     }
 
     message GachaListResponseGachaButton {
@@ -8470,10 +8470,10 @@ message rpc {
       string name = 2;
       string description = 3;
       bool is_disabled = 4;
-      repeated common.Consumption consumptions = 5;
-      repeated common.Reward bonus_rewards = 6;
+      repeated .common.Consumption consumptions = 5;
+      repeated .common.Reward bonus_rewards = 6;
       int32 limit_count = 7;
-      enums.ResetIntervalType reset_interval_type = 8;
+      .enums.ResetIntervalType reset_interval_type = 8;
       int32 total_reward_pick_count = 9;
       int32 fixed_reward_pick_count = 10;
       int32 drawn_count = 11;
@@ -8502,7 +8502,7 @@ message rpc {
     message GachaDrawNormalRequest {
       string gacha_button_id = 1;
       int32 draw_count = 2;
-      repeated common.Consumption display_consumptions = 10;
+      repeated .common.Consumption display_consumptions = 10;
       int32 display_free_balance = 11;
       int32 display_paid_balance = 12;
     }
@@ -8517,7 +8517,7 @@ message rpc {
     message GachaDrawCardSelectRequest {
       string gacha_button_id = 1;
       int32 draw_count = 2;
-      repeated common.Consumption display_consumptions = 10;
+      repeated .common.Consumption display_consumptions = 10;
       int32 display_free_balance = 11;
       int32 display_paid_balance = 12;
     }
@@ -8531,9 +8531,9 @@ message rpc {
 
     message GachaDrawResponseCardResult {
       string card_id = 1;
-      repeated common.Reward bonus_reward = 2;
+      repeated .common.Reward bonus_reward = 2;
       repeated common.RewardResult card_reward_results = 3;
-      enums.GachaCardDuplicateRewardType duplicate_reward_type = 4;
+      .enums.GachaCardDuplicateRewardType duplicate_reward_type = 4;
       int32 provided_potential_upgrade_point_quantity = 5;
     }
 
@@ -8564,7 +8564,7 @@ message rpc {
     }
 
     message GachaRarityProbability {
-      enums.CardRarity rarity = 1;
+      .enums.CardRarity rarity = 1;
       int32 parts_per_ten_million_probability = 2;
       repeated GachaCardProbability card_probabilities = 3;
     }
@@ -8589,8 +8589,8 @@ message rpc {
     }
 
     service Gacha {
-      rpc List (google.protobuf.Empty) returns (GachaListResponse);
-      rpc ListHistory (google.protobuf.Empty) returns (GachaListHistoryResponse);
+      rpc List (.google.protobuf.Empty) returns (GachaListResponse);
+      rpc ListHistory (.google.protobuf.Empty) returns (GachaListHistoryResponse);
       rpc Read (GachaReadRequest) returns (GachaReadResponse);
       rpc DrawNormal (GachaDrawNormalRequest) returns (GachaDrawNormalResponse);
       rpc ListNormalProbability (GachaListNormalProbabilityRequest) returns (GachaListNormalProbabilityResponse);
@@ -8601,7 +8601,7 @@ message rpc {
 
     message GiftItem {
       string gift_id = 1;
-      enums.ResourceType resource_type = 2;
+      .enums.ResourceType resource_type = 2;
       string resource_id = 3;
       int64 quantity = 4;
       string description = 5;
@@ -8619,7 +8619,7 @@ message rpc {
 
     message GiftListRequest {
       int32 offset = 1;
-      enums.GiftSortType sort_type = 2;
+      .enums.GiftSortType sort_type = 2;
       bool is_desc = 3;
     }
 
@@ -8643,7 +8643,7 @@ message rpc {
 
     message GiftListHistoryResponse {
       message GiftHistoryItem {
-        enums.ResourceType resource_type = 1;
+        .enums.ResourceType resource_type = 1;
         string resource_id = 2;
         int64 quantity = 3;
         string description = 4;
@@ -8659,11 +8659,11 @@ message rpc {
     }
 
     service Gift {
-      rpc Top (google.protobuf.Empty) returns (GiftTopResponse);
+      rpc Top (.google.protobuf.Empty) returns (GiftTopResponse);
       rpc List (GiftListRequest) returns (GiftListResponse);
       rpc Open (GiftOpenRequest) returns (GiftOpenResponse);
-      rpc ListHistory (google.protobuf.Empty) returns (GiftListHistoryResponse);
-      rpc Count (google.protobuf.Empty) returns (GiftCountResponse);
+      rpc ListHistory (.google.protobuf.Empty) returns (GiftListHistoryResponse);
+      rpc Count (.google.protobuf.Empty) returns (GiftCountResponse);
     }
 
     message HealthCheckRequest {
@@ -8671,7 +8671,7 @@ message rpc {
     }
 
     message HealthCheckResponse {
-      enums.HealthCheckServingStatus status = 1;
+      .enums.HealthCheckServingStatus status = 1;
     }
 
     service Health {
@@ -8684,7 +8684,7 @@ message rpc {
       }
       message ExpiredResourceResult {
         message ExpiredResource {
-          enums.ResourceType resource_type = 1;
+          .enums.ResourceType resource_type = 1;
           string resource_id = 2;
           int64 quantity = 3;
         }
@@ -8697,7 +8697,7 @@ message rpc {
       }
       HomeLoginResponse.AsyncUpdateResultInfo async_update_result_info = 1;
       HomeLoginResponse.ExpiredResourceResult expired_resource_result = 2;
-      repeated enums.RuleType rule_types = 3;
+      repeated .enums.RuleType rule_types = 3;
       common.UserContentCdnSignedCookie user_content_cdn_signed_cookie = 4;
       repeated string fcm_topics = 5;
       HomeLoginResponse.RealtimeNotificationConnectionInfo realtime_notification_connection_info = 6;
@@ -8705,7 +8705,7 @@ message rpc {
     }
 
     message HomeAgreeRuleRequest {
-      repeated enums.RuleType rule_types = 1;
+      repeated .enums.RuleType rule_types = 1;
     }
 
     message HomeAgreeRuleResponse {
@@ -8713,7 +8713,7 @@ message rpc {
     }
 
     service Home {
-      rpc Login (google.protobuf.Empty) returns (HomeLoginResponse);
+      rpc Login (.google.protobuf.Empty) returns (HomeLoginResponse);
       rpc AgreeRule (HomeAgreeRuleRequest) returns (HomeAgreeRuleResponse);
     }
 
@@ -8728,7 +8728,7 @@ message rpc {
       string device_purchase_log_upload_url = 8;
       int32 frame_rate = 9;
       int32 live_frame_rate = 10;
-      enums.GraphicsQualityType basic_graphics_quality_type = 11;
+      .enums.GraphicsQualityType basic_graphics_quality_type = 11;
       string inquiry_category = 12;
     }
 
@@ -8871,7 +8871,7 @@ message rpc {
       rpc StartMulti (JumpRopeStartMultiRequest) returns (JumpRopeStartMultiResponse);
       rpc FinishSingle (JumpRopeFinishSingleRequest) returns (JumpRopeFinishSingleResponse);
       rpc FinishMulti (JumpRopeFinishMultiRequest) returns (JumpRopeFinishMultiResponse);
-      rpc GetRankingInfo (google.protobuf.Empty) returns (JumpRopeGetRankingInfoResponse);
+      rpc GetRankingInfo (.google.protobuf.Empty) returns (JumpRopeGetRankingInfoResponse);
       rpc ReadNotification (JumpRopeReadNotificationRequest) returns (JumpRopeReadNotificationResponse);
     }
 
@@ -8944,11 +8944,11 @@ message rpc {
     }
 
     message LiveRecoverRewardUpStaminaRequest {
-      repeated common.Consumption consumptions = 1;
+      repeated .common.Consumption consumptions = 1;
     }
 
     message LiveMatchRandomRequest {
-      enums.LivePlayType play_type = 1;
+      .enums.LivePlayType play_type = 1;
       bool is_auto_play_allowed = 2;
       string deck_character_id = 3;
       int32 deck_number = 4;
@@ -8972,7 +8972,7 @@ message rpc {
 
     message LiveStartSingleRequest {
       string music_id = 1;
-      enums.MusicDifficultyType music_difficulty_type = 2;
+      .enums.MusicDifficultyType music_difficulty_type = 2;
       string character_id = 3;
       int32 deck_number = 4;
       int32 reward_up_stamina_consumption_quantity = 5;
@@ -8987,10 +8987,10 @@ message rpc {
     }
 
     message LiveStartMultiRequest {
-      enums.LivePlayType play_type = 1;
+      .enums.LivePlayType play_type = 1;
       string self_selected_music_id = 2;
       string picked_music_id = 3;
-      enums.MusicDifficultyType music_difficulty_type = 4;
+      .enums.MusicDifficultyType music_difficulty_type = 4;
       string character_id = 5;
       int32 deck_number = 6;
       int32 reward_up_stamina_consumption_quantity = 7;
@@ -9007,21 +9007,21 @@ message rpc {
     }
 
     message LiveFinishSingleRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
     }
 
     message LiveFinishSingleResponse {
-      enums.LiveResultType result_type = 1;
-      enums.LiveEvaluationRankType evaluation_rank_type = 2;
+      .enums.LiveResultType result_type = 1;
+      .enums.LiveEvaluationRankType evaluation_rank_type = 2;
       int32 evaluation_rank_plus = 3;
       int64 past_character_highest_score = 4;
       int64 reward_card_exp_quantity = 5;
-      repeated common.Reward card_exp_overflow_rewards = 6;
-      repeated common.Reward score_evaluation_rank_rewards = 7;
-      repeated common.Reward music_clear_count_rewards = 8;
-      repeated common.Reward music_full_combo_rewards = 9;
-      repeated common.Reward music_highest_score_rank_rewards = 10;
-      repeated common.Reward music_max_combo_count_phase_rewards = 11;
+      repeated .common.Reward card_exp_overflow_rewards = 6;
+      repeated .common.Reward score_evaluation_rank_rewards = 7;
+      repeated .common.Reward music_clear_count_rewards = 8;
+      repeated .common.Reward music_full_combo_rewards = 9;
+      repeated .common.Reward music_highest_score_rank_rewards = 10;
+      repeated .common.Reward music_max_combo_count_phase_rewards = 11;
       common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 12;
       int32 music_length_bonus_reward_quantity_up_permil_multiply = 13;
       int32 reward_quantity_up_permil_up_by_benefit_license = 14;
@@ -9045,7 +9045,7 @@ message rpc {
 
     message LiveFinishDisconnectedMultiLiveCooperationRequest {
       string multi_game_result_id = 1;
-      dto.multi_game_result.LiveCooperationResult result = 2;
+      .dto.multi_game_result.LiveCooperationResult result = 2;
     }
 
     message LiveFinishDisconnectedMultiLiveCooperationResponse {
@@ -9057,27 +9057,27 @@ message rpc {
       message UserResult {
         common.BasicUserInfo user_info = 1;
         bool is_blocked_user = 2;
-        enums.FriendStatusType friend_status_type = 3;
-        enums.MusicDifficultyType music_difficulty_type = 4;
-        common.LiveBaseResult result = 5;
+        .enums.FriendStatusType friend_status_type = 3;
+        .enums.MusicDifficultyType music_difficulty_type = 4;
+        .common.LiveBaseResult result = 5;
         int64 bonus_score = 6;
-        enums.LiveResultType result_type = 7;
+        .enums.LiveResultType result_type = 7;
         bool is_disconnected = 8;
       }
       string music_id = 1;
-      enums.LiveEvaluationRankType multi_evaluation_rank_type = 2;
+      .enums.LiveEvaluationRankType multi_evaluation_rank_type = 2;
       int32 multi_evaluation_rank_plus = 3;
-      enums.LiveEvaluationRankType self_evaluation_rank_type = 4;
+      .enums.LiveEvaluationRankType self_evaluation_rank_type = 4;
       int32 self_evaluation_rank_plus = 5;
       repeated LiveFinishMultiLiveCooperationResult.UserResult user_results = 6;
       int64 past_character_highest_score = 7;
       int64 reward_card_exp_quantity = 8;
-      repeated common.Reward card_exp_overflow_rewards = 9;
-      repeated common.Reward score_evaluation_rank_rewards = 10;
-      repeated common.Reward music_clear_count_rewards = 11;
-      repeated common.Reward music_full_combo_rewards = 12;
-      repeated common.Reward music_highest_score_rank_rewards = 13;
-      repeated common.Reward music_max_combo_count_phase_rewards = 14;
+      repeated .common.Reward card_exp_overflow_rewards = 9;
+      repeated .common.Reward score_evaluation_rank_rewards = 10;
+      repeated .common.Reward music_clear_count_rewards = 11;
+      repeated .common.Reward music_full_combo_rewards = 12;
+      repeated .common.Reward music_highest_score_rank_rewards = 13;
+      repeated .common.Reward music_max_combo_count_phase_rewards = 14;
       common.MultiGameResultPrivateRoomInfo private_room_info = 15;
       common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 16;
       int32 music_length_bonus_reward_quantity_up_permil_multiply = 17;
@@ -9091,12 +9091,12 @@ message rpc {
     }
 
     message LiveContinueRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
       int64 progress_millisecond = 2;
     }
 
     message LiveRetryRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
       int64 progress_millisecond = 2;
     }
 
@@ -9106,7 +9106,7 @@ message rpc {
     }
 
     message LiveRetireRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
       int64 progress_millisecond = 2;
     }
 
@@ -9182,10 +9182,10 @@ message rpc {
           int32 display_row = 2;
           string thumbnail_asset_id = 3;
           bool is_special = 4;
-          repeated common.Reward rewards = 5;
+          repeated .common.Reward rewards = 5;
         }
         int32 current_login_count = 1;
-        enums.LoginBonusType type = 2;
+        .enums.LoginBonusType type = 2;
         int64 start_time = 3;
         int64 end_time = 4;
         string background_asset_id = 5;
@@ -9199,7 +9199,7 @@ message rpc {
     }
 
     service LoginBonus {
-      rpc Check (google.protobuf.Empty) returns (LoginBonusCheckResponse);
+      rpc Check (.google.protobuf.Empty) returns (LoginBonusCheckResponse);
     }
 
     message MarathonTopRequest {
@@ -9215,7 +9215,7 @@ message rpc {
         message MarathonChapter {
           message MarathonScoreReward {
             int64 score = 1;
-            repeated common.Reward rewards = 2;
+            repeated .common.Reward rewards = 2;
           }
           string id = 1;
           int32 chapter_number = 2;
@@ -9244,7 +9244,7 @@ message rpc {
           string group_id = 1;
           int32 number = 2;
           string card_id = 3;
-          enums.CardRarity card_rarity = 4;
+          .enums.CardRarity card_rarity = 4;
           int64 card_potential_upgrade_count = 5;
           int32 marathon_score_quantity_up_permil_up = 6;
         }
@@ -9253,8 +9253,8 @@ message rpc {
           int32 number = 2;
           string character_id = 3;
           string card_id = 4;
-          enums.CardAttributeType card_attribute_type = 5;
-          enums.CardRarity card_rarity = 6;
+          .enums.CardAttributeType card_attribute_type = 5;
+          .enums.CardRarity card_rarity = 6;
           int64 card_potential_upgrade_count = 7;
           int32 marathon_score_quantity_up_permil_up = 8;
         }
@@ -9264,34 +9264,34 @@ message rpc {
           int32 number = 3;
           string character_id = 4;
           string card_id = 5;
-          enums.CardAttributeType card_attribute_type = 6;
-          enums.CardRarity card_rarity = 7;
+          .enums.CardAttributeType card_attribute_type = 6;
+          .enums.CardRarity card_rarity = 7;
           int64 card_potential_upgrade_count = 8;
           int32 score_up_permil_up = 9;
         }
         message MarathonMiniGameMarathonScoreRate {
           string group_id = 1;
-          enums.MiniGameType mini_game_type = 2;
+          .enums.MiniGameType mini_game_type = 2;
           int32 marathon_score_permil_multiply = 3;
           int32 bonus_permil_up = 4;
         }
         message MarathonScoreRankingRankReward {
           string group_id = 1;
           int64 end_rank = 2;
-          repeated common.Reward rewards = 3;
+          repeated .common.Reward rewards = 3;
           string marathon_ranking_grade_id = 4;
         }
         message MarathonMusicHighestScoreRankingRankReward {
           string group_id = 1;
           string music_id = 2;
           int64 end_rank = 3;
-          repeated common.Reward rewards = 4;
+          repeated .common.Reward rewards = 4;
           string marathon_ranking_grade_id = 5;
         }
         message MarathonTotalMusicHighestScoreRankingReward {
           string group_id = 1;
           int64 end_rank = 2;
-          repeated common.Reward rewards = 3;
+          repeated .common.Reward rewards = 3;
           string marathon_ranking_grade_id = 4;
         }
         string id = 1;
@@ -9314,21 +9314,21 @@ message rpc {
         repeated MarathonTopResponse.Marathon.MarathonMusicHighestScoreRankingRankReward marathon_music_highest_score_ranking_rank_rewards = 18;
         repeated MarathonTopResponse.Marathon.MarathonTotalMusicHighestScoreRankingReward marathon_total_music_highest_score_ranking_rewards = 19;
         bool is_marathon_score_ranking_disable = 20;
-        enums.TipsHintType tips_hint_type = 21;
+        .enums.TipsHintType tips_hint_type = 21;
       }
       message RankingResult {
         message MarathonChapter {
           message MusicHighestScoreRankingRankResult {
             string music_id = 1;
             int64 rank = 2;
-            repeated common.Reward rewards = 3;
+            repeated .common.Reward rewards = 3;
           }
           string marathon_chapter_id = 1;
           int64 marathon_score_rank = 2;
-          repeated common.Reward marathon_score_ranking_rewards = 3;
+          repeated .common.Reward marathon_score_ranking_rewards = 3;
           repeated MarathonTopResponse.RankingResult.MarathonChapter.MusicHighestScoreRankingRankResult music_highest_score_ranking_rank_results = 4;
           int64 total_music_highest_score_rank = 5;
-          repeated common.Reward total_music_highest_score_ranking_rewards = 6;
+          repeated .common.Reward total_music_highest_score_ranking_rewards = 6;
         }
         repeated MarathonTopResponse.RankingResult.MarathonChapter marathon_chapters = 1;
       }
@@ -9462,11 +9462,11 @@ message rpc {
 
     message MasterGetResponse {
       string version = 1;
-      repeated common.MasterTagPack master_tag_packs = 2;
+      repeated .common.MasterTagPack master_tag_packs = 2;
     }
 
     service Master {
-      rpc Get (google.protobuf.Empty) returns (MasterGetResponse);
+      rpc Get (.google.protobuf.Empty) returns (MasterGetResponse);
     }
 
     message MembershipGetShopResponse {
@@ -9475,11 +9475,11 @@ message rpc {
     }
 
     service Membership {
-      rpc GetShop (google.protobuf.Empty) returns (MembershipGetShopResponse);
+      rpc GetShop (.google.protobuf.Empty) returns (MembershipGetShopResponse);
     }
 
     message MiniGameRecoverRewardUpStaminaRequest {
-      repeated common.Consumption consumptions = 1;
+      repeated .common.Consumption consumptions = 1;
     }
 
     message MiniGameConvertRewardUpStaminaToRewardRequest {
@@ -9493,11 +9493,11 @@ message rpc {
     }
 
     message MiniGameReadNotificationRequest {
-      repeated enums.MiniGameType read_mini_game_types = 1;
+      repeated .enums.MiniGameType read_mini_game_types = 1;
     }
 
     message MiniGameSetConsumptionSettingRequest {
-      enums.MiniGameType mini_game_type = 1;
+      .enums.MiniGameType mini_game_type = 1;
       int64 quantity = 2;
     }
 
@@ -9575,7 +9575,7 @@ message rpc {
     }
 
     message MultiGameGetPrivateRoomInfoResponse {
-      enums.MultiGameType multi_game_type = 1;
+      .enums.MultiGameType multi_game_type = 1;
       string multi_game_id = 2;
       common.Response common_response = 9999;
     }
@@ -9621,7 +9621,7 @@ message rpc {
     message MultiGameListInvitedPrivateRoomResponse {
       message InvitedPrivateRoom {
         string private_room_id = 1;
-        enums.MultiGameType multi_game_type = 2;
+        .enums.MultiGameType multi_game_type = 2;
         common.BasicUserInfo host_user_info = 3;
       }
       repeated MultiGameListInvitedPrivateRoomResponse.InvitedPrivateRoom invited_private_rooms = 1;
@@ -9638,7 +9638,7 @@ message rpc {
       uint32 port = 3;
       string token = 4;
       string private_room_id = 5;
-      enums.MultiGameType multi_game_type = 6;
+      .enums.MultiGameType multi_game_type = 6;
       string tls_server_common_name = 7;
       string tls_client_cert = 8;
       string dgs_name = 9;
@@ -9652,10 +9652,10 @@ message rpc {
 
     message MultiGameSetPrivateRoomRematchStatusRequest {
       string multi_game_result_id = 1;
-      enums.MultiGameRematchType rematch_type = 2;
+      .enums.MultiGameRematchType rematch_type = 2;
       string private_room_id = 3;
       repeated string invitation_public_user_ids = 100;
-      enums.MultiGameType multi_game_type = 101;
+      .enums.MultiGameType multi_game_type = 101;
       string multi_game_id = 102;
     }
 
@@ -9664,9 +9664,9 @@ message rpc {
     }
 
     message MultiGameCheckPrivateRoomRematchStatusResponse {
-      enums.MultiGameRematchStatusType rematch_status_type = 1;
+      .enums.MultiGameRematchStatusType rematch_status_type = 1;
       string private_room_id = 2;
-      enums.MultiGameType multi_game_type = 3;
+      .enums.MultiGameType multi_game_type = 3;
       string multi_game_id = 4;
       common.Response common_response = 9999;
     }
@@ -9708,15 +9708,15 @@ message rpc {
     }
 
     service MultiGame {
-      rpc ListPingServer (google.protobuf.Empty) returns (MultiGameListPingServerResponse);
-      rpc GeneratePrivateRoomId (google.protobuf.Empty) returns (MultiGameGeneratePrivateRoomIdResponse);
+      rpc ListPingServer (.google.protobuf.Empty) returns (MultiGameListPingServerResponse);
+      rpc GeneratePrivateRoomId (.google.protobuf.Empty) returns (MultiGameGeneratePrivateRoomIdResponse);
       rpc GetPrivateRoomInfo (MultiGameGetPrivateRoomInfoRequest) returns (MultiGameGetPrivateRoomInfoResponse);
       rpc EnterPrivateRoom (MultiGameEnterPrivateRoomRequest) returns (MultiGameEnterPrivateRoomResponse);
       rpc InviteFriendToPrivateRoom (MultiGameInviteFriendToPrivateRoomRequest) returns (MultiGameInviteFriendToPrivateRoomResponse);
       rpc InviteAllFriendToPrivateRoom (MultiGameInviteAllFriendToPrivateRoomRequest) returns (MultiGameInviteAllFriendToPrivateRoomResponse);
       rpc ListPrivateRoomFriendUser (MultiGameListPrivateRoomFriendUserRequest) returns (MultiGameListPrivateRoomFriendUserResponse);
-      rpc CheckInvitedPrivateRoom (google.protobuf.Empty) returns (MultiGameCheckInvitedPrivateRoomResponse);
-      rpc ListInvitedPrivateRoom (google.protobuf.Empty) returns (MultiGameListInvitedPrivateRoomResponse);
+      rpc CheckInvitedPrivateRoom (.google.protobuf.Empty) returns (MultiGameCheckInvitedPrivateRoomResponse);
+      rpc ListInvitedPrivateRoom (.google.protobuf.Empty) returns (MultiGameListInvitedPrivateRoomResponse);
       rpc CheckMatchStatus (MultiGameCheckMatchStatusRequest) returns (MultiGameCheckMatchStatusResponse);
       rpc CancelMatch (MultiGameCancelMatchRequest) returns (MultiGameCancelMatchResponse);
       rpc SetPrivateRoomRematchStatus (MultiGameSetPrivateRoomRematchStatusRequest) returns (MultiGameSetPrivateRoomRematchStatusResponse);
@@ -9746,7 +9746,7 @@ message rpc {
 
     message MusicGetHighestScoreRankingInfoResponse {
       message MusicDifficultyScoreInfo {
-        enums.MusicDifficultyType music_difficulty_type = 1;
+        .enums.MusicDifficultyType music_difficulty_type = 1;
         int64 score = 2;
       }
       int32 self_rank = 1;
@@ -9825,7 +9825,7 @@ message rpc {
 
     message MusicCreativeChartGetUploadUrlForUpdateRequest {
       string music_creative_chart_id = 1;
-      enums.MusicCreativeChartFileType file_type = 2;
+      .enums.MusicCreativeChartFileType file_type = 2;
     }
 
     message MusicCreativeChartGetUploadUrlForUpdateResponse {
@@ -9837,7 +9837,7 @@ message rpc {
     message MusicCreativeChartUpdateFileUploadTimeRequest {
       string music_creative_chart_id = 1;
       string upload_token = 2;
-      enums.MusicCreativeChartFileType file_type = 3;
+      .enums.MusicCreativeChartFileType file_type = 3;
     }
 
     message MusicCreativeChartGetQuoteTargetChartRequest {
@@ -9853,8 +9853,8 @@ message rpc {
       string upload_token = 1;
       string title = 2;
       string music_id = 3;
-      enums.MusicCreativeChartQuoteType quote_type = 4;
-      enums.MusicDifficultyType quote_music_difficulty_type = 5;
+      .enums.MusicCreativeChartQuoteType quote_type = 4;
+      .enums.MusicDifficultyType quote_music_difficulty_type = 5;
       string quote_music_creative_chart_id = 6;
     }
 
@@ -9867,17 +9867,17 @@ message rpc {
       string music_creative_chart_id = 1;
       string title = 2;
       int32 difficulty_value = 3;
-      repeated enums.MusicCreativeChartType chart_types = 4;
+      repeated .enums.MusicCreativeChartType chart_types = 4;
       repeated string music_creative_chart_tag_ids = 5;
-      enums.MusicCreativeChartPublishType publish_type = 6;
-      enums.MusicCreativeChartQuoteAllowType quote_allow_type = 7;
+      .enums.MusicCreativeChartPublishType publish_type = 6;
+      .enums.MusicCreativeChartQuoteAllowType quote_allow_type = 7;
       bool is_publish = 100;
     }
 
     message MusicCreativeChartEditSettingRequest {
       string music_creative_chart_id = 1;
-      enums.MusicCreativeChartPublishType publish_type = 2;
-      enums.MusicCreativeChartQuoteAllowType quote_allow_type = 3;
+      .enums.MusicCreativeChartPublishType publish_type = 2;
+      .enums.MusicCreativeChartQuoteAllowType quote_allow_type = 3;
     }
 
     message MusicCreativeChartDeleteRequest {
@@ -9895,7 +9895,7 @@ message rpc {
 
     message MusicCreativeChartComplainRequest {
       string music_creative_chart_id = 1;
-      repeated enums.MusicCreativeChartComplainCategoryType category_types = 2;
+      repeated .enums.MusicCreativeChartComplainCategoryType category_types = 2;
       string message = 3;
     }
 
@@ -9904,8 +9904,8 @@ message rpc {
         common.MusicCreativeChartInfo chart_info = 1;
         string chart_file_url = 2;
         bool is_thumbnail_image_enabled = 3;
-        enums.MusicCreativeChartQuoteAllowType quote_allow_type = 4;
-        enums.MusicCreativeChartQuoteType quote_type = 5;
+        .enums.MusicCreativeChartQuoteAllowType quote_allow_type = 4;
+        .enums.MusicCreativeChartQuoteType quote_type = 5;
         string quoted_chart_file_url = 6;
       }
       repeated MusicCreativeChartListOwnResponse.OwnChartInfo creating_chart_infos = 1;
@@ -9979,7 +9979,7 @@ message rpc {
     }
 
     message MusicCreativeChartListPopularCreatorRequest {
-      enums.ResetIntervalType reset_interval_type = 1;
+      .enums.ResetIntervalType reset_interval_type = 1;
     }
 
     message MusicCreativeChartListPopularCreatorResponse {
@@ -10023,11 +10023,11 @@ message rpc {
     }
 
     message MusicCreativeChartFinishLiveSingleRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
     }
 
     message MusicCreativeChartRetryLiveSingleRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
       int64 progress_millisecond = 2;
     }
 
@@ -10037,7 +10037,7 @@ message rpc {
     }
 
     message MusicCreativeChartRetireLiveSingleRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
       int64 progress_millisecond = 2;
     }
 
@@ -10046,7 +10046,7 @@ message rpc {
     }
 
     message MusicCreativeChartFinishLiveSingleResponse {
-      enums.LiveResultType result_type = 1;
+      .enums.LiveResultType result_type = 1;
       bool is_liked = 2;
       bool is_favorite = 3;
       int64 technical_score = 4;
@@ -10055,7 +10055,7 @@ message rpc {
 
     message MusicCreativeChartGetEarlyClearRankingInfoRequest {
       string music_creative_chart_id = 1;
-      enums.LiveResultType live_result_type = 2;
+      .enums.LiveResultType live_result_type = 2;
     }
 
     message MusicCreativeChartGetEarlyClearRankingInfoResponse {
@@ -10067,7 +10067,7 @@ message rpc {
     message MusicCreativeChartGetEarlyClearLiveDeckRequest {
       string public_user_id = 1;
       string music_creative_chart_id = 2;
-      enums.LiveResultType live_result_type = 3;
+      .enums.LiveResultType live_result_type = 3;
     }
 
     message MusicCreativeChartGetEarlyClearLiveDeckResponse {
@@ -10123,7 +10123,7 @@ message rpc {
       rpc Like (MusicCreativeChartLikeRequest) returns (MusicCreativeChartLikeResponse);
       rpc SwitchFavorite (MusicCreativeChartSwitchFavoriteRequest) returns (MusicCreativeChartSwitchFavoriteResponse);
       rpc Complain (MusicCreativeChartComplainRequest) returns (MusicCreativeChartComplainResponse);
-      rpc ListOwn (google.protobuf.Empty) returns (MusicCreativeChartListOwnResponse);
+      rpc ListOwn (.google.protobuf.Empty) returns (MusicCreativeChartListOwnResponse);
       rpc ListNewer (MusicCreativeChartListNewerRequest) returns (MusicCreativeChartListNewerResponse);
       rpc ListFavorite (MusicCreativeChartListFavoriteRequest) returns (MusicCreativeChartListFavoriteResponse);
       rpc ListPlayHistory (MusicCreativeChartListPlayHistoryRequest) returns (MusicCreativeChartListPlayHistoryResponse);
@@ -10132,9 +10132,9 @@ message rpc {
       rpc GetByMusicCreativeChartId (MusicCreativeChartGetByMusicCreativeChartIdRequest) returns (MusicCreativeChartGetByMusicCreativeChartIdResponse);
       rpc ListPopular (MusicCreativeChartListPopularRequest) returns (MusicCreativeChartListPopularResponse);
       rpc ListPopularCreator (MusicCreativeChartListPopularCreatorRequest) returns (MusicCreativeChartListPopularCreatorResponse);
-      rpc ListFriendCreator (google.protobuf.Empty) returns (MusicCreativeChartListFriendCreatorResponse);
+      rpc ListFriendCreator (.google.protobuf.Empty) returns (MusicCreativeChartListFriendCreatorResponse);
       rpc GetCreatorInfoByMusicCreativeChartId (MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdRequest) returns (MusicCreativeChartGetCreatorInfoByMusicCreativeChartIdResponse);
-      rpc GetUserStatus (google.protobuf.Empty) returns (MusicCreativeChartGetUserStatusResponse);
+      rpc GetUserStatus (.google.protobuf.Empty) returns (MusicCreativeChartGetUserStatusResponse);
       rpc StartLiveSingle (MusicCreativeChartStartLiveSingleRequest) returns (MusicCreativeChartStartLiveSingleResponse);
       rpc FinishLiveSingle (MusicCreativeChartFinishLiveSingleRequest) returns (MusicCreativeChartFinishLiveSingleResponse);
       rpc RetryLiveSingle (MusicCreativeChartRetryLiveSingleRequest) returns (MusicCreativeChartRetryLiveSingleResponse);
@@ -10148,7 +10148,7 @@ message rpc {
       message Category {
         string notice_category_id = 1;
         string name = 2;
-        enums.NoticeDisplayType display_type = 3;
+        .enums.NoticeDisplayType display_type = 3;
         repeated NoticeInfo notice_infos = 4;
         bool is_has_next = 5;
       }
@@ -10187,7 +10187,7 @@ message rpc {
     message NoticeInfo {
       string id = 1;
       string title = 2;
-      enums.NoticeType type = 3;
+      .enums.NoticeType type = 3;
       string detail_url = 4;
       string banner_asset_id = 5;
       bool is_read = 6;
@@ -10204,7 +10204,7 @@ message rpc {
     }
 
     service Notice {
-      rpc Top (google.protobuf.Empty) returns (NoticeTopResponse);
+      rpc Top (.google.protobuf.Empty) returns (NoticeTopResponse);
       rpc ListInCategory (NoticeListInCategoryRequest) returns (NoticeListInCategoryResponse);
       rpc Get (NoticeGetRequest) returns (NoticeGetResponse);
       rpc UpdateCategoryReadTime (NoticeUpdateCategoryReadTimeRequest) returns (NoticeUpdateCategoryReadTimeResponse);
@@ -10212,7 +10212,7 @@ message rpc {
     }
 
     message NotificationReadRequest {
-      enums.NotificationReadType type = 1;
+      .enums.NotificationReadType type = 1;
     }
 
     message NotificationListResponse {
@@ -10239,7 +10239,7 @@ message rpc {
 
     service Notification {
       rpc Read (NotificationReadRequest) returns (NotificationReadResponse);
-      rpc List (google.protobuf.Empty) returns (NotificationListResponse);
+      rpc List (.google.protobuf.Empty) returns (NotificationListResponse);
     }
 
     message ParkRefreshRequest {
@@ -10250,7 +10250,7 @@ message rpc {
       message HomeBanner {
         string home_banner_id = 1;
         string asset_id = 2;
-        enums.TransitionType transition_type = 3;
+        .enums.TransitionType transition_type = 3;
         string transition_id = 4;
         int64 end_time = 5;
         int64 priority = 6;
@@ -10261,9 +10261,9 @@ message rpc {
       }
       message ParkBanner {
         string park_banner_id = 1;
-        enums.ParkBannerType type = 2;
+        .enums.ParkBannerType type = 2;
         string asset_id = 3;
-        enums.TransitionType transition_type = 5;
+        .enums.TransitionType transition_type = 5;
         string transition_id = 6;
         int64 end_time = 7;
         int64 priority = 8;
@@ -10278,7 +10278,7 @@ message rpc {
       }
       message MusicStartupNotification {
         string id = 1;
-        enums.MusicStartupNotificationType type = 2;
+        .enums.MusicStartupNotificationType type = 2;
         string music_id = 3;
         repeated int32 music_mv_numbers = 4;
       }
@@ -10291,7 +10291,7 @@ message rpc {
       repeated common.StartupNotification startup_notifications = 3;
       repeated ParkEnterResponse.MusicStartupNotification music_startup_notifications = 4;
       ParkEnterResponse.MaintenanceNoticeInfo maintenance_notice_info = 5;
-      repeated enums.CheatFeatureType cheat_feature_restriction_types = 6;
+      repeated .enums.CheatFeatureType cheat_feature_restriction_types = 6;
       common.Response common_response = 9999;
     }
 
@@ -10351,7 +10351,7 @@ message rpc {
     }
 
     message ParkReportActionRequest {
-      enums.ParkMissionActionType action_type = 1;
+      .enums.ParkMissionActionType action_type = 1;
       int32 count = 2;
     }
 
@@ -10399,7 +10399,7 @@ message rpc {
     }
 
     service Park {
-      rpc Enter (google.protobuf.Empty) returns (ParkEnterResponse);
+      rpc Enter (.google.protobuf.Empty) returns (ParkEnterResponse);
       rpc Refresh (ParkRefreshRequest) returns (ParkRefreshResponse);
       rpc SetCharacter (ParkSetCharacterRequest) returns (ParkSetCharacterResponse);
       rpc SetAccessory (ParkSetAccessoryRequest) returns (ParkSetAccessoryResponse);
@@ -10416,7 +10416,7 @@ message rpc {
 
     message ParkPermanenceSetPosterBoothRequest {
       message PosterBoothResource {
-        enums.PosterBoothResourceType resource_type = 1;
+        .enums.PosterBoothResourceType resource_type = 1;
         string resource_id = 2;
       }
       common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
@@ -10439,7 +10439,7 @@ message rpc {
 
     message ParkPermanenceCharacterShopItem {
       string park_character_shop_item_id = 1;
-      repeated common.Reward rewards = 2;
+      repeated .common.Reward rewards = 2;
       string sd_costume_id = 3;
       string asset_id = 4;
     }
@@ -10455,7 +10455,7 @@ message rpc {
 
     message ParkPermanenceListCharacterShopItemResponse {
       string shop_name = 1;
-      common.Consumption consumption = 2;
+      .common.Consumption consumption = 2;
       repeated ParkPermanenceCharacterShopItemWithCollectedInfo item_infos = 3;
       repeated ParkPermanenceCharacterShopItem picked_items = 4;
       common.Response common_response = 9999;
@@ -10487,7 +10487,7 @@ message rpc {
 
     message ParkPermanenceDrawLotteryResponse {
       repeated common.RewardResult reward_results = 1;
-      enums.ParkLotteryRewardRarityType reward_rarity_type = 2;
+      .enums.ParkLotteryRewardRarityType reward_rarity_type = 2;
       common.Response common_response = 9999;
     }
 
@@ -10496,7 +10496,7 @@ message rpc {
     }
 
     message ParkPermanenceFinishHighLowRequest {
-      enums.ParkHighLowHandType hand_type = 1;
+      .enums.ParkHighLowHandType hand_type = 1;
       bool is_reward_get = 2;
       int32 double_up_success_count = 3;
     }
@@ -10509,7 +10509,7 @@ message rpc {
 
     message ParkPermanencePrepareFishingRequest {
       common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-      enums.ParkTimePeriodType park_time_period_type = 2;
+      .enums.ParkTimePeriodType park_time_period_type = 2;
       string park_fishing_bait_id = 3;
     }
 
@@ -10533,7 +10533,7 @@ message rpc {
 
     message ParkPermanenceFinishFishingResponse {
       int32 fish_weight = 1;
-      enums.ParkFishingFishWeightType fish_weight_type = 2;
+      .enums.ParkFishingFishWeightType fish_weight_type = 2;
       repeated common.RewardResult reward_results = 3;
       common.Response common_response = 9999;
     }
@@ -10585,7 +10585,7 @@ message rpc {
       rpc StartFishing (ParkPermanenceStartFishingRequest) returns (ParkPermanenceStartFishingResponse);
       rpc MissFishing (ParkPermanenceMissFishingRequest) returns (ParkPermanenceMissFishingResponse);
       rpc FinishFishing (ParkPermanenceFinishFishingRequest) returns (ParkPermanenceFinishFishingResponse);
-      rpc ReceiveFishingTotalCaughtReward (google.protobuf.Empty) returns (ParkPermanenceReceiveFishingTotalCaughtRewardResponse);
+      rpc ReceiveFishingTotalCaughtReward (.google.protobuf.Empty) returns (ParkPermanenceReceiveFishingTotalCaughtRewardResponse);
       rpc LevelUpFishingRod (ParkPermanenceLevelUpFishingRodRequest) returns (ParkPermanenceLevelUpFishingRodResponse);
     }
 
@@ -10606,7 +10606,7 @@ message rpc {
 
     message ParkQuestGetLiveFixedDeckRequest {
       common.ParkQuestCommonRequestParam park_quest_common_request_param = 1;
-      enums.MusicDifficultyType difficulty_type = 2;
+      .enums.MusicDifficultyType difficulty_type = 2;
     }
 
     message ParkQuestGetLiveFixedDeckResponse {
@@ -10626,7 +10626,7 @@ message rpc {
       int32 step = 3;
       string park_target_mapping_id = 4;
       int32 action_number = 5;
-      enums.MusicDifficultyType difficulty_type = 6;
+      .enums.MusicDifficultyType difficulty_type = 6;
       string costume_id = 7;
       repeated ParkQuestGetLiveFixedCharacterDeckRequest.LiveDeckPosition deck_positions = 8;
     }
@@ -10644,7 +10644,7 @@ message rpc {
       int32 step = 3;
       string park_target_mapping_id = 4;
       int32 action_number = 5;
-      enums.MusicDifficultyType difficulty_type = 6;
+      .enums.MusicDifficultyType difficulty_type = 6;
       string character_id = 7;
       string costume_id = 8;
       repeated string card_ids = 9;
@@ -10659,18 +10659,18 @@ message rpc {
     }
 
     message ParkQuestFinishLiveRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
     }
 
     message ParkQuestFinishLiveResponse {
-      enums.LiveResultType result_type = 1;
-      enums.LiveEvaluationRankType evaluation_rank_type = 2;
+      .enums.LiveResultType result_type = 1;
+      .enums.LiveEvaluationRankType evaluation_rank_type = 2;
       int32 evaluation_rank_plus = 3;
-      repeated common.Reward quest_step_clear_rewards = 4;
-      repeated common.Reward music_clear_count_rewards = 5;
-      repeated common.Reward music_full_combo_rewards = 6;
-      repeated common.Reward music_highest_score_rank_rewards = 7;
-      repeated common.Reward music_max_combo_count_phase_rewards = 8;
+      repeated .common.Reward quest_step_clear_rewards = 4;
+      repeated .common.Reward music_clear_count_rewards = 5;
+      repeated .common.Reward music_full_combo_rewards = 6;
+      repeated .common.Reward music_highest_score_rank_rewards = 7;
+      repeated .common.Reward music_max_combo_count_phase_rewards = 8;
       int64 past_character_highest_score = 9;
       common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 10;
       bool is_cleared_quest = 12;
@@ -10686,7 +10686,7 @@ message rpc {
       int32 step = 3;
       string park_target_mapping_id = 4;
       int32 action_number = 5;
-      enums.MusicDifficultyType difficulty_type = 6;
+      .enums.MusicDifficultyType difficulty_type = 6;
       string character_id = 7;
       string costume_id = 8;
       repeated string card_ids = 9;
@@ -10694,19 +10694,19 @@ message rpc {
     }
 
     message ParkQuestFinishTutorialLiveRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
     }
 
     message ParkQuestFinishTutorialLiveResponse {
-      enums.LiveResultType result_type = 1;
-      enums.LiveEvaluationRankType evaluation_rank_type = 2;
+      .enums.LiveResultType result_type = 1;
+      .enums.LiveEvaluationRankType evaluation_rank_type = 2;
       int32 evaluation_rank_plus = 3;
       repeated common.RewardResult reward_results = 4;
       common.Response common_response = 9999;
     }
 
     message ParkQuestRetryLiveRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
       int64 progress_millisecond = 2;
     }
 
@@ -10721,7 +10721,7 @@ message rpc {
     }
 
     message ParkQuestRetireLiveRequest {
-      common.LiveBaseResult result = 1;
+      .common.LiveBaseResult result = 1;
       int64 progress_millisecond = 2;
     }
 
@@ -11111,7 +11111,7 @@ message rpc {
 
     message PaymentCheckPurchaseRequest {
       string product_id = 1;
-      enums.PaymentMethod payment_method = 2;
+      .enums.PaymentMethod payment_method = 2;
     }
 
     message PaymentCheckPurchaseResponse {
@@ -11122,24 +11122,24 @@ message rpc {
 
     message PaymentCreateOrderRequest {
       string product_id = 1;
-      enums.PaymentMethod payment_method = 2;
+      .enums.PaymentMethod payment_method = 2;
     }
 
     message PaymentCancelOrderRequest {
       string product_id = 1;
-      enums.PaymentMethod payment_method = 2;
+      .enums.PaymentMethod payment_method = 2;
     }
 
     message PaymentRegisterDeferredPurchaseRequest {
       string product_id = 1;
-      enums.PaymentMethod payment_method = 2;
+      .enums.PaymentMethod payment_method = 2;
       string payment_transaction_id = 3;
     }
 
     message PaymentFulfillOrderRequest {
       message ProductDefinition {
         string id = 1;
-        enums.ShopChargeItemType type = 2;
+        .enums.ShopChargeItemType type = 2;
       }
       message PurchaseReceipt {
         message Payload {
@@ -11160,7 +11160,7 @@ message rpc {
           PaymentFulfillOrderRequest.PurchaseReceipt.Payload.SteamMtx steam_mtx = 3;
         }
         string store_name = 1;
-        enums.PaymentMethod payment_method = 2;
+        .enums.PaymentMethod payment_method = 2;
         string payment_transaction_id = 3;
         PaymentFulfillOrderRequest.PurchaseReceipt.Payload payload = 4;
       }
@@ -11216,12 +11216,12 @@ message rpc {
     }
 
     message ProfileSwitchPublishSettingRequest {
-      enums.ProfilePublishType profile_publish_type = 1;
+      .enums.ProfilePublishType profile_publish_type = 1;
       bool is_publish = 2;
     }
 
     message ProfileSetEmblemRequest {
-      repeated common.EmblemPosition emblem_positions = 1;
+      repeated .common.EmblemPosition emblem_positions = 1;
     }
 
     message ProfileGetUserProfileDetailRequest {
@@ -11248,7 +11248,7 @@ message rpc {
 
     message ProfileComplainUserRequest {
       string public_user_id = 1;
-      repeated enums.ComplainCategoryType category_types = 2;
+      repeated .enums.ComplainCategoryType category_types = 2;
       string message = 3;
     }
 
@@ -11341,14 +11341,14 @@ message rpc {
       rpc GetUserProfileDetail (ProfileGetUserProfileDetailRequest) returns (ProfileGetUserProfileDetailResponse);
       rpc BlockUser (ProfileBlockUserRequest) returns (ProfileBlockUserResponse);
       rpc UnblockUser (ProfileUnblockUserRequest) returns (ProfileUnblockUserResponse);
-      rpc ListBlockedUser (google.protobuf.Empty) returns (ProfileListBlockedUserResponse);
+      rpc ListBlockedUser (.google.protobuf.Empty) returns (ProfileListBlockedUserResponse);
       rpc ComplainUser (ProfileComplainUserRequest) returns (ProfileComplainUserResponse);
-      rpc ListCustomPalette (google.protobuf.Empty) returns (ProfileListCustomPaletteResponse);
+      rpc ListCustomPalette (.google.protobuf.Empty) returns (ProfileListCustomPaletteResponse);
       rpc GetCustomPaletteImageUploadUrl (ProfileGetCustomPaletteImageUploadUrlRequest) returns (ProfileGetCustomPaletteImageUploadUrlResponse);
       rpc EditCustomPalette (ProfileEditCustomPaletteRequest) returns (ProfileEditCustomPaletteResponse);
       rpc SetCustomPalette (ProfileSetCustomPaletteRequest) returns (ProfileSetCustomPaletteResponse);
       rpc DeleteCustomPalette (ProfileDeleteCustomPaletteRequest) returns (ProfileDeleteCustomPaletteResponse);
-      rpc SetDefaultCustomPalette (google.protobuf.Empty) returns (ProfileSetDefaultCustomPaletteResponse);
+      rpc SetDefaultCustomPalette (.google.protobuf.Empty) returns (ProfileSetDefaultCustomPaletteResponse);
     }
 
     message ShopListResponse {
@@ -11378,7 +11378,7 @@ message rpc {
     }
 
     service Shop {
-      rpc List (google.protobuf.Empty) returns (ShopListResponse);
+      rpc List (.google.protobuf.Empty) returns (ShopListResponse);
       rpc PurchaseConsumptionItem (ShopPurchaseConsumptionItemRequest) returns (ShopPurchaseConsumptionItemResponse);
       rpc Read (ShopReadRequest) returns (ShopReadResponse);
     }
@@ -11476,7 +11476,7 @@ message rpc {
       rpc CreatePrivateRoom (SplashBallCreatePrivateRoomRequest) returns (SplashBallCreatePrivateRoomResponse);
       rpc Start (SplashBallStartRequest) returns (SplashBallStartResponse);
       rpc Finish (SplashBallFinishRequest) returns (SplashBallFinishResponse);
-      rpc GetRankingInfo (google.protobuf.Empty) returns (SplashBallGetRankingInfoResponse);
+      rpc GetRankingInfo (.google.protobuf.Empty) returns (SplashBallGetRankingInfoResponse);
     }
 
     message StartupNotificationReadRequest {
@@ -11617,8 +11617,8 @@ message rpc {
       SystemGetSystemInfoResponse.ReviewInfo review_info = 8;
       SystemGetSystemInfoResponse.MaintenanceInfo maintenance_info = 9;
       repeated SystemGetSystemInfoResponse.GachaAssetInfo title_download_gacha_asset_infos = 10;
-      enums.GraphicsQualityType recommend_graphics_quality_type = 11;
-      repeated enums.DeviceWorkaroundType device_workaround_types = 12;
+      .enums.GraphicsQualityType recommend_graphics_quality_type = 11;
+      repeated .enums.DeviceWorkaroundType device_workaround_types = 12;
     }
 
     service System {
@@ -11626,7 +11626,7 @@ message rpc {
     }
 
     message TutorialProgressRequest {
-      enums.TutorialType tutorial_type = 1;
+      .enums.TutorialType tutorial_type = 1;
       int32 progress = 2;
     }
 
@@ -11696,9 +11696,9 @@ message rpc {
       rpc Progress (TutorialProgressRequest) returns (TutorialProgressResponse);
       rpc RegisterInitialUserInfo (TutorialRegisterInitialUserInfoRequest) returns (TutorialRegisterInitialUserInfoResponse);
       rpc ChooseCharacter (TutorialChooseCharacterRequest) returns (TutorialChooseCharacterResponse);
-      rpc DrawGacha (google.protobuf.Empty) returns (TutorialDrawGachaResponse);
-      rpc ConfirmGacha (google.protobuf.Empty) returns (TutorialConfirmGachaResponse);
-      rpc ListGachaCard (google.protobuf.Empty) returns (TutorialListGachaCardResponse);
+      rpc DrawGacha (.google.protobuf.Empty) returns (TutorialDrawGachaResponse);
+      rpc ConfirmGacha (.google.protobuf.Empty) returns (TutorialConfirmGachaResponse);
+      rpc ListGachaCard (.google.protobuf.Empty) returns (TutorialListGachaCardResponse);
       rpc ReadInstantTips (TutorialReadInstantTipsRequest) returns (TutorialReadInstantTipsResponse);
     }
 
@@ -11711,8 +11711,8 @@ message rpc {
     }
 
     service User {
-      rpc Get (google.protobuf.Empty) returns (UserGetResponse);
-      rpc Delete (google.protobuf.Empty) returns (UserDeleteResponse);
+      rpc Get (.google.protobuf.Empty) returns (UserGetResponse);
+      rpc Delete (.google.protobuf.Empty) returns (UserDeleteResponse);
     }
 
     message UserContentCdnGetSignedCookieResponse {
@@ -11720,7 +11720,7 @@ message rpc {
     }
 
     service UserContentCdn {
-      rpc GetSignedCookie (google.protobuf.Empty) returns (UserContentCdnGetSignedCookieResponse);
+      rpc GetSignedCookie (.google.protobuf.Empty) returns (UserContentCdnGetSignedCookieResponse);
     }
 
     message WorkListWorkSlotPowerRequest {
@@ -11767,7 +11767,7 @@ message rpc {
       int32 slot_number = 1;
       string work_id = 2;
       repeated common.RewardResult reward_results = 3;
-      enums.WorkEvaluationRankType evaluation_rank_type = 4;
+      .enums.WorkEvaluationRankType evaluation_rank_type = 4;
       repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
     }
 
@@ -11785,10 +11785,10 @@ message rpc {
 
     service Work {
       rpc ListWorkSlotPower (WorkListWorkSlotPowerRequest) returns (WorkListWorkSlotPowerResponse);
-      rpc Refresh (google.protobuf.Empty) returns (WorkRefreshResponse);
+      rpc Refresh (.google.protobuf.Empty) returns (WorkRefreshResponse);
       rpc Start (WorkStartRequest) returns (WorkStartResponse);
       rpc Finish (WorkFinishRequest) returns (WorkFinishResponse);
-      rpc FinishAll (google.protobuf.Empty) returns (WorkFinishAllResponse);
+      rpc FinishAll (.google.protobuf.Empty) returns (WorkFinishAllResponse);
       rpc Cancel (WorkCancelRequest) returns (WorkCancelResponse);
     }
 
@@ -11797,7 +11797,7 @@ message rpc {
   message multi_game_server_manager {
     message MultiGameCircuitPickAreaResponse {
       message PickedArea {
-        enums.CircuitAreaType type = 1;
+        .enums.CircuitAreaType type = 1;
         int32 variation_number = 2;
       }
       MultiGameCircuitPickAreaResponse.PickedArea area1 = 1;
@@ -11806,7 +11806,7 @@ message rpc {
     }
 
     service MultiGameCircuit {
-      rpc PickArea (google.protobuf.Empty) returns (MultiGameCircuitPickAreaResponse);
+      rpc PickArea (.google.protobuf.Empty) returns (MultiGameCircuitPickAreaResponse);
     }
 
   }

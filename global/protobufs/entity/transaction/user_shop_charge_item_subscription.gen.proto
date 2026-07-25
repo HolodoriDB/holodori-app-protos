@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserShopChargeItemSubscription {
   string shop_charge_item_subscription_shop_charge_item_id = 2;
-  enums.PaymentSubscriptionStatus status = 3;
+  .enums.PaymentSubscriptionStatus status = 3;
   int64 purchased_time = 4;
   int64 expired_time = 5;
   bool is_auto_renew = 6;

@@ -11,7 +11,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CookingPuzzle {
   string id = 1;
-  enums.CookingPuzzlePlayType play_type = 2;
+  .enums.CookingPuzzlePlayType play_type = 2;
   string view_condition_group_id = 3;
   string unlock_condition_group_id = 4;
   int32 limit_time_seconds = 5;
@@ -22,5 +22,5 @@ message CookingPuzzle {
   string game_start_display_clear_condition_lang_id = 11;
   string mode_select_display_clear_condition_lang_id = 12;
   int32 order = 999;
-  repeated common.SimplifiedReward play_rewards = 1000;
+  repeated .common.SimplifiedReward play_rewards = 1000;
 }

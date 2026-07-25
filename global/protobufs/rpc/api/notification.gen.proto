@@ -13,7 +13,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message NotificationReadRequest {
-  enums.NotificationReadType type = 1;
+  .enums.NotificationReadType type = 1;
 }
 
 message NotificationListResponse {
@@ -40,5 +40,5 @@ message NotificationReadResponse {
 
 service Notification {
   rpc Read (NotificationReadRequest) returns (NotificationReadResponse);
-  rpc List (google.protobuf.Empty) returns (NotificationListResponse);
+  rpc List (.google.protobuf.Empty) returns (NotificationListResponse);
 }

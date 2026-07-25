@@ -11,10 +11,10 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveSkillEffectTarget {
   string id = 1;
-  enums.LiveSkillEffectTargetType type = 2;
+  .enums.LiveSkillEffectTargetType type = 2;
   int32 target_count = 3;
   string character_id = 4;
   string character_grouping_id = 5;
-  enums.CardAttributeType card_attribute_type = 6;
+  .enums.CardAttributeType card_attribute_type = 6;
   string description_lang_id = 1000;
 }

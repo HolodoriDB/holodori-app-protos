@@ -9,6 +9,6 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SystemSound {
-  enums.SystemSoundType type = 1;
+  .enums.SystemSoundType type = 1;
   string sound_asset_id = 2;
 }

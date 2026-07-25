@@ -27,7 +27,7 @@ message UserProfileInfo {
   string park_character_id = 4;
   string fan_mark_id = 5;
   string custom_palette_image_url = 6;
-  repeated common.EmblemPosition emblem_positions = 7;
+  repeated .common.EmblemPosition emblem_positions = 7;
   int64 login_status_last_updated_time = 8;
   int32 custom_palette_background_card_potential_upgrade_count = 9;
   string custom_palette_background_card_id = 10;
@@ -54,7 +54,7 @@ message UserProfileDetailInfo {
     string costume_id = 2;
     repeated UserProfileDetailInfo.HighestLiveDeckEvaluationLiveDeck.LiveDeckPosition live_deck_positions = 3;
     int64 live_deck_evaluation_value = 4;
-    enums.LiveDeckRankType live_deck_evaluation_rank_type = 5;
+    .enums.LiveDeckRankType live_deck_evaluation_rank_type = 5;
     int32 live_deck_evaluation_rank_plus_value = 6;
   }
   message CharacterLevel {
@@ -62,11 +62,11 @@ message UserProfileDetailInfo {
     int32 level = 2;
   }
   message LiveResultInfo {
-    enums.MusicDifficultyType music_difficulty_type = 1;
+    .enums.MusicDifficultyType music_difficulty_type = 1;
     int32 count = 2;
   }
   message MiniGameResultInfo {
-    enums.ProfileMiniGameResultType result_type = 1;
+    .enums.ProfileMiniGameResultType result_type = 1;
     int64 value = 2;
   }
   message MusicHighestScoreRatingInfo {
@@ -84,7 +84,7 @@ message UserProfileDetailInfo {
   repeated UserProfileDetailInfo.LiveResultInfo live_all_perfect_results = 9;
   repeated UserProfileDetailInfo.MiniGameResultInfo mini_game_results = 10;
   bool is_blocked_user = 11;
-  enums.FriendStatusType friend_status_type = 12;
+  .enums.FriendStatusType friend_status_type = 12;
   repeated UserProfileDetailInfo.MusicHighestScoreRatingInfo top_music_highest_score_rating_infos = 13;
   int32 combo_card_game_average_rank_percent = 14;
   int64 combo_card_game_chip_diff_total_quantity = 15;
@@ -98,7 +98,7 @@ message CustomPalette {
 }
 
 message CustomPaletteBackground {
-  enums.CustomPaletteBackgroundResourceType resource_type = 1;
+  .enums.CustomPaletteBackgroundResourceType resource_type = 1;
   string resource_id = 2;
   int32 position_x_permil = 3;
   int32 position_y_permil = 4;
@@ -106,7 +106,7 @@ message CustomPaletteBackground {
 }
 
 message CustomPalettePart {
-  enums.CustomPalettePartResourceType resource_type = 1;
+  .enums.CustomPalettePartResourceType resource_type = 1;
   string resource_id = 2;
   int32 position_x_permil = 3;
   int32 position_y_permil = 4;

@@ -10,8 +10,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveNote {
-  enums.LiveNoteType note_type = 1;
-  enums.LiveNoteJudgementType judgement_type = 2;
+  .enums.LiveNoteType note_type = 1;
+  .enums.LiveNoteJudgementType judgement_type = 2;
   float acceptable_before_frame_count = 3;
   float acceptable_after_frame_count = 4;
   int32 score_coefficient_permil_multiply = 5;

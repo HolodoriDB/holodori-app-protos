@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserCount {
-  enums.CountType count_type = 2;
+  .enums.CountType count_type = 2;
   int64 total_count = 3;
   int64 daily_count = 4;
   int64 last_updated_time = 5;

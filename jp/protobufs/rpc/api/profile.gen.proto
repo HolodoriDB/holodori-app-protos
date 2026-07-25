@@ -30,12 +30,12 @@ message ProfileSetFanMarkRequest {
 }
 
 message ProfileSwitchPublishSettingRequest {
-  enums.ProfilePublishType profile_publish_type = 1;
+  .enums.ProfilePublishType profile_publish_type = 1;
   bool is_publish = 2;
 }
 
 message ProfileSetEmblemRequest {
-  repeated common.EmblemPosition emblem_positions = 1;
+  repeated .common.EmblemPosition emblem_positions = 1;
 }
 
 message ProfileGetUserProfileDetailRequest {
@@ -62,7 +62,7 @@ message ProfileListBlockedUserResponse {
 
 message ProfileComplainUserRequest {
   string public_user_id = 1;
-  repeated enums.ComplainCategoryType category_types = 2;
+  repeated .enums.ComplainCategoryType category_types = 2;
   string message = 3;
 }
 
@@ -155,12 +155,12 @@ service Profile {
   rpc GetUserProfileDetail (ProfileGetUserProfileDetailRequest) returns (ProfileGetUserProfileDetailResponse);
   rpc BlockUser (ProfileBlockUserRequest) returns (ProfileBlockUserResponse);
   rpc UnblockUser (ProfileUnblockUserRequest) returns (ProfileUnblockUserResponse);
-  rpc ListBlockedUser (google.protobuf.Empty) returns (ProfileListBlockedUserResponse);
+  rpc ListBlockedUser (.google.protobuf.Empty) returns (ProfileListBlockedUserResponse);
   rpc ComplainUser (ProfileComplainUserRequest) returns (ProfileComplainUserResponse);
-  rpc ListCustomPalette (google.protobuf.Empty) returns (ProfileListCustomPaletteResponse);
+  rpc ListCustomPalette (.google.protobuf.Empty) returns (ProfileListCustomPaletteResponse);
   rpc GetCustomPaletteImageUploadUrl (ProfileGetCustomPaletteImageUploadUrlRequest) returns (ProfileGetCustomPaletteImageUploadUrlResponse);
   rpc EditCustomPalette (ProfileEditCustomPaletteRequest) returns (ProfileEditCustomPaletteResponse);
   rpc SetCustomPalette (ProfileSetCustomPaletteRequest) returns (ProfileSetCustomPaletteResponse);
   rpc DeleteCustomPalette (ProfileDeleteCustomPaletteRequest) returns (ProfileDeleteCustomPaletteResponse);
-  rpc SetDefaultCustomPalette (google.protobuf.Empty) returns (ProfileSetDefaultCustomPaletteResponse);
+  rpc SetDefaultCustomPalette (.google.protobuf.Empty) returns (ProfileSetDefaultCustomPaletteResponse);
 }

@@ -11,8 +11,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Cheat {
-  enums.CheatType type = 1;
-  enums.CheatSeverityType severity_type = 2;
-  enums.CheatParameterType parameter_type = 3;
+  .enums.CheatType type = 1;
+  .enums.CheatSeverityType severity_type = 2;
+  .enums.CheatParameterType parameter_type = 3;
   int64 threshold = 4;
 }

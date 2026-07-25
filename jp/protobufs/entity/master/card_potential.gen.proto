@@ -11,6 +11,6 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message CardPotential {
   string group_id = 1;
   int32 upgrade_count = 2;
-  enums.CardPotentialEffectType effect_type = 3;
+  .enums.CardPotentialEffectType effect_type = 3;
   int64 value = 4;
 }

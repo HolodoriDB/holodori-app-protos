@@ -9,6 +9,6 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message MusicDifficultyConfiguration {
-  enums.MusicDifficultyType type = 1;
+  .enums.MusicDifficultyType type = 1;
   int32 animation_combo_interval = 2;
 }

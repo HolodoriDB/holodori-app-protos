@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message GachaAnimationFake {
   string gacha_animation_grouping_id = 1;
-  enums.GachaAnimationRarityType fake_animation_rarity = 2;
-  enums.GachaAnimationRarityType actual_animation_rarity = 3;
+  .enums.GachaAnimationRarityType fake_animation_rarity = 2;
+  .enums.GachaAnimationRarityType actual_animation_rarity = 3;
   int32 ratio = 4;
 }

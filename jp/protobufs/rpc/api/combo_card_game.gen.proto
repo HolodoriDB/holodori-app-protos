@@ -94,6 +94,6 @@ service ComboCardGame {
   rpc CreatePrivateRoom (ComboCardGameCreatePrivateRoomRequest) returns (ComboCardGameCreatePrivateRoomResponse);
   rpc Start (ComboCardGameStartRequest) returns (ComboCardGameStartResponse);
   rpc Finish (ComboCardGameFinishRequest) returns (ComboCardGameFinishResponse);
-  rpc GetRankingInfo (google.protobuf.Empty) returns (ComboCardGameGetRankingInfoResponse);
+  rpc GetRankingInfo (.google.protobuf.Empty) returns (ComboCardGameGetRankingInfoResponse);
   rpc ListUserInfo (ComboCardGameListUserInfoRequest) returns (ComboCardGameListUserInfoResponse);
 }

@@ -36,7 +36,7 @@ message MultiGameGetPrivateRoomInfoRequest {
 }
 
 message MultiGameGetPrivateRoomInfoResponse {
-  enums.MultiGameType multi_game_type = 1;
+  .enums.MultiGameType multi_game_type = 1;
   string multi_game_id = 2;
   common.Response common_response = 9999;
 }
@@ -82,7 +82,7 @@ message MultiGameCheckInvitedPrivateRoomResponse {
 message MultiGameListInvitedPrivateRoomResponse {
   message InvitedPrivateRoom {
     string private_room_id = 1;
-    enums.MultiGameType multi_game_type = 2;
+    .enums.MultiGameType multi_game_type = 2;
     common.BasicUserInfo host_user_info = 3;
   }
   repeated MultiGameListInvitedPrivateRoomResponse.InvitedPrivateRoom invited_private_rooms = 1;
@@ -99,7 +99,7 @@ message MultiGameCheckMatchStatusResponse {
   uint32 port = 3;
   string token = 4;
   string private_room_id = 5;
-  enums.MultiGameType multi_game_type = 6;
+  .enums.MultiGameType multi_game_type = 6;
   string tls_server_common_name = 7;
   string tls_client_cert = 8;
   string dgs_name = 9;
@@ -113,10 +113,10 @@ message MultiGameCancelMatchRequest {
 
 message MultiGameSetPrivateRoomRematchStatusRequest {
   string multi_game_result_id = 1;
-  enums.MultiGameRematchType rematch_type = 2;
+  .enums.MultiGameRematchType rematch_type = 2;
   string private_room_id = 3;
   repeated string invitation_public_user_ids = 100;
-  enums.MultiGameType multi_game_type = 101;
+  .enums.MultiGameType multi_game_type = 101;
   string multi_game_id = 102;
 }
 
@@ -125,9 +125,9 @@ message MultiGameCheckPrivateRoomRematchStatusRequest {
 }
 
 message MultiGameCheckPrivateRoomRematchStatusResponse {
-  enums.MultiGameRematchStatusType rematch_status_type = 1;
+  .enums.MultiGameRematchStatusType rematch_status_type = 1;
   string private_room_id = 2;
-  enums.MultiGameType multi_game_type = 3;
+  .enums.MultiGameType multi_game_type = 3;
   string multi_game_id = 4;
   common.Response common_response = 9999;
 }
@@ -169,15 +169,15 @@ message MultiGameSaveReactionSendInfoResponse {
 }
 
 service MultiGame {
-  rpc ListPingServer (google.protobuf.Empty) returns (MultiGameListPingServerResponse);
-  rpc GeneratePrivateRoomId (google.protobuf.Empty) returns (MultiGameGeneratePrivateRoomIdResponse);
+  rpc ListPingServer (.google.protobuf.Empty) returns (MultiGameListPingServerResponse);
+  rpc GeneratePrivateRoomId (.google.protobuf.Empty) returns (MultiGameGeneratePrivateRoomIdResponse);
   rpc GetPrivateRoomInfo (MultiGameGetPrivateRoomInfoRequest) returns (MultiGameGetPrivateRoomInfoResponse);
   rpc EnterPrivateRoom (MultiGameEnterPrivateRoomRequest) returns (MultiGameEnterPrivateRoomResponse);
   rpc InviteFriendToPrivateRoom (MultiGameInviteFriendToPrivateRoomRequest) returns (MultiGameInviteFriendToPrivateRoomResponse);
   rpc InviteAllFriendToPrivateRoom (MultiGameInviteAllFriendToPrivateRoomRequest) returns (MultiGameInviteAllFriendToPrivateRoomResponse);
   rpc ListPrivateRoomFriendUser (MultiGameListPrivateRoomFriendUserRequest) returns (MultiGameListPrivateRoomFriendUserResponse);
-  rpc CheckInvitedPrivateRoom (google.protobuf.Empty) returns (MultiGameCheckInvitedPrivateRoomResponse);
-  rpc ListInvitedPrivateRoom (google.protobuf.Empty) returns (MultiGameListInvitedPrivateRoomResponse);
+  rpc CheckInvitedPrivateRoom (.google.protobuf.Empty) returns (MultiGameCheckInvitedPrivateRoomResponse);
+  rpc ListInvitedPrivateRoom (.google.protobuf.Empty) returns (MultiGameListInvitedPrivateRoomResponse);
   rpc CheckMatchStatus (MultiGameCheckMatchStatusRequest) returns (MultiGameCheckMatchStatusResponse);
   rpc CancelMatch (MultiGameCancelMatchRequest) returns (MultiGameCancelMatchResponse);
   rpc SetPrivateRoomRematchStatus (MultiGameSetPrivateRoomRematchStatusRequest) returns (MultiGameSetPrivateRoomRematchStatusResponse);

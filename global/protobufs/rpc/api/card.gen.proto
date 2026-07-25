@@ -75,7 +75,7 @@ message CardUpgradePotentialResponse {
 
 service Card {
   rpc GetParameter (CardGetParameterRequest) returns (CardGetParameterResponse);
-  rpc GetParameters (google.protobuf.Empty) returns (CardGetParametersResponse);
+  rpc GetParameters (.google.protobuf.Empty) returns (CardGetParametersResponse);
   rpc LevelUp (CardLevelUpRequest) returns (CardLevelUpResponse);
   rpc LevelLimitBreak (CardLevelLimitBreakRequest) returns (CardLevelLimitBreakResponse);
   rpc UpgradePotential (CardUpgradePotentialRequest) returns (CardUpgradePotentialResponse);

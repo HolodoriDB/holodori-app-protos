@@ -14,5 +14,5 @@ message BenefitLicense {
   int32 mini_game_reward_quantity_up_permil_up = 6;
   int32 live_reward_up_stamina_max_quantity_up = 7;
   int32 mini_game_reward_up_stamina_max_quantity_up = 8;
-  repeated common.Reward rewards = 1001;
+  repeated .common.Reward rewards = 1001;
 }

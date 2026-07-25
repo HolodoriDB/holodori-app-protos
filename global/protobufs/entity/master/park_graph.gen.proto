@@ -12,5 +12,5 @@ message ParkGraph {
   string id = 1;
   string graph_id = 2;
   repeated string parameter_values = 3;
-  repeated enums.ParkScriptParameterType parameter_types = 4;
+  repeated .enums.ParkScriptParameterType parameter_types = 4;
 }

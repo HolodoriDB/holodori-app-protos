@@ -16,13 +16,13 @@ message ParkQuestStepAction {
   string park_target_mapping_id = 4;
   int32 action_number = 5;
   string description_lang_id = 6;
-  enums.ParkActionType type = 7;
+  .enums.ParkActionType type = 7;
   string unlock_condition_group_id = 8;
   string clear_condition_group_id = 9;
   string before_park_talk_group_id = 10;
   string after_park_talk_group_id = 11;
   string character_voice_id = 12;
-  repeated common.Consumption consumptions = 1000;
+  repeated .common.Consumption consumptions = 1000;
   string park_quest_live_id = 1001;
   string park_quest_jump_rope_id = 1002;
   string park_quest_circuit_id = 1003;

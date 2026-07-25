@@ -8,5 +8,5 @@ import "google/protobuf/descriptor.proto";
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/options/multi_game_result";
 
 message MessageOption {
-  enums.MultiGameType multi_game_type = 1;
+  .enums.MultiGameType multi_game_type = 1;
 }

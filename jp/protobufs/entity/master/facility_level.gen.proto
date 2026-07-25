@@ -15,5 +15,5 @@ message FacilityLevel {
   string view_condition_group_id = 4;
   string unlock_condition_group_id = 5;
   int32 order = 999;
-  repeated common.Consumption consumptions = 1000;
+  repeated .common.Consumption consumptions = 1000;
 }

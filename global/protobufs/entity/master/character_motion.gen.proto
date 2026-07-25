@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CharacterMotion {
   string character_id = 1;
-  enums.CharacterMotionType type = 2;
+  .enums.CharacterMotionType type = 2;
   string motion_asset_id = 3;
   string expression_asset_id = 4;
 }

@@ -22,7 +22,7 @@ message HomeLoginResponse {
   }
   message ExpiredResourceResult {
     message ExpiredResource {
-      enums.ResourceType resource_type = 1;
+      .enums.ResourceType resource_type = 1;
       string resource_id = 2;
       int64 quantity = 3;
     }
@@ -35,7 +35,7 @@ message HomeLoginResponse {
   }
   HomeLoginResponse.AsyncUpdateResultInfo async_update_result_info = 1;
   HomeLoginResponse.ExpiredResourceResult expired_resource_result = 2;
-  repeated enums.RuleType rule_types = 3;
+  repeated .enums.RuleType rule_types = 3;
   common.UserContentCdnSignedCookie user_content_cdn_signed_cookie = 4;
   repeated string fcm_topics = 5;
   HomeLoginResponse.RealtimeNotificationConnectionInfo realtime_notification_connection_info = 6;
@@ -43,7 +43,7 @@ message HomeLoginResponse {
 }
 
 message HomeAgreeRuleRequest {
-  repeated enums.RuleType rule_types = 1;
+  repeated .enums.RuleType rule_types = 1;
 }
 
 message HomeAgreeRuleResponse {
@@ -51,6 +51,6 @@ message HomeAgreeRuleResponse {
 }
 
 service Home {
-  rpc Login (google.protobuf.Empty) returns (HomeLoginResponse);
+  rpc Login (.google.protobuf.Empty) returns (HomeLoginResponse);
   rpc AgreeRule (HomeAgreeRuleRequest) returns (HomeAgreeRuleResponse);
 }

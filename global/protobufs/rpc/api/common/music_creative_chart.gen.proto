@@ -22,7 +22,7 @@ message MusicCreativeChartInfo {
   string title = 5;
   string thumbnail_image_url = 6;
   int32 difficulty_value = 7;
-  repeated enums.MusicCreativeChartType chart_types = 8;
+  repeated .enums.MusicCreativeChartType chart_types = 8;
   repeated string music_creative_chart_tag_ids = 9;
   int32 full_combo_note_count = 10;
   int32 normal_note_count = 11;
@@ -30,8 +30,8 @@ message MusicCreativeChartInfo {
   int32 long_note_count = 13;
   int64 like_count = 14;
   int64 play_count = 15;
-  enums.MusicCreativeChartPublishType publish_type = 16;
-  enums.LiveResultType live_result_type = 17;
+  .enums.MusicCreativeChartPublishType publish_type = 16;
+  .enums.LiveResultType live_result_type = 17;
   string preview_image_url = 18;
   bool is_own = 19;
 }
@@ -51,11 +51,11 @@ message MusicCreativeChartSearchParameter {
   bool is_search_all_music = 1;
   repeated string music_ids = 2;
   bool is_quote_allowed_only = 3;
-  enums.ResetIntervalType reset_interval_type = 4;
-  repeated enums.MusicCreativeChartTextSearchType text_search_types = 5;
+  .enums.ResetIntervalType reset_interval_type = 4;
+  repeated .enums.MusicCreativeChartTextSearchType text_search_types = 5;
   string search_text = 6;
   int32 difficulty_value_from = 7;
   int32 difficulty_value_to = 8;
-  repeated enums.MusicCreativeChartType chart_types = 9;
+  repeated .enums.MusicCreativeChartType chart_types = 9;
   repeated string music_creative_chart_tag_ids = 10;
 }

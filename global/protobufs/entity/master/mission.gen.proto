@@ -19,13 +19,13 @@ message Mission {
   string description_lang_id = 6;
   string progress_condition_group_id = 7;
   string view_condition_group_id = 8;
-  enums.MissionCategoryType category_type = 9;
-  enums.MissionType type = 10;
+  .enums.MissionCategoryType category_type = 9;
+  .enums.MissionType type = 10;
   string character_id = 11;
   repeated string target_ids1 = 12;
   repeated string target_ids2 = 13;
   repeated string target_ids3 = 14;
-  enums.TransitionType navigation_transition_type = 15;
+  .enums.TransitionType navigation_transition_type = 15;
   string navigation_transition_id = 17;
   int32 order = 999;
 }

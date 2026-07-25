@@ -12,14 +12,14 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkFishingFish {
   string id = 1;
-  enums.ParkFishingFishCategoryType category_type = 2;
+  .enums.ParkFishingFishCategoryType category_type = 2;
   string name_lang_id = 3;
   string description_lang_id = 4;
   string asset_id = 5;
   string unknown_icon_asset_id = 6;
   string known_icon_asset_id = 7;
   string park_fishing_fish_species_id = 8;
-  enums.ParkFishingFishRankType rank_type = 9;
+  .enums.ParkFishingFishRankType rank_type = 9;
   repeated string favorite_park_fishing_bait_ids = 10;
   string park_fishing_fish_icon_group_id = 11;
   int32 icon_speed_up_permil = 12;
@@ -37,5 +37,5 @@ message ParkFishingFish {
   float progress_meter_time_penalty = 27;
   int32 stamina = 28;
   int32 order = 999;
-  repeated enums.ParkTimePeriodType park_time_period_types = 1000;
+  repeated .enums.ParkTimePeriodType park_time_period_types = 1000;
 }

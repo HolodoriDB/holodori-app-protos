@@ -26,6 +26,6 @@ message AuthLoginResponse {
 }
 
 service Auth {
-  rpc Create (google.protobuf.Empty) returns (AuthCreateResponse);
+  rpc Create (.google.protobuf.Empty) returns (AuthCreateResponse);
   rpc Login (AuthLoginRequest) returns (AuthLoginResponse);
 }

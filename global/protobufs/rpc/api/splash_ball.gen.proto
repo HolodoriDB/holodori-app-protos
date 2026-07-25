@@ -75,5 +75,5 @@ service SplashBall {
   rpc CreatePrivateRoom (SplashBallCreatePrivateRoomRequest) returns (SplashBallCreatePrivateRoomResponse);
   rpc Start (SplashBallStartRequest) returns (SplashBallStartResponse);
   rpc Finish (SplashBallFinishRequest) returns (SplashBallFinishResponse);
-  rpc GetRankingInfo (google.protobuf.Empty) returns (SplashBallGetRankingInfoResponse);
+  rpc GetRankingInfo (.google.protobuf.Empty) returns (SplashBallGetRankingInfoResponse);
 }

@@ -22,5 +22,5 @@ message ParkFishingRod {
   int32 icon_speed_change_millisecond_up = 14;
   int32 progress_meter_speed_increase_up = 15;
   int32 progress_meter_speed_decrease_up = 16;
-  repeated common.Consumption consumptions = 1000;
+  repeated .common.Consumption consumptions = 1000;
 }

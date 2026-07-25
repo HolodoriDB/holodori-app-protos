@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LoadingDisplay {
   string id = 1;
-  enums.LoadingDisplayType type = 2;
+  .enums.LoadingDisplayType type = 2;
   string title_lang_id = 3;
   string text_lang_id = 4;
   string asset_id = 6;

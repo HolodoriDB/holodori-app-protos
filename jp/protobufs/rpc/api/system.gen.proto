@@ -52,8 +52,8 @@ message SystemGetSystemInfoResponse {
   SystemGetSystemInfoResponse.ReviewInfo review_info = 8;
   SystemGetSystemInfoResponse.MaintenanceInfo maintenance_info = 9;
   repeated SystemGetSystemInfoResponse.GachaAssetInfo title_download_gacha_asset_infos = 10;
-  enums.GraphicsQualityType recommend_graphics_quality_type = 11;
-  repeated enums.DeviceWorkaroundType device_workaround_types = 12;
+  .enums.GraphicsQualityType recommend_graphics_quality_type = 11;
+  repeated .enums.DeviceWorkaroundType device_workaround_types = 12;
 }
 
 service System {

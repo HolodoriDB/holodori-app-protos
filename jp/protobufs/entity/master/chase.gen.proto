@@ -11,11 +11,11 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Chase {
   string id = 1;
-  enums.ChasePlayType play_type = 2;
+  .enums.ChasePlayType play_type = 2;
   string unlock_condition_group_id = 3;
   repeated int32 area_key_appear_location_counts = 5;
   repeated int32 area_laser_gimmick_appear_location_counts = 6;
   repeated int32 area_laser_gimmick_reappear_location_counts = 7;
   repeated int32 area_play_start_location_counts = 8;
-  repeated common.SimplifiedReward rewards = 1000;
+  repeated .common.SimplifiedReward rewards = 1000;
 }

@@ -29,14 +29,14 @@ message Character {
   string comment_lang_id = 16;
   string youtube_url = 17;
   string x_url = 18;
-  enums.CharacterPersonalityType personality_type = 19;
-  enums.CharacterSdPersonalityType sd_personality_type = 20;
+  .enums.CharacterPersonalityType personality_type = 19;
+  .enums.CharacterSdPersonalityType sd_personality_type = 20;
   bool is_playable = 21;
   string asset_id = 22;
   string character_level_group_id = 23;
   string skill_tree_node_position_group_id = 24;
   bool is_tutorial = 25;
-  enums.CharacterHandType dominant_hand_type = 26;
+  .enums.CharacterHandType dominant_hand_type = 26;
   string skill_tree_point_id = 27;
   string bgm_asset_id = 28;
   string regular_character_grouping_name_lang_id = 29;

@@ -10,8 +10,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkNpcQuality {
-  enums.OsType os_type = 1;
-  enums.GraphicsQualityType graphics_quality_type = 2;
+  .enums.OsType os_type = 1;
+  .enums.GraphicsQualityType graphics_quality_type = 2;
   int32 max_npc_count = 3;
   int32 lazy_load_max_npc_count = 4;
 }

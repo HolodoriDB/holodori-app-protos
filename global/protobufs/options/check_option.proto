@@ -16,5 +16,5 @@ message CheckOption {
 }
 
 message ErrorOption {
-  repeated enums.ErrorCode error_codes = 1;
+  repeated .enums.ErrorCode error_codes = 1;
 }

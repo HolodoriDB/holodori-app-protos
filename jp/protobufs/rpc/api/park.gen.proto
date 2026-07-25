@@ -28,7 +28,7 @@ message ParkEnterResponse {
   message HomeBanner {
     string home_banner_id = 1;
     string asset_id = 2;
-    enums.TransitionType transition_type = 3;
+    .enums.TransitionType transition_type = 3;
     string transition_id = 4;
     int64 end_time = 5;
     int64 priority = 6;
@@ -39,9 +39,9 @@ message ParkEnterResponse {
   }
   message ParkBanner {
     string park_banner_id = 1;
-    enums.ParkBannerType type = 2;
+    .enums.ParkBannerType type = 2;
     string asset_id = 3;
-    enums.TransitionType transition_type = 5;
+    .enums.TransitionType transition_type = 5;
     string transition_id = 6;
     int64 end_time = 7;
     int64 priority = 8;
@@ -56,7 +56,7 @@ message ParkEnterResponse {
   }
   message MusicStartupNotification {
     string id = 1;
-    enums.MusicStartupNotificationType type = 2;
+    .enums.MusicStartupNotificationType type = 2;
     string music_id = 3;
     repeated int32 music_mv_numbers = 4;
   }
@@ -69,7 +69,7 @@ message ParkEnterResponse {
   repeated common.StartupNotification startup_notifications = 3;
   repeated ParkEnterResponse.MusicStartupNotification music_startup_notifications = 4;
   ParkEnterResponse.MaintenanceNoticeInfo maintenance_notice_info = 5;
-  repeated enums.CheatFeatureType cheat_feature_restriction_types = 6;
+  repeated .enums.CheatFeatureType cheat_feature_restriction_types = 6;
   common.Response common_response = 9999;
 }
 
@@ -129,7 +129,7 @@ message ParkListenCallRequest {
 }
 
 message ParkReportActionRequest {
-  enums.ParkMissionActionType action_type = 1;
+  .enums.ParkMissionActionType action_type = 1;
   int32 count = 2;
 }
 
@@ -177,7 +177,7 @@ message ParkSelectAreaResponse {
 }
 
 service Park {
-  rpc Enter (google.protobuf.Empty) returns (ParkEnterResponse);
+  rpc Enter (.google.protobuf.Empty) returns (ParkEnterResponse);
   rpc Refresh (ParkRefreshRequest) returns (ParkRefreshResponse);
   rpc SetCharacter (ParkSetCharacterRequest) returns (ParkSetCharacterResponse);
   rpc SetAccessory (ParkSetAccessoryRequest) returns (ParkSetAccessoryResponse);

@@ -61,7 +61,7 @@ message ChaseFinishResponse {
 }
 
 message ChaseGetRankingInfoRequest {
-  enums.ChaseTeamType chase_team_type = 1;
+  .enums.ChaseTeamType chase_team_type = 1;
 }
 
 message ChaseGetRankingInfoResponse {

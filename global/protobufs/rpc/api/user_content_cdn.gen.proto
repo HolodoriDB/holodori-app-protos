@@ -16,5 +16,5 @@ message UserContentCdnGetSignedCookieResponse {
 }
 
 service UserContentCdn {
-  rpc GetSignedCookie (google.protobuf.Empty) returns (UserContentCdnGetSignedCookieResponse);
+  rpc GetSignedCookie (.google.protobuf.Empty) returns (UserContentCdnGetSignedCookieResponse);
 }

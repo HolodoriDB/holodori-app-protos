@@ -14,5 +14,5 @@ message ItemSelectableRewardBox {
   string view_condition_group_id = 6;
   string unlock_condition_group_id = 7;
   int32 order = 999;
-  common.Reward reward = 1000;
+  .common.Reward reward = 1000;
 }

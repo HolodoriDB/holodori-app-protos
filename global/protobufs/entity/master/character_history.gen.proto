@@ -9,7 +9,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CharacterHistory {
-  enums.CharacterHistoryType character_history_type = 1;
+  .enums.CharacterHistoryType character_history_type = 1;
   int64 threshold = 2;
   bool is_loop = 3;
   string text_lang_id = 4;

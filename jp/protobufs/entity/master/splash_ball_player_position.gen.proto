@@ -10,7 +10,7 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SplashBallPlayerPosition {
   string group_id = 1;
-  enums.SplashBallTeamColor team_color = 2;
+  .enums.SplashBallTeamColor team_color = 2;
   int32 number = 3;
   float position_x = 4;
   float position_y = 5;

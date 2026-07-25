@@ -14,7 +14,7 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
 option csharp_namespace = "Vision.Common.Proto.Api";
 
 message MiniGameRecoverRewardUpStaminaRequest {
-  repeated common.Consumption consumptions = 1;
+  repeated .common.Consumption consumptions = 1;
 }
 
 message MiniGameConvertRewardUpStaminaToRewardRequest {
@@ -28,11 +28,11 @@ message MiniGameConvertRewardUpStaminaToRewardResponse {
 }
 
 message MiniGameReadNotificationRequest {
-  repeated enums.MiniGameType read_mini_game_types = 1;
+  repeated .enums.MiniGameType read_mini_game_types = 1;
 }
 
 message MiniGameSetConsumptionSettingRequest {
-  enums.MiniGameType mini_game_type = 1;
+  .enums.MiniGameType mini_game_type = 1;
   int64 quantity = 2;
 }
 

@@ -24,25 +24,25 @@ message EventListEventInfoResponse {
       message MarathonChapter {
         message MarathonScoreReward {
           int64 score = 1;
-          repeated common.Reward rewards = 2;
+          repeated .common.Reward rewards = 2;
         }
         message MarathonScoreRankingRankReward {
           string group_id = 1;
           int64 end_rank = 2;
-          repeated common.Reward rewards = 3;
+          repeated .common.Reward rewards = 3;
           string marathon_ranking_grade_id = 4;
         }
         message MarathonMusicHighestScoreRankingRankReward {
           string group_id = 1;
           string music_id = 2;
           int64 end_rank = 3;
-          repeated common.Reward rewards = 4;
+          repeated .common.Reward rewards = 4;
           string marathon_ranking_grade_id = 5;
         }
         message MarathonTotalMusicHighestScoreRankingReward {
           string group_id = 1;
           int64 end_rank = 2;
-          repeated common.Reward rewards = 3;
+          repeated .common.Reward rewards = 3;
           string marathon_ranking_grade_id = 4;
         }
         message MarathonMusicScoreBonus {
@@ -51,8 +51,8 @@ message EventListEventInfoResponse {
           int32 number = 3;
           string character_id = 4;
           string card_id = 5;
-          enums.CardAttributeType card_attribute_type = 6;
-          enums.CardRarity card_rarity = 7;
+          .enums.CardAttributeType card_attribute_type = 6;
+          .enums.CardRarity card_rarity = 7;
           int64 card_potential_upgrade_count = 8;
           int32 score_up_permil_up = 9;
         }
@@ -60,7 +60,7 @@ message EventListEventInfoResponse {
           string group_id = 1;
           int32 number = 2;
           string card_id = 3;
-          enums.CardRarity card_rarity = 4;
+          .enums.CardRarity card_rarity = 4;
           int64 card_potential_upgrade_count = 5;
           int32 marathon_score_quantity_up_permil_up = 6;
         }
@@ -69,14 +69,14 @@ message EventListEventInfoResponse {
           int32 number = 2;
           string character_id = 3;
           string card_id = 4;
-          enums.CardAttributeType card_attribute_type = 5;
-          enums.CardRarity card_rarity = 6;
+          .enums.CardAttributeType card_attribute_type = 5;
+          .enums.CardRarity card_rarity = 6;
           int64 card_potential_upgrade_count = 7;
           int32 marathon_score_quantity_up_permil_up = 8;
         }
         message MarathonMiniGameMarathonScoreRate {
           string group_id = 1;
-          enums.MiniGameType mini_game_type = 2;
+          .enums.MiniGameType mini_game_type = 2;
           int32 marathon_score_permil_multiply = 3;
           int32 bonus_permil_up = 4;
         }
@@ -108,10 +108,10 @@ message EventListEventInfoResponse {
       int64 aggregated_ranking_reveal_start_time = 3;
       repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter marathon_chapters = 4;
       bool is_marathon_score_ranking_disable = 5;
-      enums.TipsHintType tips_hint_type = 6;
+      .enums.TipsHintType tips_hint_type = 6;
     }
     string event_id = 1;
-    enums.EventType type = 2;
+    .enums.EventType type = 2;
     string name = 3;
     int64 start_time = 4;
     int64 end_time = 5;
@@ -132,7 +132,7 @@ message EventListEventInfoResponse {
 message EventListEventInfoForPortalResponse {
   message EventInfo {
     string event_id = 1;
-    enums.EventType type = 2;
+    .enums.EventType type = 2;
     string name = 3;
     int64 start_time = 4;
     int64 end_time = 5;
@@ -150,6 +150,6 @@ message EventListEventInfoForPortalResponse {
 }
 
 service Event {
-  rpc ListEventInfo (google.protobuf.Empty) returns (EventListEventInfoResponse);
-  rpc ListEventInfoForPortal (google.protobuf.Empty) returns (EventListEventInfoForPortalResponse);
+  rpc ListEventInfo (.google.protobuf.Empty) returns (EventListEventInfoResponse);
+  rpc ListEventInfoForPortal (.google.protobuf.Empty) returns (EventListEventInfoForPortalResponse);
 }

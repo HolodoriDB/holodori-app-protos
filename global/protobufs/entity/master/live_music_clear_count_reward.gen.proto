@@ -10,5 +10,5 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveMusicClearCountReward {
   int32 clear_count = 1;
-  repeated common.Reward rewards = 1000;
+  repeated .common.Reward rewards = 1000;
 }

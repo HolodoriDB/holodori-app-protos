@@ -11,6 +11,6 @@ option csharp_namespace = "Vision.Common.Proto.Transaction";
 
 message UserPosterBooth {
   string facility_id = 2;
-  repeated enums.PosterBoothResourceType resource_types = 3;
+  repeated .enums.PosterBoothResourceType resource_types = 3;
   repeated string resource_ids = 4;
 }

@@ -10,6 +10,6 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message LiveMusicHighestScoreEvaluationRankReward {
-  enums.LiveEvaluationRankType evaluation_rank_type = 1;
-  repeated common.Reward rewards = 1000;
+  .enums.LiveEvaluationRankType evaluation_rank_type = 1;
+  repeated .common.Reward rewards = 1000;
 }

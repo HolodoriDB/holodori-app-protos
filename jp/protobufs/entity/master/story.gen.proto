@@ -11,5 +11,5 @@ option csharp_namespace = "Vision.Common.Proto.Master";
 message Story {
   string id = 1;
   repeated string asset_ids = 2;
-  repeated common.Reward read_rewards = 1000;
+  repeated .common.Reward read_rewards = 1000;
 }
