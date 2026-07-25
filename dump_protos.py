@@ -89,10 +89,14 @@ _RVA = re.compile(
 _METHOD = re.compile(r"(\.?[A-Za-z_][A-Za-z0-9_]*)\s*\(")
 
 
-def parse_dump_cs(path: Path) -> tuple[list[int], dict[str, int]]:
-    """(sorted method vas, {cctor_name: va}) for *Reflection classes, scope tracked by brace depth"""
+def parse_dump_cs(path: Path) -> tuple[list[int], dict[int, str]]:
+    """(sorted method vas, {va: cctor_name}) for *Reflection classes, scope tracked by brace depth
+
+    keyed by va, not name, since class names collide across namespaces (LiveGenReflection appears
+    for both common/live and rpc/api/live)
+    """
     all_vas: list[int] = []
-    cctors: dict[str, int] = {}
+    cctors: dict[int, str] = {}
     depth = 0
     class_stack: list[tuple[int, str]] = []
     pending_class: str | None = None
@@ -113,7 +117,7 @@ def parse_dump_cs(path: Path) -> tuple[list[int], dict[str, int]]:
                 mname = nm.group(1)
                 all_vas.append(pending_va)
                 if mname == ".cctor" and cur and cur.endswith("Reflection"):
-                    cctors[f"{cur}..cctor"] = pending_va
+                    cctors[pending_va] = f"{cur}..cctor"
             pending_va = None
 
         opens, closes = line.count("{"), line.count("}")
@@ -433,7 +437,7 @@ def dump(so: Path, dump_cs: Path, stringliterals: Path, out: Path) -> int:
         raise RuntimeError("no *Reflection..cctor found in dump.cs")
 
     descriptors: dict[str, tuple] = {}
-    for name, va in cctors.items():
+    for va in cctors:
         i = bisect.bisect_right(method_vas, va)
         end = method_vas[i] if i < len(method_vas) else va + 0x8000
         result = extract_descriptor(bin_, va, end)

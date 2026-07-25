@@ -267,7 +267,9 @@ def process(region: str, package: str, work: Path) -> bool:
     tmp = region_dir / ".temp"
     archive, apk_version, apk_version_code = _download(package, tmp / "download")
     if apk_version_code <= stored_code and protobufs.is_dir():
-        print(f"{region}: best source has {apk_version} ({apk_version_code}), not newer")
+        print(
+            f"{region}: best source has {apk_version} ({apk_version_code}), not newer"
+        )
         return False
     so_bytes, meta_bytes = _extract_so_metadata(archive)
 
