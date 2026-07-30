@@ -744,6 +744,10 @@ message entity {
 			optional string asset_id = 2;
 		}
 
+		message AssetStreamingMute {
+			optional string asset_id = 1;
+		}
+
 		message BenefitLicense {
 			optional string shop_charge_item_subscription_shop_charge_item_id = 1;
 			optional int32 live_reward_quantity_up_permil_up = 5;

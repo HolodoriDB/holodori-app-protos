@@ -56,7 +56,7 @@ message MultiGameResultPrivateRoomInfo {
 
 message MultiGameStampSendInfo {
 	string stamp_id = 1 [(options.master.fk) = "Stamp:id"];
-	int32 send_count = 2 [(buf.validate.field).int32.gt = 0];
+	int32 send_count = 2 [(buf.validate.field).int32.lte = 200, (buf.validate.field).int32.gt = 0];
 }
 
 message MultiGameParkEmotionSendInfo {

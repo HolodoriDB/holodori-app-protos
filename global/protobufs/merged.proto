@@ -778,6 +778,12 @@ message entity {
 			string asset_id = 2;
 		}
 
+		message AssetStreamingMute {
+			option (options.master.table) = true;
+
+			string asset_id = 1 [(options.master.pk) = true];
+		}
+
 		message BenefitLicense {
 			option (options.master.table) = true;
 
@@ -7619,7 +7625,7 @@ message rpc {
 
 			message MultiGameStampSendInfo {
 				string stamp_id = 1 [(options.master.fk) = "Stamp:id"];
-				int32 send_count = 2 [(buf.validate.field).int32.gt = 0];
+				int32 send_count = 2 [(buf.validate.field).int32.lte = 200, (buf.validate.field).int32.gt = 0];
 			}
 
 			message MultiGameParkEmotionSendInfo {
@@ -14167,7 +14173,7 @@ message rpc {
 		}
 
 		message WorkListWorkSlotPowerRequest {
-			repeated WorkSlot slots = 1 [(buf.validate.field).repeated.min_items = 1];
+			repeated WorkSlot slots = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 30];
 		}
 
 		message WorkListWorkSlotPowerResponse {
@@ -14181,7 +14187,7 @@ message rpc {
 		}
 
 		message WorkStartRequest {
-			repeated WorkSlot slots = 1 [(buf.validate.field).repeated.min_items = 1];
+			repeated WorkSlot slots = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 30];
 		}
 
 		message WorkSlot {
