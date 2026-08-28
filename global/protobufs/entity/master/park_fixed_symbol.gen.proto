@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
 
 package entity.master;
@@ -14,5 +13,4 @@ message ParkFixedSymbol {
 	string id = 1 [(options.master.pk) = true];
 	string park_target_mapping_id = 2 [(options.master.fk) = "ParkTargetMapping:id"];
 	string condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
-	.common.Reward reward = 1000 [(options.master.optional) = true];
 }

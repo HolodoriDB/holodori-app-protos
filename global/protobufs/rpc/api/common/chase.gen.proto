@@ -16,6 +16,9 @@ message ChaseResultInfo {
 	int64 self_score = 4;
 	ChaseMischiefTeamUserResult self_mischief_team_user_result = 5;
 	ChasePatrolTeamUserResult self_patrol_team_user_result = 6;
+	int32 remaining_time_seconds = 7;
+	int32 remaining_facility_count = 8;
+	int32 remaining_mischief_team_user_count = 9;
 }
 
 message ChaseUserInfo {
@@ -30,13 +33,18 @@ message ChaseUserInfo {
 message ChaseMischiefTeamUserResult {
 	int32 collect_key_count = 1;
 	int32 use_key_count = 2;
-	int32 released_facility_count = 3;
-	int32 rescue_count = 4;
-	int32 survival_time_seconds = 5;
+	int32 rescue_count = 3;
+	int64 collect_key_score = 4;
+	int64 use_key_score = 5;
+	int64 rescue_score = 6;
+	int64 laser_gimmick_release_score = 7;
 }
 
 message ChasePatrolTeamUserResult {
 	int32 restraint_count = 1;
 	int32 confiscate_key_count = 2;
 	int32 skill_assist_count = 3;
+	int64 restraint_score = 4;
+	int64 confiscate_key_score = 5;
+	int64 skill_assist_score = 6;
 }

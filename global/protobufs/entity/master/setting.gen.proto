@@ -30,8 +30,6 @@ message Setting {
 	int32 loading_display_type_movie_threshold_mega_bytes = 118;
 	int32 loading_display_type_tips_pick_count = 119;
 	int32 loading_display_character_pick_count = 120;
-	string cri_bussend_bgm_bandpass_filter_name = 124;
-	string cri_bussend_bgm_master_out_name = 125;
 	int32 stamp_recent_used_display_count = 126;
 	int32 comeback_user_threshold_inactive_days = 127;
 	int32 comeback_user_active_elapsed_days = 128;
@@ -42,8 +40,6 @@ message Setting {
 	int32 live_deck_evaluation_coefficient_permil_multiply = 1026;
 	int32 live_continue_consumption_stone_quantity = 1030;
 	int32 live_long_note_end_acceptable_note_count_range = 1031;
-	int32 live_reward_up_music_length_bonus_base_playing_seconds = 1032;
-	int32 live_reward_up_music_length_bonus_min_playing_seconds = 1033;
 	int32 live_multi_fever_score_coefficient_permil_multiply = 1034;
 	int32 live_multi_bonus_score_coefficient_permil_multiply = 1035;
 	int32 live_deck_power_coefficient_permil_multiply = 1036;
@@ -102,7 +98,6 @@ message Setting {
 	int32 multi_game_live_cooperation_exit_time_limit_seconds = 1412;
 	int32 multi_game_live_cooperation_member_decidable_min_user_count = 1413;
 	int32 multi_game_live_cooperation_random_match_enable_single_user_start_seconds = 1414;
-	int32 multi_game_live_cooperation_setup_time_limit_seconds = 1418;
 	int32 multi_game_set_private_room_rematch_status_time_limit_seconds = 1419;
 	int32 multi_game_live_cooperation_music_selection_time_limit_seconds = 1424;
 	int32 multi_game_live_cooperation_music_difficulty_selection_time_limit_seconds = 1425;
@@ -112,6 +107,7 @@ message Setting {
 	int32 multi_game_second_priority_region_threshold_milliseconds = 1432;
 	int32 multi_game_random_match_re_enter_max_retry_count = 1433;
 	int32 multi_game_discommunication_time_limit_milliseconds = 1434;
+	int32 multi_game_live_cooperation_asset_download_time_limit_milliseconds = 1435;
 	int32 music_get_highest_score_rank_delay_milliseconds = 1500;
 	int32 music_list_highest_score_rating_rank_limit = 1501;
 	int32 music_highest_score_rating_value_denominator = 1502;
@@ -135,9 +131,9 @@ message Setting {
 	int32 gacha_promotion_pickup_card_image_change_seconds = 1607;
 	int32 gacha_promotion_pickup_card_movie_change_seconds = 1608;
 	int32 ranking_no_reward_threshold_rank_out_of_range = 1609;
-	int32 local_push_notification_cooldown_minutes = 1615;
 	int32 work_slot_reset_interval_hours = 1700;
 	int32 work_slot_power_debounce_milliseconds = 1701;
+	int32 work_local_push_cool_time_minutes = 1702;
 	int32 park_playing_time_minutes_for_time_point_addition = 1900;
 	int32 park_time_point_on_playing_time = 1901;
 	int32 park_enter_call_interval_minute = 1905;
@@ -158,19 +154,17 @@ message Setting {
 	int32 custom_palette_background_scale_permil_max = 2003;
 	int32 custom_palette_part_scale_permil_min = 2004;
 	int32 custom_palette_part_scale_permil_max = 2005;
-	int32 music_creative_chart_edit_history_max_count = 2108;
 	int32 music_creative_chart_max_list_music_count = 2109;
-	int32 music_creative_chart_favorite_max_count = 2110;
 	int32 music_creative_chart_min_difficulty_value = 2111;
 	int32 music_creative_chart_max_difficulty_value = 2112;
 	int32 music_creative_chart_max_tag_count = 2113;
 	int32 music_creative_chart_max_creation_count = 2115;
 	int32 music_creative_chart_title_max_length = 2117;
-	int32 music_creative_chart_max_complain_count_per_time = 2119;
 	int32 music_creative_chart_complain_message_max_length = 2121;
 	int32 music_creative_chart_chart_file_max_size_kb = 2124;
 	int32 music_creative_chart_displayable_max_difficulty_value = 2128;
 	int32 music_creative_chart_auto_save_interval_seconds = 2135;
+	int32 music_creative_chart_live_result_note_count_tolerance = 2138;
 	string preference_voice_volume_preview_character_voice_id = 2200 [(options.master.fk) = "CharacterVoice:id"];
 	int32 marathon_recommend_deck_bonus_permil_multiply = 2402;
 	int32 notification_list_api_call_interval_minute = 2500;

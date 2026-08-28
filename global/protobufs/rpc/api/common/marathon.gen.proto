@@ -33,4 +33,6 @@ message MarathonLiveResult {
 	int64 event_self_live_score = 10;
 	int64 event_multi_live_score = 11;
 	int64 event_self_live_highest_score = 12;
+	int64 past_event_self_live_highest_score = 13;
+	bool is_event_self_live_highest_score_updated = 14;
 }

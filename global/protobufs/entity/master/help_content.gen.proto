@@ -13,6 +13,9 @@ message HelpContent {
 	string help_category_id = 1 [(options.master.fk) = "HelpCategory:id", (options.master.pk) = true];
 	int32 number = 2 [(options.master.pk) = true];
 	string title_lang_id = 3 [(options.master.fk) = "LangHelpContent:id"];
-	string text_lang_id = 4 [(options.master.fk) = "LangHelpContent:id"];
+	string text_lang_id = 4 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
 	string view_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string ios_text_lang_id = 7 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
+	string android_text_lang_id = 8 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
+	string steam_text_lang_id = 9 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
 }

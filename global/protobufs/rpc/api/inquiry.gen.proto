@@ -16,10 +16,10 @@ option csharp_namespace = "Vision.Common.Proto.Api";
 message InquirySendRequest {
 	string public_user_id = 1 [(options.zap.hidden) = true];
 	string mail_address = 2 [(buf.validate.field).string.email = true, (options.zap.hidden) = true];
-	string app_version = 3 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 50];
-	string os_version = 4 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 100];
-	string device_name = 5 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 50];
-	string inquiry_content = 6 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 3000];
+	string app_version = 3 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 100];
+	string os_version = 4 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 200];
+	string device_name = 5 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 100];
+	string inquiry_content = 6 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 6000];
 	string device_log_upload_url = 7 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 1000, (options.zap.hidden) = true];
 	string device_purchase_log_upload_url = 8 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 1000, (options.zap.hidden) = true];
 	int32 frame_rate = 9 [(buf.validate.field).int32.gte = 0];

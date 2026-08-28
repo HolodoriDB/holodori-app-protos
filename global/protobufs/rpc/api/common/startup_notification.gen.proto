@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "enums/startup_notification_image_type.gen.proto";
 import "enums/startup_notification_type.gen.proto";
 import "enums/transition_type.gen.proto";
 
@@ -15,4 +16,7 @@ message StartupNotification {
 	string asset_id = 4;
 	.enums.TransitionType content_startup_notification_transition_type = 100;
 	string content_startup_notification_transition_id = 101;
+	.enums.StartupNotificationImageType content_startup_notification_image_type = 102;
+	string content_startup_notification_sub_asset_id = 103;
+	string content_startup_notification_external_url = 104;
 }

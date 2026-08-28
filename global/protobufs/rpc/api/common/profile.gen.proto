@@ -106,16 +106,16 @@ message CustomPalette {
 message CustomPaletteBackground {
 	.enums.CustomPaletteBackgroundResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 	string resource_id = 2 [(buf.validate.field).string.min_bytes = 1];
-	int32 position_x_permil = 3 [(buf.validate.field).int32.lte = 3000000, (buf.validate.field).int32.gte = -3000000];
-	int32 position_y_permil = 4 [(buf.validate.field).int32.lte = 1800000, (buf.validate.field).int32.gte = -1800000];
+	int32 position_x_permil = 3;
+	int32 position_y_permil = 4;
 	int32 scale_permil = 5;
 }
 
 message CustomPalettePart {
 	.enums.CustomPalettePartResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 	string resource_id = 2 [(buf.validate.field).string.min_bytes = 1];
-	int32 position_x_permil = 3 [(buf.validate.field).int32.lte = 3000000, (buf.validate.field).int32.gte = -3000000];
-	int32 position_y_permil = 4 [(buf.validate.field).int32.lte = 1800000, (buf.validate.field).int32.gte = -1800000];
+	int32 position_x_permil = 3;
+	int32 position_y_permil = 4;
 	int32 scale_permil = 5;
 	int32 rotation_permil = 6 [(buf.validate.field).int32.lt = 360000, (buf.validate.field).int32.gte = 0];
 	int32 layer = 7 [(buf.validate.field).int32.lte = 30, (buf.validate.field).int32.gte = 0];

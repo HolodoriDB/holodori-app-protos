@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+import "dto/multi_game_result/common.gen.proto";
+import "enums/chase_patrol_skill_type.gen.proto";
+import "enums/chase_team_type.gen.proto";
+import "enums/cheat_severity_type.gen.proto";
+import "options/multi_game_result.proto";
+
+package dto.multi_game_result;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/dto/multi_game_result";
+option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
+
+message MiniGameChaseResult {
+	option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_MINI_GAME_CHASE;
+
+	message MischiefTeamResult {
+		message UserResult {
+			int32 collect_key_count = 1 [(buf.validate.field).int32.gte = 0];
+			int32 use_key_count = 2 [(buf.validate.field).int32.gte = 0];
+			repeated MiniGameChaseResult.RescueTargetInfo rescue_target_infos = 3;
+			int32 restrained_count = 4 [(buf.validate.field).int32.gte = 0];
+			int32 laser_gimmick_release_count = 5 [(buf.validate.field).int32.gte = 0];
+			.enums.CheatSeverityType cheat_severity_type = 50;
+			repeated MiniGameChaseResult.AbnormalMoveSpeedInfo abnormal_move_speed_infos = 51;
+			repeated MiniGameChaseResult.ProhibitedAreaStayInfo prohibited_area_stay_infos = 52;
+			MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+		}
+
+		repeated MiniGameChaseResult.MischiefTeamResult.UserResult user_results = 1 [(buf.validate.field).repeated.min_items = 1];
+	}
+
+	message PatrolTeamResult {
+		message UserResult {
+			repeated MiniGameChaseResult.RestraintTargetInfo restraint_target_infos = 1;
+			int32 confiscate_key_count = 2 [(buf.validate.field).int32.gte = 0];
+			int32 skill_assist_count = 3 [(buf.validate.field).int32.gte = 0];
+			.enums.ChasePatrolSkillType skill_type = 4;
+			.enums.CheatSeverityType cheat_severity_type = 50;
+			repeated MiniGameChaseResult.AbnormalMoveSpeedInfo abnormal_move_speed_infos = 51;
+			repeated MiniGameChaseResult.ProhibitedAreaStayInfo prohibited_area_stay_infos = 52;
+			MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+		}
+
+		repeated MiniGameChaseResult.PatrolTeamResult.UserResult user_results = 1 [(buf.validate.field).repeated.min_items = 1];
+	}
+
+	message AbnormalMoveSpeedInfo {
+		float max_move_speed = 1 [(buf.validate.field).float.gte = 0.0];
+		int64 duration_milliseconds = 2 [(buf.validate.field).int64.gte = 0];
+	}
+
+	message ProhibitedAreaStayInfo {
+		float position_x = 1;
+		float position_y = 2;
+		float position_z = 3;
+		int64 duration_milliseconds = 4 [(buf.validate.field).int64.gte = 0];
+	}
+
+	message RescueTargetInfo {
+		string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+		int32 rescue_count = 2 [(buf.validate.field).int32.gt = 0];
+	}
+
+	message RestraintTargetInfo {
+		string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+		int32 restraint_count = 2 [(buf.validate.field).int32.gt = 0];
+	}
+
+	.enums.ChaseTeamType win_team_type = 1;
+	MiniGameChaseResult.MischiefTeamResult mischief_team_result = 2;
+	MiniGameChaseResult.PatrolTeamResult patrol_team_result = 3;
+	int32 remaining_time_seconds = 4;
+	int32 remaining_facility_count = 5;
+	int32 remaining_mischief_team_user_count = 6;
+}
