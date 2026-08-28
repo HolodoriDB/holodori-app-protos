@@ -39,7 +39,6 @@ message AccountMigrationMigrateRequest {
 	string previous_public_user_id = 1;
 	string target_public_user_id = 2 [(buf.validate.field).string.min_bytes = 1];
 	string one_time_token = 3 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
-	.enums.Region region = 4;
 }
 
 message AccountMigrationMigrateResponse {

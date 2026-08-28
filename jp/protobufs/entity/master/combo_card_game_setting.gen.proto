@@ -27,4 +27,5 @@ message ComboCardGameSetting {
 	int32 random_match_start_time_limit_seconds = 25;
 	int32 warning_remaining_card_count = 27;
 	int32 multi_game_setup_time_limit_seconds = 28;
+	bool is_cheat_detect_red_disconnect_user_enabled = 29;
 }

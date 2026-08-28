@@ -11,7 +11,7 @@ message ParkPosition {
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
-	string area_id = 2 [(options.master.fk) = "Area:id", (options.master.optional) = true];
+	string area_id = 2 [(options.master.fk) = "Area:id"];
 	string facility_id = 3 [(options.master.fk) = "Facility:id", (options.master.optional) = true];
 	string position = 4 [(options.master.optional) = true];
 }

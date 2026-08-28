@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ChaseScoreReward {
+	option (options.master.table) = true;
+
+	int64 score_gte = 1 [(options.master.pk) = true];
+	repeated .common.SimplifiedReward rewards = 1000 [(options.master.optional) = true];
+}

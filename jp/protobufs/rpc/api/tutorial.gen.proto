@@ -52,6 +52,7 @@ message TutorialChooseCharacterResponse {
 message TutorialDrawGachaResponse {
 	repeated string card_ids = 1 [(options.master.fk) = "Card:id"];
 	string gacha_animation_grouping_id = 2 [(options.master.fk) = "GachaAnimationGrouping:id"];
+	string gacha_animation_movie_group_id = 3 [(options.master.fk) = "GachaAnimationMovie:group_id"];
 	common.Response common_response = 9999;
 }
 

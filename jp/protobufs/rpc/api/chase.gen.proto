@@ -39,8 +39,9 @@ message ChaseStartRequest {
 	string chase_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
 	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
-	repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
-	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+	bool is_private_room = 4;
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
 }
 
 message ChaseFinishRequest {

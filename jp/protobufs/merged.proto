@@ -574,6 +574,70 @@ message dto {
 			bool is_auto_play_allowed = 4;
 		}
 
+		message MiniGameChaseResult {
+			option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_MINI_GAME_CHASE;
+
+			message MischiefTeamResult {
+				message UserResult {
+					int32 collect_key_count = 1 [(buf.validate.field).int32.gte = 0];
+					int32 use_key_count = 2 [(buf.validate.field).int32.gte = 0];
+					repeated MiniGameChaseResult.RescueTargetInfo rescue_target_infos = 3;
+					int32 restrained_count = 4 [(buf.validate.field).int32.gte = 0];
+					int32 laser_gimmick_release_count = 5 [(buf.validate.field).int32.gte = 0];
+					.enums.CheatSeverityType cheat_severity_type = 50;
+					repeated MiniGameChaseResult.AbnormalMoveSpeedInfo abnormal_move_speed_infos = 51;
+					repeated MiniGameChaseResult.ProhibitedAreaStayInfo prohibited_area_stay_infos = 52;
+					MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+				}
+
+				repeated MiniGameChaseResult.MischiefTeamResult.UserResult user_results = 1 [(buf.validate.field).repeated.min_items = 1];
+			}
+
+			message PatrolTeamResult {
+				message UserResult {
+					repeated MiniGameChaseResult.RestraintTargetInfo restraint_target_infos = 1;
+					int32 confiscate_key_count = 2 [(buf.validate.field).int32.gte = 0];
+					int32 skill_assist_count = 3 [(buf.validate.field).int32.gte = 0];
+					.enums.ChasePatrolSkillType skill_type = 4;
+					.enums.CheatSeverityType cheat_severity_type = 50;
+					repeated MiniGameChaseResult.AbnormalMoveSpeedInfo abnormal_move_speed_infos = 51;
+					repeated MiniGameChaseResult.ProhibitedAreaStayInfo prohibited_area_stay_infos = 52;
+					MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+				}
+
+				repeated MiniGameChaseResult.PatrolTeamResult.UserResult user_results = 1 [(buf.validate.field).repeated.min_items = 1];
+			}
+
+			message AbnormalMoveSpeedInfo {
+				float max_move_speed = 1 [(buf.validate.field).float.gte = 0.0];
+				int64 duration_milliseconds = 2 [(buf.validate.field).int64.gte = 0];
+			}
+
+			message ProhibitedAreaStayInfo {
+				float position_x = 1;
+				float position_y = 2;
+				float position_z = 3;
+				int64 duration_milliseconds = 4 [(buf.validate.field).int64.gte = 0];
+			}
+
+			message RescueTargetInfo {
+				string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+				int32 rescue_count = 2 [(buf.validate.field).int32.gt = 0];
+			}
+
+			message RestraintTargetInfo {
+				string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+				int32 restraint_count = 2 [(buf.validate.field).int32.gt = 0];
+			}
+
+			.enums.ChaseTeamType win_team_type = 1;
+			MiniGameChaseResult.MischiefTeamResult mischief_team_result = 2;
+			MiniGameChaseResult.PatrolTeamResult patrol_team_result = 3;
+			int32 remaining_time_seconds = 4;
+			int32 remaining_facility_count = 5;
+			int32 remaining_mischief_team_user_count = 6;
+		}
+
 		message MiniGameCircuitResult {
 			option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_MINI_GAME_CIRCUIT;
 
@@ -1022,11 +1086,10 @@ message entity {
 			string id = 1 [(options.master.pk) = true];
 			.enums.ChasePlayType play_type = 2;
 			string unlock_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
-			repeated int32 area_key_appear_location_counts = 5 [(options.master.optional) = true];
-			repeated int32 area_laser_gimmick_appear_location_counts = 6 [(options.master.optional) = true];
-			repeated int32 area_laser_gimmick_reappear_location_counts = 7 [(options.master.optional) = true];
-			repeated int32 area_play_start_location_counts = 8 [(options.master.optional) = true];
-			repeated .common.SimplifiedReward rewards = 1000 [(options.master.optional) = true];
+			int32 area_key_appear_location_count = 5 [(options.master.optional) = true];
+			int32 area_laser_gimmick_appear_location_count = 6 [(options.master.optional) = true];
+			int32 area_play_start_location_count = 7 [(options.master.optional) = true];
+			repeated .common.SimplifiedReward win_rewards = 1000 [(options.master.optional) = true];
 		}
 
 		message ChasePatrolSkill {
@@ -1048,6 +1111,13 @@ message entity {
 			float stealth_transparent_rate_from_others = 401 [(options.master.optional) = true];
 		}
 
+		message ChaseScoreReward {
+			option (options.master.table) = true;
+
+			int64 score_gte = 1 [(options.master.pk) = true];
+			repeated .common.SimplifiedReward rewards = 1000 [(options.master.optional) = true];
+		}
+
 		message ChaseSetting {
 			option (options.master.table) = true;
 
@@ -1060,6 +1130,11 @@ message entity {
 			string mini_game_reward_up_stamina_effect_group_id = 100 [(options.master.fk) = "MiniGameRewardUpStaminaEffect:group_id"];
 			int32 mini_game_reward_up_stamina_consumption_unit = 101;
 			int32 limit_time_seconds = 102;
+			repeated int32 remaining_time_announce_seconds_list = 103;
+			int32 random_match_team_select_time_limit_seconds = 104;
+			int32 private_room_team_select_time_limit_seconds = 105;
+			int32 force_exit_abandonment_seconds = 106;
+			int32 force_exit_announce_remaining_seconds = 107;
 			int32 mischief_team_user_count = 200;
 			float mischief_team_move_speed = 201;
 			float mischief_team_view_range = 202;
@@ -1067,7 +1142,7 @@ message entity {
 			float mischief_team_rescue_range = 204;
 			int32 mischief_team_rescue_invincible_milliseconds = 205;
 			int32 mischief_team_max_key_count_per_user = 206;
-			int32 mischief_team_key_move_speed_permil_down = 207;
+			repeated int32 mischief_team_key_move_speed_permil_down_list = 207;
 			float mischief_team_key_use_range = 208;
 			float mischief_team_vignette_size = 209;
 			bool mischief_team_end_game_rescue_element_enabled = 210;
@@ -1085,29 +1160,15 @@ message entity {
 			int32 stage_facility_release_required_key_count = 402;
 			int32 stage_facility_release_milliseconds = 403;
 			int32 stage_facility_release_time_permil_down = 404;
-			int32 stage_key_reappear_milliseconds = 406;
-			int32 stage_laser_gimmick_release_key_count = 407;
-			int32 stage_laser_gimmick_release_milliseconds = 408;
-			bool stage_laser_gimmick_reappear_enabled = 409;
-			int32 stage_laser_gimmick_max_appear_count = 410;
-			float stage_camera_height = 411;
-			float stage_camera_angle = 412;
-			string scene_asset_id = 500;
-			string key_gathering_asset_id = 501;
-			string key_taking_asset_id = 502;
-			string mischief_motion_controller_type000_asset_id = 503;
-			string mischief_motion_controller_type001_asset_id = 504;
-			string mischief_motion_controller_type002_asset_id = 505;
-			string patrol_motion_controller_asset_id = 506;
-			string character_motion_config_asset_id = 507;
-			string laser_gimmick_asset_id = 508;
-			string material_asset_id = 509;
-			string foot_effect_asset_id = 510;
-			string flash_light_asset_id = 511;
-			string team_select_background_asset_id = 512;
-			string mini_map_asset_id = 513;
-			string overall_map_asset_id = 514;
-			string effect_config_asset_id = 515;
+			int32 stage_key_reappear_milliseconds = 405;
+			int32 stage_laser_gimmick_release_key_count = 406;
+			int32 stage_laser_gimmick_release_milliseconds = 407;
+			bool stage_laser_gimmick_reappear_enabled = 408;
+			int32 stage_laser_gimmick_max_appear_count = 409;
+			float stage_camera_height = 410;
+			float stage_camera_angle = 411;
+			int32 stage_key_use_icon_remaining_key_count_threshold = 412;
+			int64 result_voice_threshold_score_win_big = 500;
 		}
 
 		message Cheat {
@@ -1163,6 +1224,7 @@ message entity {
 			int32 random_match_start_time_limit_seconds = 16;
 			int32 multi_game_setup_time_limit_seconds = 18;
 			int32 total_finish_time_limit_seconds = 19;
+			bool is_cheat_detect_red_disconnect_user_enabled = 21;
 		}
 
 		message ComboCardGame {
@@ -1244,6 +1306,7 @@ message entity {
 			int32 random_match_start_time_limit_seconds = 25;
 			int32 warning_remaining_card_count = 27;
 			int32 multi_game_setup_time_limit_seconds = 28;
+			bool is_cheat_detect_red_disconnect_user_enabled = 29;
 		}
 
 		message CommonBgm {
@@ -1638,8 +1701,11 @@ message entity {
 			string help_category_id = 1 [(options.master.fk) = "HelpCategory:id", (options.master.pk) = true];
 			int32 number = 2 [(options.master.pk) = true];
 			string title_lang_id = 3 [(options.master.fk) = "LangHelpContent:id"];
-			string text_lang_id = 4 [(options.master.fk) = "LangHelpContent:id"];
+			string text_lang_id = 4 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
 			string view_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			string ios_text_lang_id = 7 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
+			string android_text_lang_id = 8 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
+			string steam_text_lang_id = 9 [(options.master.fk) = "LangHelpContent:id", (options.master.optional) = true];
 		}
 
 		message HolograStory {
@@ -2674,7 +2740,6 @@ message entity {
 			string id = 1 [(options.master.pk) = true];
 			string park_target_mapping_id = 2 [(options.master.fk) = "ParkTargetMapping:id"];
 			string condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
-			.common.Reward reward = 1000 [(options.master.optional) = true];
 		}
 
 		message ParkGraph {
@@ -2791,7 +2856,7 @@ message entity {
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
-			string area_id = 2 [(options.master.fk) = "Area:id", (options.master.optional) = true];
+			string area_id = 2 [(options.master.fk) = "Area:id"];
 			string facility_id = 3 [(options.master.fk) = "Facility:id", (options.master.optional) = true];
 			string position = 4 [(options.master.optional) = true];
 		}
@@ -3205,8 +3270,6 @@ message entity {
 			int32 loading_display_type_movie_threshold_mega_bytes = 118;
 			int32 loading_display_type_tips_pick_count = 119;
 			int32 loading_display_character_pick_count = 120;
-			string cri_bussend_bgm_bandpass_filter_name = 124;
-			string cri_bussend_bgm_master_out_name = 125;
 			int32 stamp_recent_used_display_count = 126;
 			int32 comeback_user_threshold_inactive_days = 127;
 			int32 comeback_user_active_elapsed_days = 128;
@@ -3217,8 +3280,6 @@ message entity {
 			int32 live_deck_evaluation_coefficient_permil_multiply = 1026;
 			int32 live_continue_consumption_stone_quantity = 1030;
 			int32 live_long_note_end_acceptable_note_count_range = 1031;
-			int32 live_reward_up_music_length_bonus_base_playing_seconds = 1032;
-			int32 live_reward_up_music_length_bonus_min_playing_seconds = 1033;
 			int32 live_multi_fever_score_coefficient_permil_multiply = 1034;
 			int32 live_multi_bonus_score_coefficient_permil_multiply = 1035;
 			int32 live_deck_power_coefficient_permil_multiply = 1036;
@@ -3277,7 +3338,6 @@ message entity {
 			int32 multi_game_live_cooperation_exit_time_limit_seconds = 1412;
 			int32 multi_game_live_cooperation_member_decidable_min_user_count = 1413;
 			int32 multi_game_live_cooperation_random_match_enable_single_user_start_seconds = 1414;
-			int32 multi_game_live_cooperation_setup_time_limit_seconds = 1418;
 			int32 multi_game_set_private_room_rematch_status_time_limit_seconds = 1419;
 			int32 multi_game_live_cooperation_music_selection_time_limit_seconds = 1424;
 			int32 multi_game_live_cooperation_music_difficulty_selection_time_limit_seconds = 1425;
@@ -3287,6 +3347,7 @@ message entity {
 			int32 multi_game_second_priority_region_threshold_milliseconds = 1432;
 			int32 multi_game_random_match_re_enter_max_retry_count = 1433;
 			int32 multi_game_discommunication_time_limit_milliseconds = 1434;
+			int32 multi_game_live_cooperation_asset_download_time_limit_milliseconds = 1435;
 			int32 music_get_highest_score_rank_delay_milliseconds = 1500;
 			int32 music_list_highest_score_rating_rank_limit = 1501;
 			int32 music_highest_score_rating_value_denominator = 1502;
@@ -3310,9 +3371,9 @@ message entity {
 			int32 gacha_promotion_pickup_card_image_change_seconds = 1607;
 			int32 gacha_promotion_pickup_card_movie_change_seconds = 1608;
 			int32 ranking_no_reward_threshold_rank_out_of_range = 1609;
-			int32 local_push_notification_cooldown_minutes = 1615;
 			int32 work_slot_reset_interval_hours = 1700;
 			int32 work_slot_power_debounce_milliseconds = 1701;
+			int32 work_local_push_cool_time_minutes = 1702;
 			int32 park_playing_time_minutes_for_time_point_addition = 1900;
 			int32 park_time_point_on_playing_time = 1901;
 			int32 park_enter_call_interval_minute = 1905;
@@ -3333,19 +3394,17 @@ message entity {
 			int32 custom_palette_background_scale_permil_max = 2003;
 			int32 custom_palette_part_scale_permil_min = 2004;
 			int32 custom_palette_part_scale_permil_max = 2005;
-			int32 music_creative_chart_edit_history_max_count = 2108;
 			int32 music_creative_chart_max_list_music_count = 2109;
-			int32 music_creative_chart_favorite_max_count = 2110;
 			int32 music_creative_chart_min_difficulty_value = 2111;
 			int32 music_creative_chart_max_difficulty_value = 2112;
 			int32 music_creative_chart_max_tag_count = 2113;
 			int32 music_creative_chart_max_creation_count = 2115;
 			int32 music_creative_chart_title_max_length = 2117;
-			int32 music_creative_chart_max_complain_count_per_time = 2119;
 			int32 music_creative_chart_complain_message_max_length = 2121;
 			int32 music_creative_chart_chart_file_max_size_kb = 2124;
 			int32 music_creative_chart_displayable_max_difficulty_value = 2128;
 			int32 music_creative_chart_auto_save_interval_seconds = 2135;
+			int32 music_creative_chart_live_result_note_count_tolerance = 2138;
 			string preference_voice_volume_preview_character_voice_id = 2200 [(options.master.fk) = "CharacterVoice:id"];
 			int32 marathon_recommend_deck_bonus_permil_multiply = 2402;
 			int32 notification_list_api_call_interval_minute = 2500;
@@ -3741,6 +3800,7 @@ message entity {
 			int32 last_reward_received_level = 11;
 			int64 read_time = 12;
 			int64 park_read_time = 13;
+			int32 last_watched_live_deck_number = 14;
 		}
 
 		message UserCharacterSkillTree {
@@ -4424,9 +4484,16 @@ message enums {
 		CHEAT_PARAMETER_TYPE_SINGLE_JUMP_ROPE_SCORE_TAMPERING_ELAPSED_TIME_COEFFICIENT_PERMIL_MULTIPLY = 100000;
 		CHEAT_PARAMETER_TYPE_MULTI_JUMP_ROPE_RANKING_RANK_SCORE_HIGHER_JUMP_COUNT_COEFFICIENT_PERMIL_UP = 101000;
 		CHEAT_PARAMETER_TYPE_CIRCUIT_PER_AREA_PASS_TIME_MILLISECONDS = 102000;
+		CHEAT_PARAMETER_TYPE_CIRCUIT_FORCE_EXIT_COUNT = 102001;
 		CHEAT_PARAMETER_TYPE_COOKING_PUZZLE_PER_RECIPE_COMPLETION_TIME_MILLISECOND = 103000;
 		CHEAT_PARAMETER_TYPE_COOKING_PUZZLE_RESULT_TOTAL_COUNT = 103001;
 		CHEAT_PARAMETER_TYPE_COMBO_CARD_GAME_MISMATCH_COUNT = 104000;
+		CHEAT_PARAMETER_TYPE_COMBO_CARD_GAME_FORCE_EXIT_COUNT = 104001;
+		CHEAT_PARAMETER_TYPE_CHASE_PER_ELAPSED_TIME_ABNORMAL_MOVE_SPEED_DURATION_MILLISECONDS = 105000;
+		CHEAT_PARAMETER_TYPE_CHASE_PER_ELAPSED_TIME_SPEED_UP_SKILL_DURATION_GRACE_MILLISECONDS = 105001;
+		CHEAT_PARAMETER_TYPE_CHASE_PER_ELAPSED_TIME_PROHIBITED_AREA_STAY_DURATION_MILLISECONDS = 105002;
+		CHEAT_PARAMETER_TYPE_CHASE_RESULT_SCORE_TAMPERING_MISCHIEF_TEAM_SELF_SCORE = 105003;
+		CHEAT_PARAMETER_TYPE_CHASE_RESULT_SCORE_TAMPERING_PATROL_TEAM_SELF_SCORE = 105004;
 		CHEAT_PARAMETER_TYPE_PARK_HIGH_LOW_DAILY_REWARD_QUANTITY_COEFFICIENT_PERMIL_MULTIPLY = 200000;
 	}
 
@@ -4452,9 +4519,13 @@ message enums {
 		CHEAT_TYPE_MULTI_JUMP_ROPE_RANKING_RANK_SCORE_HIGHER = 1100;
 		CHEAT_TYPE_MULTI_JUMP_ROPE_RESULT_MISMATCH = 1101;
 		CHEAT_TYPE_CIRCUIT_PER_AREA_PASS = 1200;
+		CHEAT_TYPE_CIRCUIT_FORCE_EXIT = 1201;
 		CHEAT_TYPE_COOKING_PUZZLE_PER_RECIPE_COMPLETION = 1300;
 		CHEAT_TYPE_COOKING_PUZZLE_RESULT = 1301;
 		CHEAT_TYPE_COMBO_CARD_GAME_MISMATCH = 1400;
+		CHEAT_TYPE_COMBO_CARD_GAME_FORCE_EXIT = 1401;
+		CHEAT_TYPE_CHASE_PER_ELAPSED_TIME = 1500;
+		CHEAT_TYPE_CHASE_RESULT_SCORE_TAMPERING = 1501;
 		CHEAT_TYPE_PARK_HIGH_LOW_DAILY_REWARD_QUANTITY = 10000;
 	}
 
@@ -4557,6 +4628,7 @@ message enums {
 		CONDITION_TYPE_CHARACTER_LEVEL = 201;
 		CONDITION_TYPE_CHARACTER_VOICE_GET = 202;
 		CONDITION_TYPE_CHARACTER_GET_COUNT = 203;
+		CONDITION_TYPE_CHARACTER_ALL_PLAYABLE_GET = 204;
 		CONDITION_TYPE_CARD_GET = 300;
 		CONDITION_TYPE_CARD_LEVEL_LIMIT_BREAK_COUNT = 301;
 		CONDITION_TYPE_CARD_UPGRADE_POTENTIAL_COUNT = 302;
@@ -4679,6 +4751,7 @@ message enums {
 		ERROR_CODE_CONDITION_NOT_SATISFIED = 1006;
 		ERROR_CODE_OUT_OF_TERM = 1007;
 		ERROR_CODE_DETECT_CHEAT = 1008;
+		ERROR_CODE_INVALID_TIMESTAMP = 1009;
 		ERROR_CODE_OUTDATED_MASTER_DATA = 2001;
 		ERROR_CODE_LOCK_FAILED = 2002;
 		ERROR_CODE_OUTDATED_APP = 2004;
@@ -4731,6 +4804,7 @@ message enums {
 		ERROR_CODE_MULTI_GAME_PRIVATE_ROOM_MASTER_VERSION_MISMATCH = 3011;
 		ERROR_CODE_MULTI_GAME_PRIVATE_ROOM_ENTER_COUNT_RATE_LIMIT_EXCEEDED = 3012;
 		ERROR_CODE_MULTI_GAME_NON_MATCHED_USER = 3013;
+		ERROR_CODE_MULTI_GAME_RESULT_DATA_NOT_FOUND_RETRY = 3014;
 		ERROR_CODE_PAYMENT_NOT_REGISTERED_BIRTHDAY = 4001;
 		ERROR_CODE_PAYMENT_INVALID_BIRTHDAY = 4101;
 		ERROR_CODE_PAYMENT_EXCEED_MAX_PAID_STONE_QUANTITY = 4102;
@@ -5324,12 +5398,14 @@ message enums {
 		MISSION_TYPE_INCREMENT_PARK_PRINT_BOOTH_COUNT = 55;
 		MISSION_TYPE_INCREMENT_LIVE_PLAY_COUNT = 56;
 		MISSION_TYPE_INCREMENT_CHASE_WIN_COUNT = 57;
-		MISSION_TYPE_INCREMENT_CHASE_PATROL_TEAM_RESTRICT_COUNT = 58;
+		MISSION_TYPE_INCREMENT_CHASE_PATROL_TEAM_RESTRAINT_COUNT = 58;
 		MISSION_TYPE_INCREMENT_CHASE_MISCHIEF_TEAM_KEY_USE_COUNT = 59;
 		MISSION_TYPE_INCREMENT_PARK_FISHING_FISH_CAUGHT_COUNT = 60;
 		MISSION_TYPE_INCREMENT_SKILL_TREE_RELEASE_COUNT = 62;
 		MISSION_TYPE_INCREMENT_PARK_QUEST_CLEAR_COUNT = 63;
 		MISSION_TYPE_INCREMENT_PARK_MISSION_ACTION_COUNT = 64;
+		MISSION_TYPE_INCREMENT_CHASE_MISCHIEF_TEAM_RESTRAINED_COUNT = 65;
+		MISSION_TYPE_INCREMENT_CHASE_MISCHIEF_TEAM_LASER_GIMMICK_RELEASE_COUNT = 66;
 		MISSION_TYPE_ABSOLUTE_LOGIN_COUNT = 1000;
 		MISSION_TYPE_ABSOLUTE_LIVE_HIGHEST_SCORE = 1001;
 		MISSION_TYPE_ABSOLUTE_MISSION_CLEAR_COUNT = 1002;
@@ -6020,6 +6096,12 @@ message enums {
 		SPLASH_BALL_TEAM_COLOR_BLUE = 3;
 	}
 
+	enum StartupNotificationImageType {
+		STARTUP_NOTIFICATION_IMAGE_TYPE_UNKNOWN = 0;
+		STARTUP_NOTIFICATION_IMAGE_TYPE_STARTUP_NOTIFICATION = 1;
+		STARTUP_NOTIFICATION_IMAGE_TYPE_BANNER = 2;
+	}
+
 	enum StartupNotificationType {
 		STARTUP_NOTIFICATION_TYPE_UNKNOWN = 0;
 		STARTUP_NOTIFICATION_TYPE_ADV = 1;
@@ -6225,6 +6307,8 @@ message enums {
 		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_GACHA_RESULT = 281;
 		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_GACHA_RESULT_CONVERT = 282;
 		SYSTEM_SOUND_TYPE_SE_SYSTEM_CHARACTER_COSTUME_CHANGE_MOTION_SMOKE = 283;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_MUSIC_CREATIVE_CHART_PUBLISHED_INFO_DIALOGUE = 284;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_MUSIC_CREATIVE_CHART_INFO_DIALOGUE = 285;
 		SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_ROPE_1 = 10000;
 		SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_ROPE_2 = 10001;
 		SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_JUMP = 10002;
@@ -6334,30 +6418,39 @@ message enums {
 		SYSTEM_SOUND_TYPE_SE_CHASE_WIN_CONDITION = 10500;
 		SYSTEM_SOUND_TYPE_SE_CHASE_KEY_LYING = 10501;
 		SYSTEM_SOUND_TYPE_SE_CHASE_KEY_PICK = 10502;
-		SYSTEM_SOUND_TYPE_SE_CHASE_KEY_USE = 10503;
+		SYSTEM_SOUND_TYPE_SE_CHASE_KEY_USE_1 = 10503;
 		SYSTEM_SOUND_TYPE_SE_CHASE_KEY_CONFISCATED = 10504;
 		SYSTEM_SOUND_TYPE_SE_CHASE_FACILITY_RELEASE = 10505;
 		SYSTEM_SOUND_TYPE_SE_CHASE_OCCUPIED = 10506;
 		SYSTEM_SOUND_TYPE_SE_CHASE_OCCUPIED_SMOKE = 10507;
 		SYSTEM_SOUND_TYPE_SE_CHASE_OCCUPIED_RESTRAINT = 10508;
-		SYSTEM_SOUND_TYPE_SE_CHASE_RESCUE = 10509;
+		SYSTEM_SOUND_TYPE_SE_CHASE_RESCUE_COMPLETE = 10509;
 		SYSTEM_SOUND_TYPE_SE_CHASE_PATROL_SKILL_RADAR_ACTIVATE = 10510;
 		SYSTEM_SOUND_TYPE_SE_CHASE_PATROL_SKILL_RADAR_ACTIVATING = 10511;
 		SYSTEM_SOUND_TYPE_SE_CHASE_PATROL_SKILL_SPEED_UP_ACTIVATE = 10512;
 		SYSTEM_SOUND_TYPE_SE_CHASE_PATROL_SKILL_SPEED_UP_ACTIVATING = 10513;
 		SYSTEM_SOUND_TYPE_SE_CHASE_PATROL_SKILL_STEALTH_ACTIVATE = 10514;
-		SYSTEM_SOUND_TYPE_SE_CHASE_PATROL_SKILL_STEALTH_ACTIVATING = 10515;
-		SYSTEM_SOUND_TYPE_SE_CHASE_LASER_GIMMICK_NEAR = 10516;
+		SYSTEM_SOUND_TYPE_SE_CHASE_LASER_GIMMICK_RELEASE_LOOP = 10516;
 		SYSTEM_SOUND_TYPE_SE_CHASE_LASER_GIMMICK_PUSH = 10517;
-		SYSTEM_SOUND_TYPE_SE_CHASE_LASER_GIMMICK_RELEASE = 10518;
-		SYSTEM_SOUND_TYPE_SE_CHASE_ANNOUNCE = 10519;
+		SYSTEM_SOUND_TYPE_SE_CHASE_LASER_GIMMICK_RELEASE_COMPLETE = 10518;
+		SYSTEM_SOUND_TYPE_SE_CHASE_ANNOUNCE_ALERT = 10519;
 		SYSTEM_SOUND_TYPE_SE_CHASE_FINISH = 10520;
 		SYSTEM_SOUND_TYPE_SE_CHASE_HEART_BEAT = 10521;
 		SYSTEM_SOUND_TYPE_SE_CHASE_TEAM_LOTTERY = 10522;
 		SYSTEM_SOUND_TYPE_SE_CHASE_TEAM_RESULT = 10523;
 		SYSTEM_SOUND_TYPE_SE_CHASE_ANIMATION_START = 10524;
-		SYSTEM_SOUND_TYPE_SE_CHASE_ANIMATION_MESSAGE = 10525;
+		SYSTEM_SOUND_TYPE_SE_CHASE_ANIMATION_MESSAGE_ON = 10525;
 		SYSTEM_SOUND_TYPE_SE_CHASE_COUNTDOWN = 10526;
+		SYSTEM_SOUND_TYPE_SE_CHASE_FACILITY_RELEASE_LOOP = 10527;
+		SYSTEM_SOUND_TYPE_SE_CHASE_FACILITY_RELEASE_START = 10528;
+		SYSTEM_SOUND_TYPE_SE_CHASE_FACILITY_RELEASE_STOP = 10529;
+		SYSTEM_SOUND_TYPE_SE_CHASE_RESCUE_LOOP = 10530;
+		SYSTEM_SOUND_TYPE_SE_CHASE_ANIMATION_MESSAGE_OFF = 10531;
+		SYSTEM_SOUND_TYPE_SE_CHASE_KEY_USE_2 = 10532;
+		SYSTEM_SOUND_TYPE_SE_CHASE_KEY_USE_3 = 10533;
+		SYSTEM_SOUND_TYPE_SE_CHASE_ANNOUNCE_INFO_MISCHIEF_TEAM = 10534;
+		SYSTEM_SOUND_TYPE_SE_CHASE_ANNOUNCE_INFO_PATROL_TEAM = 10535;
+		SYSTEM_SOUND_TYPE_SE_CHASE_FINISH_COUNTDOWN = 10536;
 		SYSTEM_SOUND_TYPE_SE_MINI_GAME_COMMON_COUNTDOWN = 20000;
 	}
 
@@ -6404,7 +6497,6 @@ message enums {
 		SYSTEM_VOICE_TYPE_CV_PARK_PRINT_BOOTH_PRINT = 1303;
 		SYSTEM_VOICE_TYPE_CV_PARK_PRINT_BOOTH_CUSTOM = 1304;
 		SYSTEM_VOICE_TYPE_CV_PARK_PRINT_BOOTH_FINISH = 1305;
-		SYSTEM_VOICE_TYPE_CV_MINI_GAME_RESULT = 1400;
 		SYSTEM_VOICE_TYPE_CV_JUMP_ROPE_START = 1500;
 		SYSTEM_VOICE_TYPE_CV_JUMP_ROPE_JUMP = 1501;
 		SYSTEM_VOICE_TYPE_CV_JUMP_ROPE_AWAY = 1502;
@@ -7383,6 +7475,9 @@ message rpc {
 				int64 self_score = 4;
 				ChaseMischiefTeamUserResult self_mischief_team_user_result = 5;
 				ChasePatrolTeamUserResult self_patrol_team_user_result = 6;
+				int32 remaining_time_seconds = 7;
+				int32 remaining_facility_count = 8;
+				int32 remaining_mischief_team_user_count = 9;
 			}
 
 			message ChaseUserInfo {
@@ -7397,15 +7492,20 @@ message rpc {
 			message ChaseMischiefTeamUserResult {
 				int32 collect_key_count = 1;
 				int32 use_key_count = 2;
-				int32 released_facility_count = 3;
-				int32 rescue_count = 4;
-				int32 survival_time_seconds = 5;
+				int32 rescue_count = 3;
+				int64 collect_key_score = 4;
+				int64 use_key_score = 5;
+				int64 rescue_score = 6;
+				int64 laser_gimmick_release_score = 7;
 			}
 
 			message ChasePatrolTeamUserResult {
 				int32 restraint_count = 1;
 				int32 confiscate_key_count = 2;
 				int32 skill_assist_count = 3;
+				int64 restraint_score = 4;
+				int64 confiscate_key_score = 5;
+				int64 skill_assist_score = 6;
 			}
 
 			message CircuitResultInfo {
@@ -7567,6 +7667,8 @@ message rpc {
 				int64 event_self_live_score = 10;
 				int64 event_multi_live_score = 11;
 				int64 event_self_live_highest_score = 12;
+				int64 past_event_self_live_highest_score = 13;
+				bool is_event_self_live_highest_score_updated = 14;
 			}
 
 			message Mission {
@@ -7589,12 +7691,12 @@ message rpc {
 			}
 
 			message MultiGameMatchRandomInfo {
-				repeated MultiGamePingInfo ping_infos = 2 [(buf.validate.field).repeated.min_items = 1];
+				repeated MultiGamePingInfo ping_infos = 2;
 			}
 
 			message MultiGameCreatePrivateRoomInfo {
 				string private_room_id = 1 [(buf.validate.field).string.min_bytes = 1];
-				repeated MultiGamePingInfo ping_infos = 2 [(buf.validate.field).repeated.min_items = 1];
+				repeated MultiGamePingInfo ping_infos = 2;
 				.enums.MultiGamePrivateRoomCreationType creation_type = 3 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 				string multi_game_result_id = 4;
 			}
@@ -7607,6 +7709,7 @@ message rpc {
 			message MultiGameMatchInfo {
 				string ticket_id = 1;
 				MultiGamePenaltyInfo penalty_info = 2;
+				int32 force_exit_count = 3;
 			}
 
 			message MultiGameResultPrivateRoomInfo {
@@ -7783,16 +7886,16 @@ message rpc {
 			message CustomPaletteBackground {
 				.enums.CustomPaletteBackgroundResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 				string resource_id = 2 [(buf.validate.field).string.min_bytes = 1];
-				int32 position_x_permil = 3 [(buf.validate.field).int32.lte = 3000000, (buf.validate.field).int32.gte = -3000000];
-				int32 position_y_permil = 4 [(buf.validate.field).int32.lte = 1800000, (buf.validate.field).int32.gte = -1800000];
+				int32 position_x_permil = 3;
+				int32 position_y_permil = 4;
 				int32 scale_permil = 5;
 			}
 
 			message CustomPalettePart {
 				.enums.CustomPalettePartResourceType resource_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 				string resource_id = 2 [(buf.validate.field).string.min_bytes = 1];
-				int32 position_x_permil = 3 [(buf.validate.field).int32.lte = 3000000, (buf.validate.field).int32.gte = -3000000];
-				int32 position_y_permil = 4 [(buf.validate.field).int32.lte = 1800000, (buf.validate.field).int32.gte = -1800000];
+				int32 position_x_permil = 3;
+				int32 position_y_permil = 4;
 				int32 scale_permil = 5;
 				int32 rotation_permil = 6 [(buf.validate.field).int32.lt = 360000, (buf.validate.field).int32.gte = 0];
 				int32 layer = 7 [(buf.validate.field).int32.lte = 30, (buf.validate.field).int32.gte = 0];
@@ -7960,6 +8063,9 @@ message rpc {
 				string asset_id = 4;
 				.enums.TransitionType content_startup_notification_transition_type = 100;
 				string content_startup_notification_transition_id = 101;
+				.enums.StartupNotificationImageType content_startup_notification_image_type = 102;
+				string content_startup_notification_sub_asset_id = 103;
+				string content_startup_notification_external_url = 104;
 			}
 
 			message StorageUrlInfo {
@@ -8081,7 +8187,6 @@ message rpc {
 			string previous_public_user_id = 1;
 			string target_public_user_id = 2 [(buf.validate.field).string.min_bytes = 1];
 			string one_time_token = 3 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
-			.enums.Region region = 4;
 		}
 
 		message AccountMigrationMigrateResponse {
@@ -8565,8 +8670,9 @@ message rpc {
 			string chase_id = 1 [(buf.validate.field).string.min_bytes = 1];
 			int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
 			string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
-			repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
-			repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+			bool is_private_room = 4;
+			repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+			repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
 		}
 
 		message ChaseFinishRequest {
@@ -9870,10 +9976,10 @@ message rpc {
 		message InquirySendRequest {
 			string public_user_id = 1 [(options.zap.hidden) = true];
 			string mail_address = 2 [(buf.validate.field).string.email = true, (options.zap.hidden) = true];
-			string app_version = 3 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 50];
-			string os_version = 4 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 100];
-			string device_name = 5 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 50];
-			string inquiry_content = 6 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 3000];
+			string app_version = 3 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 100];
+			string os_version = 4 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 200];
+			string device_name = 5 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 100];
+			string inquiry_content = 6 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 6000];
 			string device_log_upload_url = 7 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 1000, (options.zap.hidden) = true];
 			string device_purchase_log_upload_url = 8 [(buf.validate.field).string.min_bytes = 1, (buf.validate.field).string.max_bytes = 1000, (options.zap.hidden) = true];
 			int32 frame_rate = 9 [(buf.validate.field).int32.gte = 0];
@@ -12877,8 +12983,8 @@ message rpc {
 			int32 step = 3 [(buf.validate.field).int32.gte = 1];
 			string park_target_mapping_id = 4 [(buf.validate.field).string.min_bytes = 1];
 			int32 action_number = 5 [(buf.validate.field).int32.gte = 1];
-			repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
-			repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+			repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+			repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
 		}
 
 		message ParkQuestFinishChaseRequest {
@@ -14057,6 +14163,7 @@ message rpc {
 		message TutorialDrawGachaResponse {
 			repeated string card_ids = 1 [(options.master.fk) = "Card:id"];
 			string gacha_animation_grouping_id = 2 [(options.master.fk) = "GachaAnimationGrouping:id"];
+			string gacha_animation_movie_group_id = 3 [(options.master.fk) = "GachaAnimationMovie:group_id"];
 			common.Response common_response = 9999;
 		}
 
