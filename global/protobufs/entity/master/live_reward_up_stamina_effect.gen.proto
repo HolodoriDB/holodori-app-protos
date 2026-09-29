@@ -12,5 +12,4 @@ message LiveRewardUpStaminaEffect {
 
 	int32 quantity = 1 [(options.master.pk) = true];
 	int32 reward_provide_count = 2 [(options.master.optional) = true];
-	int32 music_length_bonus_permil_up = 3 [(options.master.optional) = true];
 }

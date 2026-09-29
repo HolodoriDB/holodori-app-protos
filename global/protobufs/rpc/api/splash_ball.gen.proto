@@ -39,8 +39,9 @@ message SplashBallStartRequest {
 	string splash_ball_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
 	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
-	repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
-	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+	bool is_private_room = 4;
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
 }
 
 message SplashBallFinishRequest {
@@ -50,12 +51,14 @@ message SplashBallFinishRequest {
 message SplashBallFinishResponse {
 	common.SplashBallResultInfo splash_ball_result_info = 1;
 	int64 past_highest_score = 2;
-	bool is_highest_score_updated = 3;
-	repeated common.RewardResult reward_results = 4;
-	int32 reward_up_stamina_consumption_quantity = 5;
-	common.MultiGameResultPrivateRoomInfo private_room_info = 6;
-	int64 benefit_license_reward_quantity_up_permil_up = 7;
-	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+	int64 past_highest_score_goal = 3;
+	int64 past_highest_score_defense = 4;
+	bool is_highest_score_updated = 5;
+	repeated common.RewardResult reward_results = 6;
+	int32 reward_up_stamina_consumption_quantity = 7;
+	common.MultiGameResultPrivateRoomInfo private_room_info = 8;
+	int64 benefit_license_reward_quantity_up_permil_up = 9;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 10;
 	common.MarathonMiniGameResult marathon_mini_game_result = 100;
 	common.Response common_response = 9999;
 }

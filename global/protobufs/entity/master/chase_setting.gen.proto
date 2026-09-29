@@ -34,7 +34,6 @@ message ChaseSetting {
 	repeated int32 mischief_team_key_move_speed_permil_down_list = 207;
 	float mischief_team_key_use_range = 208;
 	float mischief_team_vignette_size = 209;
-	bool mischief_team_end_game_rescue_element_enabled = 210;
 	int32 patrol_team_user_count = 300;
 	float patrol_team_move_speed = 301;
 	float patrol_team_occupy_range = 302;
@@ -43,19 +42,16 @@ message ChaseSetting {
 	float patrol_team_flashlight_width = 305;
 	float patrol_team_flashlight_length = 306;
 	float patrol_team_vignette_size = 307;
-	bool patrol_team_end_game_rescue_element_enabled = 308;
 	int32 stage_releasable_facility_count = 400;
 	int32 stage_release_required_facility_count = 401;
 	int32 stage_facility_release_required_key_count = 402;
 	int32 stage_facility_release_milliseconds = 403;
 	int32 stage_facility_release_time_permil_down = 404;
 	int32 stage_key_reappear_milliseconds = 405;
-	int32 stage_laser_gimmick_release_key_count = 406;
 	int32 stage_laser_gimmick_release_milliseconds = 407;
-	bool stage_laser_gimmick_reappear_enabled = 408;
 	int32 stage_laser_gimmick_max_appear_count = 409;
-	float stage_camera_height = 410;
-	float stage_camera_angle = 411;
 	int32 stage_key_use_icon_remaining_key_count_threshold = 412;
 	int64 result_voice_threshold_score_win_big = 500;
+	bool is_cheat_detect_dgs_red_judgement_enabled = 600;
+	bool is_cheat_detect_red_disconnect_user_enabled = 601;
 }

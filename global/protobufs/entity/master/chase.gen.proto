@@ -16,7 +16,5 @@ message Chase {
 	.enums.ChasePlayType play_type = 2;
 	string unlock_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	int32 area_key_appear_location_count = 5 [(options.master.optional) = true];
-	int32 area_laser_gimmick_appear_location_count = 6 [(options.master.optional) = true];
-	int32 area_play_start_location_count = 7 [(options.master.optional) = true];
 	repeated .common.SimplifiedReward win_rewards = 1000 [(options.master.optional) = true];
 }

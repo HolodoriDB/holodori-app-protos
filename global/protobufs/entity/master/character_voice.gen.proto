@@ -11,8 +11,8 @@ message CharacterVoice {
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
-	string character_id = 2 [(options.master.fk) = "Character:id"];
-	string character_voice_category_id = 3 [(options.master.fk) = "CharacterVoiceCategory:id", (options.master.optional) = true];
+	string character_id = 2 [(options.master.fk) = "Character:id", (options.master.index) = true];
+	string character_voice_category_id = 3 [(options.master.fk) = "CharacterVoiceCategory:id", (options.master.index) = true, (options.master.optional) = true];
 	string name_lang_id = 4 [(options.master.fk) = "LangCharacterVoice:id"];
 	string text_lang_id = 5 [(options.master.fk) = "LangCharacterVoice:id"];
 	string view_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];

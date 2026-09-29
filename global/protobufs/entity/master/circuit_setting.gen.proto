@@ -21,4 +21,5 @@ message CircuitSetting {
 	int32 multi_game_setup_time_limit_seconds = 18;
 	int32 total_finish_time_limit_seconds = 19;
 	bool is_cheat_detect_red_disconnect_user_enabled = 21;
+	bool is_cheat_detect_dgs_red_judgement_enabled = 22;
 }

@@ -12,17 +12,10 @@ message ChasePatrolSkill {
 	option (options.master.table) = true;
 
 	.enums.ChasePatrolSkillType skill_type = 1 [(options.master.pk) = true];
-	string name_lang_id = 2 [(options.master.fk) = "LangChasePatrolSkill:id"];
-	string description_lang_id = 3 [(options.master.fk) = "LangChasePatrolSkill:id"];
 	int32 effect_duration_millisecond = 100 [(options.master.optional) = true];
-	int32 relief_effect_duration_extension_millisecond = 101 [(options.master.optional) = true];
 	int32 cool_time_millisecond = 102 [(options.master.optional) = true];
-	int32 relief_cool_time_reduction_millisecond = 103 [(options.master.optional) = true];
 	int32 start_cool_time_progress_rate_permil_multiply = 104 [(options.master.optional) = true];
 	float radar_arrow_display_range = 200 [(options.master.optional) = true];
-	float radar_arrow_switch_range = 201 [(options.master.optional) = true];
 	float radar_icon_display_range = 202 [(options.master.optional) = true];
 	int32 speed_up_coefficient_permil_multiply = 300 [(options.master.optional) = true];
-	float stealth_transparent_rate = 400 [(options.master.optional) = true];
-	float stealth_transparent_rate_from_others = 401 [(options.master.optional) = true];
 }

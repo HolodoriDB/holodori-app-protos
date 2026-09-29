@@ -24,4 +24,5 @@ message FacilityAppearance {
 	string label_lang_id = 12 [(options.master.fk) = "LangFacilityAppearance:id", (options.master.optional) = true];
 	bool is_show_in_map = 13 [(options.master.optional) = true];
 	string map_prefab_asset_id = 14 [(options.master.optional) = true];
+	string warp_condition_group_id = 15 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 }

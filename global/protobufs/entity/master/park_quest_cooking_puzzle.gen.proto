@@ -12,5 +12,4 @@ message ParkQuestCookingPuzzle {
 
 	string id = 1 [(options.master.pk) = true];
 	string cooking_puzzle_id = 2 [(options.master.fk) = "CookingPuzzle:id"];
-	int32 clear_score = 3 [(options.master.optional) = true];
 }

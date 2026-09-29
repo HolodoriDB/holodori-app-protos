@@ -14,7 +14,6 @@ message FacilityLevel {
 	string facility_id = 1 [(options.master.fk) = "Facility:id", (options.master.pk) = true];
 	int32 level = 2 [(options.master.pk) = true];
 	string description_lang_id = 3 [(options.master.fk) = "LangFacilityLevel:id"];
-	string view_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	string unlock_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	int32 order = 999;
 	repeated .common.Consumption consumptions = 1000 [(options.master.optional) = true];

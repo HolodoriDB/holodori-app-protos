@@ -16,6 +16,5 @@ message Area {
 	string name_lang_id = 4 [(options.master.fk) = "LangArea:id"];
 	string description_lang_id = 5 [(options.master.fk) = "LangArea:id"];
 	string view_condition_group_id = 6 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
-	string unlock_condition_group_id = 7 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	int32 order = 999;
 }

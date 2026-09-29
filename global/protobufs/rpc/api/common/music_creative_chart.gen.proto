@@ -58,4 +58,5 @@ message MusicCreativeChartSearchParameter {
 	int32 difficulty_value_to = 8 [(buf.validate.field).int32.gte = 0];
 	repeated .enums.MusicCreativeChartType chart_types = 9 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.enum.defined_only = true, (buf.validate.field).repeated.items.enum.not_in = 0];
 	repeated string music_creative_chart_tag_ids = 10 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1, (options.master.fk) = "MusicCreativeChartTag:id"];
+	repeated .enums.MusicCreativeChartType excluded_chart_types = 11 [(buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.enum.defined_only = true, (buf.validate.field).repeated.items.enum.not_in = 0];
 }

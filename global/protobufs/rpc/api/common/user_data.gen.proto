@@ -38,6 +38,7 @@ import "entity/transaction/user_mission_pass_point.gen.proto";
 import "entity/transaction/user_music.gen.proto";
 import "entity/transaction/user_music_character_highest_score.gen.proto";
 import "entity/transaction/user_music_difficulty.gen.proto";
+import "entity/transaction/user_music_startup_notification.gen.proto";
 import "entity/transaction/user_notification.gen.proto";
 import "entity/transaction/user_notification_read_time.gen.proto";
 import "entity/transaction/user_park.gen.proto";
@@ -121,6 +122,7 @@ message UserData {
 	repeated .entity.transaction.UserMusic user_music_list = 430828780;
 	repeated .entity.transaction.UserMusicCharacterHighestScore user_music_character_highest_score_list = 344424884;
 	repeated .entity.transaction.UserMusicDifficulty user_music_difficulty_list = 38601170;
+	.entity.transaction.UserMusicStartupNotification user_music_startup_notification = 185134757;
 	repeated .entity.transaction.UserNotification user_notification_list = 140263418;
 	repeated .entity.transaction.UserNotificationReadTime user_notification_read_time_list = 382549891;
 	.entity.transaction.UserPark user_park = 227737460;

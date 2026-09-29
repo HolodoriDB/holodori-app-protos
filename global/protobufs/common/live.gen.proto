@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 import "buf/validate/validate.proto";
+import "enums/live_multi_music_selection_type.gen.proto";
+import "options/multi_game_result.proto";
 
 package common;
 
@@ -8,6 +10,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/common";
 option csharp_namespace = "Vision.Common.Proto.Common";
 
 message LiveBaseResult {
+	option (options.multi_game_result.message).json_field_name_type = GO_FIELD_NAME;
+
 	int64 score = 1 [(buf.validate.field).int64.gte = 0];
 	int32 miss_count = 2 [(buf.validate.field).int32.gte = 0];
 	int32 bad_count = 3 [(buf.validate.field).int32.gte = 0];
@@ -32,4 +36,5 @@ message LiveBaseResult {
 message LiveMultiUserSelectedMusic {
 	string user_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	string music_id = 2;
+	.enums.LiveMultiMusicSelectionType selection_type = 3 [(buf.validate.field).enum.defined_only = true];
 }

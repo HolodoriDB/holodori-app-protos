@@ -12,7 +12,6 @@ message ParkHighLow {
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
-	string name_lang_id = 2 [(options.master.fk) = "LangParkHighLow:id"];
 	.enums.ResourceType consumption_resource_type = 3;
 	string consumption_resource_id = 4;
 	int64 consumption_quantity = 5;

@@ -16,6 +16,5 @@ message ParkLottery {
 	.enums.ParkLotteryType type = 2;
 	int32 daily_limit_count = 3 [(options.master.optional) = true];
 	string limit_reached_park_talk_group_id = 4 [(options.master.fk) = "ParkTalk:group_id", (options.master.optional) = true];
-	string condition_group_id = 8 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	.common.Consumption consumption = 1000 [(options.master.optional) = true];
 }

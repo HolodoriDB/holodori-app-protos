@@ -43,6 +43,7 @@ message HomeLoginResponse {
 	common.UserContentCdnSignedCookie user_content_cdn_signed_cookie = 4 [(options.zap.hidden) = true];
 	repeated string fcm_topics = 5;
 	HomeLoginResponse.RealtimeNotificationConnectionInfo realtime_notification_connection_info = 6;
+	bool is_combo_card_game_disconnection_info_applied = 7;
 	common.Response common_response = 9999;
 }
 

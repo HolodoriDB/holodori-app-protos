@@ -11,4 +11,5 @@ option csharp_namespace = "Vision.Common.Proto.Transaction";
 message UserParkEmotion {
 	string park_emotion_id = 2 [(options.master.fk) = "ParkEmotion:id", (options.transaction.pk) = true];
 	int64 acquired_time = 3;
+	int64 read_time = 4;
 }

@@ -22,5 +22,6 @@ message AreaGrouping {
 	string color = 9;
 	.enums.ResourceType fixed_display_resource_type = 10 [(options.master.optional) = true];
 	string fixed_display_resource_id = 11 [(options.master.optional) = true];
+	bool is_fixed_display_resource_quantity_digits_full = 12 [(options.master.optional) = true];
 	int32 order = 999;
 }

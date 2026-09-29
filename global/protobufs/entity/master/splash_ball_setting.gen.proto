@@ -23,6 +23,10 @@ message SplashBallSetting {
 	int32 ball_initial_count = 104;
 	int32 npc_ball_hit_success_probability_permil = 105;
 	int64 initial_team_score = 106;
+	int32 private_room_team_select_time_limit_seconds = 107;
+	int32 pinch_effect_remaining_team_score_threshold = 110;
+	int32 force_exit_abandonment_seconds = 111;
+	int32 force_exit_announce_remaining_seconds = 112;
 	float boat_max_speed = 200;
 	int32 boat_max_speed_time_milliseconds = 201;
 	float boat_jump_height = 202;
@@ -39,4 +43,13 @@ message SplashBallSetting {
 	int32 fever_time_probability_permil = 500;
 	int32 fever_time_ball_increment_count = 501;
 	int32 fever_time_draw_interval_time_milliseconds = 502;
+	int32 ball_respawn_bias_activation_remaining_milliseconds = 600;
+	int32 ball_respawn_bias_activation_score_difference_rate_permil = 601;
+	int32 ball_respawn_bias_draw_weight_exponential_permil = 602;
+	int32 ball_respawn_distance_from_goal_permil = 603;
+	int32 defense_point_range_permil = 700;
+	int32 defense_point_cool_time_milliseconds = 701;
+	float defense_hit_force = 702;
+	bool is_cheat_detect_dgs_red_judgement_enabled = 800;
+	bool is_cheat_detect_red_disconnect_user_enabled = 801;
 }

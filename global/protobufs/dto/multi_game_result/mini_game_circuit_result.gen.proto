@@ -18,6 +18,7 @@ message MiniGameCircuitResult {
 		int32 rank = 1 [(buf.validate.field).int32.gte = 1];
 		int64 clear_time_milliseconds = 2 [(buf.validate.field).int64.gte = 0];
 		repeated MiniGameCircuitResult.AreaInfo area_infos = 3;
+		bool is_first_lap_cleared = 4;
 		repeated int64 area_pass_milliseconds = 50;
 		repeated int32 dash_counts = 51;
 		.enums.CheatSeverityType cheat_severity_type = 52;

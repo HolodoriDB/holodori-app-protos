@@ -4,6 +4,7 @@ import "buf/validate/validate.proto";
 import "common/live.gen.proto";
 import "dto/multi_game_result/common.gen.proto";
 import "entity/master/options/master.proto";
+import "enums/live_multi_music_selection_type.gen.proto";
 import "enums/music_difficulty_type.gen.proto";
 import "options/multi_game_result.proto";
 
@@ -28,4 +29,5 @@ message LiveCooperationResult {
 	repeated LiveCooperationResult.UserResult user_results = 2 [(buf.validate.field).repeated.min_items = 1];
 	bool is_fever_succeeded = 3;
 	bool is_auto_play_allowed = 4;
+	.enums.LiveMultiMusicSelectionType picked_music_selection_type = 5 [(buf.validate.field).enum.defined_only = true];
 }

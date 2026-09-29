@@ -15,12 +15,15 @@ message ParkFishingSetting {
 	int32 capture_bar_base_fall_acceleration_permil = 11;
 	int32 capture_bar_base_fall_start_millisecond = 12;
 	int32 capture_bar_base_length = 13;
+	int32 capture_bar_min_length = 14;
 	int32 fish_icon_base_speed_permil = 100;
 	int32 fish_icon_base_speed_change_millisecond = 101;
 	int32 fish_icon_base_direction_change_milliseconds = 102;
 	int32 progress_meter_base_increase_speed = 200;
 	int32 progress_meter_base_decrease_speed = 201;
-	int32 progress_meter_time_penalty_permil = 202;
+	int32 progress_meter_offtrack_decrease_permil = 202;
 	int32 progress_meter_max_length = 203;
+	int32 progress_meter_offtrack_decrease_delay_millisecond = 204;
 	int32 fish_shadow_rare_probability_permil_multiply = 301;
+	string fishing_rod_level_up_facility_id = 500 [(options.master.fk) = "Facility:id"];
 }

@@ -39,7 +39,6 @@ message Setting {
 	int32 live_deck_name_max_length = 1025;
 	int32 live_deck_evaluation_coefficient_permil_multiply = 1026;
 	int32 live_continue_consumption_stone_quantity = 1030;
-	int32 live_long_note_end_acceptable_note_count_range = 1031;
 	int32 live_multi_fever_score_coefficient_permil_multiply = 1034;
 	int32 live_multi_bonus_score_coefficient_permil_multiply = 1035;
 	int32 live_deck_power_coefficient_permil_multiply = 1036;
@@ -108,9 +107,7 @@ message Setting {
 	int32 multi_game_random_match_re_enter_max_retry_count = 1433;
 	int32 multi_game_discommunication_time_limit_milliseconds = 1434;
 	int32 multi_game_live_cooperation_asset_download_time_limit_milliseconds = 1435;
-	int32 music_get_highest_score_rank_delay_milliseconds = 1500;
 	int32 music_list_highest_score_rating_rank_limit = 1501;
-	int32 music_highest_score_rating_value_denominator = 1502;
 	int32 music_highest_score_rating_ranking_aggregation_target_hour = 1504;
 	int32 music_highest_score_rating_ranking_aggregation_target_minute = 1505;
 	int32 music_list_view_play_start_fade_in_milliseconds = 1506;
@@ -118,7 +115,6 @@ message Setting {
 	int32 music_list_view_play_cross_fade_milliseconds = 1508;
 	int32 music_highest_score_rating_aggregation_music_count = 1509;
 	string music_highest_score_rating_ranking_aggregation_target_weekday = 1510;
-	int32 music_resource_cache_expiration_days_after_last_access = 1511;
 	int32 music_search_input_max_length = 1512;
 	string music_default_disk_color = 1515;
 	int32 skill_tree_reset_consumption_gold_quantity = 1600;
@@ -142,10 +138,6 @@ message Setting {
 	int32 park_print_booth_part_scale_permil_max = 1908;
 	int32 park_call_first_play_delay_seconds = 1909;
 	int32 park_call_play_interval_seconds = 1910;
-	int32 park_quest_live_live_deck_evaluation_value_benchmark_s_permil_multiply = 1911;
-	int32 park_quest_live_live_deck_evaluation_value_benchmark_a_permil_multiply = 1912;
-	int32 park_quest_live_live_deck_evaluation_value_benchmark_b_permil_multiply = 1913;
-	int32 park_quest_live_live_deck_evaluation_value_requirement_unit = 1914;
 	string park_high_low_mini_game_reward_up_stamina_conversion_id = 1915 [(options.master.fk) = "MiniGameRewardUpStaminaConversion:id"];
 	int32 park_character_quest_force_activatable_limit_count = 1918;
 	int32 custom_palette_max_count = 2000;
@@ -165,7 +157,8 @@ message Setting {
 	int32 music_creative_chart_displayable_max_difficulty_value = 2128;
 	int32 music_creative_chart_auto_save_interval_seconds = 2135;
 	int32 music_creative_chart_live_result_note_count_tolerance = 2138;
-	string preference_voice_volume_preview_character_voice_id = 2200 [(options.master.fk) = "CharacterVoice:id"];
+	int32 music_creative_chart_estimated_difficulty_value_upper_tolerance = 2139;
+	int32 music_creative_chart_estimated_difficulty_value_lower_tolerance = 2140;
 	int32 marathon_recommend_deck_bonus_permil_multiply = 2402;
 	int32 notification_list_api_call_interval_minute = 2500;
 	bool is_enable_realtime_notification = 2501;
