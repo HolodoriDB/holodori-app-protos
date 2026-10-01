@@ -17,6 +17,7 @@ message SplashBallBall {
 	float size = 4;
 	float mass = 5;
 	int32 bounce_coefficient_permil_multiply = 6;
-	int64 score = 7;
+	int64 goal_point = 7;
 	int32 appearance_probability_ratio = 8;
+	int32 dash_force_coefficient_permil_multiply = 9;
 }

@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+import "dto/multi_game_result/common.gen.proto";
+import "enums/cheat_severity_type.gen.proto";
+import "enums/splash_ball_team_color.gen.proto";
+import "options/multi_game_result.proto";
+
+package dto.multi_game_result;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/dto/multi_game_result";
+option csharp_namespace = "Vision.Common.Proto.Dto.MultiGameResult";
+
+message MiniGameSplashBallResult {
+	option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_MINI_GAME_SPLASH_BALL;
+
+	message TeamResult {
+		message UserResult {
+			message GoalBallInfo {
+				int32 ball_number = 1 [(buf.validate.field).int32.gte = 1];
+				int64 goal_count = 2 [(buf.validate.field).int64.gte = 1];
+			}
+
+			message PositionMismatchInfo {
+				float client_ball_position_x = 1;
+				float client_ball_position_y = 2;
+				float client_ball_position_z = 3;
+				float dgs_ball_position_x = 4;
+				float dgs_ball_position_y = 5;
+				float dgs_ball_position_z = 6;
+				float client_player_position_x = 7;
+				float client_player_position_y = 8;
+				float client_player_position_z = 9;
+				float dgs_player_position_x = 10;
+				float dgs_player_position_y = 11;
+				float dgs_player_position_z = 12;
+			}
+
+			int64 defense_point = 1 [(buf.validate.field).int64.gte = 0];
+			repeated MiniGameSplashBallResult.TeamResult.UserResult.GoalBallInfo goal_ball_infos = 2;
+			.enums.CheatSeverityType cheat_severity_type = 50;
+			int64 position_mismatch_count = 51 [(buf.validate.field).int64.gte = 0];
+			repeated MiniGameSplashBallResult.TeamResult.UserResult.PositionMismatchInfo position_mismatch_infos = 52;
+			int64 abnormal_move_speed_count = 53 [(buf.validate.field).int64.gte = 0];
+			repeated float abnormal_move_speeds = 54 [(buf.validate.field).repeated.items.float.gte = 0.0];
+			MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+		}
+
+		.enums.SplashBallTeamColor team_color = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+		int64 score = 2;
+		repeated MiniGameSplashBallResult.TeamResult.UserResult user_results = 3 [(buf.validate.field).repeated.min_items = 1];
+	}
+
+	repeated MiniGameSplashBallResult.TeamResult team_results = 1;
+}

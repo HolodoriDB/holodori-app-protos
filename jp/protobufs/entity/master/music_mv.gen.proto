@@ -16,7 +16,6 @@ message MusicMv {
 	string mv_asset_id = 4 [(options.master.optional) = true];
 	string slide_mv_asset_id = 5 [(options.master.optional) = true];
 	int32 slide_mv_asset_count = 6 [(options.master.optional) = true];
-	int32 mv_start_millisecond = 7 [(options.master.optional) = true];
 	string name_lang_id = 8 [(options.master.fk) = "LangMusicMv:id", (options.master.optional) = true];
 	string thumbnail_asset_id = 9;
 	string condition_group_id = 10 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];

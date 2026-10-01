@@ -26,15 +26,21 @@ message InquirySendRequest {
 	int32 live_frame_rate = 10 [(buf.validate.field).int32.gte = 0];
 	.enums.GraphicsQualityType basic_graphics_quality_type = 11;
 	string inquiry_category = 12 [(buf.validate.field).string.max_len = 200];
+	string support_id = 13 [(buf.validate.field).string.max_len = 8];
+	bool is_power_save_mode_enabled = 14;
+	bool is_ignoring_battery_optimizations = 15;
+	bool is_device_idle_mode = 16;
 }
 
 message InquiryGetUploadUrlRequest {
 	string public_user_id = 1 [(options.zap.hidden) = true];
+	bool is_inquiry = 2;
 }
 
 message InquiryGetUploadUrlResponse {
 	common.StorageUrlInfo device_log_upload_storage_url_info = 1 [(options.zap.hidden) = true];
 	common.StorageUrlInfo device_purchase_log_upload_storage_url_info = 2 [(options.zap.hidden) = true];
+	string support_id = 3;
 	common.Response common_response = 9999;
 }
 

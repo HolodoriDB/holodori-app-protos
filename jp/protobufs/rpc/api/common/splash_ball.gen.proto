@@ -11,7 +11,6 @@ option csharp_namespace = "Vision.Common.Proto.Api.Common";
 message SplashBallResultInfo {
 	repeated SplashBallTeamInfo team_infos = 1;
 	.enums.SplashBallTeamColor self_team_color = 2;
-	int64 self_score = 3;
 }
 
 message SplashBallTeamInfo {
@@ -24,7 +23,9 @@ message SplashBallTeamInfo {
 message SplashBallUserInfo {
 	BasicUserInfo user_info = 1;
 	bool is_npc = 2;
-	int64 score = 3;
-	bool is_mvp = 4;
-	bool is_disconnected = 5;
+	int64 goal_score = 3;
+	int64 defense_score = 4;
+	int64 total_score = 5;
+	bool is_mvp = 6;
+	bool is_disconnected = 7;
 }

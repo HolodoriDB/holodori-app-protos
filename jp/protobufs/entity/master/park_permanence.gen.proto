@@ -14,4 +14,5 @@ message ParkPermanence {
 	string park_target_mapping_id = 2 [(options.master.fk) = "ParkTargetMapping:id"];
 	string description_lang_id = 3 [(options.master.fk) = "LangParkPermanence:id", (options.master.optional) = true];
 	string condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string override_field_action_icon_asset_id = 5 [(options.master.optional) = true];
 }

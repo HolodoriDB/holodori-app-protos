@@ -15,6 +15,4 @@ message MusicDifficultyChart {
 	.enums.MusicDifficultyType difficulty_type = 2 [(options.master.pk) = true];
 	int32 full_combo_note_count = 3;
 	int32 max_combo_count_reward_threshold = 4;
-	string chart_hash = 5;
-	int32 normal_note_count = 6;
 }

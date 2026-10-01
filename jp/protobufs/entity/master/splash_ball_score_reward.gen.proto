@@ -1,16 +1,16 @@
 syntax = "proto3";
 
+import "common/reward.gen.proto";
 import "entity/master/options/master.proto";
-import "enums/area_sea_type.gen.proto";
 
 package entity.master;
 
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
-message ParkFishingSpot {
+message SplashBallScoreReward {
 	option (options.master.table) = true;
 
-	string id = 1 [(options.master.pk) = true];
-	.enums.AreaSeaType area_sea_type = 2;
+	int64 score_gte = 1 [(options.master.optional) = true, (options.master.pk) = true];
+	repeated .common.SimplifiedReward rewards = 1000 [(options.master.optional) = true];
 }

@@ -8,9 +8,9 @@ package entity.master;
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
-message ParkFishingSpot {
+message ParkFishingFishBook {
 	option (options.master.table) = true;
 
-	string id = 1 [(options.master.pk) = true];
-	.enums.AreaSeaType area_sea_type = 2;
+	.enums.AreaSeaType area_sea_type = 1 [(options.master.pk) = true];
+	string view_condition_group_id = 2 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 }

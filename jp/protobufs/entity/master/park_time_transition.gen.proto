@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkTimeTransition {
+	option (options.master.table) = true;
+
+	string area_grouping_id = 1 [(options.master.fk) = "AreaGrouping:id", (options.master.pk) = true];
+	int32 time_point = 2 [(options.master.optional) = true, (options.master.pk) = true];
+	string name_lang_id = 3 [(options.master.fk) = "LangParkTimeTransition:id"];
+	string asset_id = 4;
+	string main_color = 5;
+	string sub_color = 6;
+	string icon_asset_id = 7;
+	string icon_name_lang_id = 8 [(options.master.fk) = "LangParkTimeTransition:id"];
+	int32 order = 999;
+}

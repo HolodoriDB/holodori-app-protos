@@ -48,6 +48,7 @@ message Character {
 	string color2 = 101 [(options.master.optional) = true];
 	string color3 = 102 [(options.master.optional) = true];
 	string color4 = 103 [(options.master.optional) = true];
+	string color5 = 104 [(options.master.optional) = true];
 	int32 order = 999;
 	repeated string regular_character_grouping_ids = 1000 [(options.master.fk) = "CharacterGrouping:id", (options.master.optional) = true];
 }

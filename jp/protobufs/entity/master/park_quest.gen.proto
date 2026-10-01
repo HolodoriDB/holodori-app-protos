@@ -20,7 +20,6 @@ message ParkQuest {
 	string play_character_id = 7 [(options.master.fk) = "Character:id", (options.master.optional) = true];
 	int32 priority = 8;
 	string area_grouping_id = 9 [(options.master.fk) = "AreaGrouping:id"];
-	int32 ratio = 10;
 	string view_condition_group_id = 11 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	string unlock_condition_group_id = 12 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	string park_target_mapping_id = 13 [(options.master.fk) = "ParkTargetMapping:id", (options.master.optional) = true];

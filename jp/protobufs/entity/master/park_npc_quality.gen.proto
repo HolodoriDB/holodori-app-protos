@@ -16,4 +16,6 @@ message ParkNpcQuality {
 	.enums.GraphicsQualityType graphics_quality_type = 2 [(options.master.pk) = true];
 	int32 max_npc_count = 3 [(options.master.optional) = true];
 	int32 lazy_load_max_npc_count = 4 [(options.master.optional) = true];
+	int32 lazy_load_distance = 5 [(options.master.optional) = true];
+	int32 unload_distance = 6 [(options.master.optional) = true];
 }

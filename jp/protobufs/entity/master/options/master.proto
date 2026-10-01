@@ -15,4 +15,6 @@ extend google.protobuf.FieldOptions {
 	bool pk = 51010;
 	string fk = 51011;
 	bool optional = 51012;
+	bool column = 51013;
+	bool index = 51014;
 }

@@ -12,5 +12,11 @@ extend google.protobuf.MessageOptions {
 }
 
 message MessageOption {
+	enum JsonFieldNameType {
+		UNKNOWN = 0;
+		GO_FIELD_NAME = 1;
+	}
+
 	.enums.MultiGameType multi_game_type = 1;
+	MessageOption.JsonFieldNameType json_field_name_type = 2;
 }

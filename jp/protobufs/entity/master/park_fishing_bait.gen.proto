@@ -16,5 +16,6 @@ message ParkFishingBait {
 	string asset_id = 4 [(options.master.optional) = true];
 	bool is_unlimited = 5 [(options.master.optional) = true];
 	string resource_obtainment_route_group_id = 6 [(options.master.fk) = "ResourceObtainmentRoute:group_id"];
+	string view_condition_group_id = 7 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	int32 order = 999;
 }

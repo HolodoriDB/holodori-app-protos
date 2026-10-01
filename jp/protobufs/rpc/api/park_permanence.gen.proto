@@ -7,7 +7,6 @@ import "entity/master/options/master.proto";
 import "enums/park_fishing_fish_weight_type.gen.proto";
 import "enums/park_high_low_hand_type.gen.proto";
 import "enums/park_lottery_reward_rarity_type.gen.proto";
-import "enums/park_time_period_type.gen.proto";
 import "enums/poster_booth_resource_type.gen.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -117,7 +116,7 @@ message ParkPermanenceFinishHighLowResponse {
 
 message ParkPermanencePrepareFishingRequest {
 	common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-	.enums.ParkTimePeriodType park_time_period_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	int32 time_point = 2 [(buf.validate.field).int32.gte = 0];
 	string park_fishing_bait_id = 3 [(buf.validate.field).string.min_bytes = 1];
 }
 
@@ -137,17 +136,15 @@ message ParkPermanenceMissFishingRequest {
 message ParkPermanenceFinishFishingRequest {
 	string park_fishing_fish_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	bool is_success = 2;
+	int64 clear_time_milliseconds = 3 [(buf.validate.field).int64.lte = 3600000, (buf.validate.field).int64.gte = 0];
 }
 
 message ParkPermanenceFinishFishingResponse {
-	int32 fish_weight = 1;
+	int64 fish_weight = 1;
 	.enums.ParkFishingFishWeightType fish_weight_type = 2;
 	repeated common.RewardResult reward_results = 3;
-	common.Response common_response = 9999;
-}
-
-message ParkPermanenceReceiveFishingTotalCaughtRewardResponse {
-	repeated common.RewardResult reward_results = 1;
+	repeated common.RewardResult first_caught_reward_results = 4;
+	repeated common.RewardResult total_caught_reward_results = 5;
 	common.Response common_response = 9999;
 }
 
@@ -176,6 +173,10 @@ message ParkPermanenceMissFishingResponse {
 }
 
 message ParkPermanenceLevelUpFishingRodResponse {
+	common.Response common_response = 9999;
+}
+
+message ParkPermanenceReadFishingBaitNotificationResponse {
 	common.Response common_response = 9999;
 }
 
@@ -265,14 +266,14 @@ service ParkPermanence {
 		option (options.check_option.check).enabled_request_signature = true;
 	}
 
-	rpc ReceiveFishingTotalCaughtReward (.google.protobuf.Empty) returns (.rpc.api.ParkPermanenceReceiveFishingTotalCaughtRewardResponse) {
-		option (google.api.http).post = "/ParkPermanence/ReceiveFishingTotalCaughtReward";
+	rpc LevelUpFishingRod (.rpc.api.ParkPermanenceLevelUpFishingRodRequest) returns (.rpc.api.ParkPermanenceLevelUpFishingRodResponse) {
+		option (google.api.http).post = "/ParkPermanence/LevelUpFishingRod";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).enabled_response_cache = true;
 	}
 
-	rpc LevelUpFishingRod (.rpc.api.ParkPermanenceLevelUpFishingRodRequest) returns (.rpc.api.ParkPermanenceLevelUpFishingRodResponse) {
-		option (google.api.http).post = "/ParkPermanence/LevelUpFishingRod";
+	rpc ReadFishingBaitNotification (.google.protobuf.Empty) returns (.rpc.api.ParkPermanenceReadFishingBaitNotificationResponse) {
+		option (google.api.http).post = "/ParkPermanence/ReadFishingBaitNotification";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).enabled_response_cache = true;
 	}

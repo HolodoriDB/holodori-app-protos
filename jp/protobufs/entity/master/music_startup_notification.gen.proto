@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+import "enums/music_startup_notification_type.gen.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message MusicStartupNotification {
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.MusicStartupNotificationType type = 2;
+	string music_id = 3 [(options.master.fk) = "Music:id"];
+	repeated int32 music_mv_numbers = 4 [(options.master.optional) = true];
+	int64 start_time = 5;
+	int64 end_time = 6 [(options.master.optional) = true];
+	int32 order = 999;
+}

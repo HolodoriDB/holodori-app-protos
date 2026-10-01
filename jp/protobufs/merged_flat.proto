@@ -521,6 +521,7 @@ message common {
 	message LiveMultiUserSelectedMusic {
 		optional string user_id = 1;
 		optional string music_id = 2;
+		optional .enums.LiveMultiMusicSelectionType selection_type = 3;
 	}
 
 	message MasterTagPack {
@@ -573,6 +574,7 @@ message dto {
 			repeated .dto.multi_game_result.LiveCooperationResult.UserResult user_results = 2;
 			optional bool is_fever_succeeded = 3;
 			optional bool is_auto_play_allowed = 4;
+			optional .enums.LiveMultiMusicSelectionType picked_music_selection_type = 5;
 		}
 
 		message MiniGameChaseResult {
@@ -642,6 +644,7 @@ message dto {
 				optional int32 rank = 1;
 				optional int64 clear_time_milliseconds = 2;
 				repeated .dto.multi_game_result.MiniGameCircuitResult.AreaInfo area_infos = 3;
+				optional bool is_first_lap_cleared = 4;
 				repeated int64 area_pass_milliseconds = 50;
 				repeated int32 dash_counts = 51;
 				optional .enums.CheatSeverityType cheat_severity_type = 52;
@@ -692,6 +695,47 @@ message dto {
 			optional int32 total_jump_count = 1;
 			repeated .dto.multi_game_result.MiniGameJumpRopeResult.UserResult user_results = 2;
 		}
+
+		message MiniGameSplashBallResult {
+			message TeamResult {
+				message UserResult {
+					message GoalBallInfo {
+						optional int32 ball_number = 1;
+						optional int64 goal_count = 2;
+					}
+
+					message PositionMismatchInfo {
+						optional float client_ball_position_x = 1;
+						optional float client_ball_position_y = 2;
+						optional float client_ball_position_z = 3;
+						optional float dgs_ball_position_x = 4;
+						optional float dgs_ball_position_y = 5;
+						optional float dgs_ball_position_z = 6;
+						optional float client_player_position_x = 7;
+						optional float client_player_position_y = 8;
+						optional float client_player_position_z = 9;
+						optional float dgs_player_position_x = 10;
+						optional float dgs_player_position_y = 11;
+						optional float dgs_player_position_z = 12;
+					}
+
+					optional int64 defense_point = 1;
+					repeated .dto.multi_game_result.MiniGameSplashBallResult.TeamResult.UserResult.GoalBallInfo goal_ball_infos = 2;
+					optional .enums.CheatSeverityType cheat_severity_type = 50;
+					optional int64 position_mismatch_count = 51;
+					repeated .dto.multi_game_result.MiniGameSplashBallResult.TeamResult.UserResult.PositionMismatchInfo position_mismatch_infos = 52;
+					optional int64 abnormal_move_speed_count = 53;
+					repeated float abnormal_move_speeds = 54;
+					optional .dto.multi_game_result.MultiGameCommonUserResult common_user_result = 100;
+				}
+
+				optional .enums.SplashBallTeamColor team_color = 1;
+				optional int64 score = 2;
+				repeated .dto.multi_game_result.MiniGameSplashBallResult.TeamResult.UserResult user_results = 3;
+			}
+
+			repeated .dto.multi_game_result.MiniGameSplashBallResult.TeamResult team_results = 1;
+		}
 	}
 }
 
@@ -729,7 +773,6 @@ message entity {
 			optional string name_lang_id = 4;
 			optional string description_lang_id = 5;
 			optional string view_condition_group_id = 6;
-			optional string unlock_condition_group_id = 7;
 			optional int32 order = 999;
 		}
 
@@ -753,6 +796,7 @@ message entity {
 			optional string color = 9;
 			optional .enums.ResourceType fixed_display_resource_type = 10;
 			optional string fixed_display_resource_id = 11;
+			optional bool is_fixed_display_resource_quantity_digits_full = 12;
 			optional int32 order = 999;
 		}
 
@@ -770,7 +814,6 @@ message entity {
 			optional string area_grouping_id = 2;
 			optional bool is_map_visible = 3;
 			optional string facility_id = 4;
-			optional bool is_user_selectable = 5;
 		}
 
 		message AreaStory {
@@ -919,6 +962,7 @@ message entity {
 			optional string color2 = 101;
 			optional string color3 = 102;
 			optional string color4 = 103;
+			optional string color5 = 104;
 			optional int32 order = 999;
 			repeated string regular_character_grouping_ids = 1000;
 		}
@@ -1013,26 +1057,17 @@ message entity {
 			optional .enums.ChasePlayType play_type = 2;
 			optional string unlock_condition_group_id = 3;
 			optional int32 area_key_appear_location_count = 5;
-			optional int32 area_laser_gimmick_appear_location_count = 6;
-			optional int32 area_play_start_location_count = 7;
 			repeated .common.SimplifiedReward win_rewards = 1000;
 		}
 
 		message ChasePatrolSkill {
 			optional .enums.ChasePatrolSkillType skill_type = 1;
-			optional string name_lang_id = 2;
-			optional string description_lang_id = 3;
 			optional int32 effect_duration_millisecond = 100;
-			optional int32 relief_effect_duration_extension_millisecond = 101;
 			optional int32 cool_time_millisecond = 102;
-			optional int32 relief_cool_time_reduction_millisecond = 103;
 			optional int32 start_cool_time_progress_rate_permil_multiply = 104;
 			optional float radar_arrow_display_range = 200;
-			optional float radar_arrow_switch_range = 201;
 			optional float radar_icon_display_range = 202;
 			optional int32 speed_up_coefficient_permil_multiply = 300;
-			optional float stealth_transparent_rate = 400;
-			optional float stealth_transparent_rate_from_others = 401;
 		}
 
 		message ChaseScoreReward {
@@ -1065,7 +1100,6 @@ message entity {
 			repeated int32 mischief_team_key_move_speed_permil_down_list = 207;
 			optional float mischief_team_key_use_range = 208;
 			optional float mischief_team_vignette_size = 209;
-			optional bool mischief_team_end_game_rescue_element_enabled = 210;
 			optional int32 patrol_team_user_count = 300;
 			optional float patrol_team_move_speed = 301;
 			optional float patrol_team_occupy_range = 302;
@@ -1074,21 +1108,18 @@ message entity {
 			optional float patrol_team_flashlight_width = 305;
 			optional float patrol_team_flashlight_length = 306;
 			optional float patrol_team_vignette_size = 307;
-			optional bool patrol_team_end_game_rescue_element_enabled = 308;
 			optional int32 stage_releasable_facility_count = 400;
 			optional int32 stage_release_required_facility_count = 401;
 			optional int32 stage_facility_release_required_key_count = 402;
 			optional int32 stage_facility_release_milliseconds = 403;
 			optional int32 stage_facility_release_time_permil_down = 404;
 			optional int32 stage_key_reappear_milliseconds = 405;
-			optional int32 stage_laser_gimmick_release_key_count = 406;
 			optional int32 stage_laser_gimmick_release_milliseconds = 407;
-			optional bool stage_laser_gimmick_reappear_enabled = 408;
 			optional int32 stage_laser_gimmick_max_appear_count = 409;
-			optional float stage_camera_height = 410;
-			optional float stage_camera_angle = 411;
 			optional int32 stage_key_use_icon_remaining_key_count_threshold = 412;
 			optional int64 result_voice_threshold_score_win_big = 500;
+			optional bool is_cheat_detect_dgs_red_judgement_enabled = 600;
+			optional bool is_cheat_detect_red_disconnect_user_enabled = 601;
 		}
 
 		message Cheat {
@@ -1133,6 +1164,7 @@ message entity {
 			optional int32 multi_game_setup_time_limit_seconds = 18;
 			optional int32 total_finish_time_limit_seconds = 19;
 			optional bool is_cheat_detect_red_disconnect_user_enabled = 21;
+			optional bool is_cheat_detect_dgs_red_judgement_enabled = 22;
 		}
 
 		message ComboCardGame {
@@ -1417,13 +1449,13 @@ message entity {
 			optional string label_lang_id = 12;
 			optional bool is_show_in_map = 13;
 			optional string map_prefab_asset_id = 14;
+			optional string warp_condition_group_id = 15;
 		}
 
 		message FacilityLevel {
 			optional string facility_id = 1;
 			optional int32 level = 2;
 			optional string description_lang_id = 3;
-			optional string view_condition_group_id = 4;
 			optional string unlock_condition_group_id = 5;
 			optional int32 order = 999;
 			repeated .common.Consumption consumptions = 1000;
@@ -1821,7 +1853,6 @@ message entity {
 		message LiveRewardUpStaminaEffect {
 			optional int32 quantity = 1;
 			optional int32 reward_provide_count = 2;
-			optional int32 music_length_bonus_permil_up = 3;
 		}
 
 		message LiveScoreEvaluationRank {
@@ -2182,7 +2213,6 @@ message entity {
 			optional .enums.MusicDifficultyType difficulty_type = 2;
 			optional int32 difficulty_level = 3;
 			optional string chart_asset_id = 4;
-			optional string view_condition_group_id = 5;
 			optional string unlock_condition_group_id = 6;
 		}
 
@@ -2191,8 +2221,6 @@ message entity {
 			optional .enums.MusicDifficultyType difficulty_type = 2;
 			optional int32 full_combo_note_count = 3;
 			optional int32 max_combo_count_reward_threshold = 4;
-			optional string chart_hash = 5;
-			optional int32 normal_note_count = 6;
 		}
 
 		message MusicDifficultyConfiguration {
@@ -2213,7 +2241,6 @@ message entity {
 			optional string mv_asset_id = 4;
 			optional string slide_mv_asset_id = 5;
 			optional int32 slide_mv_asset_count = 6;
-			optional int32 mv_start_millisecond = 7;
 			optional string name_lang_id = 8;
 			optional string thumbnail_asset_id = 9;
 			optional string condition_group_id = 10;
@@ -2228,6 +2255,16 @@ message entity {
 			optional bool is_default_for_incompatible_device = 4;
 			optional bool is_display_filter = 5;
 			optional string filter_name_lang_id = 6;
+			optional int32 order = 999;
+		}
+
+		message MusicStartupNotification {
+			optional string id = 1;
+			optional .enums.MusicStartupNotificationType type = 2;
+			optional string music_id = 3;
+			repeated int32 music_mv_numbers = 4;
+			optional int64 start_time = 5;
+			optional int64 end_time = 6;
 			optional int32 order = 999;
 		}
 
@@ -2246,7 +2283,6 @@ message entity {
 			optional string asset_id = 4;
 			optional string thumbnail_asset_id = 5;
 			optional string park_character_shop_thumbnail_asset_id = 6;
-			repeated string reward_park_emotion_ids = 7;
 			optional int32 order = 999;
 		}
 
@@ -2285,6 +2321,7 @@ message entity {
 			optional string asset_id = 4;
 			optional bool is_unlimited = 5;
 			optional string resource_obtainment_route_group_id = 6;
+			optional string view_condition_group_id = 7;
 			optional int32 order = 999;
 		}
 
@@ -2314,14 +2351,30 @@ message entity {
 			optional int32 progress_meter_speed_decrease = 26;
 			optional float progress_meter_time_penalty = 27;
 			optional int32 stamina = 28;
+			optional string view_condition_group_id = 35;
+			optional int32 capture_bar_direction_change_stay_millisecond = 36;
 			optional int32 order = 999;
 			repeated .enums.ParkTimePeriodType park_time_period_types = 1000;
+		}
+
+		message ParkFishingFishBook {
+			optional .enums.AreaSeaType area_sea_type = 1;
+			optional string view_condition_group_id = 2;
 		}
 
 		message ParkFishingFishIcon {
 			optional string group_id = 1;
 			optional .enums.ParkFishingFishIconType icon_type = 2;
 			optional int32 ratio = 3;
+		}
+
+		message ParkFishingFishLottery {
+			optional string id = 1;
+			optional string park_fishing_spot_id = 2;
+			optional string park_fishing_bait_id = 3;
+			optional string park_fishing_time_period_id = 4;
+			optional string park_fishing_fish_id = 5;
+			optional int32 hit_ratio = 6;
 		}
 
 		message ParkFishingFishSpecies {
@@ -2353,22 +2406,28 @@ message entity {
 			optional int32 capture_bar_base_fall_acceleration_permil = 11;
 			optional int32 capture_bar_base_fall_start_millisecond = 12;
 			optional int32 capture_bar_base_length = 13;
+			optional int32 capture_bar_min_length = 14;
 			optional int32 fish_icon_base_speed_permil = 100;
 			optional int32 fish_icon_base_speed_change_millisecond = 101;
 			optional int32 fish_icon_base_direction_change_milliseconds = 102;
 			optional int32 progress_meter_base_increase_speed = 200;
 			optional int32 progress_meter_base_decrease_speed = 201;
-			optional int32 progress_meter_time_penalty_permil = 202;
+			optional int32 progress_meter_offtrack_decrease_permil = 202;
 			optional int32 progress_meter_max_length = 203;
+			optional int32 progress_meter_offtrack_decrease_delay_millisecond = 204;
 			optional int32 fish_shadow_rare_probability_permil_multiply = 301;
+			optional string fishing_rod_level_up_facility_id = 500;
 		}
 
 		message ParkFishingSpot {
-			optional string group_id = 1;
-			optional .enums.ParkTimePeriodType park_time_period_type = 2;
-			optional string park_fishing_bait_id = 3;
-			optional string park_fishing_fish_id = 4;
-			optional int32 hit_ratio = 5;
+			optional string id = 1;
+			optional .enums.AreaSeaType area_sea_type = 2;
+		}
+
+		message ParkFishingTimePeriod {
+			optional string id = 1;
+			optional int32 time_point_from = 2;
+			optional int32 time_point_to = 3;
 		}
 
 		message ParkFishingTotalCaughtReward {
@@ -2391,7 +2450,6 @@ message entity {
 
 		message ParkHighLow {
 			optional string id = 1;
-			optional string name_lang_id = 2;
 			optional .enums.ResourceType consumption_resource_type = 3;
 			optional string consumption_resource_id = 4;
 			optional int64 consumption_quantity = 5;
@@ -2414,7 +2472,6 @@ message entity {
 			optional .enums.ParkLotteryType type = 2;
 			optional int32 daily_limit_count = 3;
 			optional string limit_reached_park_talk_group_id = 4;
-			optional string condition_group_id = 8;
 			optional .common.Consumption consumption = 1000;
 		}
 
@@ -2443,6 +2500,8 @@ message entity {
 			optional .enums.GraphicsQualityType graphics_quality_type = 2;
 			optional int32 max_npc_count = 3;
 			optional int32 lazy_load_max_npc_count = 4;
+			optional int32 lazy_load_distance = 5;
+			optional int32 unload_distance = 6;
 		}
 
 		message ParkPermanence {
@@ -2450,6 +2509,7 @@ message entity {
 			optional string park_target_mapping_id = 2;
 			optional string description_lang_id = 3;
 			optional string condition_group_id = 4;
+			optional string override_field_action_icon_asset_id = 5;
 		}
 
 		message ParkPermanenceAction {
@@ -2469,7 +2529,8 @@ message entity {
 			optional string park_high_low_id = 14;
 			optional string exchange_booth_group_id = 15;
 			optional string mini_game_reward_up_stamina_conversion_id = 16;
-			optional string park_fishing_spot_group_id = 30;
+			optional string park_fishing_spot_id = 30;
+			optional string area_grouping_id = 31;
 		}
 
 		message ParkPosition {
@@ -2520,7 +2581,6 @@ message entity {
 			optional string play_character_id = 7;
 			optional int32 priority = 8;
 			optional string area_grouping_id = 9;
-			optional int32 ratio = 10;
 			optional string view_condition_group_id = 11;
 			optional string unlock_condition_group_id = 12;
 			optional string park_target_mapping_id = 13;
@@ -2531,7 +2591,6 @@ message entity {
 			optional string id = 1;
 			optional string title_lang_id = 2;
 			optional string view_condition_group_id = 3;
-			optional string unlock_condition_group_id = 4;
 			optional string asset_id = 5;
 			optional int32 order = 999;
 		}
@@ -2556,7 +2615,6 @@ message entity {
 		message ParkQuestCookingPuzzle {
 			optional string id = 1;
 			optional string cooking_puzzle_id = 2;
-			optional int32 clear_score = 3;
 		}
 
 		message ParkQuestJumpRope {
@@ -2624,7 +2682,6 @@ message entity {
 			optional int32 action_number = 5;
 			optional string description_lang_id = 6;
 			optional .enums.ParkActionType type = 7;
-			optional string unlock_condition_group_id = 8;
 			optional string clear_condition_group_id = 9;
 			optional string before_park_talk_group_id = 10;
 			optional string after_park_talk_group_id = 11;
@@ -2706,11 +2763,22 @@ message entity {
 			optional .enums.ParkTimePeriodType type = 4;
 		}
 
+		message ParkTimeTransition {
+			optional string area_grouping_id = 1;
+			optional int32 time_point = 2;
+			optional string name_lang_id = 3;
+			optional string asset_id = 4;
+			optional string main_color = 5;
+			optional string sub_color = 6;
+			optional string icon_asset_id = 7;
+			optional string icon_name_lang_id = 8;
+			optional int32 order = 999;
+		}
+
 		message ParkTreasure {
 			optional string id = 1;
 			optional string park_target_mapping_id = 2;
 			optional string condition_group_id = 6;
-			repeated .common.Reward rewards = 1000;
 		}
 
 		message PlayerLevel {
@@ -2825,7 +2893,6 @@ message entity {
 			optional int32 live_deck_name_max_length = 1025;
 			optional int32 live_deck_evaluation_coefficient_permil_multiply = 1026;
 			optional int32 live_continue_consumption_stone_quantity = 1030;
-			optional int32 live_long_note_end_acceptable_note_count_range = 1031;
 			optional int32 live_multi_fever_score_coefficient_permil_multiply = 1034;
 			optional int32 live_multi_bonus_score_coefficient_permil_multiply = 1035;
 			optional int32 live_deck_power_coefficient_permil_multiply = 1036;
@@ -2894,9 +2961,7 @@ message entity {
 			optional int32 multi_game_random_match_re_enter_max_retry_count = 1433;
 			optional int32 multi_game_discommunication_time_limit_milliseconds = 1434;
 			optional int32 multi_game_live_cooperation_asset_download_time_limit_milliseconds = 1435;
-			optional int32 music_get_highest_score_rank_delay_milliseconds = 1500;
 			optional int32 music_list_highest_score_rating_rank_limit = 1501;
-			optional int32 music_highest_score_rating_value_denominator = 1502;
 			optional int32 music_highest_score_rating_ranking_aggregation_target_hour = 1504;
 			optional int32 music_highest_score_rating_ranking_aggregation_target_minute = 1505;
 			optional int32 music_list_view_play_start_fade_in_milliseconds = 1506;
@@ -2904,7 +2969,6 @@ message entity {
 			optional int32 music_list_view_play_cross_fade_milliseconds = 1508;
 			optional int32 music_highest_score_rating_aggregation_music_count = 1509;
 			optional string music_highest_score_rating_ranking_aggregation_target_weekday = 1510;
-			optional int32 music_resource_cache_expiration_days_after_last_access = 1511;
 			optional int32 music_search_input_max_length = 1512;
 			optional string music_default_disk_color = 1515;
 			optional int32 skill_tree_reset_consumption_gold_quantity = 1600;
@@ -2928,10 +2992,6 @@ message entity {
 			optional int32 park_print_booth_part_scale_permil_max = 1908;
 			optional int32 park_call_first_play_delay_seconds = 1909;
 			optional int32 park_call_play_interval_seconds = 1910;
-			optional int32 park_quest_live_live_deck_evaluation_value_benchmark_s_permil_multiply = 1911;
-			optional int32 park_quest_live_live_deck_evaluation_value_benchmark_a_permil_multiply = 1912;
-			optional int32 park_quest_live_live_deck_evaluation_value_benchmark_b_permil_multiply = 1913;
-			optional int32 park_quest_live_live_deck_evaluation_value_requirement_unit = 1914;
 			optional string park_high_low_mini_game_reward_up_stamina_conversion_id = 1915;
 			optional int32 park_character_quest_force_activatable_limit_count = 1918;
 			optional int32 custom_palette_max_count = 2000;
@@ -2951,7 +3011,8 @@ message entity {
 			optional int32 music_creative_chart_displayable_max_difficulty_value = 2128;
 			optional int32 music_creative_chart_auto_save_interval_seconds = 2135;
 			optional int32 music_creative_chart_live_result_note_count_tolerance = 2138;
-			optional string preference_voice_volume_preview_character_voice_id = 2200;
+			optional int32 music_creative_chart_estimated_difficulty_value_upper_tolerance = 2139;
+			optional int32 music_creative_chart_estimated_difficulty_value_lower_tolerance = 2140;
 			optional int32 marathon_recommend_deck_bonus_permil_multiply = 2402;
 			optional int32 notification_list_api_call_interval_minute = 2500;
 			optional bool is_enable_realtime_notification = 2501;
@@ -3076,10 +3137,12 @@ message entity {
 			optional string id = 1;
 			optional .enums.SplashBallPlayType play_type = 2;
 			optional string unlock_condition_group_id = 3;
+			optional string splash_ball_team_rank_reward_group_id = 4;
 			optional string splash_ball_ball_group_id = 6;
 			optional string start_splash_ball_player_position_group_id = 7;
 			optional string game_start_display_clear_condition_lang_id = 100;
 			optional string game_playing_display_clear_condition_lang_id = 101;
+			repeated .common.SimplifiedReward mvp_rewards = 1000;
 		}
 
 		message SplashBallBall {
@@ -3089,8 +3152,9 @@ message entity {
 			optional float size = 4;
 			optional float mass = 5;
 			optional int32 bounce_coefficient_permil_multiply = 6;
-			optional int64 score = 7;
+			optional int64 goal_point = 7;
 			optional int32 appearance_probability_ratio = 8;
+			optional int32 dash_force_coefficient_permil_multiply = 9;
 		}
 
 		message SplashBallPlayerPosition {
@@ -3100,6 +3164,11 @@ message entity {
 			optional float position_x = 4;
 			optional float position_y = 5;
 			optional float position_z = 6;
+		}
+
+		message SplashBallScoreReward {
+			optional int64 score_gte = 1;
+			repeated .common.SimplifiedReward rewards = 1000;
 		}
 
 		message SplashBallSetting {
@@ -3116,6 +3185,10 @@ message entity {
 			optional int32 ball_initial_count = 104;
 			optional int32 npc_ball_hit_success_probability_permil = 105;
 			optional int64 initial_team_score = 106;
+			optional int32 private_room_team_select_time_limit_seconds = 107;
+			optional int32 pinch_effect_remaining_team_score_threshold = 110;
+			optional int32 force_exit_abandonment_seconds = 111;
+			optional int32 force_exit_announce_remaining_seconds = 112;
 			optional float boat_max_speed = 200;
 			optional int32 boat_max_speed_time_milliseconds = 201;
 			optional float boat_jump_height = 202;
@@ -3132,6 +3205,21 @@ message entity {
 			optional int32 fever_time_probability_permil = 500;
 			optional int32 fever_time_ball_increment_count = 501;
 			optional int32 fever_time_draw_interval_time_milliseconds = 502;
+			optional int32 ball_respawn_bias_activation_remaining_milliseconds = 600;
+			optional int32 ball_respawn_bias_activation_score_difference_rate_permil = 601;
+			optional int32 ball_respawn_bias_draw_weight_exponential_permil = 602;
+			optional int32 ball_respawn_distance_from_goal_permil = 603;
+			optional int32 defense_point_range_permil = 700;
+			optional int32 defense_point_cool_time_milliseconds = 701;
+			optional float defense_hit_force = 702;
+			optional bool is_cheat_detect_dgs_red_judgement_enabled = 800;
+			optional bool is_cheat_detect_red_disconnect_user_enabled = 801;
+		}
+
+		message SplashBallTeamRankReward {
+			optional string group_id = 1;
+			optional int32 end_rank = 2;
+			repeated .common.SimplifiedReward rewards = 1000;
 		}
 
 		message Stamp {
@@ -3532,6 +3620,10 @@ message entity {
 			optional int64 technical_highest_score = 1000;
 		}
 
+		message UserMusicStartupNotification {
+			optional int64 last_read_start_time = 2;
+		}
+
 		message UserNotification {
 			optional .enums.NotificationType notification_type = 2;
 			optional bool is_active = 3;
@@ -3574,6 +3666,7 @@ message entity {
 		message UserParkEmotion {
 			optional string park_emotion_id = 2;
 			optional int64 acquired_time = 3;
+			optional int64 read_time = 4;
 		}
 
 		message UserParkFishing {
@@ -3584,6 +3677,7 @@ message entity {
 		message UserParkFishingBait {
 			optional string park_fishing_bait_id = 2;
 			optional int64 quantity = 3;
+			optional int64 notification_read_time = 4;
 		}
 
 		message UserParkFishingFish {
@@ -3734,7 +3828,9 @@ message entity {
 		message UserSplashBall {
 			optional int64 highest_score = 2;
 			optional int64 highest_score_last_updated_time = 3;
-			optional int64 play_count = 4;
+			optional int64 highest_score_goal = 4;
+			optional int64 highest_score_defense = 5;
+			optional int64 play_count = 6;
 		}
 
 		message UserStamp {
@@ -3792,6 +3888,13 @@ message enums {
 		ActiveUserType_ACTIVE_USER_TYPE_ACTIVE = 3;
 		ActiveUserType_ACTIVE_USER_TYPE_SPEND = 4;
 		ActiveUserType_ACTIVE_USER_TYPE_DELETED = 99;
+	}
+
+	enum AreaSeaType {
+		AreaSeaType_AREA_SEA_TYPE_UNKNOWN = 0;
+		AreaSeaType_AREA_SEA_TYPE_SEA_1 = 1;
+		AreaSeaType_AREA_SEA_TYPE_SEA_2 = 2;
+		AreaSeaType_AREA_SEA_TYPE_SEA_3 = 3;
 	}
 
 	enum AssetDownloadType {
@@ -3944,11 +4047,14 @@ message enums {
 		CheatFeatureType_CHEAT_FEATURE_TYPE_CHASE = 105;
 		CheatFeatureType_CHEAT_FEATURE_TYPE_SPLASH_BALL = 106;
 		CheatFeatureType_CHEAT_FEATURE_TYPE_PARK_HIGH_LOW = 200;
+		CheatFeatureType_CHEAT_FEATURE_TYPE_PARK_FISHING = 201;
 	}
 
 	enum CheatParameterType {
 		CheatParameterType_CHEAT_PARAMETER_TYPE_UNKNOWN = 0;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_FINISH_BEFORE_MUSIC_TIME_LENGTH_GRACE_SECOND = 1;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_FINISH_BEFORE_MUSIC_TIME_LENGTH_DETECT_COUNT = 2;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_FINISH_BEFORE_MUSIC_TIME_LENGTH_DETECT_RETENTION_HOUR = 3;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_SCORE_TAMPERING_SCORE = 10;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_SCORE_TAMPERING_LIVE_DECK_EVALUATION_VALUE_COEFFICIENT_PERMIL_MULTIPLY = 11;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_CONTINUOUS_ALL_PERFECT_COUNT = 20;
@@ -3958,6 +4064,8 @@ message enums {
 		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_CONTINUOUS_PLAY_COUNT = 32;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_LIVE_RANKING_RANK_SCORE_HIGHER_SCORE_COEFFICIENT_PERMIL_UP = 40;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_MULTI_LIVE_FINISH_BEFORE_MUSIC_TIME_LENGTH_GRACE_SECOND = 1000;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_MULTI_LIVE_FINISH_BEFORE_MUSIC_TIME_LENGTH_DETECT_COUNT = 1001;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_MULTI_LIVE_FINISH_BEFORE_MUSIC_TIME_LENGTH_DETECT_RETENTION_HOUR = 1002;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_MULTI_LIVE_SCORE_TAMPERING_SCORE = 1010;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_MULTI_LIVE_SCORE_TAMPERING_LIVE_DECK_EVALUATION_VALUE_COEFFICIENT_PERMIL_MULTIPLY = 1011;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_MULTI_LIVE_CONTINUOUS_ALL_PERFECT_COUNT = 1020;
@@ -3969,17 +4077,20 @@ message enums {
 		CheatParameterType_CHEAT_PARAMETER_TYPE_SINGLE_JUMP_ROPE_SCORE_TAMPERING_ELAPSED_TIME_COEFFICIENT_PERMIL_MULTIPLY = 100000;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_MULTI_JUMP_ROPE_RANKING_RANK_SCORE_HIGHER_JUMP_COUNT_COEFFICIENT_PERMIL_UP = 101000;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_CIRCUIT_PER_AREA_PASS_TIME_MILLISECONDS = 102000;
-		CheatParameterType_CHEAT_PARAMETER_TYPE_CIRCUIT_FORCE_EXIT_COUNT = 102001;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_COOKING_PUZZLE_PER_RECIPE_COMPLETION_TIME_MILLISECOND = 103000;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_COOKING_PUZZLE_RESULT_TOTAL_COUNT = 103001;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_COMBO_CARD_GAME_MISMATCH_COUNT = 104000;
-		CheatParameterType_CHEAT_PARAMETER_TYPE_COMBO_CARD_GAME_FORCE_EXIT_COUNT = 104001;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_CHASE_PER_ELAPSED_TIME_ABNORMAL_MOVE_SPEED_DURATION_MILLISECONDS = 105000;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_CHASE_PER_ELAPSED_TIME_SPEED_UP_SKILL_DURATION_GRACE_MILLISECONDS = 105001;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_CHASE_PER_ELAPSED_TIME_PROHIBITED_AREA_STAY_DURATION_MILLISECONDS = 105002;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_CHASE_RESULT_SCORE_TAMPERING_MISCHIEF_TEAM_SELF_SCORE = 105003;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_CHASE_RESULT_SCORE_TAMPERING_PATROL_TEAM_SELF_SCORE = 105004;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_SPLASH_BALL_MISMATCH_POSITION_DISTANCE_PERMIL = 106000;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_SPLASH_BALL_MISMATCH_POSITION_COUNT = 106001;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_SPLASH_BALL_MISMATCH_MOVE_SPEED_MAX_PERMIL = 106002;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_SPLASH_BALL_MISMATCH_MOVE_SPEED_COUNT = 106003;
 		CheatParameterType_CHEAT_PARAMETER_TYPE_PARK_HIGH_LOW_DAILY_REWARD_QUANTITY_COEFFICIENT_PERMIL_MULTIPLY = 200000;
+		CheatParameterType_CHEAT_PARAMETER_TYPE_PARK_FISHING_CLEAR_TIME_TAMPERING_COEFFICIENT_PERMIL_MULTIPLY = 201000;
 	}
 
 	enum CheatSeverityType {
@@ -4004,14 +4115,14 @@ message enums {
 		CheatType_CHEAT_TYPE_MULTI_JUMP_ROPE_RANKING_RANK_SCORE_HIGHER = 1100;
 		CheatType_CHEAT_TYPE_MULTI_JUMP_ROPE_RESULT_MISMATCH = 1101;
 		CheatType_CHEAT_TYPE_CIRCUIT_PER_AREA_PASS = 1200;
-		CheatType_CHEAT_TYPE_CIRCUIT_FORCE_EXIT = 1201;
 		CheatType_CHEAT_TYPE_COOKING_PUZZLE_PER_RECIPE_COMPLETION = 1300;
 		CheatType_CHEAT_TYPE_COOKING_PUZZLE_RESULT = 1301;
 		CheatType_CHEAT_TYPE_COMBO_CARD_GAME_MISMATCH = 1400;
-		CheatType_CHEAT_TYPE_COMBO_CARD_GAME_FORCE_EXIT = 1401;
 		CheatType_CHEAT_TYPE_CHASE_PER_ELAPSED_TIME = 1500;
 		CheatType_CHEAT_TYPE_CHASE_RESULT_SCORE_TAMPERING = 1501;
+		CheatType_CHEAT_TYPE_SPLASH_BALL_MISMATCH = 1600;
 		CheatType_CHEAT_TYPE_PARK_HIGH_LOW_DAILY_REWARD_QUANTITY = 10000;
+		CheatType_CHEAT_TYPE_PARK_FISHING_CLEAR_TIME_TAMPERING = 10100;
 	}
 
 	enum CircuitAreaType {
@@ -4137,6 +4248,10 @@ message enums {
 		ConditionType_CONDITION_TYPE_PARK_TIME_PERIOD = 904;
 		ConditionType_CONDITION_TYPE_PARK_TREASURE = 905;
 		ConditionType_CONDITION_TYPE_PARK_AREA_SELECT = 906;
+		ConditionType_CONDITION_TYPE_PARK_FISHING_ROD_LEVEL = 907;
+		ConditionType_CONDITION_TYPE_PARK_FISHING_BAIT_COUNT = 908;
+		ConditionType_CONDITION_TYPE_PARK_TIME_POINT = 909;
+		ConditionType_CONDITION_TYPE_PARK_FISHING_BAIT_GET = 910;
 		ConditionType_CONDITION_TYPE_FACILITY_LEVEL = 1000;
 		ConditionType_CONDITION_TYPE_CHARACTER_SKILL_TREE_NODE_RELEASE_COUNT = 1100;
 		ConditionType_CONDITION_TYPE_MISSION_PROGRESS = 1200;
@@ -4299,6 +4414,7 @@ message enums {
 		ErrorCode_ERROR_CODE_PAYMENT_EXCEED_MAX_MONTHLY_PAID_QUANTITY = 4104;
 		ErrorCode_ERROR_CODE_PAYMENT_FULFILL_ORDER_BLOCKED_DONT_RECOVERY_FOREVER = 4201;
 		ErrorCode_ERROR_CODE_PAYMENT_FULFILL_ORDER_BLOCKED_CHALLENGE_RECOVERY_NEXT_TIME = 4202;
+		ErrorCode_ERROR_CODE_PAYMENT_FULFILL_ORDER_BLOCKED_ALREADY_USED_RECEIPT_BY_OTHER_USER = 4203;
 		ErrorCode_ERROR_CODE_FRIEND_SEARCH_USER_NOT_FOUND = 5001;
 		ErrorCode_ERROR_CODE_FRIEND_SEARCH_USER_MYSELF = 5002;
 		ErrorCode_ERROR_CODE_FRIEND_OFFER_COUNT_LIMIT_EXCEEDED = 5003;
@@ -4458,6 +4574,12 @@ message enums {
 		GameScreenType_GAME_SCREEN_TYPE_PARK_POSTER_BOOTH = 911;
 		GameScreenType_GAME_SCREEN_TYPE_PARK_CHARACTER_QUEST_INVITE = 912;
 		GameScreenType_GAME_SCREEN_TYPE_PARK_MINI_GAME_LIST = 913;
+		GameScreenType_GAME_SCREEN_TYPE_PARK_FISHING_FISH_BOOK = 914;
+		GameScreenType_GAME_SCREEN_TYPE_PARK_FISHING_EXCHANGE_BOOTH = 915;
+		GameScreenType_GAME_SCREEN_TYPE_PARK_FISHING_ROD_LEVEL_UP = 916;
+		GameScreenType_GAME_SCREEN_TYPE_PARK_BOAT_LEVEL_UP = 917;
+		GameScreenType_GAME_SCREEN_TYPE_PARK_TIME_TRANSITION = 918;
+		GameScreenType_GAME_SCREEN_TYPE_PARK_FISHING = 919;
 		GameScreenType_GAME_SCREEN_TYPE_MULTI_MINI_GAME_TOP = 1000;
 		GameScreenType_GAME_SCREEN_TYPE_MULTI_MINI_GAME_SELECT = 1001;
 		GameScreenType_GAME_SCREEN_TYPE_MULTI_MINI_GAME_LOBBY = 1002;
@@ -4688,6 +4810,13 @@ message enums {
 		LiveEvaluationRankType_LIVE_EVALUATION_RANK_TYPE_S = 5;
 	}
 
+	enum LiveMultiMusicSelectionType {
+		LiveMultiMusicSelectionType_LIVE_MULTI_MUSIC_SELECTION_TYPE_UNKNOWN = 0;
+		LiveMultiMusicSelectionType_LIVE_MULTI_MUSIC_SELECTION_TYPE_SPECIFIED = 1;
+		LiveMultiMusicSelectionType_LIVE_MULTI_MUSIC_SELECTION_TYPE_AUTO = 2;
+		LiveMultiMusicSelectionType_LIVE_MULTI_MUSIC_SELECTION_TYPE_PICKUP = 3;
+	}
+
 	enum LiveNoteJudgementType {
 		LiveNoteJudgementType_LIVE_NOTE_JUDGEMENT_TYPE_UNKNOWN = 0;
 		LiveNoteJudgementType_LIVE_NOTE_JUDGEMENT_TYPE_MISS = 1;
@@ -4893,6 +5022,12 @@ message enums {
 		MissionType_MISSION_TYPE_INCREMENT_PARK_MISSION_ACTION_COUNT = 64;
 		MissionType_MISSION_TYPE_INCREMENT_CHASE_MISCHIEF_TEAM_RESTRAINED_COUNT = 65;
 		MissionType_MISSION_TYPE_INCREMENT_CHASE_MISCHIEF_TEAM_LASER_GIMMICK_RELEASE_COUNT = 66;
+		MissionType_MISSION_TYPE_INCREMENT_SPLASH_BALL_WIN_COUNT = 67;
+		MissionType_MISSION_TYPE_INCREMENT_SPLASH_BALL_GOAL_SCORE = 68;
+		MissionType_MISSION_TYPE_INCREMENT_SPLASH_BALL_DEFENSE_SCORE = 69;
+		MissionType_MISSION_TYPE_INCREMENT_SPLASH_BALL_COLD_LOSE_COUNT = 70;
+		MissionType_MISSION_TYPE_INCREMENT_SPLASH_BALL_GOAL_COUNT = 71;
+		MissionType_MISSION_TYPE_INCREMENT_PARK_FISHING_FISH_FAILED_COUNT = 72;
 		MissionType_MISSION_TYPE_ABSOLUTE_LOGIN_COUNT = 1000;
 		MissionType_MISSION_TYPE_ABSOLUTE_LIVE_HIGHEST_SCORE = 1001;
 		MissionType_MISSION_TYPE_ABSOLUTE_MISSION_CLEAR_COUNT = 1002;
@@ -5139,7 +5274,8 @@ message enums {
 		ParkActionType_PARK_ACTION_TYPE_AREA_SELECT = 23;
 		ParkActionType_PARK_ACTION_TYPE_FERRIS_WHEEL = 24;
 		ParkActionType_PARK_ACTION_TYPE_EVENT = 25;
-		ParkActionType_PARK_ACTION_TYPE_PARK_FISHING_FISH_LIST = 26;
+		ParkActionType_PARK_ACTION_TYPE_PARK_FISHING_FISH_BOOK = 26;
+		ParkActionType_PARK_ACTION_TYPE_PARK_TIME_TRANSITION = 27;
 		ParkActionType_PARK_ACTION_TYPE_JUMP_ROPE = 1000;
 		ParkActionType_PARK_ACTION_TYPE_CIRCUIT = 1001;
 		ParkActionType_PARK_ACTION_TYPE_COOKING_PUZZLE = 1002;
@@ -5265,6 +5401,27 @@ message enums {
 		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_BLACKJACK_WIN = 20;
 		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_BAR_TABLE_DRINK = 21;
 		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_SLOT_GAME_JACKPOT = 22;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_RESORTSHOP_WATER = 23;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_STATION_SHIP_CANNON = 24;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_WATERGUN_RAINBOW = 25;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_FISHBLUE_VACANCES = 26;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_SNOWDOME_CARESS = 27;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_BEACON_LIGHTHOUSE = 28;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_GLAMPING_BED = 29;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_BOATSHOP_EXPERIMENT_FAILURE = 30;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_COTTAGE_CLIFF_YOGA = 31;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_OBSERVATORY_DECK_CHAIR = 32;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_BEACH_SOS = 33;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_CLIFF_TOP = 34;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_CAVE_BENCH = 35;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_CAVE_EXIT_POSE = 36;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_CAVE_WATERFALL = 37;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_BEACH_CRAB = 38;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_LIVE_STAGE_BACKSTAGE = 39;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_ARCH_ISLAND_TOP = 40;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_RESIDENTIAL_KNOCK = 41;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_WATERFALL_POINT = 42;
+		ParkMissionActionType_PARK_MISSION_ACTION_TYPE_BEACH_SAND_MUSCLE = 43;
 	}
 
 	enum ParkNoticeType {
@@ -5279,6 +5436,7 @@ message enums {
 		ParkNoticeType_PARK_NOTICE_TYPE_PARK_LOTTERY_SCRATCH_AVAILABLE = 8;
 		ParkNoticeType_PARK_NOTICE_TYPE_PARK_HIGH_LOW_AVAILABLE = 9;
 		ParkNoticeType_PARK_NOTICE_TYPE_EVENT_END_TIME_SOON = 10;
+		ParkNoticeType_PARK_NOTICE_TYPE_PARK_FISHING_ROD_LEVEL_UPABLE = 11;
 	}
 
 	enum ParkPrintBoothType {
@@ -5796,6 +5954,16 @@ message enums {
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_CHARACTER_COSTUME_CHANGE_MOTION_SMOKE = 283;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_MUSIC_CREATIVE_CHART_PUBLISHED_INFO_DIALOGUE = 284;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_MUSIC_CREATIVE_CHART_INFO_DIALOGUE = 285;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_PARK_FISHING_LEVEL_UP = 286;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_UI_PARK_FISHING_LEVEL_UP = 287;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_BOOK_IN = 288;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_BOOK_OUT = 289;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_BOOK_EXP_GAUGE_CHECK = 290;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_BOOK_EXP_GAUGE_PROGRESS = 291;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_BOOK_REGISTER = 292;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_REWARD_COIN = 293;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_PARK_TIME_PERIOD_CHANGE_TRANSITION_SELECT = 294;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_PARK_TIME_PERIOD_CHANGE_TRANSITION_JINGLE = 295;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_ROPE_1 = 10000;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_ROPE_2 = 10001;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_JUMP = 10002;
@@ -5938,6 +6106,59 @@ message enums {
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_CHASE_ANNOUNCE_INFO_MISCHIEF_TEAM = 10534;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_CHASE_ANNOUNCE_INFO_PATROL_TEAM = 10535;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_CHASE_FINISH_COUNTDOWN = 10536;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FISH_IN_METER_GAUGE_LOOP = 10600;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_REEL_PUSH_LOOP = 10601;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_REEL_RELEASE_LOOP = 10602;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_SUCCESS = 10603;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FAILURE = 10604;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_ROD_PULL = 10605;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FISH_PECK = 10606;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FISH_CATCH = 10607;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FLOAT_WATER_LANDING = 10608;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_CASTING_1 = 10609;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_CASTING_2 = 10610;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_BEFORE_CAUGHT_ZOOM = 10611;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FISH_SHADOW_RARE = 10612;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_GAUGE_LOOP = 10613;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_GAUGE_IN = 10614;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_GAUGE_OUT = 10615;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_RESULT_NORMAL = 10616;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_RESULT_RARE = 10617;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_RESULT_OUT = 10618;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FISH_HIT_IN = 10619;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_UI_ANIMATION_IN = 10620;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_PARK_FISHING_UI_ANIMATION_OUT = 10621;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_BURNER = 10700;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_BUBBLE = 10701;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_SPLASH = 10702;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_LANDING_WATER = 10703;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_JUMP = 10704;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_ACCELERATE = 10705;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_ACCELERATE_WHOOSH = 10706;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_ACCELERATE_BUTTON = 10707;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_SELF_NORMAL = 10708;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_SELF_LIGHT = 10709;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_SELF_BLACK = 10710;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_SELF_GOLD = 10711;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_SELF_OWNGOAL = 10712;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_ANNOUNCE_NORMAL = 10713;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_ANNOUNCE_LIGHT = 10714;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_ANNOUNCE_BLACK = 10715;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_ANNOUNCE_GOLD = 10716;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOAL_ANNOUNCE_SAVE = 10717;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_TEAM_DECISION_SELF = 10718;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_TEAM_DECISION_ALL = 10719;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_START_COUNTDOWN = 10720;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_START = 10721;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_START_WIN_CONDITION = 10722;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_COUNTDOWN = 10723;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_REMAINING_TIME_ANNOUNCE = 10724;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_FINISH = 10725;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_FEVER_TIME_NOTICE = 10726;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOLD_BALL_SPAWN_NOTICE = 10727;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOLD_BALL_OMEN = 10728;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BALL_SPAWN = 10729;
+		SystemSoundType_SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_MAP_SCALE_DOWN = 10730;
 		SystemSoundType_SYSTEM_SOUND_TYPE_SE_MINI_GAME_COMMON_COUNTDOWN = 20000;
 	}
 
@@ -5975,6 +6196,7 @@ message enums {
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_MOVE = 900;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_HOUSE_PRESENT = 901;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_JUMP = 902;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_BOAT_RIDE = 903;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_EVENT_LIST = 1000;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_MULTI_IN = 1100;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_COMMON_FREE = 1200;
@@ -6034,6 +6256,20 @@ message enums {
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_LIVE_RESULT_ALL_PERFECT = 2206;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_LIVE_RESULT_FULL_COMBO = 2207;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_LIVE_RESULT_CLEAR = 2208;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_START = 2300;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_GOAL_GLAD_SELF = 2301;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_GOAL_GLAD_OTHER = 2302;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_JUMP_1 = 2303;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_JUMP_2 = 2304;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_JUMP_3 = 2305;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_DASH_1 = 2306;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_DASH_2 = 2307;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_SPLASH_BALL_FINISH = 2308;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_FISHING_START = 2400;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_FISHING_HIT = 2401;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_FISHING_CATCH_NORMAL = 2402;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_FISHING_CATCH_RARE = 2403;
+		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_PARK_FISHING_AWAY = 2404;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_MINI_GAME_START = 12000;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_MINI_GAME_FINISH = 12001;
 		SystemVoiceType_SYSTEM_VOICE_TYPE_CV_MINI_GAME_RESULT_NORMAL = 12002;
@@ -6066,6 +6302,15 @@ message enums {
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_LANE_JUDGEMENT_LINE_POSITION = 106;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_LANE_TOP_CUT = 107;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_LANE_BOTTOM_CUT = 108;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_JUDGEMENT_DISPLAY_SETTING = 109;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_JUDGEMENT_POSITION = 110;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_JUDGEMENT_TIMING_POSITION = 111;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_JUDGEMENT_DISPLAY_TYPE = 112;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_LOW_LIFE_WARNING_EFFECT = 113;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_NOTE_WIDTH = 114;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_NOTE_HEIGHT = 115;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_LANE_WIDTH = 116;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_LANE_DIVISION_COUNT = 117;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SKIN_NOTE = 200;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SKIN_HEADER = 201;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SKIN_LANE = 202;
@@ -6073,6 +6318,7 @@ message enums {
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SKIN_JUDGEMENT_TEXT = 204;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SKIN_TAP_EFFECT = 205;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SKIN_NORMAL_BACKGROUND_CUSTOMIZE = 206;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SKIN_PENLIGHT = 207;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SOUND_TAP = 300;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SOUND_MUSIC = 301;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_SOUND_EFFECT = 302;
@@ -6101,6 +6347,7 @@ message enums {
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_DETAIL_SLIDESHOW_SWITCH_TIME = 419;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_DETAIL_GRAPHICS_QUALITY = 420;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_DETAIL_TAP_EFFECT = 421;
+		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_DETAIL_SPECIAL_SKILL_TIMING_DISPLAY = 422;
 		TipsHintType_TIPS_HINT_TYPE_MINI_GAME_REWARD_UP_STAMINA = 500;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_KEY_CONFIG_LANE = 600;
 		TipsHintType_TIPS_HINT_TYPE_LIVE_OPTION_KEY_CONFIG_OTHER = 699;
@@ -6117,6 +6364,7 @@ message enums {
 		TipsHintType_TIPS_HINT_TYPE_EVENT_MISSION_AREA = 2104;
 		TipsHintType_TIPS_HINT_TYPE_EVENT_MARATHON_AREA = 2105;
 		TipsHintType_TIPS_HINT_TYPE_ACCOUNT_MIGRATION = 2200;
+		TipsHintType_TIPS_HINT_TYPE_PARK_FISHING_ROD_LEVEL_UP = 3000;
 	}
 
 	enum TipsType {
@@ -6230,6 +6478,15 @@ message enums {
 		TutorialType_TUTORIAL_TYPE_PARK_HIGH_LOW_AREA02 = 10501;
 		TutorialType_TUTORIAL_TYPE_PARK_PRINT_BOOTH_AREA02 = 10601;
 		TutorialType_TUTORIAL_TYPE_PARK_AREA_SELECT_AREA02 = 10701;
+		TutorialType_TUTORIAL_TYPE_PARK_FISHING_AREA03_UNLOCK = 10801;
+		TutorialType_TUTORIAL_TYPE_PARK_FISHING_AREA03_TOP = 10802;
+		TutorialType_TUTORIAL_TYPE_PARK_FISHING_AREA03_FISH_BOOK = 10803;
+		TutorialType_TUTORIAL_TYPE_PARK_FISHING_AREA03_EXCHANGE_BOOTH = 10804;
+		TutorialType_TUTORIAL_TYPE_PARK_FISHING_AREA03_ROD_LEVEL_UP = 10805;
+		TutorialType_TUTORIAL_TYPE_PARK_FISHING_AREA03_SEA_AREA_2 = 10806;
+		TutorialType_TUTORIAL_TYPE_PARK_FISHING_AREA03_SEA_AREA_3 = 10807;
+		TutorialType_TUTORIAL_TYPE_PARK_BOAT_AREA03_UNLOCK = 10901;
+		TutorialType_TUTORIAL_TYPE_PARK_BOAT_AREA03_LEVEL_UP = 10902;
 	}
 
 	enum WorkCharacterIconPositionType {
@@ -6950,6 +7207,8 @@ message options {
 			optional bool pk = 51010;
 			optional string fk = 51011;
 			optional bool optional = 51012;
+			optional bool column = 51013;
+			optional bool index = 51014;
 		}
 	}
 
@@ -6959,7 +7218,13 @@ message options {
 		}
 
 		message MessageOption {
+			enum JsonFieldNameType {
+				JsonFieldNameType_UNKNOWN = 0;
+				JsonFieldNameType_GO_FIELD_NAME = 1;
+			}
+
 			optional .enums.MultiGameType multi_game_type = 1;
+			optional .options.multi_game_result.MessageOption.JsonFieldNameType json_field_name_type = 2;
 		}
 	}
 
@@ -8167,6 +8432,7 @@ message rpc {
 			optional .rpc.api.common.UserContentCdnSignedCookie user_content_cdn_signed_cookie = 4;
 			repeated string fcm_topics = 5;
 			optional .rpc.api.HomeLoginResponse.RealtimeNotificationConnectionInfo realtime_notification_connection_info = 6;
+			optional bool is_combo_card_game_disconnection_info_applied = 7;
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
@@ -8191,15 +8457,21 @@ message rpc {
 			optional int32 live_frame_rate = 10;
 			optional .enums.GraphicsQualityType basic_graphics_quality_type = 11;
 			optional string inquiry_category = 12;
+			optional string support_id = 13;
+			optional bool is_power_save_mode_enabled = 14;
+			optional bool is_ignoring_battery_optimizations = 15;
+			optional bool is_device_idle_mode = 16;
 		}
 
 		message InquiryGetUploadUrlRequest {
 			optional string public_user_id = 1;
+			optional bool is_inquiry = 2;
 		}
 
 		message InquiryGetUploadUrlResponse {
 			optional .rpc.api.common.StorageUrlInfo device_log_upload_storage_url_info = 1;
 			optional .rpc.api.common.StorageUrlInfo device_purchase_log_upload_storage_url_info = 2;
+			optional string support_id = 3;
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
@@ -8439,6 +8711,7 @@ message rpc {
 			optional bool is_auto_play = 8;
 			optional .rpc.api.common.LiveSkinInfo skin_info = 9;
 			optional string music_mv_category_id = 10;
+			optional .enums.LiveMultiMusicSelectionType picked_music_selection_type = 11;
 			repeated .rpc.api.common.MultiGameStampSendInfo stamp_send_infos = 100;
 			repeated .rpc.api.common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
 		}
@@ -8530,6 +8803,7 @@ message rpc {
 			optional int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 21;
 			optional .rpc.api.common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 23;
 			optional int64 technical_score = 24;
+			optional int32 pickup_bonus_reward_quantity_up_permil_multiply = 25;
 			optional .rpc.api.common.MarathonLiveResult marathon_live_result = 100;
 		}
 
@@ -9710,6 +9984,10 @@ message rpc {
 			optional string area_id = 2;
 		}
 
+		message ParkReadEmotionRequest {
+			optional string character_id = 1;
+		}
+
 		message ParkRefreshResponse {
 			optional .rpc.api.common.Response common_response = 9999;
 		}
@@ -9735,6 +10013,10 @@ message rpc {
 		}
 
 		message ParkSelectAreaResponse {
+			optional .rpc.api.common.Response common_response = 9999;
+		}
+
+		message ParkReadEmotionResponse {
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
@@ -9834,7 +10116,7 @@ message rpc {
 
 		message ParkPermanencePrepareFishingRequest {
 			optional .rpc.api.common.ParkPermanenceCommonRequestParam park_permanence_common_request_param = 1;
-			optional .enums.ParkTimePeriodType park_time_period_type = 2;
+			optional int32 time_point = 2;
 			optional string park_fishing_bait_id = 3;
 		}
 
@@ -9854,17 +10136,15 @@ message rpc {
 		message ParkPermanenceFinishFishingRequest {
 			optional string park_fishing_fish_id = 1;
 			optional bool is_success = 2;
+			optional int64 clear_time_milliseconds = 3;
 		}
 
 		message ParkPermanenceFinishFishingResponse {
-			optional int32 fish_weight = 1;
+			optional int64 fish_weight = 1;
 			optional .enums.ParkFishingFishWeightType fish_weight_type = 2;
 			repeated .rpc.api.common.RewardResult reward_results = 3;
-			optional .rpc.api.common.Response common_response = 9999;
-		}
-
-		message ParkPermanenceReceiveFishingTotalCaughtRewardResponse {
-			repeated .rpc.api.common.RewardResult reward_results = 1;
+			repeated .rpc.api.common.RewardResult first_caught_reward_results = 4;
+			repeated .rpc.api.common.RewardResult total_caught_reward_results = 5;
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
@@ -9893,6 +10173,10 @@ message rpc {
 		}
 
 		message ParkPermanenceLevelUpFishingRodResponse {
+			optional .rpc.api.common.Response common_response = 9999;
+		}
+
+		message ParkPermanenceReadFishingBaitNotificationResponse {
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
@@ -10677,6 +10961,7 @@ message rpc {
 			optional string splash_ball_id = 1;
 			optional int32 reward_up_stamina_consumption_quantity = 2;
 			optional string character_id = 3;
+			optional bool is_private_room = 4;
 			repeated .rpc.api.common.MultiGameStampSendInfo stamp_send_infos = 100;
 			repeated .rpc.api.common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
 		}
@@ -10688,12 +10973,14 @@ message rpc {
 		message SplashBallFinishResponse {
 			optional .rpc.api.common.SplashBallResultInfo splash_ball_result_info = 1;
 			optional int64 past_highest_score = 2;
-			optional bool is_highest_score_updated = 3;
-			repeated .rpc.api.common.RewardResult reward_results = 4;
-			optional int32 reward_up_stamina_consumption_quantity = 5;
-			optional .rpc.api.common.MultiGameResultPrivateRoomInfo private_room_info = 6;
-			optional int64 benefit_license_reward_quantity_up_permil_up = 7;
-			repeated .rpc.api.common.RewardQuantityUp reward_ups_by_skill_tree = 8;
+			optional int64 past_highest_score_goal = 3;
+			optional int64 past_highest_score_defense = 4;
+			optional bool is_highest_score_updated = 5;
+			repeated .rpc.api.common.RewardResult reward_results = 6;
+			optional int32 reward_up_stamina_consumption_quantity = 7;
+			optional .rpc.api.common.MultiGameResultPrivateRoomInfo private_room_info = 8;
+			optional int64 benefit_license_reward_quantity_up_permil_up = 9;
+			repeated .rpc.api.common.RewardQuantityUp reward_ups_by_skill_tree = 10;
 			optional .rpc.api.common.MarathonMiniGameResult marathon_mini_game_result = 100;
 			optional .rpc.api.common.Response common_response = 9999;
 		}
@@ -11182,6 +11469,8 @@ message rpc {
 				optional int64 event_self_live_highest_score = 12;
 				optional int64 past_event_self_live_highest_score = 13;
 				optional bool is_event_self_live_highest_score_updated = 14;
+				optional int64 event_total_music_highest_score = 15;
+				optional bool is_event_total_music_highest_score_updated = 16;
 			}
 
 			message Mission {
@@ -11293,6 +11582,7 @@ message rpc {
 				optional int32 difficulty_value_to = 8;
 				repeated .enums.MusicCreativeChartType chart_types = 9;
 				repeated string music_creative_chart_tag_ids = 10;
+				repeated .enums.MusicCreativeChartType excluded_chart_types = 11;
 			}
 
 			message ParkQuestCommonRequestParam {
@@ -11551,7 +11841,6 @@ message rpc {
 			message SplashBallResultInfo {
 				repeated .rpc.api.common.SplashBallTeamInfo team_infos = 1;
 				optional .enums.SplashBallTeamColor self_team_color = 2;
-				optional int64 self_score = 3;
 			}
 
 			message SplashBallTeamInfo {
@@ -11564,9 +11853,11 @@ message rpc {
 			message SplashBallUserInfo {
 				optional .rpc.api.common.BasicUserInfo user_info = 1;
 				optional bool is_npc = 2;
-				optional int64 score = 3;
-				optional bool is_mvp = 4;
-				optional bool is_disconnected = 5;
+				optional int64 goal_score = 3;
+				optional int64 defense_score = 4;
+				optional int64 total_score = 5;
+				optional bool is_mvp = 6;
+				optional bool is_disconnected = 7;
 			}
 
 			message StartupNotification {
@@ -11634,6 +11925,7 @@ message rpc {
 				repeated .entity.transaction.UserMusic user_music_list = 430828780;
 				repeated .entity.transaction.UserMusicCharacterHighestScore user_music_character_highest_score_list = 344424884;
 				repeated .entity.transaction.UserMusicDifficulty user_music_difficulty_list = 38601170;
+				optional .entity.transaction.UserMusicStartupNotification user_music_startup_notification = 185134757;
 				repeated .entity.transaction.UserNotification user_notification_list = 140263418;
 				repeated .entity.transaction.UserNotificationReadTime user_notification_read_time_list = 382549891;
 				optional .entity.transaction.UserPark user_park = 227737460;
@@ -11686,6 +11978,136 @@ message rpc {
 			optional .rpc.multi_game_server_manager.MultiGameCircuitPickAreaResponse.PickedArea area1 = 1;
 			optional .rpc.multi_game_server_manager.MultiGameCircuitPickAreaResponse.PickedArea area2 = 2;
 			optional .rpc.multi_game_server_manager.MultiGameCircuitPickAreaResponse.PickedArea area3 = 3;
+		}
+
+		message CheckHealthResponse {
+			optional .enums.HealthCheckServingStatus status = 1;
+		}
+
+		message ReadyGameServerRequest {
+			optional string unity_dgs_log_file_name = 1;
+			optional string play_log_file_name = 2;
+		}
+
+		message StartGameResponse {
+			optional string result_id = 1;
+		}
+
+		message SaveGameResultRequest {
+			optional .enums.MultiGameType multi_game_type = 1;
+			optional bytes result_data = 2;
+			optional int64 saved_time = 3;
+		}
+
+		message ChangePrivateRoomHostUserRequest {
+			optional string changed_host_public_user_id = 1;
+		}
+
+		message PublishPrivateRoomRequest {
+			optional string host_public_user_id = 1;
+		}
+
+		message IsRandomMatchPublishedResponse {
+			optional bool is_random_match_published = 1;
+		}
+
+		message ConnectUserRequest {
+			optional string token = 1;
+		}
+
+		message ConnectUserResponse {
+			optional string public_user_id = 1;
+			optional bool is_private_room_host_user = 2;
+			optional bool is_private_room = 3;
+			optional int32 max_user_count = 4;
+			optional int32 total_member_count = 5;
+		}
+
+		message DisconnectUserRequest {
+			message CheatDetectInfo {
+				message CircuitPerAreaPassInfo {
+					message PerAreaPassInfo {
+						optional int64 area_pass_millisecond = 1;
+						optional int64 dash_count = 2;
+					}
+
+					repeated .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo.CircuitPerAreaPassInfo.PerAreaPassInfo per_area_pass_infos = 1;
+				}
+
+				message ChasePerElapsedTimeInfo {
+					message AbnormalMoveSpeedInfo {
+						optional float max_move_speed = 1;
+						optional int64 duration_milliseconds = 2;
+					}
+
+					message ProhibitedAreaStayInfo {
+						optional float position_x = 1;
+						optional float position_y = 2;
+						optional float position_z = 3;
+						optional int64 duration_milliseconds = 4;
+					}
+
+					repeated .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo.ChasePerElapsedTimeInfo.AbnormalMoveSpeedInfo abnormal_move_speed_infos = 1;
+					repeated .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo.ChasePerElapsedTimeInfo.ProhibitedAreaStayInfo prohibited_area_stay_infos = 2;
+				}
+
+				message SplashBallMismatchInfo {
+					message PositionMismatchInfo {
+						optional float client_ball_position_x = 1;
+						optional float client_ball_position_y = 2;
+						optional float client_ball_position_z = 3;
+						optional float dgs_ball_position_x = 4;
+						optional float dgs_ball_position_y = 5;
+						optional float dgs_ball_position_z = 6;
+						optional float client_player_position_x = 7;
+						optional float client_player_position_y = 8;
+						optional float client_player_position_z = 9;
+						optional float dgs_player_position_x = 10;
+						optional float dgs_player_position_y = 11;
+						optional float dgs_player_position_z = 12;
+					}
+
+					optional int64 position_mismatch_count = 1;
+					repeated .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo.SplashBallMismatchInfo.PositionMismatchInfo position_mismatch_infos = 2;
+					optional int64 abnormal_move_speed_count = 3;
+					repeated float abnormal_move_speeds = 4;
+				}
+
+				optional .enums.CheatType cheat_type = 1;
+				optional .enums.CheatSeverityType severity_type = 2;
+				optional .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo.CircuitPerAreaPassInfo circuit_per_area_pass_info = 100;
+				optional .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo.ChasePerElapsedTimeInfo chase_per_elapsed_time_info = 101;
+				optional .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo.SplashBallMismatchInfo splash_ball_mismatch_info = 102;
+			}
+
+			optional string public_user_id = 1;
+			optional bool is_penalty_disconnection = 2;
+			optional bool is_force_exit = 3;
+			optional .rpc.multi_game_server_manager.DisconnectUserRequest.CheatDetectInfo cheat_detect_info = 4;
+		}
+
+		message GetTlsCertificateResponse {
+			optional string tls_server_cert = 1;
+			optional string tls_server_private_key = 2;
+		}
+
+		message MigrateGameServerRequest {
+			optional bytes game_data = 1;
+		}
+
+		message MigrateGameServerResponse {
+			message AuthInfo {
+				optional string public_user_id = 1;
+				optional string token = 2;
+			}
+
+			optional string ip = 1;
+			optional uint32 port = 2;
+			repeated .rpc.multi_game_server_manager.MigrateGameServerResponse.AuthInfo auth_infos = 3;
+		}
+
+		message GetSuspendedGameDataResponse {
+			optional bytes game_data = 1;
 		}
 	}
 }
@@ -12009,6 +12431,7 @@ service rpc_api_Park {
 	rpc ReportAction (.rpc.api.ParkReportActionRequest) returns (.rpc.api.ParkReportActionResponse);
 	rpc ReadTalkFree (.rpc.api.ParkReadTalkFreeRequest) returns (.rpc.api.ParkReadTalkFreeResponse);
 	rpc SelectArea (.rpc.api.ParkSelectAreaRequest) returns (.rpc.api.ParkSelectAreaResponse);
+	rpc ReadEmotion (.rpc.api.ParkReadEmotionRequest) returns (.rpc.api.ParkReadEmotionResponse);
 }
 
 service rpc_api_ParkPermanence {
@@ -12025,8 +12448,8 @@ service rpc_api_ParkPermanence {
 	rpc StartFishing (.rpc.api.ParkPermanenceStartFishingRequest) returns (.rpc.api.ParkPermanenceStartFishingResponse);
 	rpc MissFishing (.rpc.api.ParkPermanenceMissFishingRequest) returns (.rpc.api.ParkPermanenceMissFishingResponse);
 	rpc FinishFishing (.rpc.api.ParkPermanenceFinishFishingRequest) returns (.rpc.api.ParkPermanenceFinishFishingResponse);
-	rpc ReceiveFishingTotalCaughtReward (.google.protobuf.Empty) returns (.rpc.api.ParkPermanenceReceiveFishingTotalCaughtRewardResponse);
 	rpc LevelUpFishingRod (.rpc.api.ParkPermanenceLevelUpFishingRodRequest) returns (.rpc.api.ParkPermanenceLevelUpFishingRodResponse);
+	rpc ReadFishingBaitNotification (.google.protobuf.Empty) returns (.rpc.api.ParkPermanenceReadFishingBaitNotificationResponse);
 }
 
 service rpc_api_ParkQuest {
@@ -12163,4 +12586,22 @@ service rpc_api_Work {
 
 service rpc_multi_game_server_manager_MultiGameCircuit {
 	rpc PickArea (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.MultiGameCircuitPickAreaResponse);
+}
+
+service rpc_multi_game_server_manager_MultiGameServerManager {
+	rpc CheckHealth (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.CheckHealthResponse);
+	rpc ReadyGameServer (.rpc.multi_game_server_manager.ReadyGameServerRequest) returns (.google.protobuf.Empty);
+	rpc ResetGameServer (.google.protobuf.Empty) returns (.google.protobuf.Empty);
+	rpc ShutdownGameServer (.google.protobuf.Empty) returns (.google.protobuf.Empty);
+	rpc ChangePrivateRoomHostUser (.rpc.multi_game_server_manager.ChangePrivateRoomHostUserRequest) returns (.google.protobuf.Empty);
+	rpc PublishPrivateRoom (.rpc.multi_game_server_manager.PublishPrivateRoomRequest) returns (.google.protobuf.Empty);
+	rpc IsRandomMatchPublished (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.IsRandomMatchPublishedResponse);
+	rpc StopMatching (.google.protobuf.Empty) returns (.google.protobuf.Empty);
+	rpc StartGame (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.StartGameResponse);
+	rpc SaveGameResult (.rpc.multi_game_server_manager.SaveGameResultRequest) returns (.google.protobuf.Empty);
+	rpc ConnectUser (.rpc.multi_game_server_manager.ConnectUserRequest) returns (.rpc.multi_game_server_manager.ConnectUserResponse);
+	rpc DisconnectUser (.rpc.multi_game_server_manager.DisconnectUserRequest) returns (.google.protobuf.Empty);
+	rpc GetTlsCertificate (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.GetTlsCertificateResponse);
+	rpc MigrateGameServer (.rpc.multi_game_server_manager.MigrateGameServerRequest) returns (.rpc.multi_game_server_manager.MigrateGameServerResponse);
+	rpc GetSuspendedGameData (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.GetSuspendedGameDataResponse);
 }

@@ -38,6 +38,8 @@ message ParkFishingFish {
 	int32 progress_meter_speed_decrease = 26 [(options.master.optional) = true];
 	float progress_meter_time_penalty = 27;
 	int32 stamina = 28 [(options.master.optional) = true];
+	string view_condition_group_id = 35 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 capture_bar_direction_change_stay_millisecond = 36 [(options.master.optional) = true];
 	int32 order = 999;
 	repeated .enums.ParkTimePeriodType park_time_period_types = 1000 [(options.master.optional) = true];
 }

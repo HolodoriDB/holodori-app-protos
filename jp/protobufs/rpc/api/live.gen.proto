@@ -8,6 +8,7 @@ import "dto/multi_game_result/live_cooperation_result.gen.proto";
 import "entity/master/options/master.proto";
 import "enums/friend_status_type.gen.proto";
 import "enums/live_evaluation_rank_type.gen.proto";
+import "enums/live_multi_music_selection_type.gen.proto";
 import "enums/live_play_type.gen.proto";
 import "enums/live_result_type.gen.proto";
 import "enums/music_difficulty_type.gen.proto";
@@ -148,6 +149,7 @@ message LiveStartMultiRequest {
 	bool is_auto_play = 8;
 	common.LiveSkinInfo skin_info = 9;
 	string music_mv_category_id = 10;
+	.enums.LiveMultiMusicSelectionType picked_music_selection_type = 11 [(buf.validate.field).enum.defined_only = true];
 	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
 	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
 }
@@ -239,6 +241,7 @@ message LiveFinishMultiLiveCooperationResult {
 	int32 reward_card_exp_quantity_up_permil_up_by_skill_tree = 21;
 	common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 23;
 	int64 technical_score = 24;
+	int32 pickup_bonus_reward_quantity_up_permil_multiply = 25;
 	common.MarathonLiveResult marathon_live_result = 100;
 }
 

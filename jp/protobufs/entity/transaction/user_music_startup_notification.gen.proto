@@ -5,10 +5,6 @@ package entity.transaction;
 option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
 option csharp_namespace = "Vision.Common.Proto.Transaction";
 
-message UserSplashBall {
-	int64 highest_score = 2;
-	int64 highest_score_last_updated_time = 3;
-	int64 highest_score_goal = 4;
-	int64 highest_score_defense = 5;
-	int64 play_count = 6;
+message UserMusicStartupNotification {
+	int64 last_read_start_time = 2;
 }

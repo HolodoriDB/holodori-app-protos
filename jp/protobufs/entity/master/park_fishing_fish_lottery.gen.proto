@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ParkFishingFishLottery {
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	string park_fishing_spot_id = 2 [(options.master.fk) = "ParkFishingSpot:id"];
+	string park_fishing_bait_id = 3 [(options.master.fk) = "ParkFishingBait:id"];
+	string park_fishing_time_period_id = 4 [(options.master.fk) = "ParkFishingTimePeriod:id"];
+	string park_fishing_fish_id = 5 [(options.master.fk) = "ParkFishingFish:id"];
+	int32 hit_ratio = 6 [(options.master.optional) = true];
+}

@@ -19,7 +19,6 @@ message ParkQuestStepAction {
 	int32 action_number = 5 [(options.master.pk) = true];
 	string description_lang_id = 6 [(options.master.fk) = "LangParkQuestStepAction:id", (options.master.optional) = true];
 	.enums.ParkActionType type = 7 [(options.master.optional) = true];
-	string unlock_condition_group_id = 8 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	string clear_condition_group_id = 9 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	string before_park_talk_group_id = 10 [(options.master.fk) = "ParkTalk:group_id", (options.master.optional) = true];
 	string after_park_talk_group_id = 11 [(options.master.fk) = "ParkTalk:group_id", (options.master.optional) = true];
