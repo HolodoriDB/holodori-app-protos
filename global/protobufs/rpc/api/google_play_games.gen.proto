@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/response.gen.proto";
+
+package rpc.api;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message GooglePlayGamesGetAchievementStatusResponse {
+	bool is_updatable = 1;
+	common.Response common_response = 9999;
+}
+
+message GooglePlayGamesApplyAchievementRequest {
+	string server_auth_code = 1 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
+}
+
+message GooglePlayGamesApplyAchievementResponse {
+	common.Response common_response = 9999;
+}
+
+service GooglePlayGames {
+	rpc GetAchievementStatus (.google.protobuf.Empty) returns (.rpc.api.GooglePlayGamesGetAchievementStatusResponse) {
+		option (google.api.http).post = "/GooglePlayGames/GetAchievementStatus";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ApplyAchievement (.rpc.api.GooglePlayGamesApplyAchievementRequest) returns (.rpc.api.GooglePlayGamesApplyAchievementResponse) {
+		option (google.api.http).post = "/GooglePlayGames/ApplyAchievement";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+}

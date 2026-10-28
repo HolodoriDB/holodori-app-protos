@@ -112,7 +112,7 @@ message GachaReadRequest {
 message GachaDrawNormalRequest {
 	string gacha_button_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	int32 draw_count = 2 [(buf.validate.field).int32.gte = 1];
-	repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20];
+	repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20, (buf.validate.field).repeated.items.ignore = IGNORE_ALWAYS];
 	int32 display_free_balance = 11;
 	int32 display_paid_balance = 12;
 }
@@ -127,7 +127,7 @@ message GachaDrawNormalResponse {
 message GachaDrawCardSelectRequest {
 	string gacha_button_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	int32 draw_count = 2 [(buf.validate.field).int32.gte = 1];
-	repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20];
+	repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20, (buf.validate.field).repeated.items.ignore = IGNORE_ALWAYS];
 	int32 display_free_balance = 11;
 	int32 display_paid_balance = 12;
 }

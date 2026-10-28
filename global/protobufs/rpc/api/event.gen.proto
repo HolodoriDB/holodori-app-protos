@@ -110,6 +110,7 @@ message EventListEventInfoResponse {
 				repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonMiniGameMarathonScoreBonus marathon_mini_game_marathon_score_bonuses = 20 [(options.zap.hidden) = true];
 				repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonLiveMarathonScoreBonus marathon_live_marathon_score_bonuses = 21 [(options.zap.hidden) = true];
 				repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonMiniGameMarathonScoreRate marathon_mini_game_marathon_score_rates = 22 [(options.zap.hidden) = true];
+				string exchange_booth_id = 23 [(options.master.fk) = "ExchangeBooth:id", (options.master.optional) = true];
 			}
 
 			string exchange_booth_group_id = 1 [(options.master.fk) = "ExchangeBoothGroup:id"];

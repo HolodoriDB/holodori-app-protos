@@ -127,6 +127,7 @@ message Setting {
 	int32 gacha_promotion_pickup_card_image_change_seconds = 1607;
 	int32 gacha_promotion_pickup_card_movie_change_seconds = 1608;
 	int32 ranking_no_reward_threshold_rank_out_of_range = 1609;
+	int32 gift_list_history_limit_count = 1614;
 	int32 work_slot_reset_interval_hours = 1700;
 	int32 work_slot_power_debounce_milliseconds = 1701;
 	int32 work_local_push_cool_time_minutes = 1702;
