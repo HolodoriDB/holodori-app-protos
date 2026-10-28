@@ -9,7 +9,8 @@ so the descriptor is reassembled from the cctor code
   next one starts)
 - a chunk load is `adrp xN,#page` then `ldr xN,[xN,#off]`. the slot page+off is a metadata-usage
   pointer, zero in the file and filled by an elf relocation at load time, so it resolves through
-  the reloc table as addend to string-literal address to stringliteral.json value
+  the reloc table as addend to string-literal address to stringliteral.json value. newer builds
+  skip the got slot and page+off is the string-literal address itself
 - concat order is the string[] build order, chunks stored at `str xV,[arr,#0x20]!`, `#0x28`...
   a cctor builds several arrays (base64 chunks plus sibling GeneratedClrTypeInfo name arrays) so
   stores split into groups whenever the offset resets, and the group that decodes to a valid
@@ -69,10 +70,11 @@ class Binary:
         return b""
 
     def chunk_at_slot(self, slot: int) -> str | None:
-        # metadata-usage slot to reloc addend to string-literal value
+        # metadata-usage slot to reloc addend to string-literal value, or the string-literal itself
+        # when the build references it directly instead of through a relocated got slot (1.2.100+)
         addend = self.relocs.get(slot)
         if addend is None:
-            return None
+            return self.literals.get(slot)
         return self.literals.get(addend)
 
 
@@ -161,6 +163,19 @@ def extract_octo_keys(dump_cs: Path) -> tuple[str, str]:
 _MD = Cs(CS_ARCH_ARM64, CS_MODE_ARM)
 _MD.detail = True
 
+_BRANCHES = {"b", "cbz", "cbnz", "tbz", "tbnz"}
+
+
+def _meet(a: dict, b: dict) -> dict:
+    return {k: v for k, v in a.items() if b.get(k) == v}
+
+
+def _veneer(bin_: Binary, target: int, back: int):
+    insns = list(_MD.disasm(bin_.read(target, 8), target))
+    if len(insns) == 2 and insns[1].mnemonic == "b" and insns[1].operands[0].imm == back:
+        return insns[0]
+    return None
+
 
 def _chunk_groups(bin_: Binary, va: int, end: int) -> list[list[tuple[int, str]]]:
     """ordered string[] build groups of base64 chunks from one cctor
@@ -168,24 +183,30 @@ def _chunk_groups(bin_: Binary, va: int, end: int) -> list[list[tuple[int, str]]
     page tracks the live adrp page per register, carry tracks which register holds a resolved chunk
     (propagated through `ldr xD,[xS]` and `mov`). stores of carried chunks are grouped, a new group
     starting whenever the array offset stops increasing
+
+    the sweep is linear but branch aware: forward branches snapshot the state for their target, and
+    code after an unconditional `b` resumes from that snapshot instead of the unrelated block above
+    it (the write-barrier and plain store paths are laid out back to back). a `b` out of the function
+    into `<insn>; b back` is a linker erratum-843419 veneer, its displaced insn is applied in place
     """
-    code = bin_.read(va, min(end - va, 0x10000))
+    code = bin_.read(va, min(end - va, 0x80000))
     page: dict[int, int] = {}
     carry: dict[int, str] = {}
+    pending: dict[int, tuple[dict[int, int], dict[int, str]]] = {}
+    reachable = True
     groups: list[list[tuple[int, str]]] = []
     cur: list[tuple[int, str]] = []
     last_off: int | None = None
 
-    for ins in _MD.disasm(code, va):
+    def step(ins) -> None:
+        nonlocal cur, last_off
         mn = ins.mnemonic
         ops = ins.operands
-        if mn == "ret":
-            break
 
         if mn == "adrp":
             page[ops[0].reg] = ops[1].imm
             carry.pop(ops[0].reg, None)
-            continue
+            return
 
         if mn == "ldr" and len(ops) >= 2 and ops[1].type == ARM64_OP_MEM:
             dst, base, disp = ops[0].reg, ops[1].mem.base, ops[1].mem.disp
@@ -199,7 +220,7 @@ def _chunk_groups(bin_: Binary, va: int, end: int) -> list[list[tuple[int, str]]
                 carry[dst] = value
             else:
                 carry.pop(dst, None)
-            continue
+            return
 
         if (
             mn == "str"
@@ -213,7 +234,7 @@ def _chunk_groups(bin_: Binary, va: int, end: int) -> list[list[tuple[int, str]]
                 cur = []
             cur.append((off, carry[ops[0].reg]))
             last_off = off
-            continue
+            return
 
         if mn == "mov" and len(ops) == 2 and ops[1].type == ARM64_OP_REG:
             src = ops[1].reg
@@ -222,7 +243,7 @@ def _chunk_groups(bin_: Binary, va: int, end: int) -> list[list[tuple[int, str]]
             else:
                 carry.pop(ops[0].reg, None)
             page.pop(ops[0].reg, None)
-            continue
+            return
 
         # any other write clears tracked registers
         try:
@@ -232,25 +253,80 @@ def _chunk_groups(bin_: Binary, va: int, end: int) -> list[list[tuple[int, str]]
         except OSError:
             pass
 
+    for ins in _MD.disasm(code, va):
+        mn = ins.mnemonic
+        ops = ins.operands
+        if mn == "ret":
+            break
+
+        snap = pending.pop(ins.address, None)
+        if snap is not None:
+            if reachable:
+                page, carry = _meet(page, snap[0]), _meet(carry, snap[1])
+            else:
+                page, carry = dict(snap[0]), dict(snap[1])
+        elif not reachable:
+            page, carry = {}, {}
+        reachable = True
+
+        if mn in _BRANCHES or mn.startswith("b."):
+            target = ops[-1].imm
+            if mn == "b" and not va <= target < end:
+                displaced = _veneer(bin_, target, ins.address + 4)
+                if displaced is not None:
+                    step(displaced)
+                    continue
+            if target > ins.address:
+                prev = pending.get(target)
+                pending[target] = (
+                    (dict(page), dict(carry))
+                    if prev is None
+                    else (_meet(prev[0], page), _meet(prev[1], carry))
+                )
+            reachable = mn != "b"
+            continue
+
+        step(ins)
+
     if cur:
         groups.append(cur)
     return groups
 
 
-def extract_descriptor(bin_: Binary, va: int, end: int):
-    """parsed FileDescriptorProto for one cctor, or none if it is not one"""
-    for group in _chunk_groups(bin_, va, end):
-        b64 = "".join(v for _, v in sorted(group))
-        if not b64:
-            continue
-        try:
-            raw = base64.b64decode(b64 + "=" * (-len(b64) % 4))
-            fdp = descriptor_pb2.FileDescriptorProto.FromString(raw)
-        except Exception:
-            continue
-        if fdp.name.endswith(".proto"):
-            return fdp, raw
+def _decode_chunks(chunks: dict[int, str]):
+    offs = sorted(chunks)
+    if offs != list(range(offs[0], offs[0] + 8 * len(offs), 8)):
+        return None
+    b64 = "".join(chunks[o] for o in offs)
+    try:
+        raw = base64.b64decode(b64 + "=" * (-len(b64) % 4))
+        fdp = descriptor_pb2.FileDescriptorProto.FromString(raw)
+    except Exception:
+        return None
+    if fdp.name.endswith(".proto"):
+        return fdp, raw
     return None
+
+
+def extract_descriptor(bin_: Binary, va: int, end: int):
+    """parsed FileDescriptorProto for one cctor, or none if it is not one
+
+    one string[] build can span several groups (the write-barrier and plain paths each store part
+    of it, and stores get scheduled out of order), so consecutive groups merge by offset while they
+    agree and the longest merge that decodes wins. a conflicting offset means a new array began
+    """
+    best = None
+    merged: dict[int, str] = {}
+    for group in _chunk_groups(bin_, va, end):
+        if any(merged.get(off, v) != v for off, v in group):
+            if best is not None:
+                return best
+            merged = {}
+        merged.update(group)
+        result = _decode_chunks(merged)
+        if result is not None:
+            best = result
+    return best
 
 
 # option resolution
