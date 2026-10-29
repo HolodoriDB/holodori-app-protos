@@ -717,6 +717,18 @@ message dto {
 						optional float dgs_player_position_x = 10;
 						optional float dgs_player_position_y = 11;
 						optional float dgs_player_position_z = 12;
+						optional int64 client_ball_position_x_permil = 13;
+						optional int64 client_ball_position_y_permil = 14;
+						optional int64 client_ball_position_z_permil = 15;
+						optional int64 dgs_ball_position_x_permil = 16;
+						optional int64 dgs_ball_position_y_permil = 17;
+						optional int64 dgs_ball_position_z_permil = 18;
+						optional int64 client_player_position_x_permil = 19;
+						optional int64 client_player_position_y_permil = 20;
+						optional int64 client_player_position_z_permil = 21;
+						optional int64 dgs_player_position_x_permil = 22;
+						optional int64 dgs_player_position_y_permil = 23;
+						optional int64 dgs_player_position_z_permil = 24;
 					}
 
 					optional int64 defense_point = 1;
@@ -726,6 +738,7 @@ message dto {
 					repeated .dto.multi_game_result.MiniGameSplashBallResult.TeamResult.UserResult.PositionMismatchInfo position_mismatch_infos = 52;
 					optional int64 abnormal_move_speed_count = 53;
 					repeated float abnormal_move_speeds = 54;
+					repeated int64 abnormal_move_speed_permils = 55;
 					optional .dto.multi_game_result.MultiGameCommonUserResult common_user_result = 100;
 				}
 
@@ -2981,6 +2994,7 @@ message entity {
 			optional int32 gacha_promotion_pickup_card_image_change_seconds = 1607;
 			optional int32 gacha_promotion_pickup_card_movie_change_seconds = 1608;
 			optional int32 ranking_no_reward_threshold_rank_out_of_range = 1609;
+			optional int32 gift_list_history_limit_count = 1614;
 			optional int32 work_slot_reset_interval_hours = 1700;
 			optional int32 work_slot_power_debounce_milliseconds = 1701;
 			optional int32 work_local_push_cool_time_minutes = 1702;
@@ -5540,6 +5554,7 @@ message enums {
 		ProviderType_PROVIDER_TYPE_UNKNOWN = 0;
 		ProviderType_PROVIDER_TYPE_APPLE = 1;
 		ProviderType_PROVIDER_TYPE_GOOGLE = 2;
+		ProviderType_PROVIDER_TYPE_GOOGLE_PLAY_GAMES = 3;
 		ProviderType_PROVIDER_TYPE_PASSWORD = 99;
 	}
 
@@ -7312,6 +7327,16 @@ message rpc {
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
+		message AccountMigrationLinkGooglePlayGamesRequest {
+			optional string server_auth_code = 1;
+			optional bool is_force = 2;
+		}
+
+		message AccountMigrationLinkGooglePlayGamesResponse {
+			optional .rpc.api.AccountMigrationLinkResult link_result = 1;
+			optional .rpc.api.common.Response common_response = 9999;
+		}
+
 		message AccountMigrationLinkResult {
 			message LinkedUserInfo {
 				optional string public_user_id = 1;
@@ -7342,6 +7367,28 @@ message rpc {
 			repeated .rpc.api.common.RewardResult reward_results = 1;
 			optional int32 reward_character_exp = 2;
 			repeated .rpc.api.common.RewardResult character_level_up_reward_results = 3;
+			optional .rpc.api.common.Response common_response = 9999;
+		}
+
+		message AchievementReceiveCategoryRewardRequest {
+			optional .enums.AchievementCategoryType achievement_category_type = 1;
+		}
+
+		message AchievementReceiveCategoryRewardResponse {
+			message AchievementGroupRewardResult {
+				message ReceivedMission {
+					optional string mission_id = 1;
+					repeated int32 thresholds = 2;
+				}
+
+				optional string achievement_group_id = 1;
+				repeated .rpc.api.common.RewardResult reward_results = 2;
+				repeated .rpc.api.AchievementReceiveCategoryRewardResponse.AchievementGroupRewardResult.ReceivedMission received_missions = 3;
+				optional int32 reward_character_exp_quantity = 4;
+				repeated .rpc.api.common.RewardResult character_level_up_reward_results = 5;
+			}
+
+			repeated .rpc.api.AchievementReceiveCategoryRewardResponse.AchievementGroupRewardResult achievement_group_reward_results = 1;
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
@@ -7444,6 +7491,7 @@ message rpc {
 			optional string game_auth_token = 1;
 			optional bool is_play_integrity_check_required = 2;
 			optional string play_integrity_nonce = 3;
+			optional string google_play_games_player_id_hash = 4;
 		}
 
 		message CardGetParameterRequest {
@@ -7940,6 +7988,7 @@ message rpc {
 						repeated .rpc.api.EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonMiniGameMarathonScoreBonus marathon_mini_game_marathon_score_bonuses = 20;
 						repeated .rpc.api.EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonLiveMarathonScoreBonus marathon_live_marathon_score_bonuses = 21;
 						repeated .rpc.api.EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonMiniGameMarathonScoreRate marathon_mini_game_marathon_score_rates = 22;
+						optional string exchange_booth_id = 23;
 					}
 
 					optional string exchange_booth_group_id = 1;
@@ -8394,6 +8443,19 @@ message rpc {
 
 		message GiftCountResponse {
 			optional int32 count = 1;
+			optional .rpc.api.common.Response common_response = 9999;
+		}
+
+		message GooglePlayGamesGetAchievementStatusResponse {
+			optional bool is_updatable = 1;
+			optional .rpc.api.common.Response common_response = 9999;
+		}
+
+		message GooglePlayGamesApplyAchievementRequest {
+			optional string server_auth_code = 1;
+		}
+
+		message GooglePlayGamesApplyAchievementResponse {
 			optional .rpc.api.common.Response common_response = 9999;
 		}
 
@@ -8935,6 +8997,7 @@ message rpc {
 					optional string background_asset_id = 20;
 					optional string bgm_asset_id = 21;
 					optional int64 ranking_reveal_start_time = 22;
+					optional string exchange_booth_id = 23;
 				}
 
 				message MarathonMiniGameMarathonScoreBonus {
@@ -12118,6 +12181,7 @@ service rpc_api_AccountMigration {
 	rpc PrepareMigrationPassword (.rpc.api.AccountMigrationPrepareMigrationPasswordRequest) returns (.rpc.api.AccountMigrationPrepareMigrationPasswordResponse);
 	rpc LinkApple (.rpc.api.AccountMigrationLinkAppleRequest) returns (.rpc.api.AccountMigrationLinkAppleResponse);
 	rpc LinkGoogle (.rpc.api.AccountMigrationLinkGoogleRequest) returns (.rpc.api.AccountMigrationLinkGoogleResponse);
+	rpc LinkGooglePlayGames (.rpc.api.AccountMigrationLinkGooglePlayGamesRequest) returns (.rpc.api.AccountMigrationLinkGooglePlayGamesResponse);
 	rpc PrepareMigrationProviderWithoutAuth (.rpc.api.AccountMigrationPrepareMigrationProviderWithoutAuthRequest) returns (.rpc.api.AccountMigrationPrepareMigrationProviderWithoutAuthResponse);
 	rpc Migrate (.rpc.api.AccountMigrationMigrateRequest) returns (.rpc.api.AccountMigrationMigrateResponse);
 	rpc Unlink (.rpc.api.AccountMigrationUnlinkRequest) returns (.rpc.api.AccountMigrationUnlinkResponse);
@@ -12125,6 +12189,7 @@ service rpc_api_AccountMigration {
 
 service rpc_api_Achievement {
 	rpc ReceiveReward (.rpc.api.AchievementReceiveRewardRequest) returns (.rpc.api.AchievementReceiveRewardResponse);
+	rpc ReceiveCategoryReward (.rpc.api.AchievementReceiveCategoryRewardRequest) returns (.rpc.api.AchievementReceiveCategoryRewardResponse);
 }
 
 service rpc_api_Announcement {
@@ -12252,6 +12317,11 @@ service rpc_api_Gift {
 	rpc Open (.rpc.api.GiftOpenRequest) returns (.rpc.api.GiftOpenResponse);
 	rpc ListHistory (.google.protobuf.Empty) returns (.rpc.api.GiftListHistoryResponse);
 	rpc Count (.google.protobuf.Empty) returns (.rpc.api.GiftCountResponse);
+}
+
+service rpc_api_GooglePlayGames {
+	rpc GetAchievementStatus (.google.protobuf.Empty) returns (.rpc.api.GooglePlayGamesGetAchievementStatusResponse);
+	rpc ApplyAchievement (.rpc.api.GooglePlayGamesApplyAchievementRequest) returns (.rpc.api.GooglePlayGamesApplyAchievementResponse);
 }
 
 service rpc_api_Health {

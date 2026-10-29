@@ -14,8 +14,8 @@ message Mission {
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
-	string mission_group_id = 2 [(options.master.fk) = "MissionGroup:id", (options.master.optional) = true];
-	string achievement_group_id = 3 [(options.master.fk) = "AchievementGroup:id", (options.master.optional) = true];
+	string mission_group_id = 2 [(options.master.fk) = "MissionGroup:id", (options.master.index) = true, (options.master.optional) = true];
+	string achievement_group_id = 3 [(options.master.fk) = "AchievementGroup:id", (options.master.index) = true, (options.master.optional) = true];
 	string name_lang_id = 4 [(options.master.fk) = "LangMission:id", (options.master.optional) = true];
 	string unprogressed_name_lang_id = 5 [(options.master.fk) = "LangMission:id", (options.master.optional) = true];
 	string description_lang_id = 6 [(options.master.fk) = "LangMission:id", (options.master.optional) = true];
@@ -23,7 +23,7 @@ message Mission {
 	string view_condition_group_id = 8 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 	.enums.MissionCategoryType category_type = 9;
 	.enums.MissionType type = 10;
-	string character_id = 11 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	string character_id = 11 [(options.master.fk) = "Character:id", (options.master.index) = true, (options.master.optional) = true];
 	repeated string target_ids1 = 12 [(options.master.optional) = true];
 	repeated string target_ids2 = 13 [(options.master.optional) = true];
 	repeated string target_ids3 = 14 [(options.master.optional) = true];

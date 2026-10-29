@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/achievement_category_type.gen.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "rpc/api/common/mission.gen.proto";
@@ -24,9 +26,37 @@ message AchievementReceiveRewardResponse {
 	common.Response common_response = 9999;
 }
 
+message AchievementReceiveCategoryRewardRequest {
+	.enums.AchievementCategoryType achievement_category_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+}
+
+message AchievementReceiveCategoryRewardResponse {
+	message AchievementGroupRewardResult {
+		message ReceivedMission {
+			string mission_id = 1 [(options.master.fk) = "Mission:id"];
+			repeated int32 thresholds = 2;
+		}
+
+		string achievement_group_id = 1 [(options.master.fk) = "AchievementGroup:id"];
+		repeated common.RewardResult reward_results = 2;
+		repeated AchievementReceiveCategoryRewardResponse.AchievementGroupRewardResult.ReceivedMission received_missions = 3;
+		int32 reward_character_exp_quantity = 4;
+		repeated common.RewardResult character_level_up_reward_results = 5;
+	}
+
+	repeated AchievementReceiveCategoryRewardResponse.AchievementGroupRewardResult achievement_group_reward_results = 1;
+	common.Response common_response = 9999;
+}
+
 service Achievement {
 	rpc ReceiveReward (.rpc.api.AchievementReceiveRewardRequest) returns (.rpc.api.AchievementReceiveRewardResponse) {
 		option (google.api.http).post = "/Achievement/ReceiveReward";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ReceiveCategoryReward (.rpc.api.AchievementReceiveCategoryRewardRequest) returns (.rpc.api.AchievementReceiveCategoryRewardResponse) {
+		option (google.api.http).post = "/Achievement/ReceiveCategoryReward";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).enabled_response_cache = true;
 	}

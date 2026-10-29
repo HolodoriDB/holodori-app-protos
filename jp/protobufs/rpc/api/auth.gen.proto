@@ -23,6 +23,7 @@ message AuthLoginResponse {
 	string game_auth_token = 1 [(options.zap.hidden) = true];
 	bool is_play_integrity_check_required = 2;
 	string play_integrity_nonce = 3 [(options.zap.hidden) = true];
+	string google_play_games_player_id_hash = 4;
 }
 
 service Auth {

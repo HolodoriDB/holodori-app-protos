@@ -34,6 +34,18 @@ message MiniGameSplashBallResult {
 				float dgs_player_position_x = 10;
 				float dgs_player_position_y = 11;
 				float dgs_player_position_z = 12;
+				int64 client_ball_position_x_permil = 13;
+				int64 client_ball_position_y_permil = 14;
+				int64 client_ball_position_z_permil = 15;
+				int64 dgs_ball_position_x_permil = 16;
+				int64 dgs_ball_position_y_permil = 17;
+				int64 dgs_ball_position_z_permil = 18;
+				int64 client_player_position_x_permil = 19;
+				int64 client_player_position_y_permil = 20;
+				int64 client_player_position_z_permil = 21;
+				int64 dgs_player_position_x_permil = 22;
+				int64 dgs_player_position_y_permil = 23;
+				int64 dgs_player_position_z_permil = 24;
 			}
 
 			int64 defense_point = 1 [(buf.validate.field).int64.gte = 0];
@@ -43,6 +55,7 @@ message MiniGameSplashBallResult {
 			repeated MiniGameSplashBallResult.TeamResult.UserResult.PositionMismatchInfo position_mismatch_infos = 52;
 			int64 abnormal_move_speed_count = 53 [(buf.validate.field).int64.gte = 0];
 			repeated float abnormal_move_speeds = 54 [(buf.validate.field).repeated.items.float.gte = 0.0];
+			repeated int64 abnormal_move_speed_permils = 55 [(buf.validate.field).repeated.items.int64.gte = 0];
 			MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
 		}
 

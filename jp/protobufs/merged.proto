@@ -728,6 +728,18 @@ message dto {
 						float dgs_player_position_x = 10;
 						float dgs_player_position_y = 11;
 						float dgs_player_position_z = 12;
+						int64 client_ball_position_x_permil = 13;
+						int64 client_ball_position_y_permil = 14;
+						int64 client_ball_position_z_permil = 15;
+						int64 dgs_ball_position_x_permil = 16;
+						int64 dgs_ball_position_y_permil = 17;
+						int64 dgs_ball_position_z_permil = 18;
+						int64 client_player_position_x_permil = 19;
+						int64 client_player_position_y_permil = 20;
+						int64 client_player_position_z_permil = 21;
+						int64 dgs_player_position_x_permil = 22;
+						int64 dgs_player_position_y_permil = 23;
+						int64 dgs_player_position_z_permil = 24;
 					}
 
 					int64 defense_point = 1 [(buf.validate.field).int64.gte = 0];
@@ -737,6 +749,7 @@ message dto {
 					repeated MiniGameSplashBallResult.TeamResult.UserResult.PositionMismatchInfo position_mismatch_infos = 52;
 					int64 abnormal_move_speed_count = 53 [(buf.validate.field).int64.gte = 0];
 					repeated float abnormal_move_speeds = 54 [(buf.validate.field).repeated.items.float.gte = 0.0];
+					repeated int64 abnormal_move_speed_permils = 55 [(buf.validate.field).repeated.items.int64.gte = 0];
 					MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
 				}
 
@@ -2401,8 +2414,8 @@ message entity {
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
-			string mission_group_id = 2 [(options.master.fk) = "MissionGroup:id", (options.master.optional) = true];
-			string achievement_group_id = 3 [(options.master.fk) = "AchievementGroup:id", (options.master.optional) = true];
+			string mission_group_id = 2 [(options.master.fk) = "MissionGroup:id", (options.master.index) = true, (options.master.optional) = true];
+			string achievement_group_id = 3 [(options.master.fk) = "AchievementGroup:id", (options.master.index) = true, (options.master.optional) = true];
 			string name_lang_id = 4 [(options.master.fk) = "LangMission:id", (options.master.optional) = true];
 			string unprogressed_name_lang_id = 5 [(options.master.fk) = "LangMission:id", (options.master.optional) = true];
 			string description_lang_id = 6 [(options.master.fk) = "LangMission:id", (options.master.optional) = true];
@@ -2410,7 +2423,7 @@ message entity {
 			string view_condition_group_id = 8 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 			.enums.MissionCategoryType category_type = 9;
 			.enums.MissionType type = 10;
-			string character_id = 11 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+			string character_id = 11 [(options.master.fk) = "Character:id", (options.master.index) = true, (options.master.optional) = true];
 			repeated string target_ids1 = 12 [(options.master.optional) = true];
 			repeated string target_ids2 = 13 [(options.master.optional) = true];
 			repeated string target_ids3 = 14 [(options.master.optional) = true];
@@ -3449,6 +3462,7 @@ message entity {
 			int32 gacha_promotion_pickup_card_image_change_seconds = 1607;
 			int32 gacha_promotion_pickup_card_movie_change_seconds = 1608;
 			int32 ranking_no_reward_threshold_rank_out_of_range = 1609;
+			int32 gift_list_history_limit_count = 1614;
 			int32 work_slot_reset_interval_hours = 1700;
 			int32 work_slot_power_debounce_milliseconds = 1701;
 			int32 work_local_push_cool_time_minutes = 1702;
@@ -6073,6 +6087,7 @@ message enums {
 		PROVIDER_TYPE_UNKNOWN = 0;
 		PROVIDER_TYPE_APPLE = 1;
 		PROVIDER_TYPE_GOOGLE = 2;
+		PROVIDER_TYPE_GOOGLE_PLAY_GAMES = 3;
 		PROVIDER_TYPE_PASSWORD = 99;
 	}
 
@@ -8518,6 +8533,16 @@ message rpc {
 			common.Response common_response = 9999;
 		}
 
+		message AccountMigrationLinkGooglePlayGamesRequest {
+			string server_auth_code = 1 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
+			bool is_force = 2;
+		}
+
+		message AccountMigrationLinkGooglePlayGamesResponse {
+			AccountMigrationLinkResult link_result = 1;
+			common.Response common_response = 9999;
+		}
+
 		message AccountMigrationLinkResult {
 			message LinkedUserInfo {
 				string public_user_id = 1;
@@ -8589,6 +8614,16 @@ message rpc {
 				option (options.check_option.error).error_codes = ERROR_CODE_MIGRATION_TARGET_NOT_FOUND;
 			}
 
+			rpc LinkGooglePlayGames (.rpc.api.AccountMigrationLinkGooglePlayGamesRequest) returns (.rpc.api.AccountMigrationLinkGooglePlayGamesResponse) {
+				option (google.api.http).post = "/AccountMigration/LinkGooglePlayGames";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.error).error_codes = ERROR_CODE_MIGRATION_BAN;
+				option (options.check_option.error).error_codes = ERROR_CODE_MIGRATION_PROVIDER_ALREADY_LINKED;
+				option (options.check_option.error).error_codes = ERROR_CODE_MIGRATION_TARGET_NOT_FOUND;
+			}
+
 			rpc PrepareMigrationProviderWithoutAuth (.rpc.api.AccountMigrationPrepareMigrationProviderWithoutAuthRequest) returns (.rpc.api.AccountMigrationPrepareMigrationProviderWithoutAuthResponse) {
 				option (google.api.http).post = "/AccountMigration/PrepareMigrationProviderWithoutAuth";
 				option (google.api.http).body = "*";
@@ -8627,9 +8662,37 @@ message rpc {
 			common.Response common_response = 9999;
 		}
 
+		message AchievementReceiveCategoryRewardRequest {
+			.enums.AchievementCategoryType achievement_category_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+		}
+
+		message AchievementReceiveCategoryRewardResponse {
+			message AchievementGroupRewardResult {
+				message ReceivedMission {
+					string mission_id = 1 [(options.master.fk) = "Mission:id"];
+					repeated int32 thresholds = 2;
+				}
+
+				string achievement_group_id = 1 [(options.master.fk) = "AchievementGroup:id"];
+				repeated common.RewardResult reward_results = 2;
+				repeated AchievementReceiveCategoryRewardResponse.AchievementGroupRewardResult.ReceivedMission received_missions = 3;
+				int32 reward_character_exp_quantity = 4;
+				repeated common.RewardResult character_level_up_reward_results = 5;
+			}
+
+			repeated AchievementReceiveCategoryRewardResponse.AchievementGroupRewardResult achievement_group_reward_results = 1;
+			common.Response common_response = 9999;
+		}
+
 		service Achievement {
 			rpc ReceiveReward (.rpc.api.AchievementReceiveRewardRequest) returns (.rpc.api.AchievementReceiveRewardResponse) {
 				option (google.api.http).post = "/Achievement/ReceiveReward";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc ReceiveCategoryReward (.rpc.api.AchievementReceiveCategoryRewardRequest) returns (.rpc.api.AchievementReceiveCategoryRewardResponse) {
+				option (google.api.http).post = "/Achievement/ReceiveCategoryReward";
 				option (google.api.http).body = "*";
 				option (options.check_option.check).enabled_response_cache = true;
 			}
@@ -8764,6 +8827,7 @@ message rpc {
 			string game_auth_token = 1 [(options.zap.hidden) = true];
 			bool is_play_integrity_check_required = 2;
 			string play_integrity_nonce = 3 [(options.zap.hidden) = true];
+			string google_play_games_player_id_hash = 4;
 		}
 
 		service Auth {
@@ -9526,6 +9590,7 @@ message rpc {
 						repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonMiniGameMarathonScoreBonus marathon_mini_game_marathon_score_bonuses = 20 [(options.zap.hidden) = true];
 						repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonLiveMarathonScoreBonus marathon_live_marathon_score_bonuses = 21 [(options.zap.hidden) = true];
 						repeated EventListEventInfoResponse.EventInfo.MarathonInfo.MarathonChapter.MarathonMiniGameMarathonScoreRate marathon_mini_game_marathon_score_rates = 22 [(options.zap.hidden) = true];
+						string exchange_booth_id = 23 [(options.master.fk) = "ExchangeBooth:id", (options.master.optional) = true];
 					}
 
 					string exchange_booth_group_id = 1 [(options.master.fk) = "ExchangeBoothGroup:id"];
@@ -9963,7 +10028,7 @@ message rpc {
 		message GachaDrawNormalRequest {
 			string gacha_button_id = 1 [(buf.validate.field).string.min_bytes = 1];
 			int32 draw_count = 2 [(buf.validate.field).int32.gte = 1];
-			repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20];
+			repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20, (buf.validate.field).repeated.items.ignore = IGNORE_ALWAYS];
 			int32 display_free_balance = 11;
 			int32 display_paid_balance = 12;
 		}
@@ -9978,7 +10043,7 @@ message rpc {
 		message GachaDrawCardSelectRequest {
 			string gacha_button_id = 1 [(buf.validate.field).string.min_bytes = 1];
 			int32 draw_count = 2 [(buf.validate.field).int32.gte = 1];
-			repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20];
+			repeated .common.Consumption display_consumptions = 10 [(buf.validate.field).repeated.max_items = 20, (buf.validate.field).repeated.items.ignore = IGNORE_ALWAYS];
 			int32 display_free_balance = 11;
 			int32 display_paid_balance = 12;
 		}
@@ -10187,6 +10252,33 @@ message rpc {
 
 			rpc Count (.google.protobuf.Empty) returns (.rpc.api.GiftCountResponse) {
 				option (google.api.http).post = "/Gift/Count";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+		}
+
+		message GooglePlayGamesGetAchievementStatusResponse {
+			bool is_updatable = 1;
+			common.Response common_response = 9999;
+		}
+
+		message GooglePlayGamesApplyAchievementRequest {
+			string server_auth_code = 1 [(buf.validate.field).string.min_bytes = 1, (options.zap.hidden) = true];
+		}
+
+		message GooglePlayGamesApplyAchievementResponse {
+			common.Response common_response = 9999;
+		}
+
+		service GooglePlayGames {
+			rpc GetAchievementStatus (.google.protobuf.Empty) returns (.rpc.api.GooglePlayGamesGetAchievementStatusResponse) {
+				option (google.api.http).post = "/GooglePlayGames/GetAchievementStatus";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc ApplyAchievement (.rpc.api.GooglePlayGamesApplyAchievementRequest) returns (.rpc.api.GooglePlayGamesApplyAchievementResponse) {
+				option (google.api.http).post = "/GooglePlayGames/ApplyAchievement";
 				option (google.api.http).body = "*";
 				option (options.check_option.check).enabled_response_cache = true;
 			}
@@ -10969,6 +11061,7 @@ message rpc {
 					string background_asset_id = 20 [(options.zap.hidden) = true];
 					string bgm_asset_id = 21 [(options.zap.hidden) = true];
 					int64 ranking_reveal_start_time = 22 [(options.zap.hidden) = true];
+					string exchange_booth_id = 23 [(options.master.fk) = "ExchangeBooth:id", (options.master.optional) = true];
 				}
 
 				message MarathonMiniGameMarathonScoreBonus {
