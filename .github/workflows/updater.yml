@@ -28,7 +28,9 @@ jobs:
           justapk==0.1.1 gplaydl==2.1.7 pyaxmlparser capstone==5.0.7 pyelftools==0.31 protobuf==3.20.3
 
       - name: run updater
-        run: python updater.py
+        env:
+          GPLAY_PROXY: ${{ secrets.GPLAY_PROXY }}
+        run: python -u updater.py
 
       - name: commit changes
         shell: bash

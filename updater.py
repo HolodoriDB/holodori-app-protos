@@ -21,12 +21,14 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
 import zipfile
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, TypeVar
+from typing import Callable, Generator, TypeVar
 
 from gplaydl.api import (
     AuthExpiredError,
@@ -59,8 +61,32 @@ T = TypeVar("T")
 # google play
 
 
+@contextmanager
+def _dispenser_proxy() -> Generator[None, None, None]:
+    """route the dispenser request through GPLAY_PROXY when it is set
+
+    cloudflare in front of aurora's dispenser refuses the actions runner ip. gplaydl's httpx
+    calls read the proxy env per request, so only the token fetch goes through the proxy and
+    the play api and the downloads stay direct
+    """
+    proxy = os.environ.get("GPLAY_PROXY")
+    if not proxy:
+        yield
+        return
+    saved = os.environ.get("HTTPS_PROXY")
+    os.environ["HTTPS_PROXY"] = proxy
+    try:
+        yield
+    finally:
+        if saved is None:
+            os.environ.pop("HTTPS_PROXY", None)
+        else:
+            os.environ["HTTPS_PROXY"] = saved
+
+
 def _gplay_auth(force: bool = False) -> dict:
-    auth = ensure_auth(arch="arm64", force_refresh=force)
+    with _dispenser_proxy():
+        auth = ensure_auth(arch="arm64", force_refresh=force)
     if not auth:
         raise RuntimeError("no anonymous google play token from the dispenser")
     return auth
