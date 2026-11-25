@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+import "common/live.gen.proto";
+import "common/reward.gen.proto";
+import "enums/live_evaluation_rank_type.gen.proto";
+import "enums/live_result_type.gen.proto";
+import "enums/music_difficulty_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "rpc/api/common/live.gen.proto";
+import "rpc/api/common/response.gen.proto";
+
+package rpc.api;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message LiveTowerStartLiveRequest {
+	string live_tower_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 stage_number = 2 [(buf.validate.field).int32.gte = 1];
+	string music_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	.enums.MusicDifficultyType music_difficulty_type = 4 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	string character_id = 5 [(buf.validate.field).string.min_bytes = 1];
+	int32 deck_number = 6 [(buf.validate.field).int32.gte = 1];
+	bool is_auto_play = 7;
+	common.LiveSkinInfo skin_info = 8;
+	string music_mv_category_id = 9;
+}
+
+message LiveTowerStartLiveResponse {
+	int32 seed = 1;
+	common.Response common_response = 9999;
+}
+
+message LiveTowerFinishLiveRequest {
+	.common.LiveBaseResult result = 1;
+	int64 bonus_applied_score = 2 [(buf.validate.field).int64.gte = 0];
+}
+
+message LiveTowerFinishLiveResponse {
+	.enums.LiveResultType result_type = 1;
+	bool is_cleared = 2;
+	int32 before_stage_number = 3;
+	int32 after_stage_number = 4;
+	repeated .common.Reward stage_clear_rewards = 5;
+	.enums.LiveEvaluationRankType evaluation_rank_type = 6;
+	int32 evaluation_rank_plus = 7;
+	int64 past_character_highest_score = 8;
+	repeated .common.Reward music_clear_count_rewards = 9;
+	repeated .common.Reward music_full_combo_rewards = 10;
+	repeated .common.Reward music_highest_score_rank_rewards = 11;
+	repeated .common.Reward music_max_combo_count_phase_rewards = 12;
+	common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 13;
+	common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 14;
+	int64 technical_score = 15;
+	common.Response common_response = 9999;
+}
+
+message LiveTowerRetryLiveRequest {
+	.common.LiveBaseResult result = 1;
+	int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
+}
+
+message LiveTowerRetryLiveResponse {
+	int32 seed = 1;
+	common.Response common_response = 9999;
+}
+
+message LiveTowerRetireLiveRequest {
+	.common.LiveBaseResult result = 1;
+	int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
+}
+
+message LiveTowerRetireLiveResponse {
+	common.Response common_response = 9999;
+}
+
+service LiveTower {
+	rpc StartLive (.rpc.api.LiveTowerStartLiveRequest) returns (.rpc.api.LiveTowerStartLiveResponse) {
+		option (google.api.http).post = "/LiveTower/StartLive";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishLive (.rpc.api.LiveTowerFinishLiveRequest) returns (.rpc.api.LiveTowerFinishLiveResponse) {
+		option (google.api.http).post = "/LiveTower/FinishLive";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc RetryLive (.rpc.api.LiveTowerRetryLiveRequest) returns (.rpc.api.LiveTowerRetryLiveResponse) {
+		option (google.api.http).post = "/LiveTower/RetryLive";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc RetireLive (.rpc.api.LiveTowerRetireLiveRequest) returns (.rpc.api.LiveTowerRetireLiveResponse) {
+		option (google.api.http).post = "/LiveTower/RetireLive";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+}

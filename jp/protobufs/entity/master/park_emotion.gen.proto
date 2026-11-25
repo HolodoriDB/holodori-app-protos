@@ -9,11 +9,12 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkEmotion {
+	option (options.master.indexes) = "character_id";
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
 	.enums.ParkEmotionType type = 2;
-	string character_id = 3 [(options.master.fk) = "Character:id"];
+	string character_id = 3 [(options.master.fk) = "Character:id", (options.master.index) = true];
 	string name_lang_id = 4 [(options.master.fk) = "LangParkEmotion:id"];
 	string asset_id = 5;
 	string thumbnail_asset_id = 6;

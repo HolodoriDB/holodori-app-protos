@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+import "entity/transaction/options/transaction.proto";
+
+package entity.transaction;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserShogiCharacter {
+	string shogi_id = 2 [(options.master.fk) = "Shogi:id", (options.transaction.pk) = true];
+	string character_id = 3 [(options.master.fk) = "Character:id", (options.transaction.pk) = true];
+	int64 play_count = 4;
+	int64 win_count = 5;
+}

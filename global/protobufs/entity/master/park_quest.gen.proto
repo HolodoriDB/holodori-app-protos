@@ -9,6 +9,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message ParkQuest {
+	option (options.master.indexes) = "type";
+	option (options.master.indexes) = "play_character_id";
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
@@ -16,8 +18,8 @@ message ParkQuest {
 	int32 number = 3;
 	string title_lang_id = 4 [(options.master.fk) = "LangParkQuest:id"];
 	string description_lang_id = 5 [(options.master.fk) = "LangParkQuest:id", (options.master.optional) = true];
-	.enums.ParkQuestType type = 6;
-	string play_character_id = 7 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+	.enums.ParkQuestType type = 6 [(options.master.index) = true];
+	string play_character_id = 7 [(options.master.fk) = "Character:id", (options.master.index) = true, (options.master.optional) = true];
 	int32 priority = 8;
 	string area_grouping_id = 9 [(options.master.fk) = "AreaGrouping:id"];
 	string view_condition_group_id = 11 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];

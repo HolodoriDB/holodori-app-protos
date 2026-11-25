@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+import "enums/live_multi_music_selection_type.gen.proto";
+
+package rpc.multi_game_server_manager;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/multi_game_server_manager";
+option csharp_namespace = "Vision.Common.Proto.MultiGameServerManager";
+
+message MultiGameLivePickMusicRequest {
+	repeated LiveMultiUserSelectedMusic user_selected_musics = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+message MultiGameLivePickMusicResponse {
+	LiveMultiUserSelectedMusic user_selected_music = 1;
+}
+
+message LiveMultiUserSelectedMusic {
+	string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	string music_id = 2;
+	.enums.LiveMultiMusicSelectionType selection_type = 3 [(buf.validate.field).enum.defined_only = true];
+}
+
+service MultiGameLive {
+	rpc PickMusic (.rpc.multi_game_server_manager.MultiGameLivePickMusicRequest) returns (.rpc.multi_game_server_manager.MultiGameLivePickMusicResponse);
+}

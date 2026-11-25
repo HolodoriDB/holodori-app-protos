@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveTowerStage {
+	option (options.master.table) = true;
+
+	string live_tower_id = 1 [(options.master.fk) = "LiveTower:id", (options.master.pk) = true];
+	int32 number = 2 [(options.master.pk) = true];
+	repeated string music_ids = 3 [(options.master.fk) = "Music:id"];
+	int64 clear_score = 4;
+	repeated string bonus_character_ids = 9 [(options.master.fk) = "Character:id"];
+	int32 bonus_character_score_up_permil_up = 10 [(options.master.optional) = true];
+	string view_condition_group_id = 11 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 12 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	repeated .common.Reward clear_rewards = 1000 [(options.master.optional) = true];
+	bool is_skip_disabled = 1001 [(options.master.optional) = true];
+	int64 live_deck_evaluation_value_benchmark_threshold_s = 1002 [(options.master.optional) = true];
+	int64 live_deck_evaluation_value_benchmark_threshold_a = 1003 [(options.master.optional) = true];
+	int64 live_deck_evaluation_value_benchmark_threshold_b = 1004 [(options.master.optional) = true];
+}

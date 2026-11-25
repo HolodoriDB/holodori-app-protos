@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "buf/validate/validate.proto";
 import "enums/payment_method.gen.proto";
+import "enums/payment_pending_receipt_recovery_type.gen.proto";
 import "enums/shop_charge_item_type.gen.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
@@ -95,6 +96,21 @@ message PaymentFulfillOrderResponse {
 	common.Response common_response = 9999;
 }
 
+message PaymentListPendingReceiptSettingRequest {
+	.enums.PaymentMethod payment_method = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	repeated string payment_transaction_ids = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 200, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
+}
+
+message PaymentListPendingReceiptSettingResponse {
+	message PendingReceiptSetting {
+		string payment_transaction_id = 1;
+		.enums.PaymentPendingReceiptRecoveryType recovery_type = 2;
+	}
+
+	repeated PaymentListPendingReceiptSettingResponse.PendingReceiptSetting pending_receipt_settings = 1;
+	common.Response common_response = 9999;
+}
+
 message PaymentCreateOrderResponse {
 	common.Response common_response = 9999;
 }
@@ -154,5 +170,11 @@ service Payment {
 		option (options.check_option.error).error_codes = ERROR_CODE_PAYMENT_EXCEED_MAX_MONTHLY_PAID_QUANTITY;
 		option (options.check_option.error).error_codes = ERROR_CODE_PAYMENT_FULFILL_ORDER_BLOCKED_DONT_RECOVERY_FOREVER;
 		option (options.check_option.error).error_codes = ERROR_CODE_PAYMENT_FULFILL_ORDER_BLOCKED_CHALLENGE_RECOVERY_NEXT_TIME;
+	}
+
+	rpc ListPendingReceiptSetting (.rpc.api.PaymentListPendingReceiptSettingRequest) returns (.rpc.api.PaymentListPendingReceiptSettingResponse) {
+		option (google.api.http).post = "/Payment/ListPendingReceiptSetting";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
 	}
 }

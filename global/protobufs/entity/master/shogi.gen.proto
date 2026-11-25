@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
+import "enums/shogi_play_type.gen.proto";
+import "enums/shogi_stage_size_type.gen.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message Shogi {
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.ShogiPlayType play_type = 2;
+	string view_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string shogi_piece_position_group_id = 5 [(options.master.fk) = "ShogiPiecePosition:group_id", (options.master.optional) = true];
+	repeated string npc_leader_character_ids = 6 [(options.master.fk) = "Character:id"];
+	.enums.ShogiStageSizeType stage_size_type = 7;
+	int32 shogi_npc_level = 8 [(options.master.optional) = true];
+	int32 take_back_count_limit = 9 [(options.master.optional) = true];
+	int32 stage = 13 [(options.master.optional) = true];
+	int32 lower_rating = 14 [(options.master.optional) = true];
+	int32 upper_rating = 15 [(options.master.optional) = true];
+	int32 turn_time_limit_seconds = 16 [(options.master.optional) = true];
+	string start_tips_id = 17 [(options.master.fk) = "Tips:id", (options.master.optional) = true];
+	string finish_tips_id = 18 [(options.master.fk) = "Tips:id", (options.master.optional) = true];
+	string hint_tips_id = 20 [(options.master.fk) = "Tips:id", (options.master.optional) = true];
+	string game_start_display_clear_condition_lang_id = 21 [(options.master.fk) = "LangShogi:id"];
+	bool is_npc_initial_hand_piece_hidden = 22 [(options.master.optional) = true];
+	repeated .common.Reward win_rewards = 1000 [(options.master.optional) = true];
+	repeated .common.SimplifiedReward lose_rewards = 1001 [(options.master.optional) = true];
+	repeated .common.SimplifiedReward draw_rewards = 1002 [(options.master.optional) = true];
+}

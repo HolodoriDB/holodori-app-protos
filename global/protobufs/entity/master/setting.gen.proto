@@ -75,6 +75,10 @@ message Setting {
 	int32 live_long_note_end_acceptable_window_milliseconds = 1128;
 	int32 live_long_relay_acceptable_window_milliseconds = 1129;
 	int32 live_result_note_count_tolerance = 1130;
+	int32 live_tower_live_deck_evaluation_value_benchmark_s_permil_multiply = 1135;
+	int32 live_tower_live_deck_evaluation_value_benchmark_a_permil_multiply = 1136;
+	int32 live_tower_live_deck_evaluation_value_benchmark_b_permil_multiply = 1137;
+	int32 live_tower_live_deck_evaluation_value_requirement_unit = 1138;
 	int32 paid_stone_max_quantity = 1200;
 	int32 payment_monthly_jpy_alert_quantity = 1201;
 	int32 payment_monthly_jpy_limit_quantity_lt16 = 1202;
@@ -128,6 +132,10 @@ message Setting {
 	int32 gacha_promotion_pickup_card_movie_change_seconds = 1608;
 	int32 ranking_no_reward_threshold_rank_out_of_range = 1609;
 	int32 gift_list_history_limit_count = 1614;
+	int32 card_upgrade_potential_all_limit_count = 1621;
+	int32 skill_tree_preset_name_max_length = 1622;
+	int32 skill_tree_preset_user_memo_max_length = 1623;
+	int32 skill_tree_preset_max_count = 1624;
 	int32 work_slot_reset_interval_hours = 1700;
 	int32 work_slot_power_debounce_milliseconds = 1701;
 	int32 work_local_push_cool_time_minutes = 1702;

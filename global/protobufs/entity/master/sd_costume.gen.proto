@@ -8,10 +8,11 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message SdCostume {
+	option (options.master.indexes) = "character_id";
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
-	string character_id = 2 [(options.master.fk) = "Character:id"];
+	string character_id = 2 [(options.master.fk) = "Character:id", (options.master.index) = true];
 	string name_lang_id = 3 [(options.master.fk) = "LangSdCostume:id"];
 	string hair_asset_id = 4;
 	string accessory_hair_asset_id = 5 [(options.master.optional) = true];

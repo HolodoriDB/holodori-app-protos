@@ -705,6 +705,25 @@ message dto {
 			repeated MiniGameJumpRopeResult.UserResult user_results = 2 [(buf.validate.field).repeated.min_items = 1];
 		}
 
+		message MiniGameShogiResult {
+			option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_MINI_GAME_SHOGI;
+
+			message UserResult {
+				message PieceResult {
+					.enums.ShogiPieceType piece_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+					int64 take_count = 2 [(buf.validate.field).int64.gte = 0];
+					int64 taken_count = 3 [(buf.validate.field).int64.gte = 0];
+				}
+
+				.enums.ShogiResultType result_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+				repeated MiniGameShogiResult.UserResult.PieceResult piece_results = 2 [(buf.validate.field).repeated.max_items = 5];
+				int32 invalid_request_count = 3 [(buf.validate.field).int32.gte = 0];
+				MultiGameCommonUserResult common_user_result = 100 [(buf.validate.field).required = true];
+			}
+
+			repeated MiniGameShogiResult.UserResult user_results = 1 [(buf.validate.field).repeated.min_items = 2, (buf.validate.field).repeated.max_items = 2];
+		}
+
 		message MiniGameSplashBallResult {
 			option (options.multi_game_result.message).multi_game_type = MULTI_GAME_TYPE_MINI_GAME_SPLASH_BALL;
 
@@ -1116,6 +1135,8 @@ message entity {
 		}
 
 		message CharacterVoice {
+			option (options.master.indexes) = "character_id";
+			option (options.master.indexes) = "character_voice_category_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
@@ -1483,10 +1504,11 @@ message entity {
 		}
 
 		message Costume {
+			option (options.master.indexes) = "character_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
-			string character_id = 2 [(options.master.fk) = "Character:id"];
+			string character_id = 2 [(options.master.fk) = "Character:id", (options.master.index) = true];
 			string name_lang_id = 3 [(options.master.fk) = "LangCostume:id"];
 			string live_leader_skill_id = 4 [(options.master.fk) = "LiveLeaderSkill:id", (options.master.optional) = true];
 			string asset_id = 5;
@@ -2260,6 +2282,39 @@ message entity {
 			string description_lang_id = 1000 [(options.master.fk) = "LangGeneratedLiveSpecialSkillLevel:id"];
 		}
 
+		message LiveTower {
+			option (options.master.table) = true;
+
+			string id = 1 [(options.master.pk) = true];
+			int64 start_time = 2;
+			int64 end_time = 3 [(options.master.optional) = true];
+			string view_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			string unlock_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			string name_lang_id = 6 [(options.master.fk) = "LangLiveTower:id", (options.master.optional) = true];
+			string logo_asset_id = 7 [(options.master.optional) = true];
+			string background_asset_id = 8 [(options.master.optional) = true];
+			.enums.LiveTowerType type = 9;
+			int32 priority = 999;
+		}
+
+		message LiveTowerStage {
+			option (options.master.table) = true;
+
+			string live_tower_id = 1 [(options.master.fk) = "LiveTower:id", (options.master.pk) = true];
+			int32 number = 2 [(options.master.pk) = true];
+			repeated string music_ids = 3 [(options.master.fk) = "Music:id"];
+			int64 clear_score = 4;
+			repeated string bonus_character_ids = 9 [(options.master.fk) = "Character:id"];
+			int32 bonus_character_score_up_permil_up = 10 [(options.master.optional) = true];
+			string view_condition_group_id = 11 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			string unlock_condition_group_id = 12 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			repeated .common.Reward clear_rewards = 1000 [(options.master.optional) = true];
+			bool is_skip_disabled = 1001 [(options.master.optional) = true];
+			int64 live_deck_evaluation_value_benchmark_threshold_s = 1002 [(options.master.optional) = true];
+			int64 live_deck_evaluation_value_benchmark_threshold_a = 1003 [(options.master.optional) = true];
+			int64 live_deck_evaluation_value_benchmark_threshold_b = 1004 [(options.master.optional) = true];
+		}
+
 		message LoadingDisplay {
 			option (options.master.table) = true;
 
@@ -2350,8 +2405,8 @@ message entity {
 			string mini_game_reward_up_stamina_conversion_id = 8 [(options.master.fk) = "MiniGameRewardUpStaminaConversion:id", (options.master.optional) = true];
 			.enums.MiniGameCharacterDisplayType character_display_type = 9;
 			bool is_multi_game = 10 [(options.master.optional) = true];
-			string ranking_view_description_lang_id = 11 [(options.master.fk) = "LangMiniGame:id"];
-			string ranking_score_type_lang_id = 12 [(options.master.fk) = "LangMiniGame:id"];
+			string ranking_view_description_lang_id = 11 [(options.master.fk) = "LangMiniGame:id", (options.master.optional) = true];
+			string ranking_score_type_lang_id = 12 [(options.master.fk) = "LangMiniGame:id", (options.master.optional) = true];
 			string mini_game_top_tips_id = 13 [(options.master.fk) = "Tips:id"];
 			string multi_game_top_tips_id = 14 [(options.master.fk) = "Tips:id"];
 			int32 order = 999;
@@ -2411,6 +2466,9 @@ message entity {
 		}
 
 		message Mission {
+			option (options.master.indexes) = "mission_group_id";
+			option (options.master.indexes) = "achievement_group_id";
+			option (options.master.indexes) = "character_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
@@ -2562,6 +2620,7 @@ message entity {
 			.enums.MusicDifficultyType difficulty_type = 2 [(options.master.pk) = true];
 			int32 full_combo_note_count = 3;
 			int32 max_combo_count_reward_threshold = 4;
+			int32 score_coefficient_permyriad_multiply = 7;
 		}
 
 		message MusicDifficultyConfiguration {
@@ -2662,11 +2721,12 @@ message entity {
 		}
 
 		message ParkEmotion {
+			option (options.master.indexes) = "character_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
 			.enums.ParkEmotionType type = 2;
-			string character_id = 3 [(options.master.fk) = "Character:id"];
+			string character_id = 3 [(options.master.fk) = "Character:id", (options.master.index) = true];
 			string name_lang_id = 4 [(options.master.fk) = "LangParkEmotion:id"];
 			string asset_id = 5;
 			string thumbnail_asset_id = 6;
@@ -2738,10 +2798,11 @@ message entity {
 		}
 
 		message ParkFishingFishLottery {
+			option (options.master.indexes) = "park_fishing_spot_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
-			string park_fishing_spot_id = 2 [(options.master.fk) = "ParkFishingSpot:id"];
+			string park_fishing_spot_id = 2 [(options.master.fk) = "ParkFishingSpot:id", (options.master.index) = true];
 			string park_fishing_bait_id = 3 [(options.master.fk) = "ParkFishingBait:id"];
 			string park_fishing_time_period_id = 4 [(options.master.fk) = "ParkFishingTimePeriod:id"];
 			string park_fishing_fish_id = 5 [(options.master.fk) = "ParkFishingFish:id"];
@@ -2832,7 +2893,6 @@ message entity {
 			string id = 1 [(options.master.pk) = true];
 			string graph_id = 2;
 			repeated string parameter_values = 3 [(options.master.optional) = true];
-			repeated .enums.ParkScriptParameterType parameter_types = 4 [(options.master.optional) = true];
 		}
 
 		message ParkHighLow {
@@ -2936,6 +2996,7 @@ message entity {
 			string mini_game_reward_up_stamina_conversion_id = 16 [(options.master.fk) = "MiniGameRewardUpStaminaConversion:id", (options.master.optional) = true];
 			string park_fishing_spot_id = 30 [(options.master.fk) = "ParkFishingSpot:id", (options.master.optional) = true];
 			string area_grouping_id = 31 [(options.master.fk) = "AreaGrouping:id", (options.master.optional) = true];
+			.enums.AreaSeaType area_sea_type = 36 [(options.master.optional) = true];
 		}
 
 		message ParkPosition {
@@ -2987,6 +3048,8 @@ message entity {
 		}
 
 		message ParkQuest {
+			option (options.master.indexes) = "type";
+			option (options.master.indexes) = "play_character_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
@@ -2994,8 +3057,8 @@ message entity {
 			int32 number = 3;
 			string title_lang_id = 4 [(options.master.fk) = "LangParkQuest:id"];
 			string description_lang_id = 5 [(options.master.fk) = "LangParkQuest:id", (options.master.optional) = true];
-			.enums.ParkQuestType type = 6;
-			string play_character_id = 7 [(options.master.fk) = "Character:id", (options.master.optional) = true];
+			.enums.ParkQuestType type = 6 [(options.master.index) = true];
+			string play_character_id = 7 [(options.master.fk) = "Character:id", (options.master.index) = true, (options.master.optional) = true];
 			int32 priority = 8;
 			string area_grouping_id = 9 [(options.master.fk) = "AreaGrouping:id"];
 			string view_condition_group_id = 11 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
@@ -3088,6 +3151,13 @@ message entity {
 			string condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 		}
 
+		message ParkQuestShogi {
+			option (options.master.table) = true;
+
+			string id = 1 [(options.master.pk) = true];
+			string shogi_id = 2 [(options.master.fk) = "Shogi:id"];
+		}
+
 		message ParkQuestSplashBall {
 			option (options.master.table) = true;
 
@@ -3140,6 +3210,7 @@ message entity {
 			string area_id = 1010 [(options.master.fk) = "Area:id", (options.master.optional) = true];
 			string park_quest_chase_id = 1011 [(options.master.fk) = "ParkQuestChase:id", (options.master.optional) = true];
 			string park_quest_splash_ball_id = 1012 [(options.master.fk) = "ParkQuestSplashBall:id", (options.master.optional) = true];
+			string park_quest_shogi_id = 1013 [(options.master.fk) = "ParkQuestShogi:id", (options.master.optional) = true];
 		}
 
 		message ParkQuestStepGroup {
@@ -3306,10 +3377,11 @@ message entity {
 		}
 
 		message SdCostume {
+			option (options.master.indexes) = "character_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
-			string character_id = 2 [(options.master.fk) = "Character:id"];
+			string character_id = 2 [(options.master.fk) = "Character:id", (options.master.index) = true];
 			string name_lang_id = 3 [(options.master.fk) = "LangSdCostume:id"];
 			string hair_asset_id = 4;
 			string accessory_hair_asset_id = 5 [(options.master.optional) = true];
@@ -3320,10 +3392,11 @@ message entity {
 		}
 
 		message SdCostumeHairAccessory {
+			option (options.master.indexes) = "character_id";
 			option (options.master.table) = true;
 
 			string id = 1 [(options.master.pk) = true];
-			string character_id = 2 [(options.master.fk) = "Character:id"];
+			string character_id = 2 [(options.master.fk) = "Character:id", (options.master.index) = true];
 			string name_lang_id = 3 [(options.master.fk) = "LangSdCostumeHairAccessory:id"];
 			string asset_id = 4;
 			string thumbnail_asset_id = 5 [(options.master.optional) = true];
@@ -3410,6 +3483,10 @@ message entity {
 			int32 live_long_note_end_acceptable_window_milliseconds = 1128;
 			int32 live_long_relay_acceptable_window_milliseconds = 1129;
 			int32 live_result_note_count_tolerance = 1130;
+			int32 live_tower_live_deck_evaluation_value_benchmark_s_permil_multiply = 1135;
+			int32 live_tower_live_deck_evaluation_value_benchmark_a_permil_multiply = 1136;
+			int32 live_tower_live_deck_evaluation_value_benchmark_b_permil_multiply = 1137;
+			int32 live_tower_live_deck_evaluation_value_requirement_unit = 1138;
 			int32 paid_stone_max_quantity = 1200;
 			int32 payment_monthly_jpy_alert_quantity = 1201;
 			int32 payment_monthly_jpy_limit_quantity_lt16 = 1202;
@@ -3463,6 +3540,10 @@ message entity {
 			int32 gacha_promotion_pickup_card_movie_change_seconds = 1608;
 			int32 ranking_no_reward_threshold_rank_out_of_range = 1609;
 			int32 gift_list_history_limit_count = 1614;
+			int32 card_upgrade_potential_all_limit_count = 1621;
+			int32 skill_tree_preset_name_max_length = 1622;
+			int32 skill_tree_preset_user_memo_max_length = 1623;
+			int32 skill_tree_preset_max_count = 1624;
 			int32 work_slot_reset_interval_hours = 1700;
 			int32 work_slot_power_debounce_milliseconds = 1701;
 			int32 work_local_push_cool_time_minutes = 1702;
@@ -3499,6 +3580,113 @@ message entity {
 			int32 notification_list_api_call_interval_minute = 2500;
 			bool is_enable_realtime_notification = 2501;
 			int32 pc_crash_report_max_concurrent_send_count = 2900;
+		}
+
+		message Shogi {
+			option (options.master.table) = true;
+
+			string id = 1 [(options.master.pk) = true];
+			.enums.ShogiPlayType play_type = 2;
+			string view_condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			string unlock_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			string shogi_piece_position_group_id = 5 [(options.master.fk) = "ShogiPiecePosition:group_id", (options.master.optional) = true];
+			repeated string npc_leader_character_ids = 6 [(options.master.fk) = "Character:id"];
+			.enums.ShogiStageSizeType stage_size_type = 7;
+			int32 shogi_npc_level = 8 [(options.master.optional) = true];
+			int32 take_back_count_limit = 9 [(options.master.optional) = true];
+			int32 stage = 13 [(options.master.optional) = true];
+			int32 lower_rating = 14 [(options.master.optional) = true];
+			int32 upper_rating = 15 [(options.master.optional) = true];
+			int32 turn_time_limit_seconds = 16 [(options.master.optional) = true];
+			string start_tips_id = 17 [(options.master.fk) = "Tips:id", (options.master.optional) = true];
+			string finish_tips_id = 18 [(options.master.fk) = "Tips:id", (options.master.optional) = true];
+			string hint_tips_id = 20 [(options.master.fk) = "Tips:id", (options.master.optional) = true];
+			string game_start_display_clear_condition_lang_id = 21 [(options.master.fk) = "LangShogi:id"];
+			bool is_npc_initial_hand_piece_hidden = 22 [(options.master.optional) = true];
+			repeated .common.Reward win_rewards = 1000 [(options.master.optional) = true];
+			repeated .common.SimplifiedReward lose_rewards = 1001 [(options.master.optional) = true];
+			repeated .common.SimplifiedReward draw_rewards = 1002 [(options.master.optional) = true];
+		}
+
+		message ShogiCharacterPersonality {
+			option (options.master.table) = true;
+
+			string character_id = 1 [(options.master.fk) = "Character:id", (options.master.pk) = true];
+			string shogi_character_personality_parameter_group_id = 2 [(options.master.fk) = "ShogiCharacterPersonalityParameter:group_id"];
+			int32 personality_weight = 3 [(options.master.optional) = true];
+			int32 base_miss_rate = 4 [(options.master.optional) = true];
+			int32 selection_score = 5 [(options.master.optional) = true];
+		}
+
+		message ShogiCharacterPersonalityParameter {
+			option (options.master.table) = true;
+
+			string group_id = 1 [(options.master.pk) = true];
+			.enums.ShogiCharacterPersonalityType personality_type = 2 [(options.master.pk) = true];
+			.enums.ShogiCharacterPersonalityPieceType personality_piece_type = 3 [(options.master.pk) = true];
+			int32 weight = 4;
+		}
+
+		message ShogiCharacterVoice {
+			option (options.master.table) = true;
+
+			string character_id = 1 [(options.master.fk) = "Character:id", (options.master.pk) = true];
+			.enums.ShogiVoiceTimingType timing_type = 2 [(options.master.pk) = true];
+			.enums.ShogiWipeType wipe_type = 3 [(options.master.pk) = true];
+			int32 number = 4 [(options.master.pk) = true];
+			string character_voice_id = 5 [(options.master.fk) = "CharacterVoice:id", (options.master.optional) = true];
+			string text_lang_id = 6 [(options.master.fk) = "LangShogiCharacterVoice:id", (options.master.optional) = true];
+			bool is_wipe_display = 7 [(options.master.optional) = true];
+		}
+
+		message ShogiMultiMatchingRule {
+			option (options.master.table) = true;
+
+			int32 seconds = 1 [(options.master.optional) = true, (options.master.pk) = true];
+			int32 max_rating_diff = 2;
+			int32 exclude_recent_opponent_count = 3 [(options.master.optional) = true];
+		}
+
+		message ShogiNpcLevel {
+			option (options.master.table) = true;
+
+			int32 level = 1 [(options.master.pk) = true];
+			int32 ai_level = 2;
+			int32 personality_weight = 3 [(options.master.optional) = true];
+			int32 miss_rating_correction = 4 [(options.master.optional) = true];
+			int32 miss_ai_level_correction = 5 [(options.master.optional) = true];
+			repeated .enums.ShogiMissTriggerType miss_trigger_types = 6;
+			.enums.ShogiMissSelectionType miss_selection_type = 7;
+			bool is_drop_piece_allowed = 8 [(options.master.optional) = true];
+		}
+
+		message ShogiPiecePosition {
+			option (options.master.table) = true;
+
+			string group_id = 1 [(options.master.pk) = true];
+			int32 number = 2 [(options.master.pk) = true];
+			.enums.ShogiPieceType piece_type = 3;
+			int32 position_x = 4 [(options.master.optional) = true];
+			int32 position_y = 5 [(options.master.optional) = true];
+			.enums.ShogiPieceOwnerType owner_type = 6;
+		}
+
+		message ShogiSetting {
+			option (options.master.table) = true;
+
+			string id = 1 [(options.master.pk) = true];
+			repeated string shogi_piece_non_leader_character_ids = 10 [(options.master.fk) = "Character:id"];
+			int32 mini_game_reward_up_stamina_consumption_unit = 50;
+			string mini_game_reward_up_stamina_effect_group_id = 51 [(options.master.fk) = "MiniGameRewardUpStaminaEffect:group_id"];
+			int32 normal_hold_seconds = 105;
+			int32 challenge_hold_seconds = 106;
+			int32 multi_game_setup_time_limit_seconds = 205;
+			int32 multi_hold_seconds = 206;
+			int32 multi_force_exit_announce_no_operation_turn_count = 208;
+			int32 max_user_count = 209;
+			int32 random_match_min_user_count = 210;
+			int32 private_room_min_user_count = 211;
+			int32 random_match_start_time_limit_seconds = 212;
 		}
 
 		message ShopChargeItemProduct {
@@ -3751,6 +3939,28 @@ message entity {
 			int32 order = 999;
 		}
 
+		message StartupNotification {
+			option (options.master.table) = true;
+
+			string id = 1 [(options.master.pk) = true];
+			.enums.StartupNotificationType type = 2;
+			string condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+			int32 priority = 4;
+			int64 start_time = 5;
+			int64 end_time = 6 [(options.master.optional) = true];
+			string asset_id = 7;
+			.enums.TransitionType content_startup_notification_transition_type = 100 [(options.master.optional) = true];
+			string content_startup_notification_transition_id = 101 [(options.master.optional) = true];
+			.enums.StartupNotificationImageType content_startup_notification_image_type = 102 [(options.master.optional) = true];
+			string content_startup_notification_sub_asset_id = 103 [(options.master.optional) = true];
+			string content_startup_notification_external_url_jpn = 104 [(options.master.optional) = true];
+			string content_startup_notification_external_url_eng = 105 [(options.master.optional) = true];
+			string content_startup_notification_external_url_ind = 106 [(options.master.optional) = true];
+			string content_startup_notification_external_url_kor = 107 [(options.master.optional) = true];
+			string content_startup_notification_external_url_cht = 108 [(options.master.optional) = true];
+			string content_startup_notification_external_url_chs = 109 [(options.master.optional) = true];
+		}
+
 		message Story {
 			option (options.master.table) = true;
 
@@ -3767,6 +3977,7 @@ message entity {
 		}
 
 		message SystemVoice {
+			option (options.master.indexes) = "game_screen_type,type,character_id";
 			option (options.master.table) = true;
 
 			.enums.GameScreenType game_screen_type = 1 [(options.master.pk) = true];
@@ -3774,6 +3985,7 @@ message entity {
 			string character_voice_id = 3 [(options.master.fk) = "CharacterVoice:id", (options.master.pk) = true];
 			string condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 			int32 ratio = 5;
+			string character_id = 1000 [(options.master.column) = true, (options.master.fk) = "Character:id"];
 		}
 
 		message Tips {
@@ -3928,6 +4140,17 @@ message entity {
 			repeated string released_skill_tree_node_group_ids = 3;
 			repeated string connected_skill_tree_node_group_ids = 4;
 			repeated string connected_skill_tree_node_card_ids = 5 [(options.master.fk) = "Card:id"];
+		}
+
+		message UserCharacterSkillTreePreset {
+			string character_id = 2 [(options.master.fk) = "Character:id", (options.transaction.pk) = true];
+			int32 number = 3 [(options.transaction.pk) = true];
+			string name = 4;
+			string user_memo = 5;
+			repeated string released_skill_tree_node_group_ids = 6;
+			repeated string connected_skill_tree_node_group_ids = 7;
+			repeated string connected_skill_tree_node_card_ids = 8 [(options.master.fk) = "Card:id"];
+			int64 last_saved_time = 9;
 		}
 
 		message UserChase {
@@ -4085,6 +4308,12 @@ message entity {
 			string live_skin_id = 2 [(options.master.fk) = "LiveSkin:id", (options.transaction.pk) = true];
 		}
 
+		message UserLiveTower {
+			string live_tower_id = 2 [(options.master.fk) = "LiveTower:id", (options.transaction.pk) = true];
+			int32 cleared_stage_number = 3;
+			.enums.MusicDifficultyType last_played_music_difficulty_type = 4;
+		}
+
 		message UserMiniGame {
 			int32 reward_up_stamina = 2;
 			int64 last_reward_up_stamina_auto_recovery_time = 3;
@@ -4240,11 +4469,13 @@ message entity {
 
 		message UserParkHighLow {
 			int64 daily_reward_quantity = 3;
+			int64 last_clear_time = 4;
 		}
 
 		message UserParkLottery {
 			string park_lottery_id = 2 [(options.master.fk) = "ParkLottery:id", (options.transaction.pk) = true];
 			int32 daily_draw_count = 3;
+			int64 last_draw_time = 4;
 		}
 
 		message UserParkQuest {
@@ -4334,6 +4565,14 @@ message entity {
 			int64 login_status_last_updated_time = 23;
 			string multi_game_unpublished_user_name = 24;
 			int64 message_last_updated_time = 25;
+			.enums.ProfilePublishScopeType achievement_publish_scope_type = 27;
+			.enums.ProfilePublishScopeType highest_live_deck_evaluation_publish_scope_type = 28;
+			.enums.ProfilePublishScopeType emblem_publish_scope_type = 29;
+			.enums.ProfilePublishScopeType character_rank_publish_scope_type = 30;
+			.enums.ProfilePublishScopeType music_highest_score_rating_publish_scope_type = 31;
+			.enums.ProfilePublishScopeType live_result_publish_scope_type = 32;
+			.enums.ProfilePublishScopeType mini_game_result_publish_scope_type = 33;
+			.enums.ProfilePublishScopeType live_tower_publish_scope_type = 34;
 			repeated .common.EmblemPosition emblem_positions = 1001;
 		}
 
@@ -4346,6 +4585,44 @@ message entity {
 		message UserSdCostumeHairAccessory {
 			string sd_costume_hair_accessory_id = 2 [(options.master.fk) = "SdCostumeHairAccessory:id", (options.transaction.pk) = true];
 			int64 read_time = 3;
+		}
+
+		message UserShogi {
+			string shogi_id = 2 [(options.master.fk) = "Shogi:id", (options.transaction.pk) = true];
+			bool is_cleared = 3;
+			int64 play_count = 4;
+			int64 win_count = 5;
+			int64 last_played_time = 6;
+			string npc_leader_character_id = 7 [(options.master.fk) = "Character:id"];
+		}
+
+		message UserShogiCharacter {
+			string shogi_id = 2 [(options.master.fk) = "Shogi:id", (options.transaction.pk) = true];
+			string character_id = 3 [(options.master.fk) = "Character:id", (options.transaction.pk) = true];
+			int64 play_count = 4;
+			int64 win_count = 5;
+		}
+
+		message UserShogiPieceCharacter {
+			.enums.ShogiPieceType piece_type = 2 [(options.transaction.pk) = true];
+			string character_id = 3 [(options.master.fk) = "Character:id"];
+		}
+
+		message UserShogiPieceSummary {
+			.enums.ShogiPieceType piece_type = 2 [(options.transaction.pk) = true];
+			int64 take_count = 3;
+			int64 taken_count = 4;
+		}
+
+		message UserShogiSummary {
+			int32 single_rating = 2;
+			int32 multi_rating = 3;
+			repeated string recent_multi_opponent_user_ids = 4;
+			int32 multi_match_count = 5;
+			int32 last_multi_rating_change = 6;
+			string last_multi_finished_multi_game_result_id = 7;
+			int32 challenge_continuous_win_count = 8;
+			int32 challenge_highest_continuous_win_count = 9;
 		}
 
 		message UserShopChargeItemConsumable {
@@ -4383,6 +4660,10 @@ message entity {
 		message UserStamp {
 			string stamp_id = 2 [(options.master.fk) = "Stamp:id", (options.transaction.pk) = true];
 			bool is_active = 3;
+		}
+
+		message UserStartupNotification {
+			string startup_notification_id = 2 [(options.master.fk) = "StartupNotification:id", (options.transaction.pk) = true];
 		}
 
 		message UserStory {
@@ -4593,6 +4874,8 @@ message enums {
 		CHEAT_FEATURE_TYPE_COMBO_CARD_GAME = 104;
 		CHEAT_FEATURE_TYPE_CHASE = 105;
 		CHEAT_FEATURE_TYPE_SPLASH_BALL = 106;
+		CHEAT_FEATURE_TYPE_SINGLE_SHOGI = 107;
+		CHEAT_FEATURE_TYPE_MULTI_SHOGI = 108;
 		CHEAT_FEATURE_TYPE_PARK_HIGH_LOW = 200;
 		CHEAT_FEATURE_TYPE_PARK_FISHING = 201;
 	}
@@ -4816,6 +5099,7 @@ message enums {
 		CONDITION_TYPE_MEMBERSHIP_TOTAL_JOIN_MONTH_COUNT = 1601;
 		CONDITION_TYPE_GACHA_DRAW = 1700;
 		CONDITION_TYPE_GACHA_TERM_LIMITED_AVAILABLE = 1701;
+		CONDITION_TYPE_GACHA_BUTTON_DRAW = 1702;
 		CONDITION_TYPE_STORY_READ = 1800;
 		CONDITION_TYPE_MINI_GAME_PLAY_COUNT = 1900;
 		CONDITION_TYPE_JUMP_ROPE_CLEAR = 2000;
@@ -4824,6 +5108,7 @@ message enums {
 		CONDITION_TYPE_COOKING_PUZZLE_MAX_SCORE = 2101;
 		CONDITION_TYPE_CIRCUIT_TOP_RANK_COUNT = 2200;
 		CONDITION_TYPE_COMBO_CARD_GAME_TOP_RANK_COUNT = 2300;
+		CONDITION_TYPE_LIVE_TOWER_STAGE_CLEAR = 2400;
 		CONDITION_TYPE_SET = 99998;
 		CONDITION_TYPE_NEGATIVE_SET = 99999;
 	}
@@ -4940,6 +5225,7 @@ message enums {
 		ERROR_CODE_UNLINKED_PROVIDER = 2040;
 		ERROR_CODE_ACCOUNT_MIGRATION_SAME_USER = 2041;
 		ERROR_CODE_AUTH_CREATE_IP_RATE_LIMIT_EXCEEDED = 2042;
+		ERROR_CODE_OCTO_ASSET_NOT_LATEST = 2043;
 		ERROR_CODE_MULTI_GAME_MATCHING_TIMEOUT = 3001;
 		ERROR_CODE_MULTI_GAME_SERVER_ALLOCATION_FAILED = 3002;
 		ERROR_CODE_MULTI_GAME_PRIVATE_ROOM_FULFILL = 3003;
@@ -5022,12 +5308,14 @@ message enums {
 		FEATURE_MAINTENANCE_TYPE_MISSION_PASS = 7;
 		FEATURE_MAINTENANCE_TYPE_MUSIC_SHOP = 8;
 		FEATURE_MAINTENANCE_TYPE_EVENT = 9;
+		FEATURE_MAINTENANCE_TYPE_LIVE_TOWER = 10;
 		FEATURE_MAINTENANCE_TYPE_JUMP_ROPE = 1000;
 		FEATURE_MAINTENANCE_TYPE_CIRCUIT = 1001;
 		FEATURE_MAINTENANCE_TYPE_COOKING_PUZZLE = 1002;
 		FEATURE_MAINTENANCE_TYPE_COMBO_CARD_GAME = 1003;
 		FEATURE_MAINTENANCE_TYPE_CHASE = 1004;
 		FEATURE_MAINTENANCE_TYPE_SPLASH_BALL = 1005;
+		FEATURE_MAINTENANCE_TYPE_SHOGI = 1006;
 	}
 
 	enum FriendStatusType {
@@ -5186,6 +5474,9 @@ message enums {
 		GAME_SCREEN_TYPE_MULTI_MINI_GAME_RESULT_REMATCH_MINI_GAME_SELECT = 3603;
 		GAME_SCREEN_TYPE_MULTI_MINI_GAME_RESULT_REMATCH_WAITING = 3604;
 		GAME_SCREEN_TYPE_EVENT_PORTAL = 3700;
+		GAME_SCREEN_TYPE_LIVE_TOWER_NORMAL = 3800;
+		GAME_SCREEN_TYPE_LIVE_TOWER_EVENT = 3801;
+		GAME_SCREEN_TYPE_SHOGI_INGAME = 3900;
 		GAME_SCREEN_TYPE_TITLE_TOP = 10000;
 		GAME_SCREEN_TYPE_WORK_INDIVIDUAL_RESULT = 10100;
 		GAME_SCREEN_TYPE_WORK_MULTIPLE_RESULT = 10101;
@@ -5239,6 +5530,7 @@ message enums {
 		INSTANT_TIPS_DISPLAY_SCENE_TYPE_UNKNOWN = 0;
 		INSTANT_TIPS_DISPLAY_SCENE_TYPE_PARK_TOP = 1;
 		INSTANT_TIPS_DISPLAY_SCENE_TYPE_MINI_GAME_TOP = 2;
+		INSTANT_TIPS_DISPLAY_SCENE_TYPE_SKILL_TREE = 3;
 	}
 
 	enum InstantTipsType {
@@ -5413,6 +5705,7 @@ message enums {
 		LIVE_PLAY_TYPE_MULTI_LIVE_COOPERATION_GRADE_MATCH = 3;
 		LIVE_PLAY_TYPE_SINGLE_MUSIC_CREATIVE_CHART = 100;
 		LIVE_PLAY_TYPE_SINGLE_PARK_QUEST_LIVE = 200;
+		LIVE_PLAY_TYPE_SINGLE_LIVE_TOWER = 300;
 	}
 
 	enum LiveResultType {
@@ -5460,6 +5753,12 @@ message enums {
 		LIVE_SKIN_TYPE_CHARACTER_EFFECT = 8;
 	}
 
+	enum LiveTowerType {
+		LIVE_TOWER_TYPE_UNKNOWN = 0;
+		LIVE_TOWER_TYPE_PERMANENT = 1;
+		LIVE_TOWER_TYPE_EVENT = 2;
+	}
+
 	enum LoadingDisplayType {
 		LOADING_DISPLAY_TYPE_UNKNOWN = 0;
 		LOADING_DISPLAY_TYPE_TIPS = 1;
@@ -5493,6 +5792,7 @@ message enums {
 		MINI_GAME_TYPE_COMBO_CARD_GAME = 4;
 		MINI_GAME_TYPE_CHASE = 5;
 		MINI_GAME_TYPE_SPLASH_BALL = 6;
+		MINI_GAME_TYPE_SHOGI = 7;
 	}
 
 	enum MissionCategoryType {
@@ -5575,6 +5875,7 @@ message enums {
 		MISSION_TYPE_INCREMENT_SPLASH_BALL_COLD_LOSE_COUNT = 70;
 		MISSION_TYPE_INCREMENT_SPLASH_BALL_GOAL_COUNT = 71;
 		MISSION_TYPE_INCREMENT_PARK_FISHING_FISH_FAILED_COUNT = 72;
+		MISSION_TYPE_INCREMENT_SHOGI_STAGE_CLEAR_COUNT = 73;
 		MISSION_TYPE_ABSOLUTE_LOGIN_COUNT = 1000;
 		MISSION_TYPE_ABSOLUTE_LIVE_HIGHEST_SCORE = 1001;
 		MISSION_TYPE_ABSOLUTE_MISSION_CLEAR_COUNT = 1002;
@@ -5620,6 +5921,11 @@ message enums {
 		MISSION_TYPE_ABSOLUTE_MUSIC_HIGHEST_SCORE_RATING_CHARACTER_COUNT = 1048;
 		MISSION_TYPE_ABSOLUTE_MUSIC_HIGHEST_SCORE_RATING_SUM = 1049;
 		MISSION_TYPE_ABSOLUTE_MARATHON_LIVE_CLEAR_MUSIC_COUNT = 1050;
+		MISSION_TYPE_ABSOLUTE_SHOGI_STAGE_CLEAR_COUNT = 1051;
+		MISSION_TYPE_ABSOLUTE_SHOGI_PLAY_COUNT = 1052;
+		MISSION_TYPE_ABSOLUTE_SHOGI_PIECE_TAKE_COUNT = 1053;
+		MISSION_TYPE_ABSOLUTE_SHOGI_PIECE_TAKEN_COUNT = 1054;
+		MISSION_TYPE_ABSOLUTE_LIVE_TOWER_STAGE_CLEAR_COUNT = 1055;
 		MISSION_TYPE_CONDITION_SATISFY = 2000;
 	}
 
@@ -5627,6 +5933,13 @@ message enums {
 		MULTI_GAME_MATCH_TYPE_UNKNOWN = 0;
 		MULTI_GAME_MATCH_TYPE_RANDOM = 1;
 		MULTI_GAME_MATCH_TYPE_PRIVATE_ROOM = 2;
+	}
+
+	enum MultiGamePenaltyType {
+		MULTI_GAME_PENALTY_TYPE_UNKNOWN = 0;
+		MULTI_GAME_PENALTY_TYPE_DISCONNECTION = 1;
+		MULTI_GAME_PENALTY_TYPE_LIVE_COOPERATION_ABANDONMENT = 2;
+		MULTI_GAME_PENALTY_TYPE_LIVE_COOPERATION_MUSIC_UNSELECTED = 3;
 	}
 
 	enum MultiGamePrivateRoomCreationType {
@@ -5658,6 +5971,7 @@ message enums {
 		MULTI_GAME_TYPE_MINI_GAME_COMBO_CARD_GAME = 2003;
 		MULTI_GAME_TYPE_MINI_GAME_CHASE = 2004;
 		MULTI_GAME_TYPE_MINI_GAME_SPLASH_BALL = 2005;
+		MULTI_GAME_TYPE_MINI_GAME_SHOGI = 2006;
 	}
 
 	enum MusicCategoryType {
@@ -5822,13 +6136,15 @@ message enums {
 		PARK_ACTION_TYPE_FERRIS_WHEEL = 24;
 		PARK_ACTION_TYPE_EVENT = 25;
 		PARK_ACTION_TYPE_PARK_FISHING_FISH_BOOK = 26;
-		PARK_ACTION_TYPE_PARK_TIME_TRANSITION = 27;
+		PARK_ACTION_TYPE_LIVE_TOWER = 27;
+		PARK_ACTION_TYPE_PARK_TIME_TRANSITION = 28;
 		PARK_ACTION_TYPE_JUMP_ROPE = 1000;
 		PARK_ACTION_TYPE_CIRCUIT = 1001;
 		PARK_ACTION_TYPE_COOKING_PUZZLE = 1002;
 		PARK_ACTION_TYPE_COMBO_CARD_GAME = 1003;
 		PARK_ACTION_TYPE_CHASE = 1004;
 		PARK_ACTION_TYPE_SPLASH_BALL = 1005;
+		PARK_ACTION_TYPE_SHOGI = 1006;
 		PARK_ACTION_TYPE_QUEST_MISSION = 2000;
 		PARK_ACTION_TYPE_QUEST_LIVE = 2001;
 		PARK_ACTION_TYPE_QUEST_DELIVERY = 2002;
@@ -5837,12 +6153,14 @@ message enums {
 		PARK_ACTION_TYPE_QUEST_FACILITY_BOAT = 2005;
 		PARK_ACTION_TYPE_QUEST_AREA_SELECT = 2007;
 		PARK_ACTION_TYPE_AREA_MOVE = 2008;
+		PARK_ACTION_TYPE_QUEST_LIVE_TOWER_READ = 2009;
 		PARK_ACTION_TYPE_QUEST_JUMP_ROPE = 3000;
 		PARK_ACTION_TYPE_QUEST_CIRCUIT = 3001;
 		PARK_ACTION_TYPE_QUEST_COOKING_PUZZLE = 3002;
 		PARK_ACTION_TYPE_QUEST_COMBO_CARD_GAME = 3003;
 		PARK_ACTION_TYPE_QUEST_CHASE = 3004;
 		PARK_ACTION_TYPE_QUEST_SPLASH_BALL = 3005;
+		PARK_ACTION_TYPE_QUEST_SHOGI = 3006;
 		PARK_ACTION_TYPE_MULTI_GAME_MINI_GAME = 4000;
 		PARK_ACTION_TYPE_MULTI_GAME_LIVE = 4001;
 	}
@@ -5864,6 +6182,7 @@ message enums {
 		PARK_FISHING_FISH_CATEGORY_TYPE_UNKNOWN = 0;
 		PARK_FISHING_FISH_CATEGORY_TYPE_FISH_NORMAL = 1;
 		PARK_FISHING_FISH_CATEGORY_TYPE_FISH_RARE = 2;
+		PARK_FISHING_FISH_CATEGORY_TYPE_FISH_GOLD = 3;
 		PARK_FISHING_FISH_CATEGORY_TYPE_SPECIAL = 99;
 		PARK_FISHING_FISH_CATEGORY_TYPE_RESOURCE = 999;
 	}
@@ -6022,13 +6341,6 @@ message enums {
 		PARK_QUEST_TYPE_EVENT = 5;
 	}
 
-	enum ParkScriptParameterType {
-		PARK_SCRIPT_PARAMETER_TYPE_UNKNOWN = 0;
-		PARK_SCRIPT_PARAMETER_TYPE_INT = 1;
-		PARK_SCRIPT_PARAMETER_TYPE_FLOAT = 2;
-		PARK_SCRIPT_PARAMETER_TYPE_VECTOR3 = 3;
-	}
-
 	enum ParkTargetType {
 		PARK_TARGET_TYPE_UNKNOWN = 0;
 		PARK_TARGET_TYPE_NPC = 1;
@@ -6047,6 +6359,11 @@ message enums {
 		PAYMENT_METHOD_APPLE_IAP = 1;
 		PAYMENT_METHOD_GOOGLE_IAP = 2;
 		PAYMENT_METHOD_STEAM_MTX = 3;
+	}
+
+	enum PaymentPendingReceiptRecoveryType {
+		PAYMENT_PENDING_RECEIPT_RECOVERY_TYPE_UNKNOWN = 0;
+		PAYMENT_PENDING_RECEIPT_RECOVERY_TYPE_SKIP = 1;
 	}
 
 	enum PaymentSubscriptionStatus {
@@ -6071,6 +6388,26 @@ message enums {
 		PROFILE_MINI_GAME_RESULT_TYPE_CHASE_MISCHIEF_TEAM = 50;
 		PROFILE_MINI_GAME_RESULT_TYPE_CHASE_PATROL_TEAM = 51;
 		PROFILE_MINI_GAME_RESULT_TYPE_SPLASH_BALL = 60;
+		PROFILE_MINI_GAME_RESULT_TYPE_SHOGI = 70;
+	}
+
+	enum ProfilePublishContentType {
+		PROFILE_PUBLISH_CONTENT_TYPE_UNKNOWN = 0;
+		PROFILE_PUBLISH_CONTENT_TYPE_ACHIEVEMENT = 1;
+		PROFILE_PUBLISH_CONTENT_TYPE_HIGHEST_LIVE_DECK_EVALUATION = 2;
+		PROFILE_PUBLISH_CONTENT_TYPE_EMBLEM = 3;
+		PROFILE_PUBLISH_CONTENT_TYPE_CHARACTER_RANK = 4;
+		PROFILE_PUBLISH_CONTENT_TYPE_MUSIC_HIGHEST_SCORE_RATING = 5;
+		PROFILE_PUBLISH_CONTENT_TYPE_LIVE_RESULT = 6;
+		PROFILE_PUBLISH_CONTENT_TYPE_MINI_GAME_RESULT = 7;
+		PROFILE_PUBLISH_CONTENT_TYPE_LIVE_TOWER = 8;
+	}
+
+	enum ProfilePublishScopeType {
+		PROFILE_PUBLISH_SCOPE_TYPE_UNKNOWN = 0;
+		PROFILE_PUBLISH_SCOPE_TYPE_ALL = 1;
+		PROFILE_PUBLISH_SCOPE_TYPE_FRIEND_ONLY = 2;
+		PROFILE_PUBLISH_SCOPE_TYPE_NOT_PUBLISHED = 3;
 	}
 
 	enum ProfilePublishType {
@@ -6162,6 +6499,105 @@ message enums {
 		SEMI_RESOURCE_TYPE_CARD_POTENTIAL_UPGRADE_POINT = 1;
 		SEMI_RESOURCE_TYPE_LIVE_REWARD_UP_STAMINA = 2;
 		SEMI_RESOURCE_TYPE_MINI_GAME_REWARD_UP_STAMINA = 3;
+	}
+
+	enum ShogiCharacterPersonalityPieceType {
+		SHOGI_CHARACTER_PERSONALITY_PIECE_TYPE_UNKNOWN = 0;
+		SHOGI_CHARACTER_PERSONALITY_PIECE_TYPE_LION = 1;
+		SHOGI_CHARACTER_PERSONALITY_PIECE_TYPE_GIRAFFE = 2;
+		SHOGI_CHARACTER_PERSONALITY_PIECE_TYPE_ELEPHANT = 3;
+		SHOGI_CHARACTER_PERSONALITY_PIECE_TYPE_CHICK = 4;
+		SHOGI_CHARACTER_PERSONALITY_PIECE_TYPE_ROOSTER = 5;
+		SHOGI_CHARACTER_PERSONALITY_PIECE_TYPE_ALL = 99;
+	}
+
+	enum ShogiCharacterPersonalityType {
+		SHOGI_CHARACTER_PERSONALITY_TYPE_UNKNOWN = 0;
+		SHOGI_CHARACTER_PERSONALITY_TYPE_PIECE_USE_EVALUATION = 1;
+		SHOGI_CHARACTER_PERSONALITY_TYPE_MOVE_DIRECTION_FORWARD_EVALUATION = 2;
+		SHOGI_CHARACTER_PERSONALITY_TYPE_MOVE_DIRECTION_BACKWARD_EVALUATION = 3;
+		SHOGI_CHARACTER_PERSONALITY_TYPE_DROP_EVALUATION = 4;
+		SHOGI_CHARACTER_PERSONALITY_TYPE_CAPTURE_EVALUATION = 5;
+		SHOGI_CHARACTER_PERSONALITY_TYPE_SAFETY_EVALUATION = 6;
+	}
+
+	enum ShogiMissSelectionType {
+		SHOGI_MISS_SELECTION_TYPE_UNKNOWN = 0;
+		SHOGI_MISS_SELECTION_TYPE_NONE = 1;
+		SHOGI_MISS_SELECTION_TYPE_WORST = 2;
+		SHOGI_MISS_SELECTION_TYPE_RANDOM = 3;
+		SHOGI_MISS_SELECTION_TYPE_DEPTH = 4;
+	}
+
+	enum ShogiMissTriggerType {
+		SHOGI_MISS_TRIGGER_TYPE_UNKNOWN = 0;
+		SHOGI_MISS_TRIGGER_TYPE_DISADVANTAGE = 1;
+		SHOGI_MISS_TRIGGER_TYPE_PIECE_TAKEN = 2;
+	}
+
+	enum ShogiPieceOwnerType {
+		SHOGI_PIECE_OWNER_TYPE_UNKNOWN = 0;
+		SHOGI_PIECE_OWNER_TYPE_MYSELF = 1;
+		SHOGI_PIECE_OWNER_TYPE_OPPONENT = 2;
+	}
+
+	enum ShogiPieceType {
+		SHOGI_PIECE_TYPE_UNKNOWN = 0;
+		SHOGI_PIECE_TYPE_LION = 1;
+		SHOGI_PIECE_TYPE_GIRAFFE = 2;
+		SHOGI_PIECE_TYPE_ELEPHANT = 3;
+		SHOGI_PIECE_TYPE_CHICK = 4;
+		SHOGI_PIECE_TYPE_ROOSTER = 5;
+	}
+
+	enum ShogiPlayType {
+		SHOGI_PLAY_TYPE_UNKNOWN = 0;
+		SHOGI_PLAY_TYPE_SINGLE = 10;
+		SHOGI_PLAY_TYPE_MULTI = 20;
+		SHOGI_PLAY_TYPE_PARK_QUEST_SINGLE = 30;
+		SHOGI_PLAY_TYPE_PARK_QUEST_MULTI = 40;
+	}
+
+	enum ShogiResultType {
+		SHOGI_RESULT_TYPE_UNKNOWN = 0;
+		SHOGI_RESULT_TYPE_WIN = 1;
+		SHOGI_RESULT_TYPE_LOSE = 2;
+		SHOGI_RESULT_TYPE_DRAW = 3;
+		SHOGI_RESULT_TYPE_SURRENDER = 4;
+	}
+
+	enum ShogiStageSizeType {
+		SHOGI_STAGE_SIZE_TYPE_UNKNOWN = 0;
+		SHOGI_STAGE_SIZE_TYPE_W3_H4 = 1;
+		SHOGI_STAGE_SIZE_TYPE_W4_H4 = 2;
+	}
+
+	enum ShogiVoiceTimingType {
+		SHOGI_VOICE_TIMING_TYPE_UNKNOWN = 0;
+		SHOGI_VOICE_TIMING_TYPE_START = 1;
+		SHOGI_VOICE_TIMING_TYPE_SELF_TURN = 2;
+		SHOGI_VOICE_TIMING_TYPE_THINKING = 3;
+		SHOGI_VOICE_TIMING_TYPE_MOVE_PIECE = 4;
+		SHOGI_VOICE_TIMING_TYPE_CAPTURE = 5;
+		SHOGI_VOICE_TIMING_TYPE_CAPTURED = 6;
+		SHOGI_VOICE_TIMING_TYPE_CHECK = 7;
+		SHOGI_VOICE_TIMING_TYPE_CHECKED = 8;
+		SHOGI_VOICE_TIMING_TYPE_WIN = 9;
+		SHOGI_VOICE_TIMING_TYPE_DRAW = 10;
+		SHOGI_VOICE_TIMING_TYPE_LOSE = 11;
+		SHOGI_VOICE_TIMING_TYPE_CHECKMATE = 12;
+		SHOGI_VOICE_TIMING_TYPE_PON = 13;
+	}
+
+	enum ShogiWipeType {
+		SHOGI_WIPE_TYPE_UNKNOWN = 0;
+		SHOGI_WIPE_TYPE_IDLE = 1;
+		SHOGI_WIPE_TYPE_SMILE = 2;
+		SHOGI_WIPE_TYPE_JOY = 3;
+		SHOGI_WIPE_TYPE_SAD = 4;
+		SHOGI_WIPE_TYPE_ANGER = 5;
+		SHOGI_WIPE_TYPE_DOYA = 6;
+		SHOGI_WIPE_TYPE_SURPRISE = 7;
 	}
 
 	enum ShopChargeItemSubscriptionType {
@@ -6512,6 +6948,12 @@ message enums {
 		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_REWARD_COIN = 293;
 		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_PARK_TIME_PERIOD_CHANGE_TRANSITION_SELECT = 294;
 		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_PARK_TIME_PERIOD_CHANGE_TRANSITION_JINGLE = 295;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_LIVE_TOWER_STAGE_UP = 296;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_LIVE_TOWER_STAGE_UP_RANK_GTE_5 = 297;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_LIVE_TOWER_ALL_CLEAR = 298;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_MUSIC_CREATIVE_CHART_BEFORE_STARTING_UI_IN = 299;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_MUSIC_CREATIVE_CHART_BEFORE_STARTING_UI_OUT = 300;
+		SYSTEM_SOUND_TYPE_SE_SYSTEM_ANIMATION_COMMON_STAGE_RELEASE = 301;
 		SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_ROPE_1 = 10000;
 		SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_ROPE_2 = 10001;
 		SYSTEM_SOUND_TYPE_SE_JUMP_ROPE_JUMP = 10002;
@@ -6676,6 +7118,7 @@ message enums {
 		SYSTEM_SOUND_TYPE_SE_PARK_FISHING_FISH_HIT_IN = 10619;
 		SYSTEM_SOUND_TYPE_SE_PARK_FISHING_UI_ANIMATION_IN = 10620;
 		SYSTEM_SOUND_TYPE_SE_PARK_FISHING_UI_ANIMATION_OUT = 10621;
+		SYSTEM_SOUND_TYPE_SE_PARK_FISHING_RESULT_GOLD = 10622;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_BURNER = 10700;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_BUBBLE = 10701;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BOAT_SPLASH = 10702;
@@ -6703,10 +7146,33 @@ message enums {
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_REMAINING_TIME_ANNOUNCE = 10724;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_FINISH = 10725;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_FEVER_TIME_NOTICE = 10726;
-		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOLD_BALL_SPAWN_NOTICE = 10727;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_GOLD_BALL_OMEN = 10728;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_BALL_SPAWN = 10729;
 		SYSTEM_SOUND_TYPE_SE_SPLASH_BALL_MAP_SCALE_DOWN = 10730;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_OUT_GAME_STAGE_RELEASE = 10800;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_OUT_GAME_STAGE_SELECT = 10801;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_OUT_GAME_ORGANIZATION = 10802;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_PIECE_SELECT_HEADER = 10803;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_CANCEL = 10804;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_TURN_CHANGE = 10805;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_TIMER_ALERT = 10806;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_TAKE_BACK = 10807;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_PIECE_DRAG = 10808;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_PIECE_CAPTURE = 10809;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_PIECE_CAPTURE_REACTION = 10810;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_START = 10811;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_FINISH = 10812;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_PIECE_MOVE_DECISION = 10813;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_CHECK_ALERT = 10814;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_CLEAR_CONDITION = 10815;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_OWN_PIECE_SELECT = 10816;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_MOTION_MOVE = 10817;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_MOTION_PROMOTE = 10818;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_MOTION_ATTACK_HAMMER = 10819;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_MOTION_ATTACK_SWORD = 10820;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_MOTION_FALL_WATER = 10821;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_MOTION_LEADER_CAPTURE_WIN = 10822;
+		SYSTEM_SOUND_TYPE_SE_SHOGI_MOTION_LEADER_CAPTURE_LOSE = 10823;
 		SYSTEM_SOUND_TYPE_SE_MINI_GAME_COMMON_COUNTDOWN = 20000;
 	}
 
@@ -6818,6 +7284,18 @@ message enums {
 		SYSTEM_VOICE_TYPE_CV_PARK_FISHING_CATCH_NORMAL = 2402;
 		SYSTEM_VOICE_TYPE_CV_PARK_FISHING_CATCH_RARE = 2403;
 		SYSTEM_VOICE_TYPE_CV_PARK_FISHING_AWAY = 2404;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_START = 2500;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_SELF_TURN = 2501;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_THINKING = 2502;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_MOVE_PIECE = 2503;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_CAPTURE = 2504;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_CAPTURED = 2505;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_CHECK = 2506;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_CHECKED = 2507;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_WIN = 2508;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_DRAW = 2509;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_LOSE = 2510;
+		SYSTEM_VOICE_TYPE_CV_SHOGI_CHECKMATE = 2511;
 		SYSTEM_VOICE_TYPE_CV_MINI_GAME_START = 12000;
 		SYSTEM_VOICE_TYPE_CV_MINI_GAME_FINISH = 12001;
 		SYSTEM_VOICE_TYPE_CV_MINI_GAME_RESULT_NORMAL = 12002;
@@ -6955,6 +7433,7 @@ message enums {
 		TRANSITION_TYPE_MUSIC_HIGHEST_SCORE_RATING = 2003;
 		TRANSITION_TYPE_EVENT_TOP = 2100;
 		TRANSITION_TYPE_NOTICE = 2200;
+		TRANSITION_TYPE_LIVE_TOWER = 2300;
 		TRANSITION_TYPE_EXTERNAL_URL = 10000;
 	}
 
@@ -6987,6 +7466,8 @@ message enums {
 		TUTORIAL_TYPE_MUSIC_HIGHEST_SCORE_RANKING = 19;
 		TUTORIAL_TYPE_MUSIC_HIGHEST_SCORE_RATING_RANKING = 20;
 		TUTORIAL_TYPE_MUSIC_CREATIVE_CHART = 21;
+		TUTORIAL_TYPE_LIVE_TOWER = 22;
+		TUTORIAL_TYPE_LIVE_TOWER_EVENT = 23;
 		TUTORIAL_TYPE_EXCHANGE_AREA01 = 501;
 		TUTORIAL_TYPE_EXCHANGE_AREA02_TRAINING_ITEM = 502;
 		TUTORIAL_TYPE_COOKING_PUZZLE = 1001;
@@ -6995,6 +7476,7 @@ message enums {
 		TUTORIAL_TYPE_COMBO_CARD_GAME = 1004;
 		TUTORIAL_TYPE_CHASE = 1005;
 		TUTORIAL_TYPE_SPLASH_BALL = 1006;
+		TUTORIAL_TYPE_SHOGI = 1008;
 		TUTORIAL_TYPE_MINI_GAME_CONVERT_REWARD_UP_STAMINA_AREA02_BET_COIN = 1101;
 		TUTORIAL_TYPE_MULTI_GAME_LIVE = 1501;
 		TUTORIAL_TYPE_MULTI_GAME_MINI_GAME = 1502;
@@ -7015,6 +7497,8 @@ message enums {
 		TUTORIAL_TYPE_PARK_CHARACTER_QUEST_INVITATION = 2105;
 		TUTORIAL_TYPE_PARK_QUEST_CHASE = 2106;
 		TUTORIAL_TYPE_PARK_QUEST_SPLASH_BALL = 2107;
+		TUTORIAL_TYPE_PARK_QUEST_SHOGI = 2108;
+		TUTORIAL_TYPE_PARK_QUEST_LIVE_TOWER = 2109;
 		TUTORIAL_TYPE_PARK_PRESENT_AREA01 = 10101;
 		TUTORIAL_TYPE_PARK_RANDOM_SYMBOL_AREA01 = 10201;
 		TUTORIAL_TYPE_PARK_CHARACTER_SHOP_AREA01_CANDY = 10301;
@@ -7988,6 +8472,7 @@ message rpc {
 
 			message MultiGamePenaltyInfo {
 				int64 unplayable_end_time = 1;
+				.enums.MultiGamePenaltyType penalty_type = 2;
 			}
 
 			message MultiGameMatchRandomInfo {
@@ -8119,6 +8604,14 @@ message rpc {
 				bool is_live_result_publish = 103;
 				bool is_mini_game_result_publish = 104;
 				bool is_user_info_publish_in_multi_game = 105;
+				.enums.ProfilePublishScopeType achievement_publish_scope_type = 106;
+				.enums.ProfilePublishScopeType highest_live_deck_evaluation_publish_scope_type = 107;
+				.enums.ProfilePublishScopeType emblem_publish_scope_type = 108;
+				.enums.ProfilePublishScopeType character_rank_publish_scope_type = 109;
+				.enums.ProfilePublishScopeType music_highest_score_rating_publish_scope_type = 110;
+				.enums.ProfilePublishScopeType live_result_publish_scope_type = 111;
+				.enums.ProfilePublishScopeType mini_game_result_publish_scope_type = 112;
+				.enums.ProfilePublishScopeType live_tower_publish_scope_type = 113;
 				string sd_costume_id = 200 [(options.master.fk) = "SdCostumeCostume:id"];
 				string sd_costume_hair_accessory_id = 201 [(options.master.fk) = "SdCostumeHairAccessory:id"];
 			}
@@ -8175,6 +8668,7 @@ message rpc {
 				repeated UserProfileDetailInfo.MusicHighestScoreRatingInfo top_music_highest_score_rating_infos = 13;
 				int32 combo_card_game_average_rank_percent = 14;
 				int64 combo_card_game_chip_diff_total_quantity = 15;
+				int32 permanent_live_tower_cleared_stage_number = 16;
 			}
 
 			message CustomPalette {
@@ -8248,6 +8742,19 @@ message rpc {
 				.enums.ResourceType resource_type = 1;
 				string resource_id = 2;
 				int32 quantity_permil_up = 3;
+			}
+
+			message ShogiResultInfo {
+				.enums.ShogiResultType result_type = 1;
+				bool is_self_disconnected = 2;
+				bool is_opponent_disconnected = 3;
+				bool is_opponent_npc = 4;
+			}
+
+			message ShogiPieceResult {
+				.enums.ShogiPieceType piece_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+				int32 take_count = 2 [(buf.validate.field).int32.gte = 0];
+				int32 taken_count = 3 [(buf.validate.field).int32.gte = 0];
 			}
 
 			message Shop {
@@ -8392,6 +8899,7 @@ message rpc {
 				repeated .entity.transaction.UserCard user_card_list = 315485766;
 				repeated .entity.transaction.UserCharacter user_character_list = 370704040;
 				repeated .entity.transaction.UserCharacterSkillTree user_character_skill_tree_list = 73736905;
+				repeated .entity.transaction.UserCharacterSkillTreePreset user_character_skill_tree_preset_list = 197255861;
 				.entity.transaction.UserChase user_chase = 497386110;
 				.entity.transaction.UserCircuit user_circuit = 112741949;
 				.entity.transaction.UserComboCardGame user_combo_card_game = 314166149;
@@ -8415,6 +8923,7 @@ message rpc {
 				repeated .entity.transaction.UserLiveDeck user_live_deck_list = 470144554;
 				repeated .entity.transaction.UserLiveDeckPosition user_live_deck_position_list = 152863089;
 				repeated .entity.transaction.UserLiveSkin user_live_skin_list = 343431710;
+				repeated .entity.transaction.UserLiveTower user_live_tower_list = 390282620;
 				.entity.transaction.UserMiniGame user_mini_game = 340241879;
 				repeated .entity.transaction.UserMiniGameSetting user_mini_game_setting_list = 530487597;
 				repeated .entity.transaction.UserMission user_mission_list = 176225192;
@@ -8451,12 +8960,18 @@ message rpc {
 				.entity.transaction.UserProfile user_profile = 49977942;
 				repeated .entity.transaction.UserSdCostume user_sd_costume_list = 111187419;
 				repeated .entity.transaction.UserSdCostumeHairAccessory user_sd_costume_hair_accessory_list = 63877454;
+				repeated .entity.transaction.UserShogi user_shogi_list = 218551724;
+				repeated .entity.transaction.UserShogiCharacter user_shogi_character_list = 189043397;
+				repeated .entity.transaction.UserShogiPieceCharacter user_shogi_piece_character_list = 277714137;
+				repeated .entity.transaction.UserShogiPieceSummary user_shogi_piece_summary_list = 124606416;
+				.entity.transaction.UserShogiSummary user_shogi_summary = 507584427;
 				repeated .entity.transaction.UserShopChargeItemConsumable user_shop_charge_item_consumable_list = 453945318;
 				repeated .entity.transaction.UserShopChargeItemSubscription user_shop_charge_item_subscription_list = 327967430;
 				repeated .entity.transaction.UserShopConsumptionItem user_shop_consumption_item_list = 120532481;
 				repeated .entity.transaction.UserSkillTreePoint user_skill_tree_point_list = 83652733;
 				.entity.transaction.UserSplashBall user_splash_ball = 466811555;
 				repeated .entity.transaction.UserStamp user_stamp_list = 258014175;
+				repeated .entity.transaction.UserStartupNotification user_startup_notification_list = 457104778;
 				repeated .entity.transaction.UserStory user_story_list = 376356693;
 				.entity.transaction.UserTime user_time = 165033958;
 				repeated .entity.transaction.UserTutorial user_tutorial_list = 201375606;
@@ -8899,6 +9414,15 @@ message rpc {
 			int32 after_potential_upgrade_count = 2 [(buf.validate.field).int32.gte = 1];
 		}
 
+		message CardUpgradePotentialAllRequest {
+			message CardPotentialUpgrade {
+				string card_id = 1 [(buf.validate.field).string.min_bytes = 1];
+				int32 after_potential_upgrade_count = 2 [(buf.validate.field).int32.gte = 1];
+			}
+
+			repeated CardUpgradePotentialAllRequest.CardPotentialUpgrade potential_upgrades = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 200];
+		}
+
 		message CardLevelUpResponse {
 			common.Response common_response = 9999;
 		}
@@ -8908,6 +9432,10 @@ message rpc {
 		}
 
 		message CardUpgradePotentialResponse {
+			common.Response common_response = 9999;
+		}
+
+		message CardUpgradePotentialAllResponse {
 			common.Response common_response = 9999;
 		}
 
@@ -8938,6 +9466,12 @@ message rpc {
 
 			rpc UpgradePotential (.rpc.api.CardUpgradePotentialRequest) returns (.rpc.api.CardUpgradePotentialResponse) {
 				option (google.api.http).post = "/Card/UpgradePotential";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc UpgradePotentialAll (.rpc.api.CardUpgradePotentialAllRequest) returns (.rpc.api.CardUpgradePotentialAllResponse) {
+				option (google.api.http).post = "/Card/UpgradePotentialAll";
 				option (google.api.http).body = "*";
 				option (options.check_option.check).enabled_response_cache = true;
 			}
@@ -9615,6 +10149,7 @@ message rpc {
 				string view_condition_group_id = 12 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 				string unlock_condition_group_id = 13 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 				EventListEventInfoResponse.EventInfo.MarathonInfo marathon_info = 14;
+				int32 priority = 15 [(options.zap.hidden) = true];
 			}
 
 			repeated EventListEventInfoResponse.EventInfo event_infos = 1;
@@ -9636,6 +10171,7 @@ message rpc {
 				string mission_group_id = 11 [(options.master.fk) = "MissionGroup:id"];
 				string view_condition_group_id = 12 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 				string unlock_condition_group_id = 13 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+				int32 priority = 14;
 			}
 
 			repeated EventListEventInfoForPortalResponse.EventInfo event_infos = 1;
@@ -10741,6 +11277,7 @@ message rpc {
 
 		message LiveFinishMultiLiveCooperationRequest {
 			string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			bool is_music_unselected = 2;
 		}
 
 		message LiveFinishMultiLiveCooperationResponse {
@@ -10751,6 +11288,7 @@ message rpc {
 		message LiveFinishDisconnectedMultiLiveCooperationRequest {
 			string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
 			.dto.multi_game_result.LiveCooperationResult result = 2;
+			bool is_music_unselected = 3;
 		}
 
 		message LiveFinishDisconnectedMultiLiveCooperationResponse {
@@ -10983,6 +11521,98 @@ message rpc {
 
 			rpc ListRecommendCharacterDeck (.rpc.api.LiveListRecommendCharacterDeckRequest) returns (.rpc.api.LiveListRecommendCharacterDeckResponse) {
 				option (google.api.http).post = "/Live/ListRecommendCharacterDeck";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.check).enabled_request_signature = true;
+			}
+		}
+
+		message LiveTowerStartLiveRequest {
+			string live_tower_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 stage_number = 2 [(buf.validate.field).int32.gte = 1];
+			string music_id = 3 [(buf.validate.field).string.min_bytes = 1];
+			.enums.MusicDifficultyType music_difficulty_type = 4 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+			string character_id = 5 [(buf.validate.field).string.min_bytes = 1];
+			int32 deck_number = 6 [(buf.validate.field).int32.gte = 1];
+			bool is_auto_play = 7;
+			common.LiveSkinInfo skin_info = 8;
+			string music_mv_category_id = 9;
+		}
+
+		message LiveTowerStartLiveResponse {
+			int32 seed = 1;
+			common.Response common_response = 9999;
+		}
+
+		message LiveTowerFinishLiveRequest {
+			.common.LiveBaseResult result = 1;
+			int64 bonus_applied_score = 2 [(buf.validate.field).int64.gte = 0];
+		}
+
+		message LiveTowerFinishLiveResponse {
+			.enums.LiveResultType result_type = 1;
+			bool is_cleared = 2;
+			int32 before_stage_number = 3;
+			int32 after_stage_number = 4;
+			repeated .common.Reward stage_clear_rewards = 5;
+			.enums.LiveEvaluationRankType evaluation_rank_type = 6;
+			int32 evaluation_rank_plus = 7;
+			int64 past_character_highest_score = 8;
+			repeated .common.Reward music_clear_count_rewards = 9;
+			repeated .common.Reward music_full_combo_rewards = 10;
+			repeated .common.Reward music_highest_score_rank_rewards = 11;
+			repeated .common.Reward music_max_combo_count_phase_rewards = 12;
+			common.LiveResultMusicHighestScoreRatingInfo result_music_highest_score_rating_info = 13;
+			common.LiveResultMusicHighestScoreRankingInfo result_music_highest_score_ranking_info = 14;
+			int64 technical_score = 15;
+			common.Response common_response = 9999;
+		}
+
+		message LiveTowerRetryLiveRequest {
+			.common.LiveBaseResult result = 1;
+			int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
+		}
+
+		message LiveTowerRetryLiveResponse {
+			int32 seed = 1;
+			common.Response common_response = 9999;
+		}
+
+		message LiveTowerRetireLiveRequest {
+			.common.LiveBaseResult result = 1;
+			int64 progress_millisecond = 2 [(buf.validate.field).int64.gte = 0];
+		}
+
+		message LiveTowerRetireLiveResponse {
+			common.Response common_response = 9999;
+		}
+
+		service LiveTower {
+			rpc StartLive (.rpc.api.LiveTowerStartLiveRequest) returns (.rpc.api.LiveTowerStartLiveResponse) {
+				option (google.api.http).post = "/LiveTower/StartLive";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc FinishLive (.rpc.api.LiveTowerFinishLiveRequest) returns (.rpc.api.LiveTowerFinishLiveResponse) {
+				option (google.api.http).post = "/LiveTower/FinishLive";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.check).enabled_request_signature = true;
+			}
+
+			rpc RetryLive (.rpc.api.LiveTowerRetryLiveRequest) returns (.rpc.api.LiveTowerRetryLiveResponse) {
+				option (google.api.http).post = "/LiveTower/RetryLive";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.check).enabled_request_signature = true;
+			}
+
+			rpc RetireLive (.rpc.api.LiveTowerRetireLiveRequest) returns (.rpc.api.LiveTowerRetireLiveResponse) {
+				option (google.api.http).post = "/LiveTower/RetireLive";
 				option (google.api.http).body = "*";
 				option (options.check_option.check).disabled_master_version = true;
 				option (options.check_option.check).enabled_response_cache = true;
@@ -11478,6 +12108,10 @@ message rpc {
 			common.Response common_response = 9999;
 		}
 
+		message MissionForceUpdateMusicReleaseMissionResponse {
+			common.Response common_response = 9999;
+		}
+
 		service Mission {
 			rpc ReceiveReward (.rpc.api.MissionReceiveRewardRequest) returns (.rpc.api.MissionReceiveRewardResponse) {
 				option (google.api.http).post = "/Mission/ReceiveReward";
@@ -11493,6 +12127,12 @@ message rpc {
 
 			rpc PurchasePassLevel (.rpc.api.MissionPurchasePassLevelRequest) returns (.rpc.api.MissionPurchasePassLevelResponse) {
 				option (google.api.http).post = "/Mission/PurchasePassLevel";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc ForceUpdateMusicReleaseMission (.google.protobuf.Empty) returns (.rpc.api.MissionForceUpdateMusicReleaseMissionResponse) {
+				option (google.api.http).post = "/Mission/ForceUpdateMusicReleaseMission";
 				option (google.api.http).body = "*";
 				option (options.check_option.check).enabled_response_cache = true;
 			}
@@ -13443,6 +14083,78 @@ message rpc {
 			common.Response common_response = 9999;
 		}
 
+		message ParkQuestMatchRandomShogiRequest {
+			string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
+			int32 step = 3 [(buf.validate.field).int32.gte = 1];
+			string park_target_mapping_id = 4 [(buf.validate.field).string.min_bytes = 1];
+			int32 action_number = 5 [(buf.validate.field).int32.gte = 1];
+			common.MultiGameMatchRandomInfo match_random_info = 1000;
+		}
+
+		message ParkQuestMatchRandomShogiResponse {
+			common.MultiGameMatchInfo match_info = 1;
+			common.Response common_response = 9999;
+		}
+
+		message ParkQuestStartShogiSingleRequest {
+			string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
+			int32 step = 3 [(buf.validate.field).int32.gte = 1];
+			string park_target_mapping_id = 4 [(buf.validate.field).string.min_bytes = 1];
+			int32 action_number = 5 [(buf.validate.field).int32.gte = 1];
+			string character_id = 6 [(buf.validate.field).string.min_bytes = 1];
+		}
+
+		message ParkQuestStartShogiSingleResponse {
+			message NpcPieceCharacter {
+				.enums.ShogiPieceType piece_type = 1;
+				string character_id = 2 [(options.master.fk) = "Character:id"];
+			}
+
+			int32 seed = 1;
+			repeated ParkQuestStartShogiSingleResponse.NpcPieceCharacter npc_piece_characters = 2;
+			common.Response common_response = 9999;
+		}
+
+		message ParkQuestStartShogiMultiRequest {
+			string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
+			int32 step = 3 [(buf.validate.field).int32.gte = 1];
+			string park_target_mapping_id = 4 [(buf.validate.field).string.min_bytes = 1];
+			int32 action_number = 5 [(buf.validate.field).int32.gte = 1];
+			repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+			repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
+		}
+
+		message ParkQuestStartShogiMultiResponse {
+			int32 seed = 1;
+			common.Response common_response = 9999;
+		}
+
+		message ParkQuestFinishShogiSingleRequest {
+			.enums.ShogiResultType result_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+			repeated common.ShogiPieceResult piece_results = 2 [(buf.validate.field).repeated.max_items = 5];
+		}
+
+		message ParkQuestFinishShogiSingleResponse {
+			bool is_cleared = 1;
+			repeated common.RewardResult reward_results = 2;
+			common.Response common_response = 9999;
+		}
+
+		message ParkQuestFinishShogiMultiRequest {
+			string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+		}
+
+		message ParkQuestFinishShogiMultiResponse {
+			bool is_cleared = 1;
+			common.ShogiResultInfo shogi_result_info = 2;
+			repeated common.RewardResult reward_results = 3;
+			common.Response common_response = 9999;
+		}
+
 		message ParkQuestDeliverItemRequest {
 			string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
 			int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
@@ -13743,6 +14455,39 @@ message rpc {
 				option (options.check_option.check).enabled_response_cache = true;
 			}
 
+			rpc MatchRandomShogi (.rpc.api.ParkQuestMatchRandomShogiRequest) returns (.rpc.api.ParkQuestMatchRandomShogiResponse) {
+				option (google.api.http).post = "/ParkQuest/MatchRandomShogi";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc StartShogiSingle (.rpc.api.ParkQuestStartShogiSingleRequest) returns (.rpc.api.ParkQuestStartShogiSingleResponse) {
+				option (google.api.http).post = "/ParkQuest/StartShogiSingle";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc StartShogiMulti (.rpc.api.ParkQuestStartShogiMultiRequest) returns (.rpc.api.ParkQuestStartShogiMultiResponse) {
+				option (google.api.http).post = "/ParkQuest/StartShogiMulti";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc FinishShogiSingle (.rpc.api.ParkQuestFinishShogiSingleRequest) returns (.rpc.api.ParkQuestFinishShogiSingleResponse) {
+				option (google.api.http).post = "/ParkQuest/FinishShogiSingle";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.check).enabled_request_signature = true;
+			}
+
+			rpc FinishShogiMulti (.rpc.api.ParkQuestFinishShogiMultiRequest) returns (.rpc.api.ParkQuestFinishShogiMultiResponse) {
+				option (google.api.http).post = "/ParkQuest/FinishShogiMulti";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
 			rpc DeliverItem (.rpc.api.ParkQuestDeliverItemRequest) returns (.rpc.api.ParkQuestDeliverItemResponse) {
 				option (google.api.http).post = "/ParkQuest/DeliverItem";
 				option (google.api.http).body = "*";
@@ -13855,6 +14600,21 @@ message rpc {
 			common.Response common_response = 9999;
 		}
 
+		message PaymentListPendingReceiptSettingRequest {
+			.enums.PaymentMethod payment_method = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+			repeated string payment_transaction_ids = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 200, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
+		}
+
+		message PaymentListPendingReceiptSettingResponse {
+			message PendingReceiptSetting {
+				string payment_transaction_id = 1;
+				.enums.PaymentPendingReceiptRecoveryType recovery_type = 2;
+			}
+
+			repeated PaymentListPendingReceiptSettingResponse.PendingReceiptSetting pending_receipt_settings = 1;
+			common.Response common_response = 9999;
+		}
+
 		message PaymentCreateOrderResponse {
 			common.Response common_response = 9999;
 		}
@@ -13915,6 +14675,12 @@ message rpc {
 				option (options.check_option.error).error_codes = ERROR_CODE_PAYMENT_FULFILL_ORDER_BLOCKED_DONT_RECOVERY_FOREVER;
 				option (options.check_option.error).error_codes = ERROR_CODE_PAYMENT_FULFILL_ORDER_BLOCKED_CHALLENGE_RECOVERY_NEXT_TIME;
 			}
+
+			rpc ListPendingReceiptSetting (.rpc.api.PaymentListPendingReceiptSettingRequest) returns (.rpc.api.PaymentListPendingReceiptSettingResponse) {
+				option (google.api.http).post = "/Payment/ListPendingReceiptSetting";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
 		}
 
 		message ProfileSetNameRequest {
@@ -13932,6 +14698,15 @@ message rpc {
 		message ProfileSwitchPublishSettingRequest {
 			.enums.ProfilePublishType profile_publish_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 			bool is_publish = 2;
+		}
+
+		message ProfileSwitchPublishScopeRequest {
+			message PublishScopeSetting {
+				.enums.ProfilePublishContentType profile_publish_content_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+				.enums.ProfilePublishScopeType profile_publish_scope_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+			}
+
+			repeated ProfileSwitchPublishScopeRequest.PublishScopeSetting publish_scope_settings = 1 [(buf.validate.field).repeated.min_items = 1];
 		}
 
 		message ProfileSetEmblemRequest {
@@ -14018,6 +14793,10 @@ message rpc {
 			common.Response common_response = 9999;
 		}
 
+		message ProfileSwitchPublishScopeResponse {
+			common.Response common_response = 9999;
+		}
+
 		message ProfileSetEmblemResponse {
 			common.Response common_response = 9999;
 		}
@@ -14069,6 +14848,12 @@ message rpc {
 
 			rpc SwitchPublishSetting (.rpc.api.ProfileSwitchPublishSettingRequest) returns (.rpc.api.ProfileSwitchPublishSettingResponse) {
 				option (google.api.http).post = "/Profile/SwitchPublishSetting";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc SwitchPublishScope (.rpc.api.ProfileSwitchPublishScopeRequest) returns (.rpc.api.ProfileSwitchPublishScopeResponse) {
+				option (google.api.http).post = "/Profile/SwitchPublishScope";
 				option (google.api.http).body = "*";
 				option (options.check_option.check).enabled_response_cache = true;
 			}
@@ -14155,6 +14940,154 @@ message rpc {
 			}
 		}
 
+		message ShogiStartSingleRequest {
+			string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+			string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+		}
+
+		message ShogiStartSingleResponse {
+			message NpcPieceCharacter {
+				.enums.ShogiPieceType piece_type = 1;
+				string character_id = 2 [(options.master.fk) = "Character:id"];
+			}
+
+			int32 seed = 1;
+			string shogi_id = 2;
+			repeated ShogiStartSingleResponse.NpcPieceCharacter npc_piece_characters = 3;
+			common.Response common_response = 9999;
+		}
+
+		message ShogiFinishSingleRequest {
+			.enums.ShogiResultType result_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+			repeated common.ShogiPieceResult piece_results = 2 [(buf.validate.field).repeated.max_items = 5];
+		}
+
+		message ShogiFinishSingleResponse {
+			bool is_first_clear = 1;
+			repeated common.RewardResult reward_results = 2;
+			int32 reward_up_stamina_consumption_quantity = 3;
+			int64 benefit_license_reward_quantity_up_permil_up = 4;
+			repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
+			common.StorageUrlInfo play_log_upload_url = 6 [(options.zap.hidden) = true];
+			common.MarathonMiniGameResult marathon_mini_game_result = 100;
+			common.Response common_response = 9999;
+		}
+
+		message ShogiMatchRandomRequest {
+			string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			common.MultiGameMatchRandomInfo match_random_info = 1000;
+		}
+
+		message ShogiMatchRandomResponse {
+			common.MultiGameMatchInfo match_info = 1;
+			common.Response common_response = 9999;
+		}
+
+		message ShogiCreatePrivateRoomRequest {
+			string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+		}
+
+		message ShogiCreatePrivateRoomResponse {
+			common.MultiGameMatchInfo match_info = 1;
+			common.Response common_response = 9999;
+		}
+
+		message ShogiStartMultiRequest {
+			string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+			string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+			bool is_private_room = 4;
+			repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+			repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+		}
+
+		message ShogiStartMultiResponse {
+			int64 stage_random_seed = 1;
+			common.Response common_response = 9999;
+		}
+
+		message ShogiFinishMultiRequest {
+			string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+		}
+
+		message ShogiFinishMultiResponse {
+			common.ShogiResultInfo shogi_result_info = 1;
+			repeated common.RewardResult reward_results = 2;
+			int32 reward_up_stamina_consumption_quantity = 3;
+			common.MultiGameResultPrivateRoomInfo private_room_info = 4;
+			int64 benefit_license_reward_quantity_up_permil_up = 5;
+			repeated common.RewardQuantityUp reward_ups_by_skill_tree = 6;
+			common.StorageUrlInfo play_log_upload_url = 7 [(options.zap.hidden) = true];
+			common.MarathonMiniGameResult marathon_mini_game_result = 100;
+			common.Response common_response = 9999;
+		}
+
+		message ShogiSavePieceCharacterRequest {
+			message PieceCharacter {
+				.enums.ShogiPieceType piece_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+				string character_id = 2 [(buf.validate.field).string.min_bytes = 1];
+			}
+
+			repeated ShogiSavePieceCharacterRequest.PieceCharacter piece_characters = 1 [(buf.validate.field).repeated.min_items = 3, (buf.validate.field).repeated.max_items = 3];
+		}
+
+		message ShogiSavePieceCharacterResponse {
+			common.Response common_response = 9999;
+		}
+
+		service Shogi {
+			rpc MatchRandom (.rpc.api.ShogiMatchRandomRequest) returns (.rpc.api.ShogiMatchRandomResponse) {
+				option (google.api.http).post = "/Shogi/MatchRandom";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc CreatePrivateRoom (.rpc.api.ShogiCreatePrivateRoomRequest) returns (.rpc.api.ShogiCreatePrivateRoomResponse) {
+				option (google.api.http).post = "/Shogi/CreatePrivateRoom";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.error).error_codes = ERROR_CODE_MULTI_GAME_REMATCH_EXPIRED;
+			}
+
+			rpc StartSingle (.rpc.api.ShogiStartSingleRequest) returns (.rpc.api.ShogiStartSingleResponse) {
+				option (google.api.http).post = "/Shogi/StartSingle";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc StartMulti (.rpc.api.ShogiStartMultiRequest) returns (.rpc.api.ShogiStartMultiResponse) {
+				option (google.api.http).post = "/Shogi/StartMulti";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc FinishSingle (.rpc.api.ShogiFinishSingleRequest) returns (.rpc.api.ShogiFinishSingleResponse) {
+				option (google.api.http).post = "/Shogi/FinishSingle";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.check).enabled_request_signature = true;
+			}
+
+			rpc FinishMulti (.rpc.api.ShogiFinishMultiRequest) returns (.rpc.api.ShogiFinishMultiResponse) {
+				option (google.api.http).post = "/Shogi/FinishMulti";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).disabled_master_version = true;
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc SavePieceCharacter (.rpc.api.ShogiSavePieceCharacterRequest) returns (.rpc.api.ShogiSavePieceCharacterResponse) {
+				option (google.api.http).post = "/Shogi/SavePieceCharacter";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+		}
+
 		message ShopListResponse {
 			repeated common.Shop shops = 1;
 			common.Response common_response = 9999;
@@ -14204,7 +15137,7 @@ message rpc {
 
 		message SkillTreeReleaseNodeRequest {
 			string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
-			repeated string node_group_ids = 2 [(buf.validate.field).repeated.min_items = 1];
+			repeated string node_group_ids = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
 		}
 
 		message SkillTreeConnectNodeRequest {
@@ -14223,11 +15156,60 @@ message rpc {
 			common.Response common_response = 9999;
 		}
 
+		message SkillTreeSavePresetRequest {
+			string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 number = 2 [(buf.validate.field).int32.gte = 1];
+		}
+
+		message SkillTreeApplyPresetRequest {
+			string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 number = 2 [(buf.validate.field).int32.gte = 1];
+			repeated string node_group_ids = 3 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
+		}
+
+		message SkillTreeApplyPresetResponse {
+			repeated common.RewardResult reward_results = 1;
+			common.Response common_response = 9999;
+		}
+
+		message SkillTreeUpdatePresetNameRequest {
+			string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 number = 2 [(buf.validate.field).int32.gte = 1];
+			string name = 3 [(buf.validate.field).string.min_bytes = 1];
+		}
+
+		message SkillTreeUpdatePresetUserMemoRequest {
+			string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 number = 2 [(buf.validate.field).int32.gte = 1];
+			string user_memo = 3;
+		}
+
+		message SkillTreeDeletePresetRequest {
+			string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			int32 number = 2 [(buf.validate.field).int32.gte = 1];
+		}
+
 		message SkillTreeReleaseNodeResponse {
 			common.Response common_response = 9999;
 		}
 
 		message SkillTreeConnectNodeResponse {
+			common.Response common_response = 9999;
+		}
+
+		message SkillTreeSavePresetResponse {
+			common.Response common_response = 9999;
+		}
+
+		message SkillTreeUpdatePresetNameResponse {
+			common.Response common_response = 9999;
+		}
+
+		message SkillTreeUpdatePresetUserMemoResponse {
+			common.Response common_response = 9999;
+		}
+
+		message SkillTreeDeletePresetResponse {
 			common.Response common_response = 9999;
 		}
 
@@ -14246,6 +15228,38 @@ message rpc {
 
 			rpc ResetNode (.rpc.api.SkillTreeResetNodeRequest) returns (.rpc.api.SkillTreeResetNodeResponse) {
 				option (google.api.http).post = "/SkillTree/ResetNode";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc SavePreset (.rpc.api.SkillTreeSavePresetRequest) returns (.rpc.api.SkillTreeSavePresetResponse) {
+				option (google.api.http).post = "/SkillTree/SavePreset";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc ApplyPreset (.rpc.api.SkillTreeApplyPresetRequest) returns (.rpc.api.SkillTreeApplyPresetResponse) {
+				option (google.api.http).post = "/SkillTree/ApplyPreset";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+			}
+
+			rpc UpdatePresetName (.rpc.api.SkillTreeUpdatePresetNameRequest) returns (.rpc.api.SkillTreeUpdatePresetNameResponse) {
+				option (google.api.http).post = "/SkillTree/UpdatePresetName";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+			}
+
+			rpc UpdatePresetUserMemo (.rpc.api.SkillTreeUpdatePresetUserMemoRequest) returns (.rpc.api.SkillTreeUpdatePresetUserMemoResponse) {
+				option (google.api.http).post = "/SkillTree/UpdatePresetUserMemo";
+				option (google.api.http).body = "*";
+				option (options.check_option.check).enabled_response_cache = true;
+				option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+			}
+
+			rpc DeletePreset (.rpc.api.SkillTreeDeletePresetRequest) returns (.rpc.api.SkillTreeDeletePresetResponse) {
+				option (google.api.http).post = "/SkillTree/DeletePreset";
 				option (google.api.http).body = "*";
 				option (options.check_option.check).enabled_response_cache = true;
 			}
@@ -14790,6 +15804,15 @@ message rpc {
 	}
 
 	message multi_game_server_manager {
+		message ClientMasterGetResponse {
+			string version = 1;
+			repeated .common.MasterTagPack master_tag_packs = 2;
+		}
+
+		service ClientMaster {
+			rpc Get (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.ClientMasterGetResponse);
+		}
+
 		message MultiGameCircuitPickAreaResponse {
 			message PickedArea {
 				.enums.CircuitAreaType type = 1;
@@ -14803,6 +15826,24 @@ message rpc {
 
 		service MultiGameCircuit {
 			rpc PickArea (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.MultiGameCircuitPickAreaResponse);
+		}
+
+		message MultiGameLivePickMusicRequest {
+			repeated LiveMultiUserSelectedMusic user_selected_musics = 1 [(buf.validate.field).repeated.min_items = 1];
+		}
+
+		message MultiGameLivePickMusicResponse {
+			LiveMultiUserSelectedMusic user_selected_music = 1;
+		}
+
+		message LiveMultiUserSelectedMusic {
+			string public_user_id = 1 [(buf.validate.field).string.min_bytes = 1];
+			string music_id = 2;
+			.enums.LiveMultiMusicSelectionType selection_type = 3 [(buf.validate.field).enum.defined_only = true];
+		}
+
+		service MultiGameLive {
+			rpc PickMusic (.rpc.multi_game_server_manager.MultiGameLivePickMusicRequest) returns (.rpc.multi_game_server_manager.MultiGameLivePickMusicResponse);
 		}
 
 		message CheckHealthResponse {
@@ -14890,12 +15931,25 @@ message rpc {
 						float dgs_player_position_x = 10;
 						float dgs_player_position_y = 11;
 						float dgs_player_position_z = 12;
+						int64 client_ball_position_x_permil = 13;
+						int64 client_ball_position_y_permil = 14;
+						int64 client_ball_position_z_permil = 15;
+						int64 dgs_ball_position_x_permil = 16;
+						int64 dgs_ball_position_y_permil = 17;
+						int64 dgs_ball_position_z_permil = 18;
+						int64 client_player_position_x_permil = 19;
+						int64 client_player_position_y_permil = 20;
+						int64 client_player_position_z_permil = 21;
+						int64 dgs_player_position_x_permil = 22;
+						int64 dgs_player_position_y_permil = 23;
+						int64 dgs_player_position_z_permil = 24;
 					}
 
 					int64 position_mismatch_count = 1;
 					repeated DisconnectUserRequest.CheatDetectInfo.SplashBallMismatchInfo.PositionMismatchInfo position_mismatch_infos = 2;
 					int64 abnormal_move_speed_count = 3;
 					repeated float abnormal_move_speeds = 4;
+					repeated int64 abnormal_move_speed_permils = 5;
 				}
 
 				.enums.CheatType cheat_type = 1;
@@ -14960,6 +16014,24 @@ message rpc {
 			rpc GetTlsCertificate (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.GetTlsCertificateResponse);
 			rpc MigrateGameServer (.rpc.multi_game_server_manager.MigrateGameServerRequest) returns (.rpc.multi_game_server_manager.MigrateGameServerResponse);
 			rpc GetSuspendedGameData (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.GetSuspendedGameDataResponse);
+		}
+
+		message MultiGameShogiListPieceCharacterResponse {
+			message UserPieceCharacter {
+				message ShogiPieceCharacter {
+					.enums.ShogiPieceType piece_type = 1;
+					string character_id = 2;
+				}
+
+				string public_user_id = 1;
+				repeated MultiGameShogiListPieceCharacterResponse.UserPieceCharacter.ShogiPieceCharacter piece_characters = 2;
+			}
+
+			repeated MultiGameShogiListPieceCharacterResponse.UserPieceCharacter user_piece_characters = 1;
+		}
+
+		service MultiGameShogi {
+			rpc ListPieceCharacter (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.MultiGameShogiListPieceCharacterResponse);
 		}
 	}
 }

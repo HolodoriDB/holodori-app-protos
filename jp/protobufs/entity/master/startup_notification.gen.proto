@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+import "enums/startup_notification_image_type.gen.proto";
+import "enums/startup_notification_type.gen.proto";
+import "enums/transition_type.gen.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message StartupNotification {
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	.enums.StartupNotificationType type = 2;
+	string condition_group_id = 3 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	int32 priority = 4;
+	int64 start_time = 5;
+	int64 end_time = 6 [(options.master.optional) = true];
+	string asset_id = 7;
+	.enums.TransitionType content_startup_notification_transition_type = 100 [(options.master.optional) = true];
+	string content_startup_notification_transition_id = 101 [(options.master.optional) = true];
+	.enums.StartupNotificationImageType content_startup_notification_image_type = 102 [(options.master.optional) = true];
+	string content_startup_notification_sub_asset_id = 103 [(options.master.optional) = true];
+	string content_startup_notification_external_url_jpn = 104 [(options.master.optional) = true];
+	string content_startup_notification_external_url_eng = 105 [(options.master.optional) = true];
+	string content_startup_notification_external_url_ind = 106 [(options.master.optional) = true];
+	string content_startup_notification_external_url_kor = 107 [(options.master.optional) = true];
+	string content_startup_notification_external_url_cht = 108 [(options.master.optional) = true];
+	string content_startup_notification_external_url_chs = 109 [(options.master.optional) = true];
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package entity.transaction;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/transaction";
+option csharp_namespace = "Vision.Common.Proto.Transaction";
+
+message UserShogiSummary {
+	int32 single_rating = 2;
+	int32 multi_rating = 3;
+	repeated string recent_multi_opponent_user_ids = 4;
+	int32 multi_match_count = 5;
+	int32 last_multi_rating_change = 6;
+	string last_multi_finished_multi_game_result_id = 7;
+	int32 challenge_continuous_win_count = 8;
+	int32 challenge_highest_continuous_win_count = 9;
+}

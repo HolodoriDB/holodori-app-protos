@@ -3,6 +3,7 @@ syntax = "proto3";
 import "buf/validate/validate.proto";
 import "entity/master/options/master.proto";
 import "enums/friend_status_type.gen.proto";
+import "enums/multi_game_penalty_type.gen.proto";
 import "enums/multi_game_private_room_creation_type.gen.proto";
 
 package rpc.api.common;
@@ -17,6 +18,7 @@ message MultiGamePingInfo {
 
 message MultiGamePenaltyInfo {
 	int64 unplayable_end_time = 1;
+	.enums.MultiGamePenaltyType penalty_type = 2;
 }
 
 message MultiGameMatchRandomInfo {

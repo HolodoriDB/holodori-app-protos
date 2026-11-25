@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ShogiSetting {
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	repeated string shogi_piece_non_leader_character_ids = 10 [(options.master.fk) = "Character:id"];
+	int32 mini_game_reward_up_stamina_consumption_unit = 50;
+	string mini_game_reward_up_stamina_effect_group_id = 51 [(options.master.fk) = "MiniGameRewardUpStaminaEffect:group_id"];
+	int32 normal_hold_seconds = 105;
+	int32 challenge_hold_seconds = 106;
+	int32 multi_game_setup_time_limit_seconds = 205;
+	int32 multi_hold_seconds = 206;
+	int32 multi_force_exit_announce_no_operation_turn_count = 208;
+	int32 max_user_count = 209;
+	int32 random_match_min_user_count = 210;
+	int32 private_room_min_user_count = 211;
+	int32 random_match_start_time_limit_seconds = 212;
+}

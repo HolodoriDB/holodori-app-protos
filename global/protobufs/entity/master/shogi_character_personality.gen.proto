@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ShogiCharacterPersonality {
+	option (options.master.table) = true;
+
+	string character_id = 1 [(options.master.fk) = "Character:id", (options.master.pk) = true];
+	string shogi_character_personality_parameter_group_id = 2 [(options.master.fk) = "ShogiCharacterPersonalityParameter:group_id"];
+	int32 personality_weight = 3 [(options.master.optional) = true];
+	int32 base_miss_rate = 4 [(options.master.optional) = true];
+	int32 selection_score = 5 [(options.master.optional) = true];
+}

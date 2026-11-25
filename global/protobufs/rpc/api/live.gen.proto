@@ -189,6 +189,7 @@ message LiveFinishSingleResponse {
 
 message LiveFinishMultiLiveCooperationRequest {
 	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	bool is_music_unselected = 2;
 }
 
 message LiveFinishMultiLiveCooperationResponse {
@@ -199,6 +200,7 @@ message LiveFinishMultiLiveCooperationResponse {
 message LiveFinishDisconnectedMultiLiveCooperationRequest {
 	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	.dto.multi_game_result.LiveCooperationResult result = 2;
+	bool is_music_unselected = 3;
 }
 
 message LiveFinishDisconnectedMultiLiveCooperationResponse {

@@ -3,6 +3,8 @@ syntax = "proto3";
 import "buf/validate/validate.proto";
 import "common/emblem_position.gen.proto";
 import "enums/complain_category_type.gen.proto";
+import "enums/profile_publish_content_type.gen.proto";
+import "enums/profile_publish_scope_type.gen.proto";
 import "enums/profile_publish_type.gen.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -32,6 +34,15 @@ message ProfileSetFanMarkRequest {
 message ProfileSwitchPublishSettingRequest {
 	.enums.ProfilePublishType profile_publish_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
 	bool is_publish = 2;
+}
+
+message ProfileSwitchPublishScopeRequest {
+	message PublishScopeSetting {
+		.enums.ProfilePublishContentType profile_publish_content_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+		.enums.ProfilePublishScopeType profile_publish_scope_type = 2 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	}
+
+	repeated ProfileSwitchPublishScopeRequest.PublishScopeSetting publish_scope_settings = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
 message ProfileSetEmblemRequest {
@@ -118,6 +129,10 @@ message ProfileSwitchPublishSettingResponse {
 	common.Response common_response = 9999;
 }
 
+message ProfileSwitchPublishScopeResponse {
+	common.Response common_response = 9999;
+}
+
 message ProfileSetEmblemResponse {
 	common.Response common_response = 9999;
 }
@@ -169,6 +184,12 @@ service Profile {
 
 	rpc SwitchPublishSetting (.rpc.api.ProfileSwitchPublishSettingRequest) returns (.rpc.api.ProfileSwitchPublishSettingResponse) {
 		option (google.api.http).post = "/Profile/SwitchPublishSetting";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SwitchPublishScope (.rpc.api.ProfileSwitchPublishScopeRequest) returns (.rpc.api.ProfileSwitchPublishScopeResponse) {
+		option (google.api.http).post = "/Profile/SwitchPublishScope";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).enabled_response_cache = true;
 	}

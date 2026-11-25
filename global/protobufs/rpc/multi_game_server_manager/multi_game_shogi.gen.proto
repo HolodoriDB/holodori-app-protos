@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "enums/shogi_piece_type.gen.proto";
+import "google/protobuf/empty.proto";
+
+package rpc.multi_game_server_manager;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/multi_game_server_manager";
+option csharp_namespace = "Vision.Common.Proto.MultiGameServerManager";
+
+message MultiGameShogiListPieceCharacterResponse {
+	message UserPieceCharacter {
+		message ShogiPieceCharacter {
+			.enums.ShogiPieceType piece_type = 1;
+			string character_id = 2;
+		}
+
+		string public_user_id = 1;
+		repeated MultiGameShogiListPieceCharacterResponse.UserPieceCharacter.ShogiPieceCharacter piece_characters = 2;
+	}
+
+	repeated MultiGameShogiListPieceCharacterResponse.UserPieceCharacter user_piece_characters = 1;
+}
+
+service MultiGameShogi {
+	rpc ListPieceCharacter (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.MultiGameShogiListPieceCharacterResponse);
+}

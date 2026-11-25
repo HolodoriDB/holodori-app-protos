@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "common/master_tag_pack.gen.proto";
+import "google/protobuf/empty.proto";
+
+package rpc.multi_game_server_manager;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/multi_game_server_manager";
+option csharp_namespace = "Vision.Common.Proto.MultiGameServerManager";
+
+message ClientMasterGetResponse {
+	string version = 1;
+	repeated .common.MasterTagPack master_tag_packs = 2;
+}
+
+service ClientMaster {
+	rpc Get (.google.protobuf.Empty) returns (.rpc.multi_game_server_manager.ClientMasterGetResponse);
+}

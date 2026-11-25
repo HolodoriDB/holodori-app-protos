@@ -135,6 +135,7 @@ message EventListEventInfoResponse {
 		string view_condition_group_id = 12 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 		string unlock_condition_group_id = 13 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 		EventListEventInfoResponse.EventInfo.MarathonInfo marathon_info = 14;
+		int32 priority = 15 [(options.zap.hidden) = true];
 	}
 
 	repeated EventListEventInfoResponse.EventInfo event_infos = 1;
@@ -156,6 +157,7 @@ message EventListEventInfoForPortalResponse {
 		string mission_group_id = 11 [(options.master.fk) = "MissionGroup:id"];
 		string view_condition_group_id = 12 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
 		string unlock_condition_group_id = 13 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+		int32 priority = 14;
 	}
 
 	repeated EventListEventInfoForPortalResponse.EventInfo event_infos = 1;

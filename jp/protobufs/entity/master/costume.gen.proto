@@ -9,10 +9,11 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Costume {
+	option (options.master.indexes) = "character_id";
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];
-	string character_id = 2 [(options.master.fk) = "Character:id"];
+	string character_id = 2 [(options.master.fk) = "Character:id", (options.master.index) = true];
 	string name_lang_id = 3 [(options.master.fk) = "LangCostume:id"];
 	string live_leader_skill_id = 4 [(options.master.fk) = "LiveLeaderSkill:id", (options.master.optional) = true];
 	string asset_id = 5;

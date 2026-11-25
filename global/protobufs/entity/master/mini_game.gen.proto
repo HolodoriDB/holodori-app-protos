@@ -24,8 +24,8 @@ message MiniGame {
 	string mini_game_reward_up_stamina_conversion_id = 8 [(options.master.fk) = "MiniGameRewardUpStaminaConversion:id", (options.master.optional) = true];
 	.enums.MiniGameCharacterDisplayType character_display_type = 9;
 	bool is_multi_game = 10 [(options.master.optional) = true];
-	string ranking_view_description_lang_id = 11 [(options.master.fk) = "LangMiniGame:id"];
-	string ranking_score_type_lang_id = 12 [(options.master.fk) = "LangMiniGame:id"];
+	string ranking_view_description_lang_id = 11 [(options.master.fk) = "LangMiniGame:id", (options.master.optional) = true];
+	string ranking_score_type_lang_id = 12 [(options.master.fk) = "LangMiniGame:id", (options.master.optional) = true];
 	string mini_game_top_tips_id = 13 [(options.master.fk) = "Tips:id"];
 	string multi_game_top_tips_id = 14 [(options.master.fk) = "Tips:id"];
 	int32 order = 999;

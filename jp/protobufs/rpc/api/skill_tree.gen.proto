@@ -13,7 +13,7 @@ option csharp_namespace = "Vision.Common.Proto.Api";
 
 message SkillTreeReleaseNodeRequest {
 	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
-	repeated string node_group_ids = 2 [(buf.validate.field).repeated.min_items = 1];
+	repeated string node_group_ids = 2 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
 }
 
 message SkillTreeConnectNodeRequest {
@@ -32,11 +32,60 @@ message SkillTreeResetNodeResponse {
 	common.Response common_response = 9999;
 }
 
+message SkillTreeSavePresetRequest {
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+}
+
+message SkillTreeApplyPresetRequest {
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	repeated string node_group_ids = 3 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.unique = true, (buf.validate.field).repeated.items.string.min_bytes = 1];
+}
+
+message SkillTreeApplyPresetResponse {
+	repeated common.RewardResult reward_results = 1;
+	common.Response common_response = 9999;
+}
+
+message SkillTreeUpdatePresetNameRequest {
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	string name = 3 [(buf.validate.field).string.min_bytes = 1];
+}
+
+message SkillTreeUpdatePresetUserMemoRequest {
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+	string user_memo = 3;
+}
+
+message SkillTreeDeletePresetRequest {
+	string character_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 number = 2 [(buf.validate.field).int32.gte = 1];
+}
+
 message SkillTreeReleaseNodeResponse {
 	common.Response common_response = 9999;
 }
 
 message SkillTreeConnectNodeResponse {
+	common.Response common_response = 9999;
+}
+
+message SkillTreeSavePresetResponse {
+	common.Response common_response = 9999;
+}
+
+message SkillTreeUpdatePresetNameResponse {
+	common.Response common_response = 9999;
+}
+
+message SkillTreeUpdatePresetUserMemoResponse {
+	common.Response common_response = 9999;
+}
+
+message SkillTreeDeletePresetResponse {
 	common.Response common_response = 9999;
 }
 
@@ -55,6 +104,38 @@ service SkillTree {
 
 	rpc ResetNode (.rpc.api.SkillTreeResetNodeRequest) returns (.rpc.api.SkillTreeResetNodeResponse) {
 		option (google.api.http).post = "/SkillTree/ResetNode";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SavePreset (.rpc.api.SkillTreeSavePresetRequest) returns (.rpc.api.SkillTreeSavePresetResponse) {
+		option (google.api.http).post = "/SkillTree/SavePreset";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ApplyPreset (.rpc.api.SkillTreeApplyPresetRequest) returns (.rpc.api.SkillTreeApplyPresetResponse) {
+		option (google.api.http).post = "/SkillTree/ApplyPreset";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc UpdatePresetName (.rpc.api.SkillTreeUpdatePresetNameRequest) returns (.rpc.api.SkillTreeUpdatePresetNameResponse) {
+		option (google.api.http).post = "/SkillTree/UpdatePresetName";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+	}
+
+	rpc UpdatePresetUserMemo (.rpc.api.SkillTreeUpdatePresetUserMemoRequest) returns (.rpc.api.SkillTreeUpdatePresetUserMemoResponse) {
+		option (google.api.http).post = "/SkillTree/UpdatePresetUserMemo";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_NG_WORD_CONTAINS;
+	}
+
+	rpc DeletePreset (.rpc.api.SkillTreeDeletePresetRequest) returns (.rpc.api.SkillTreeDeletePresetResponse) {
+		option (google.api.http).post = "/SkillTree/DeletePreset";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).enabled_response_cache = true;
 	}

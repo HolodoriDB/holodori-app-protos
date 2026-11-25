@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+import "entity/master/options/master.proto";
+import "enums/shogi_piece_type.gen.proto";
+import "enums/shogi_result_type.gen.proto";
+import "google/api/annotations.proto";
+import "options/check_option.proto";
+import "options/zap.proto";
+import "rpc/api/common/marathon.gen.proto";
+import "rpc/api/common/multi_game.gen.proto";
+import "rpc/api/common/response.gen.proto";
+import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/shogi.gen.proto";
+import "rpc/api/common/storage_url.gen.proto";
+
+package rpc.api;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/api";
+option csharp_namespace = "Vision.Common.Proto.Api";
+
+message ShogiStartSingleRequest {
+	string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+}
+
+message ShogiStartSingleResponse {
+	message NpcPieceCharacter {
+		.enums.ShogiPieceType piece_type = 1;
+		string character_id = 2 [(options.master.fk) = "Character:id"];
+	}
+
+	int32 seed = 1;
+	string shogi_id = 2;
+	repeated ShogiStartSingleResponse.NpcPieceCharacter npc_piece_characters = 3;
+	common.Response common_response = 9999;
+}
+
+message ShogiFinishSingleRequest {
+	.enums.ShogiResultType result_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	repeated common.ShogiPieceResult piece_results = 2 [(buf.validate.field).repeated.max_items = 5];
+}
+
+message ShogiFinishSingleResponse {
+	bool is_first_clear = 1;
+	repeated common.RewardResult reward_results = 2;
+	int32 reward_up_stamina_consumption_quantity = 3;
+	int64 benefit_license_reward_quantity_up_permil_up = 4;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 5;
+	common.StorageUrlInfo play_log_upload_url = 6 [(options.zap.hidden) = true];
+	common.MarathonMiniGameResult marathon_mini_game_result = 100;
+	common.Response common_response = 9999;
+}
+
+message ShogiMatchRandomRequest {
+	string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ShogiMatchRandomResponse {
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
+}
+
+message ShogiCreatePrivateRoomRequest {
+	string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	common.MultiGameCreatePrivateRoomInfo create_private_room_info = 1000;
+}
+
+message ShogiCreatePrivateRoomResponse {
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
+}
+
+message ShogiStartMultiRequest {
+	string shogi_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 reward_up_stamina_consumption_quantity = 2 [(buf.validate.field).int32.gte = 0];
+	string character_id = 3 [(buf.validate.field).string.min_bytes = 1];
+	bool is_private_room = 4;
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100;
+	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101;
+}
+
+message ShogiStartMultiResponse {
+	int64 stage_random_seed = 1;
+	common.Response common_response = 9999;
+}
+
+message ShogiFinishMultiRequest {
+	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+}
+
+message ShogiFinishMultiResponse {
+	common.ShogiResultInfo shogi_result_info = 1;
+	repeated common.RewardResult reward_results = 2;
+	int32 reward_up_stamina_consumption_quantity = 3;
+	common.MultiGameResultPrivateRoomInfo private_room_info = 4;
+	int64 benefit_license_reward_quantity_up_permil_up = 5;
+	repeated common.RewardQuantityUp reward_ups_by_skill_tree = 6;
+	common.StorageUrlInfo play_log_upload_url = 7 [(options.zap.hidden) = true];
+	common.MarathonMiniGameResult marathon_mini_game_result = 100;
+	common.Response common_response = 9999;
+}
+
+message ShogiSavePieceCharacterRequest {
+	message PieceCharacter {
+		.enums.ShogiPieceType piece_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+		string character_id = 2 [(buf.validate.field).string.min_bytes = 1];
+	}
+
+	repeated ShogiSavePieceCharacterRequest.PieceCharacter piece_characters = 1 [(buf.validate.field).repeated.min_items = 3, (buf.validate.field).repeated.max_items = 3];
+}
+
+message ShogiSavePieceCharacterResponse {
+	common.Response common_response = 9999;
+}
+
+service Shogi {
+	rpc MatchRandom (.rpc.api.ShogiMatchRandomRequest) returns (.rpc.api.ShogiMatchRandomResponse) {
+		option (google.api.http).post = "/Shogi/MatchRandom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc CreatePrivateRoom (.rpc.api.ShogiCreatePrivateRoomRequest) returns (.rpc.api.ShogiCreatePrivateRoomResponse) {
+		option (google.api.http).post = "/Shogi/CreatePrivateRoom";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.error).error_codes = ERROR_CODE_MULTI_GAME_REMATCH_EXPIRED;
+	}
+
+	rpc StartSingle (.rpc.api.ShogiStartSingleRequest) returns (.rpc.api.ShogiStartSingleResponse) {
+		option (google.api.http).post = "/Shogi/StartSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartMulti (.rpc.api.ShogiStartMultiRequest) returns (.rpc.api.ShogiStartMultiResponse) {
+		option (google.api.http).post = "/Shogi/StartMulti";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishSingle (.rpc.api.ShogiFinishSingleRequest) returns (.rpc.api.ShogiFinishSingleResponse) {
+		option (google.api.http).post = "/Shogi/FinishSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc FinishMulti (.rpc.api.ShogiFinishMultiRequest) returns (.rpc.api.ShogiFinishMultiResponse) {
+		option (google.api.http).post = "/Shogi/FinishMulti";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc SavePieceCharacter (.rpc.api.ShogiSavePieceCharacterRequest) returns (.rpc.api.ShogiSavePieceCharacterResponse) {
+		option (google.api.http).post = "/Shogi/SavePieceCharacter";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+}

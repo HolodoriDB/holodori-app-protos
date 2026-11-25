@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+import "enums/shogi_character_personality_piece_type.gen.proto";
+import "enums/shogi_character_personality_type.gen.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ShogiCharacterPersonalityParameter {
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	.enums.ShogiCharacterPersonalityType personality_type = 2 [(options.master.pk) = true];
+	.enums.ShogiCharacterPersonalityPieceType personality_piece_type = 3 [(options.master.pk) = true];
+	int32 weight = 4;
+}

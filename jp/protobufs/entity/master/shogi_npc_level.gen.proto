@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+import "enums/shogi_miss_selection_type.gen.proto";
+import "enums/shogi_miss_trigger_type.gen.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ShogiNpcLevel {
+	option (options.master.table) = true;
+
+	int32 level = 1 [(options.master.pk) = true];
+	int32 ai_level = 2;
+	int32 personality_weight = 3 [(options.master.optional) = true];
+	int32 miss_rating_correction = 4 [(options.master.optional) = true];
+	int32 miss_ai_level_correction = 5 [(options.master.optional) = true];
+	repeated .enums.ShogiMissTriggerType miss_trigger_types = 6;
+	.enums.ShogiMissSelectionType miss_selection_type = 7;
+	bool is_drop_piece_allowed = 8 [(options.master.optional) = true];
+}

@@ -11,6 +11,9 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message Mission {
+	option (options.master.indexes) = "mission_group_id";
+	option (options.master.indexes) = "achievement_group_id";
+	option (options.master.indexes) = "character_id";
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];

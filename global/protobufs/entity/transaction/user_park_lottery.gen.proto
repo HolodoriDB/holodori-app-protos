@@ -11,4 +11,5 @@ option csharp_namespace = "Vision.Common.Proto.Transaction";
 message UserParkLottery {
 	string park_lottery_id = 2 [(options.master.fk) = "ParkLottery:id", (options.transaction.pk) = true];
 	int32 daily_draw_count = 3;
+	int64 last_draw_time = 4;
 }

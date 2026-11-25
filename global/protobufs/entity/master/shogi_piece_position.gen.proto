@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+import "enums/shogi_piece_owner_type.gen.proto";
+import "enums/shogi_piece_type.gen.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ShogiPiecePosition {
+	option (options.master.table) = true;
+
+	string group_id = 1 [(options.master.pk) = true];
+	int32 number = 2 [(options.master.pk) = true];
+	.enums.ShogiPieceType piece_type = 3;
+	int32 position_x = 4 [(options.master.optional) = true];
+	int32 position_y = 5 [(options.master.optional) = true];
+	.enums.ShogiPieceOwnerType owner_type = 6;
+}

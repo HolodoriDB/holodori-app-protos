@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "common/emblem_position.gen.proto";
 import "entity/master/options/master.proto";
+import "enums/profile_publish_scope_type.gen.proto";
 
 package entity.transaction;
 
@@ -32,5 +33,13 @@ message UserProfile {
 	int64 login_status_last_updated_time = 23;
 	string multi_game_unpublished_user_name = 24;
 	int64 message_last_updated_time = 25;
+	.enums.ProfilePublishScopeType achievement_publish_scope_type = 27;
+	.enums.ProfilePublishScopeType highest_live_deck_evaluation_publish_scope_type = 28;
+	.enums.ProfilePublishScopeType emblem_publish_scope_type = 29;
+	.enums.ProfilePublishScopeType character_rank_publish_scope_type = 30;
+	.enums.ProfilePublishScopeType music_highest_score_rating_publish_scope_type = 31;
+	.enums.ProfilePublishScopeType live_result_publish_scope_type = 32;
+	.enums.ProfilePublishScopeType mini_game_result_publish_scope_type = 33;
+	.enums.ProfilePublishScopeType live_tower_publish_scope_type = 34;
 	repeated .common.EmblemPosition emblem_positions = 1001;
 }

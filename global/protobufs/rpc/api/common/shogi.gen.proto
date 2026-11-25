@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+import "enums/shogi_piece_type.gen.proto";
+import "enums/shogi_result_type.gen.proto";
+
+package rpc.api.common;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/rpc/common_api";
+option csharp_namespace = "Vision.Common.Proto.Api.Common";
+
+message ShogiResultInfo {
+	.enums.ShogiResultType result_type = 1;
+	bool is_self_disconnected = 2;
+	bool is_opponent_disconnected = 3;
+	bool is_opponent_npc = 4;
+}
+
+message ShogiPieceResult {
+	.enums.ShogiPieceType piece_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	int32 take_count = 2 [(buf.validate.field).int32.gte = 0];
+	int32 taken_count = 3 [(buf.validate.field).int32.gte = 0];
+}

@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 import "entity/master/options/master.proto";
-import "enums/park_script_parameter_type.gen.proto";
 
 package entity.master;
 
@@ -14,5 +13,4 @@ message ParkGraph {
 	string id = 1 [(options.master.pk) = true];
 	string graph_id = 2;
 	repeated string parameter_values = 3 [(options.master.optional) = true];
-	repeated .enums.ParkScriptParameterType parameter_types = 4 [(options.master.optional) = true];
 }

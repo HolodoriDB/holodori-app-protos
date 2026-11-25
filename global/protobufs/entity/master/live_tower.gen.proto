@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+import "enums/live_tower_type.gen.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message LiveTower {
+	option (options.master.table) = true;
+
+	string id = 1 [(options.master.pk) = true];
+	int64 start_time = 2;
+	int64 end_time = 3 [(options.master.optional) = true];
+	string view_condition_group_id = 4 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string unlock_condition_group_id = 5 [(options.master.fk) = "Condition:group_id", (options.master.optional) = true];
+	string name_lang_id = 6 [(options.master.fk) = "LangLiveTower:id", (options.master.optional) = true];
+	string logo_asset_id = 7 [(options.master.optional) = true];
+	string background_asset_id = 8 [(options.master.optional) = true];
+	.enums.LiveTowerType type = 9;
+	int32 priority = 999;
+}

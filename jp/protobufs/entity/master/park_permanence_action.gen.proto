@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "entity/master/options/master.proto";
+import "enums/area_sea_type.gen.proto";
 import "enums/park_action_type.gen.proto";
 
 package entity.master;
@@ -29,4 +30,5 @@ message ParkPermanenceAction {
 	string mini_game_reward_up_stamina_conversion_id = 16 [(options.master.fk) = "MiniGameRewardUpStaminaConversion:id", (options.master.optional) = true];
 	string park_fishing_spot_id = 30 [(options.master.fk) = "ParkFishingSpot:id", (options.master.optional) = true];
 	string area_grouping_id = 31 [(options.master.fk) = "AreaGrouping:id", (options.master.optional) = true];
+	.enums.AreaSeaType area_sea_type = 36 [(options.master.optional) = true];
 }

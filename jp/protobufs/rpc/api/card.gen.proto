@@ -63,6 +63,15 @@ message CardUpgradePotentialRequest {
 	int32 after_potential_upgrade_count = 2 [(buf.validate.field).int32.gte = 1];
 }
 
+message CardUpgradePotentialAllRequest {
+	message CardPotentialUpgrade {
+		string card_id = 1 [(buf.validate.field).string.min_bytes = 1];
+		int32 after_potential_upgrade_count = 2 [(buf.validate.field).int32.gte = 1];
+	}
+
+	repeated CardUpgradePotentialAllRequest.CardPotentialUpgrade potential_upgrades = 1 [(buf.validate.field).repeated.min_items = 1, (buf.validate.field).repeated.max_items = 200];
+}
+
 message CardLevelUpResponse {
 	common.Response common_response = 9999;
 }
@@ -72,6 +81,10 @@ message CardLevelLimitBreakResponse {
 }
 
 message CardUpgradePotentialResponse {
+	common.Response common_response = 9999;
+}
+
+message CardUpgradePotentialAllResponse {
 	common.Response common_response = 9999;
 }
 
@@ -102,6 +115,12 @@ service Card {
 
 	rpc UpgradePotential (.rpc.api.CardUpgradePotentialRequest) returns (.rpc.api.CardUpgradePotentialResponse) {
 		option (google.api.http).post = "/Card/UpgradePotential";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc UpgradePotentialAll (.rpc.api.CardUpgradePotentialAllRequest) returns (.rpc.api.CardUpgradePotentialAllResponse) {
+		option (google.api.http).post = "/Card/UpgradePotentialAll";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).enabled_response_cache = true;
 	}

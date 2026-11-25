@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 import "options/check_option.proto";
 import "rpc/api/common/mission.gen.proto";
 import "rpc/api/common/response.gen.proto";
@@ -42,6 +43,10 @@ message MissionPurchasePassLevelResponse {
 	common.Response common_response = 9999;
 }
 
+message MissionForceUpdateMusicReleaseMissionResponse {
+	common.Response common_response = 9999;
+}
+
 service Mission {
 	rpc ReceiveReward (.rpc.api.MissionReceiveRewardRequest) returns (.rpc.api.MissionReceiveRewardResponse) {
 		option (google.api.http).post = "/Mission/ReceiveReward";
@@ -57,6 +62,12 @@ service Mission {
 
 	rpc PurchasePassLevel (.rpc.api.MissionPurchasePassLevelRequest) returns (.rpc.api.MissionPurchasePassLevelResponse) {
 		option (google.api.http).post = "/Mission/PurchasePassLevel";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc ForceUpdateMusicReleaseMission (.google.protobuf.Empty) returns (.rpc.api.MissionForceUpdateMusicReleaseMissionResponse) {
+		option (google.api.http).post = "/Mission/ForceUpdateMusicReleaseMission";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).enabled_response_cache = true;
 	}

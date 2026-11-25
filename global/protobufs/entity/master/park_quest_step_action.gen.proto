@@ -36,4 +36,5 @@ message ParkQuestStepAction {
 	string area_id = 1010 [(options.master.fk) = "Area:id", (options.master.optional) = true];
 	string park_quest_chase_id = 1011 [(options.master.fk) = "ParkQuestChase:id", (options.master.optional) = true];
 	string park_quest_splash_ball_id = 1012 [(options.master.fk) = "ParkQuestSplashBall:id", (options.master.optional) = true];
+	string park_quest_shogi_id = 1013 [(options.master.fk) = "ParkQuestShogi:id", (options.master.optional) = true];
 }

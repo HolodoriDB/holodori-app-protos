@@ -9,6 +9,7 @@ import "enums/friend_status_type.gen.proto";
 import "enums/live_deck_rank_type.gen.proto";
 import "enums/music_difficulty_type.gen.proto";
 import "enums/profile_mini_game_result_type.gen.proto";
+import "enums/profile_publish_scope_type.gen.proto";
 
 package rpc.api.common;
 
@@ -38,6 +39,14 @@ message UserProfileInfo {
 	bool is_live_result_publish = 103;
 	bool is_mini_game_result_publish = 104;
 	bool is_user_info_publish_in_multi_game = 105;
+	.enums.ProfilePublishScopeType achievement_publish_scope_type = 106;
+	.enums.ProfilePublishScopeType highest_live_deck_evaluation_publish_scope_type = 107;
+	.enums.ProfilePublishScopeType emblem_publish_scope_type = 108;
+	.enums.ProfilePublishScopeType character_rank_publish_scope_type = 109;
+	.enums.ProfilePublishScopeType music_highest_score_rating_publish_scope_type = 110;
+	.enums.ProfilePublishScopeType live_result_publish_scope_type = 111;
+	.enums.ProfilePublishScopeType mini_game_result_publish_scope_type = 112;
+	.enums.ProfilePublishScopeType live_tower_publish_scope_type = 113;
 	string sd_costume_id = 200 [(options.master.fk) = "SdCostumeCostume:id"];
 	string sd_costume_hair_accessory_id = 201 [(options.master.fk) = "SdCostumeHairAccessory:id"];
 }
@@ -94,6 +103,7 @@ message UserProfileDetailInfo {
 	repeated UserProfileDetailInfo.MusicHighestScoreRatingInfo top_music_highest_score_rating_infos = 13;
 	int32 combo_card_game_average_rank_percent = 14;
 	int64 combo_card_game_chip_diff_total_quantity = 15;
+	int32 permanent_live_tower_cleared_stage_number = 16;
 }
 
 message CustomPalette {

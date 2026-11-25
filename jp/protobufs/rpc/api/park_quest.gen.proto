@@ -3,9 +3,12 @@ syntax = "proto3";
 import "buf/validate/validate.proto";
 import "common/live.gen.proto";
 import "common/reward.gen.proto";
+import "entity/master/options/master.proto";
 import "enums/live_evaluation_rank_type.gen.proto";
 import "enums/live_result_type.gen.proto";
 import "enums/music_difficulty_type.gen.proto";
+import "enums/shogi_piece_type.gen.proto";
+import "enums/shogi_result_type.gen.proto";
 import "google/api/annotations.proto";
 import "options/check_option.proto";
 import "options/zap.proto";
@@ -19,6 +22,7 @@ import "rpc/api/common/multi_game.gen.proto";
 import "rpc/api/common/park.gen.proto";
 import "rpc/api/common/response.gen.proto";
 import "rpc/api/common/reward.gen.proto";
+import "rpc/api/common/shogi.gen.proto";
 import "rpc/api/common/splash_ball.gen.proto";
 import "rpc/api/common/startup_notification.gen.proto";
 import "rpc/api/common/storage_url.gen.proto";
@@ -417,6 +421,78 @@ message ParkQuestFinishSplashBallResponse {
 	common.Response common_response = 9999;
 }
 
+message ParkQuestMatchRandomShogiRequest {
+	string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
+	int32 step = 3 [(buf.validate.field).int32.gte = 1];
+	string park_target_mapping_id = 4 [(buf.validate.field).string.min_bytes = 1];
+	int32 action_number = 5 [(buf.validate.field).int32.gte = 1];
+	common.MultiGameMatchRandomInfo match_random_info = 1000;
+}
+
+message ParkQuestMatchRandomShogiResponse {
+	common.MultiGameMatchInfo match_info = 1;
+	common.Response common_response = 9999;
+}
+
+message ParkQuestStartShogiSingleRequest {
+	string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
+	int32 step = 3 [(buf.validate.field).int32.gte = 1];
+	string park_target_mapping_id = 4 [(buf.validate.field).string.min_bytes = 1];
+	int32 action_number = 5 [(buf.validate.field).int32.gte = 1];
+	string character_id = 6 [(buf.validate.field).string.min_bytes = 1];
+}
+
+message ParkQuestStartShogiSingleResponse {
+	message NpcPieceCharacter {
+		.enums.ShogiPieceType piece_type = 1;
+		string character_id = 2 [(options.master.fk) = "Character:id"];
+	}
+
+	int32 seed = 1;
+	repeated ParkQuestStartShogiSingleResponse.NpcPieceCharacter npc_piece_characters = 2;
+	common.Response common_response = 9999;
+}
+
+message ParkQuestStartShogiMultiRequest {
+	string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
+	int32 step = 3 [(buf.validate.field).int32.gte = 1];
+	string park_target_mapping_id = 4 [(buf.validate.field).string.min_bytes = 1];
+	int32 action_number = 5 [(buf.validate.field).int32.gte = 1];
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+	repeated common.MultiGameParkEmotionSendInfo park_emotion_send_infos = 101 [(buf.validate.field).repeated.max_items = 200];
+}
+
+message ParkQuestStartShogiMultiResponse {
+	int32 seed = 1;
+	common.Response common_response = 9999;
+}
+
+message ParkQuestFinishShogiSingleRequest {
+	.enums.ShogiResultType result_type = 1 [(buf.validate.field).enum.defined_only = true, (buf.validate.field).enum.not_in = 0];
+	repeated common.ShogiPieceResult piece_results = 2 [(buf.validate.field).repeated.max_items = 5];
+}
+
+message ParkQuestFinishShogiSingleResponse {
+	bool is_cleared = 1;
+	repeated common.RewardResult reward_results = 2;
+	common.Response common_response = 9999;
+}
+
+message ParkQuestFinishShogiMultiRequest {
+	string multi_game_result_id = 1 [(buf.validate.field).string.min_bytes = 1];
+	repeated common.MultiGameStampSendInfo stamp_send_infos = 100 [(buf.validate.field).repeated.max_items = 200];
+}
+
+message ParkQuestFinishShogiMultiResponse {
+	bool is_cleared = 1;
+	common.ShogiResultInfo shogi_result_info = 2;
+	repeated common.RewardResult reward_results = 3;
+	common.Response common_response = 9999;
+}
+
 message ParkQuestDeliverItemRequest {
 	string park_quest_id = 1 [(buf.validate.field).string.min_bytes = 1];
 	int32 step_group_number = 2 [(buf.validate.field).int32.gte = 1];
@@ -712,6 +788,39 @@ service ParkQuest {
 
 	rpc FinishSplashBall (.rpc.api.ParkQuestFinishSplashBallRequest) returns (.rpc.api.ParkQuestFinishSplashBallResponse) {
 		option (google.api.http).post = "/ParkQuest/FinishSplashBall";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc MatchRandomShogi (.rpc.api.ParkQuestMatchRandomShogiRequest) returns (.rpc.api.ParkQuestMatchRandomShogiResponse) {
+		option (google.api.http).post = "/ParkQuest/MatchRandomShogi";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartShogiSingle (.rpc.api.ParkQuestStartShogiSingleRequest) returns (.rpc.api.ParkQuestStartShogiSingleResponse) {
+		option (google.api.http).post = "/ParkQuest/StartShogiSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc StartShogiMulti (.rpc.api.ParkQuestStartShogiMultiRequest) returns (.rpc.api.ParkQuestStartShogiMultiResponse) {
+		option (google.api.http).post = "/ParkQuest/StartShogiMulti";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).enabled_response_cache = true;
+	}
+
+	rpc FinishShogiSingle (.rpc.api.ParkQuestFinishShogiSingleRequest) returns (.rpc.api.ParkQuestFinishShogiSingleResponse) {
+		option (google.api.http).post = "/ParkQuest/FinishShogiSingle";
+		option (google.api.http).body = "*";
+		option (options.check_option.check).disabled_master_version = true;
+		option (options.check_option.check).enabled_response_cache = true;
+		option (options.check_option.check).enabled_request_signature = true;
+	}
+
+	rpc FinishShogiMulti (.rpc.api.ParkQuestFinishShogiMultiRequest) returns (.rpc.api.ParkQuestFinishShogiMultiResponse) {
+		option (google.api.http).post = "/ParkQuest/FinishShogiMulti";
 		option (google.api.http).body = "*";
 		option (options.check_option.check).disabled_master_version = true;
 		option (options.check_option.check).enabled_response_cache = true;

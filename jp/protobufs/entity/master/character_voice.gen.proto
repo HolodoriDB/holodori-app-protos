@@ -8,6 +8,8 @@ option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
 option csharp_namespace = "Vision.Common.Proto.Master";
 
 message CharacterVoice {
+	option (options.master.indexes) = "character_id";
+	option (options.master.indexes) = "character_voice_category_id";
 	option (options.master.table) = true;
 
 	string id = 1 [(options.master.pk) = true];

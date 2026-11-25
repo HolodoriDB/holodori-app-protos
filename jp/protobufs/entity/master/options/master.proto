@@ -9,6 +9,7 @@ option csharp_namespace = "Vision.Common.Proto.Master.Options";
 
 extend google.protobuf.MessageOptions {
 	bool table = 51010;
+	repeated string indexes = 51011;
 }
 
 extend google.protobuf.FieldOptions {

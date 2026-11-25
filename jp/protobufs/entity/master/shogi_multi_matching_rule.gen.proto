@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "entity/master/options/master.proto";
+
+package entity.master;
+
+option go_package = "github.com/qua-vision/vision-server/pkg/pb/master";
+option csharp_namespace = "Vision.Common.Proto.Master";
+
+message ShogiMultiMatchingRule {
+	option (options.master.table) = true;
+
+	int32 seconds = 1 [(options.master.optional) = true, (options.master.pk) = true];
+	int32 max_rating_diff = 2;
+	int32 exclude_recent_opponent_count = 3 [(options.master.optional) = true];
+}
