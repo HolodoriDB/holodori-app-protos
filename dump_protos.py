@@ -172,7 +172,11 @@ def _meet(a: dict, b: dict) -> dict:
 
 def _veneer(bin_: Binary, target: int, back: int):
     insns = list(_MD.disasm(bin_.read(target, 8), target))
-    if len(insns) == 2 and insns[1].mnemonic == "b" and insns[1].operands[0].imm == back:
+    if (
+        len(insns) == 2
+        and insns[1].mnemonic == "b"
+        and insns[1].operands[0].imm == back
+    ):
         return insns[0]
     return None
 

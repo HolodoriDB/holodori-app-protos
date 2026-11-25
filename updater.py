@@ -1,11 +1,13 @@
 """track hololive dreams app versions per region and dump every protobuf on change
 
 per region
-- justapk info is probed across every source for the highest advertised version
+- google play (gplaydl, anonymous token) and every justapk source are probed for the highest
+  advertised version
 - if it differs from <region>/appver.json or <region>/protobufs is missing
-  - every justapk source is downloaded into <region>/.temp and the archive with the
-    highest versionCode wins, since the mirrors disagree and lag by different amounts
-  - extract libil2cpp.so (arm64-v8a split) and global-metadata.dat (base) from the xapk
+  - the base apk and arm64 split are downloaded from google play into <region>/.temp. if play
+    fails, every justapk mirror is downloaded instead and the archive with the highest
+    versionCode wins, since the mirrors disagree and lag by different amounts
+  - extract libil2cpp.so (arm64-v8a split) and global-metadata.dat (base)
   - decrypt the metadata (xor key embedded in the .so)
   - il2cppdumper produces dump.cs and stringliteral.json
   - dump_protos writes <region>/protobufs
@@ -24,7 +26,17 @@ import subprocess
 import sys
 import zipfile
 from pathlib import Path
+from typing import Callable, TypeVar
 
+from gplaydl.api import (
+    AuthExpiredError,
+    DeliveryResult,
+    get_delivery,
+    get_details,
+    purchase,
+)
+from gplaydl.auth import ensure_auth
+from gplaydl.download import DownloadSpec, download_batch
 from justapk.downloader import APKDownloader
 from justapk.sources import SOURCE_PRIORITY
 from pyaxmlparser import APK
@@ -40,6 +52,53 @@ REGIONS = {  # region folder to google play package
     "global": "game.qualiarts.hololive.dreams.com",
 }
 
+GPLAY = "googleplay"
+
+T = TypeVar("T")
+
+# google play
+
+
+def _gplay_auth(force: bool = False) -> dict:
+    auth = ensure_auth(arch="arm64", force_refresh=force)
+    if not auth:
+        raise RuntimeError("no anonymous google play token from the dispenser")
+    return auth
+
+
+def _gplay(call: Callable[[dict], T]) -> T:
+    """run call with a play token, refreshing it once if play rejects it"""
+    try:
+        return call(_gplay_auth())
+    except AuthExpiredError:
+        return call(_gplay_auth(force=True))
+
+
+def _download_gplay(package: str, dest: Path) -> list[Path]:
+    """base apk plus the arm64 split, the asset packs hold nothing dump_protos needs"""
+
+    def deliver(auth: dict) -> tuple[int, DeliveryResult]:
+        vc = get_details(package, auth).version_code
+        purchase(package, vc, auth)
+        return vc, get_delivery(package, vc, auth)
+
+    vc, delivery = _gplay(deliver)
+    specs = [
+        DownloadSpec(
+            url=delivery.download_url,
+            dest=dest / f"{package}-{vc}.apk",
+            cookies=delivery.cookies,
+        )
+    ]
+    specs += [
+        DownloadSpec(url=s.url, dest=dest / f"{package}-{vc}-{s.name}.apk")
+        for s in delivery.splits
+        if "arm64" in s.name
+    ]
+    download_batch(specs)
+    return [s.dest for s in specs]
+
+
 # latest version probe
 
 
@@ -49,10 +108,18 @@ def _probe(package: str) -> tuple[str | None, int]:
     returns the highest version seen as (version_name, version_code). sources that
     report no version code give 0, so the name comparison is what catches those
     """
-    dl = APKDownloader()
     best_name, best_code = None, 0
     seen: list[str] = []
 
+    try:
+        details = _gplay(lambda auth: get_details(package, auth))
+        if details.version_string:
+            best_name, best_code = details.version_string, details.version_code
+            seen.append(f"{GPLAY} {best_name} ({best_code})")
+    except Exception as e:
+        print(f"  {GPLAY} probe failed: {type(e).__name__} {e}")
+
+    dl = APKDownloader()
     for source in SOURCE_PRIORITY:
         try:
             info = dl.info(package, source=source)
@@ -111,19 +178,33 @@ def _archives_in(d: Path) -> list[Path]:
     ]
 
 
-def _download(package: str, out_dir: Path) -> tuple[Path, str, int]:
-    """try every justapk source, return the archive with the highest versionCode
+def _download(package: str, out_dir: Path) -> tuple[list[Path], str, int, str]:
+    """google play first, it is the official listing and never lags
 
-    the sources disagree and lag by different amounts, and justapk on its own returns
+    if play fails, try every justapk source and keep the archive with the highest versionCode.
+    the mirrors disagree and lag by different amounts, and justapk on its own returns
     whichever one answers first, so ask all of them and compare what actually arrived
+
+    returns (archives, version_name, version_code, source)
     """
     if out_dir.exists():
         shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True)
+    failures: list[str] = []
+
+    dest = out_dir / GPLAY
+    dest.mkdir()
+    try:
+        files = _download_gplay(package, dest)
+        name, code = _apk_version(files[0], out_dir)
+        print(f"  {GPLAY}: {name} ({code})")
+        return files, name, code, GPLAY
+    except Exception as e:  # play down or token refused, the mirrors still work
+        failures.append(f"{GPLAY}: {type(e).__name__} {e}")
+        print(f"  {failures[-1]}, falling back to mirrors")
 
     dl = APKDownloader(auto_convert_xapk=False)
     best: tuple[Path, str, int] | None = None
-    failures: list[str] = []
 
     for source in SOURCE_PRIORITY:
         dest = out_dir / source
@@ -155,7 +236,8 @@ def _download(package: str, out_dir: Path) -> tuple[Path, str, int]:
             f"no source yielded a usable archive for {package}\n  "
             + "\n  ".join(failures)
         )
-    return best
+    archive, name, code = best
+    return [archive], name, code, archive.parent.name
 
 
 def _scan_apk(z: zipfile.ZipFile) -> tuple[bytes | None, bytes | None]:
@@ -169,22 +251,24 @@ def _scan_apk(z: zipfile.ZipFile) -> tuple[bytes | None, bytes | None]:
     return so, meta
 
 
-def _extract_so_metadata(archive: Path) -> tuple[bytes, bytes]:
-    """pull the arm64-v8a libil2cpp.so and global-metadata.dat out of an apk or xapk"""
-    z = zipfile.ZipFile(archive)
-    inner = [n for n in z.namelist() if n.endswith(".apk")]
+def _extract_so_metadata(archives: list[Path]) -> tuple[bytes, bytes]:
+    """pull the arm64-v8a libil2cpp.so and global-metadata.dat out of apks, splits or an xapk"""
     so = meta = None
-    if inner:  # xapk, split apks nested inside
-        for n in inner:
-            s, m = _scan_apk(zipfile.ZipFile(io.BytesIO(z.read(n))))
+    for archive in archives:
+        z = zipfile.ZipFile(archive)
+        inner = [n for n in z.namelist() if n.endswith(".apk")]
+        apks = [zipfile.ZipFile(io.BytesIO(z.read(n))) for n in inner] if inner else [z]
+        for (
+            apk
+        ) in apks:  # xapk has split apks nested inside, otherwise a plain apk or split
+            s, m = _scan_apk(apk)
             so = so or s
             meta = meta or m
-    else:  # single merged apk
-        so, meta = _scan_apk(z)
+    names = ", ".join(a.name for a in archives)
     if not so:
-        raise RuntimeError(f"arm64-v8a libil2cpp.so not found in {archive.name}")
+        raise RuntimeError(f"arm64-v8a libil2cpp.so not found in {names}")
     if not meta:
-        raise RuntimeError(f"global-metadata.dat not found in {archive.name}")
+        raise RuntimeError(f"global-metadata.dat not found in {names}")
     return so, meta
 
 
@@ -265,13 +349,15 @@ def process(region: str, package: str, work: Path) -> bool:
 
     print(f"{region}: downloading, best advertised is {probe_name}")
     tmp = region_dir / ".temp"
-    archive, apk_version, apk_version_code = _download(package, tmp / "download")
+    archives, apk_version, apk_version_code, source = _download(
+        package, tmp / "download"
+    )
     if apk_version_code <= stored_code and protobufs.is_dir():
         print(
             f"{region}: best source has {apk_version} ({apk_version_code}), not newer"
         )
         return False
-    so_bytes, meta_bytes = _extract_so_metadata(archive)
+    so_bytes, meta_bytes = _extract_so_metadata(archives)
 
     so_path = tmp / "libil2cpp.so"
     meta_path = tmp / "global-metadata.dat"
@@ -293,7 +379,7 @@ def process(region: str, package: str, work: Path) -> bool:
                 "package": package,
                 "version_name": apk_version,
                 "version_code": apk_version_code,
-                "source": archive.parent.name,
+                "source": source,
                 "android_octo_key": octo_key,
                 "android_app_octo_key": app_octo_key,
             },
